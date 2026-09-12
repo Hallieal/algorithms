@@ -3,25 +3,661 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Bubble Sort — Chapter 1, next section.">
+  <meta name="description" content="Bubble Sort: adjacent swaps, correctness, complexity, inversions, stability, Python, and an interactive example.">
+  <meta property="og:title" content="Bubble Sort | Algorithms">
+  <meta property="og:description" content="Bubble Sort with an interactive visualization, correctness argument, complexity analysis, inversions, and Python code.">
+  <meta property="og:type" content="article">
   <title>Bubble Sort | Algorithms</title>
   <link rel="stylesheet" href="styles.css">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
 </head>
-<body>
+
+<body class="lecture-page">
+  <div class="progress-track" aria-hidden="true"><div class="progress-bar" id="reading-progress"></div></div>
+
   <header class="topbar">
     <a class="brand" href="index.html"><span class="brand-mark">A</span><span>Algorithms</span></a>
     <nav class="topnav" aria-label="Primary navigation">
       <a href="sorting.html">Sorting overview</a>
-      <a href="sorting-selection-insertion.html">Previous section</a>
+      <a href="#exercises">Exercises</a>
       <a href="index.html">Home</a>
     </nav>
   </header>
 
-  <main class="placeholder-page">
-    <div class="chapter-label">Chapter 1 · Section 2</div>
-    <h1>Bubble Sort</h1>
-    <p>This section will be added next.</p>
+  <aside class="sidebar" aria-label="Section navigation">
+    <div class="sidebar-title">Chapter 1 · Section 2</div>
+    <a href="#idea">Main idea</a>
+    <a href="#correctness">Correctness</a>
+    <a href="#interactive">Interactive example</a>
+    <a href="#implementation">Implementation</a>
+    <a href="#complexity">Complexity</a>
+    <a href="#inversions">Inversions</a>
+    <a href="#stability">Stability</a>
+    <a href="#exercises">Exercises</a>
+  </aside>
+
+  <main class="lecture">
+    <section class="lecture-hero">
+      <div class="chapter-label">Chapter 1 · Section 2</div>
+      <h1>Bubble Sort</h1>
+      <p class="chapter-topics">
+        Adjacent comparisons, local swaps, inversions, and early stopping.
+      </p>
+    </section>
+
+    <section id="idea" class="lecture-section">
+      <h2>Main idea</h2>
+
+      <p class="lead">
+        Bubble Sort repeatedly compares neighboring elements. If two adjacent elements are in the wrong order,
+        they are swapped. A full left-to-right pass moves the largest element that is still out of place
+        to the end of the unsorted part.
+      </p>
+
+      <div class="bubble-intuition">
+        <div class="bubble-intuition-copy">
+          <h3>Why the name Bubble Sort?</h3>
+          <p>
+            During one pass, a large value can move several positions to the right through a sequence of adjacent swaps.
+            In this sense, large values gradually rise toward the end of the array.
+          </p>
+        </div>
+
+        <div class="bubble-path" aria-label="A large element moving right through adjacent swaps">
+          <div class="bubble-path-row">
+            <span class="bubble-focus">8</span><span>3</span><span>5</span><span>2</span>
+          </div>
+          <div class="bubble-path-arrow">↓ compare and swap</div>
+          <div class="bubble-path-row">
+            <span>3</span><span class="bubble-focus">8</span><span>5</span><span>2</span>
+          </div>
+          <div class="bubble-path-arrow">↓ compare and swap</div>
+          <div class="bubble-path-row">
+            <span>3</span><span>5</span><span class="bubble-focus">8</span><span>2</span>
+          </div>
+          <div class="bubble-path-arrow">↓ compare and swap</div>
+          <div class="bubble-path-row">
+            <span>3</span><span>5</span><span>2</span><span class="bubble-final">8</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="step-flow" aria-label="Bubble Sort steps">
+        <article class="step-item">
+          <div class="step-number">1</div>
+          <div>
+            <h3>Start at the left</h3>
+            <p>Compare the first pair of neighboring elements.</p>
+          </div>
+        </article>
+
+        <article class="step-item">
+          <div class="step-number">2</div>
+          <div>
+            <h3>Swap if necessary</h3>
+            <p>If the left element is larger than the right one, exchange them.</p>
+          </div>
+        </article>
+
+        <article class="step-item">
+          <div class="step-number">3</div>
+          <div>
+            <h3>Move one position right</h3>
+            <p>Compare the next adjacent pair and continue until the end of the unsorted part.</p>
+          </div>
+        </article>
+
+        <article class="step-item">
+          <div class="step-number">4</div>
+          <div>
+            <h3>Repeat the pass</h3>
+            <p>The largest remaining element is now fixed at the right end, so the next pass can stop one position earlier.</p>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section id="correctness" class="lecture-section">
+      <h2>Correctness</h2>
+
+      <div class="two-column-block">
+        <div class="text-panel">
+          <h3>Invariant of one pass</h3>
+          <p>
+            While scanning from left to right, after the comparison ending at position
+            <span class="math">j</span>, the largest element among the positions already visited
+            is located at position <span class="math">j</span>.
+          </p>
+
+          <div class="array-state">
+            <span>3</span>
+            <span>5</span>
+            <span class="candidate">8</span>
+            <span>2</span>
+            <span>7</span>
+          </div>
+
+          <p class="caption">
+            After comparing 8 with the values before it, 8 is the largest element seen so far and has moved to the right.
+          </p>
+        </div>
+
+        <div class="proof-panel">
+          <h3>Why a pass fixes one element</h3>
+          <p>
+            <strong>Initialization.</strong> Before the first comparison, the larger of the first two elements is placed on the right.
+          </p>
+          <p>
+            <strong>Maintenance.</strong> At every next comparison, the largest value seen so far is compared with one new neighbor.
+            The larger of the two remains on the right, so the largest value seen so far moves one step farther.
+          </p>
+          <p>
+            <strong>End of the pass.</strong> After the final comparison, the largest element of the unsorted part
+            reaches its final position at the right boundary.
+          </p>
+        </div>
+      </div>
+
+      <div class="subsection">
+        <h3>From one pass to the whole algorithm</h3>
+        <p>
+          After the first pass, the largest element is fixed at the end. After the second pass,
+          the second-largest element is fixed immediately before it. Repeating this argument eventually fixes every position.
+        </p>
+      </div>
+    </section>
+
+    <section id="interactive" class="lecture-section">
+      <h2>Interactive example</h2>
+
+      <div class="visualizer bubble-visualizer" data-algorithm="bubble">
+        <div class="visualizer-head">
+          <div>
+            <h3>Follow one comparison at a time</h3>
+            <p>
+              Press <strong>Next sorting step</strong>. Orange marks the pair being compared;
+              green marks the suffix that is already fixed.
+            </p>
+          </div>
+          <button type="button" class="primary-step" data-action="next">Next sorting step →</button>
+        </div>
+
+        <div class="bars" aria-label="Bubble Sort visualization"></div>
+
+        <div class="legend-row" aria-hidden="true">
+          <span><i class="legend-dot bubble-compare-dot"></i>pair being compared</span>
+          <span><i class="legend-dot bubble-fixed-dot"></i>fixed sorted suffix</span>
+          <span><i class="legend-dot untouched-dot"></i>unsorted part</span>
+        </div>
+
+        <div class="step-caption" aria-live="polite">Press Next sorting step.</div>
+
+        <div class="secondary-controls">
+          <button type="button" data-action="reset">Reset</button>
+          <button type="button" data-action="randomize">New array</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="implementation" class="lecture-section">
+      <h2>Implementation</h2>
+
+      <p class="lead">
+        The version below includes an early-stopping optimization. If a complete pass performs no swaps,
+        the array is already sorted and the algorithm can terminate immediately.
+      </p>
+
+      <div class="code-explainer">
+        <div class="annotated-code">
+          <div class="code-row"><span class="line-no">1</span><code>def bubble_sort(a):</code></div>
+          <div class="code-row"><span class="line-no">2</span><code>    n = len(a)</code></div>
+          <div class="code-row marked"><span class="line-no">3</span><code>    for end in range(n - 1, 0, -1):</code></div>
+          <div class="code-row marked"><span class="line-no">4</span><code>        swapped = False</code></div>
+          <div class="code-row marked"><span class="line-no">5</span><code>        for j in range(end):</code></div>
+          <div class="code-row marked"><span class="line-no">6</span><code>            if a[j] &gt; a[j + 1]:</code></div>
+          <div class="code-row marked"><span class="line-no">7</span><code>                a[j], a[j + 1] = a[j + 1], a[j]</code></div>
+          <div class="code-row marked"><span class="line-no">8</span><code>                swapped = True</code></div>
+          <div class="code-row marked"><span class="line-no">9</span><code>        if not swapped:</code></div>
+          <div class="code-row marked"><span class="line-no">10</span><code>            break</code></div>
+          <div class="code-row"><span class="line-no">11</span><code>    return a</code></div>
+        </div>
+
+        <div class="code-notes">
+          <h3>Implementation notes</h3>
+
+          <div class="code-note-item">
+            <span>3</span>
+            <p>
+              <strong>Line 3.</strong> After each full pass, one more element at the right end is fixed,
+              so the next pass can stop earlier.
+            </p>
+          </div>
+
+          <div class="code-note-item">
+            <span>4</span>
+            <p>
+              <strong>Line 4.</strong> The flag records whether the current pass changed the array at all.
+            </p>
+          </div>
+
+          <div class="code-note-item wide-note">
+            <span>5–8</span>
+            <p>
+              <strong>Lines 5–8.</strong> Every adjacent pair in the unsorted part is checked.
+              A pair in decreasing order is swapped.
+            </p>
+          </div>
+
+          <div class="code-note-item wide-note">
+            <span>9–10</span>
+            <p>
+              <strong>Lines 9–10.</strong> If an entire pass makes no swaps, every adjacent pair is already ordered.
+              Therefore the whole array is sorted and the algorithm stops.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="complexity" class="lecture-section">
+      <h2>Complexity</h2>
+
+      <div class="subsection">
+        <h3>Without early stopping</h3>
+        <p>
+          The first pass compares <span class="math">n − 1</span> adjacent pairs, the next compares
+          <span class="math">n − 2</span>, and so on.
+        </p>
+
+        <div class="formula-line">
+          (n − 1) + (n − 2) + ··· + 2 + 1 = n(n − 1) / 2
+        </div>
+
+        <p>
+          Therefore the standard nested-loop structure performs
+          <span class="math">Θ(n<sup>2</sup>)</span> comparisons.
+        </p>
+      </div>
+
+      <div class="subsection">
+        <h3>With early stopping</h3>
+        <p>
+          If the array is already sorted, the first pass makes no swaps and the algorithm terminates after
+          <span class="math">n − 1</span> comparisons. The best-case time is therefore
+          <span class="math">Θ(n)</span>.
+        </p>
+      </div>
+
+      <div class="complexity-strip">
+        <div><span>Best case</span><b>Θ(n)</b><small>already sorted</small></div>
+        <div><span>Average case</span><b>Θ(n²)</b><small>many adjacent comparisons</small></div>
+        <div><span>Worst case</span><b>Θ(n²)</b><small>decreasing order</small></div>
+        <div><span>Extra memory</span><b>Θ(1)</b><small>in-place</small></div>
+      </div>
+    </section>
+
+    <section id="inversions" class="lecture-section">
+      <h2>Bubble Sort and inversions</h2>
+
+      <p class="lead">
+        Bubble Sort has a particularly clean connection with inversions.
+        An inversion is a pair of positions <span class="math">i &lt; j</span> such that the earlier value is larger than the later value.
+      </p>
+
+      <div class="inversion-example">
+        <div class="inversion-array">
+          <span>3</span>
+          <span class="inversion-left">7</span>
+          <span>5</span>
+          <span class="inversion-right">2</span>
+        </div>
+        <p>
+          In this array, the pair 7 and 2 is an inversion because 7 appears earlier but is larger.
+        </p>
+      </div>
+
+      <div class="analysis-card">
+        <h3>What does one adjacent swap do?</h3>
+        <p>
+          Bubble Sort swaps only adjacent elements that form an inversion.
+          Such a swap removes exactly that inversion and does not change the relative order of any other pair.
+        </p>
+
+        <div class="formula-line compact-formula">
+          number of swaps = number of inversions in the input
+        </div>
+
+        <p>
+          This does not make Bubble Sort asymptotically fast: it still performs many comparisons.
+          But it gives an exact interpretation of its data movement.
+        </p>
+      </div>
+    </section>
+
+    <section id="stability" class="lecture-section">
+      <h2>Stability</h2>
+
+      <p>
+        The implementation above is stable. Two equal elements are never swapped because the condition uses
+        a strict comparison: the swap is performed only when the left value is larger than the right value.
+      </p>
+
+      <div class="stability-example">
+        <div class="stability-side">
+          <div class="person-card equal-key"><b>Alice</b><span>score 2</span></div>
+          <div class="person-card equal-key"><b>Bob</b><span>score 2</span></div>
+          <div class="person-card"><b>Cara</b><span>score 1</span></div>
+        </div>
+
+        <div class="stability-arrow">→</div>
+
+        <div class="stability-side">
+          <div class="person-card"><b>Cara</b><span>score 1</span></div>
+          <div class="person-card equal-key"><b>Alice</b><span>score 2</span></div>
+          <div class="person-card equal-key"><b>Bob</b><span>score 2</span></div>
+        </div>
+      </div>
+
+      <p class="caption">
+        Alice remains before Bob because equal keys are not exchanged.
+      </p>
+    </section>
+
+    <section id="exercises" class="lecture-section">
+      <h2>Exercises</h2>
+
+      <div class="exercise-list">
+        <article class="exercise">
+          <div class="exercise-num">1</div>
+          <div>
+            <h3>One full pass</h3>
+            <p>
+              What is the array after one complete left-to-right pass of Bubble Sort on
+              <code>[5, 1, 4, 2, 8]</code>?
+            </p>
+            <button type="button" class="reveal" data-reveal="bubble-ex1" aria-expanded="false">Show answer</button>
+            <div id="bubble-ex1" class="answer-box" hidden>
+              The array becomes <code>[1, 4, 2, 5, 8]</code>. The largest value, 8, is guaranteed to be in its final position.
+            </div>
+          </div>
+        </article>
+
+        <article class="exercise">
+          <div class="exercise-num">2</div>
+          <div>
+            <h3>Early stopping</h3>
+            <p>
+              Why is a pass with no swaps sufficient to conclude that the entire array is sorted?
+            </p>
+            <button type="button" class="reveal" data-reveal="bubble-ex2" aria-expanded="false">Show answer</button>
+            <div id="bubble-ex2" class="answer-box" hidden>
+              If no adjacent pair is in decreasing order, then every neighboring pair satisfies the required order.
+              By transitivity, the entire array is sorted.
+            </div>
+          </div>
+        </article>
+
+        <article class="exercise">
+          <div class="exercise-num">3</div>
+          <div>
+            <h3>Number of swaps</h3>
+            <p>
+              How many swaps will Bubble Sort perform on <code>[3, 2, 1]</code>?
+            </p>
+            <button type="button" class="reveal" data-reveal="bubble-ex3" aria-expanded="false">Show answer</button>
+            <div id="bubble-ex3" class="answer-box" hidden>
+              There are three inversions: (3,2), (3,1), and (2,1). Therefore Bubble Sort performs exactly 3 swaps.
+            </div>
+          </div>
+        </article>
+
+        <article class="exercise">
+          <div class="exercise-num">4</div>
+          <div>
+            <h3>Stability</h3>
+            <p>
+              What change to the comparison condition would make this implementation potentially unstable?
+            </p>
+            <button type="button" class="reveal" data-reveal="bubble-ex4" aria-expanded="false">Show answer</button>
+            <div id="bubble-ex4" class="answer-box" hidden>
+              Swapping when the two values are equal would allow equal elements to reverse their relative order.
+            </div>
+          </div>
+        </article>
+      </div>
+
+      <div class="next-part">
+        <h3>Next section: Merge Sort and Quick Sort</h3>
+        <p>
+          The next step is to leave quadratic elementary sorts and introduce divide and conquer.
+        </p>
+        <a class="next-part-link" href="sorting-merge-quick.html">Merge Sort and Quick Sort →</a>
+      </div>
+
+      <div class="next-part">
+        <h3>Previous section</h3>
+        <p>
+          Return to Selection and Insertion Sorts.
+        </p>
+        <a class="next-part-link" href="sorting-selection-insertion.html">← Selection and Insertion Sorts</a>
+      </div>
+
+      <div class="next-part">
+        <h3>Back to the chapter</h3>
+        <p>
+          Return to the Sorting overview.
+        </p>
+        <a class="next-part-link" href="sorting.html">Sorting overview →</a>
+      </div>
+    </section>
   </main>
+
+  <footer class="lecture-footer">
+    <div>Algorithms</div>
+    <div>© 2026 Allan Allemand</div>
+  </footer>
+
+<script>
+(() => {
+  "use strict";
+
+  const DEFAULT = [7, 3, 8, 2, 6, 4, 9, 1];
+
+  function randomArray() {
+    const pool = [1,2,3,4,5,6,7,8,9];
+    for (let i = pool.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [pool[i], pool[j]] = [pool[j], pool[i]];
+    }
+    return pool.slice(0, 8);
+  }
+
+  function state(array, compared, fixed, text) {
+    return {
+      array: [...array],
+      compared: [...compared],
+      fixed: [...fixed],
+      text
+    };
+  }
+
+  function bubbleSteps(input) {
+    const a = [...input];
+    const steps = [
+      state(a, [], [], "Start with the whole array unsorted.")
+    ];
+
+    for (let end = a.length - 1; end > 0; end--) {
+      let swapped = false;
+
+      for (let j = 0; j < end; j++) {
+        steps.push(
+          state(
+            a,
+            [j, j + 1],
+            Array.from({length: a.length - 1 - end}, (_, k) => end + 1 + k),
+            `Compare ${a[j]} and ${a[j + 1]}.`
+          )
+        );
+
+        if (a[j] > a[j + 1]) {
+          const left = a[j];
+          const right = a[j + 1];
+          [a[j], a[j + 1]] = [a[j + 1], a[j]];
+          swapped = true;
+
+          steps.push(
+            state(
+              a,
+              [],
+              Array.from({length: a.length - 1 - end}, (_, k) => end + 1 + k),
+              `${left} > ${right}, so swap them.`
+            )
+          );
+        }
+      }
+
+      const fixedSuffix = Array.from(
+        {length: a.length - end},
+        (_, k) => end + k
+      );
+
+      steps.push(
+        state(
+          a,
+          [],
+          fixedSuffix,
+          `This pass is complete. ${a[end]} is now fixed in its final position.`
+        )
+      );
+
+      if (!swapped) {
+        steps.push(
+          state(
+            a,
+            [],
+            Array.from({length: a.length}, (_, i) => i),
+            "No swaps occurred during the pass, so the array is already sorted."
+          )
+        );
+        return steps;
+      }
+    }
+
+    steps.push(
+      state(
+        a,
+        [],
+        Array.from({length: a.length}, (_, i) => i),
+        "The array is sorted."
+      )
+    );
+
+    return steps;
+  }
+
+  function render(viz) {
+    const step = viz._steps[viz._index];
+    const bars = viz.querySelector(".bars");
+    const caption = viz.querySelector(".step-caption");
+
+    bars.replaceChildren();
+
+    step.array.forEach((value, index) => {
+      const bar = document.createElement("div");
+      bar.className = "bar";
+      bar.style.setProperty("--value", value);
+      bar.textContent = value;
+
+      if (step.fixed.includes(index)) {
+        bar.classList.add("fixed");
+      } else if (step.compared.includes(index)) {
+        bar.classList.add("bubble-compared");
+      }
+
+      bars.appendChild(bar);
+    });
+
+    caption.textContent = step.text;
+  }
+
+  function reset(viz, array) {
+    viz._steps = bubbleSteps(array);
+    viz._index = 0;
+    render(viz);
+  }
+
+  const viz = document.querySelector('.visualizer[data-algorithm="bubble"]');
+
+  if (viz) {
+    reset(viz, DEFAULT);
+
+    viz.addEventListener("click", event => {
+      const button = event.target.closest("button[data-action]");
+      if (!button) return;
+
+      if (button.dataset.action === "next") {
+        viz._index = Math.min(viz._index + 1, viz._steps.length - 1);
+        render(viz);
+      } else if (button.dataset.action === "reset") {
+        reset(viz, DEFAULT);
+      } else if (button.dataset.action === "randomize") {
+        reset(viz, randomArray());
+      }
+    });
+  }
+
+  document.addEventListener("click", event => {
+    const button = event.target.closest("button[data-reveal]");
+    if (!button) return;
+
+    const target = document.getElementById(button.dataset.reveal);
+    if (!target) return;
+
+    target.hidden = !target.hidden;
+    button.setAttribute("aria-expanded", String(!target.hidden));
+    button.textContent = target.hidden ? "Show answer" : "Hide answer";
+  });
+
+  const sidebarLinks = [...document.querySelectorAll(".sidebar a")];
+  const sections = sidebarLinks
+    .map(link => document.querySelector(link.getAttribute("href")))
+    .filter(Boolean);
+
+  if ("IntersectionObserver" in window && sections.length) {
+    const observer = new IntersectionObserver(entries => {
+      const visible = entries
+        .filter(entry => entry.isIntersecting)
+        .sort((a,b) => b.intersectionRatio - a.intersectionRatio)[0];
+
+      if (!visible) return;
+
+      sidebarLinks.forEach(link => link.classList.remove("active"));
+      const current = sidebarLinks.find(
+        link => link.getAttribute("href") === `#${visible.target.id}`
+      );
+      if (current) current.classList.add("active");
+    }, {
+      rootMargin: "-20% 0px -65% 0px",
+      threshold: [0, .1, .3, .6]
+    });
+
+    sections.forEach(section => observer.observe(section));
+  }
+
+  function updateProgress() {
+    const progress = document.getElementById("reading-progress");
+    if (!progress) return;
+
+    const height = document.documentElement.scrollHeight - window.innerHeight;
+    const ratio = height > 0 ? window.scrollY / height : 0;
+    progress.style.width = `${Math.max(0, Math.min(1, ratio)) * 100}%`;
+  }
+
+  updateProgress();
+  window.addEventListener("scroll", updateProgress, {passive: true});
+  window.addEventListener("resize", updateProgress);
+})();
+</script>
 </body>
 </html>
