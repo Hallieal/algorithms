@@ -1,14 +1,12 @@
-# Algorithms site update
+# Algorithms site — flat structure
 
-All files remain in the repository root.
+Sorting chapter structure:
+- `sorting.html` — Chapter 1 overview
+- `sorting-selection-insertion.html` — Section 1: Selection and Insertion Sorts
+- `sorting-bubble.html` — Section 2: Bubble Sort
+- `sorting-merge.html` — Section 3: Merge Sort
+- `sorting-quick.html` — Section 4: Quick Sort
 
-Replace the existing files with the files of the same names:
+Counting and Radix Sorts are planned as Section 5.
 
-- index.html
-- sorting.html
-- styles.css
-- app.js
-- favicon.svg
-
-Important: `sorting.html` now contains its interaction code directly.
-The page no longer depends on `app.js` for visualizers or Show answer buttons.
+All files remain directly in the repository root.

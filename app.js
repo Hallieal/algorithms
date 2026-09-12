@@ -1,5 +1,4 @@
 /*
-  Interactions for sorting.html are embedded directly in sorting.html.
-  This file is intentionally kept as a harmless placeholder so the
-  repository can retain its previous flat file structure.
+  Interactive code for the sorting section is embedded directly in
+  sorting-selection-insertion.html so the page does not depend on this file.
 */
