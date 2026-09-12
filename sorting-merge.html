@@ -10,6 +10,99 @@
   <title>Merge Sort | Algorithms</title>
   <link rel="stylesheet" href="styles.css">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
+
+<style id="merge-page-refinements">
+  .merge-highlight-card {
+    display:grid; grid-template-columns:54px 1fr; gap:18px; align-items:start;
+    margin-top:34px; padding:24px 26px;
+    border:1px solid #dbe4cd; border-left:4px solid var(--green);
+    border-radius:16px; background:#f5f8ef;
+  }
+  .merge-highlight-icon {
+    width:46px; height:46px; display:grid; place-items:center;
+    border-radius:13px; background:#e3eed2; color:var(--green);
+    font-size:23px; font-weight:800;
+  }
+  .merge-highlight-card h3 { margin:1px 0 7px; }
+  .merge-highlight-card p { margin:0; color:#59646d; }
+
+  .merge-metrics-block {
+    margin-top:36px; padding:25px;
+    border:1px solid var(--line); border-radius:20px; background:#fff;
+    box-shadow:0 8px 28px rgba(31,38,45,.035);
+  }
+  .merge-metrics-block > h3 { margin:0 0 18px; }
+  .merge-metric-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+  .merge-metric-card {
+    padding:20px; border:1px solid #e4e1db;
+    border-radius:14px; background:#f8f8f5;
+  }
+  .merge-metric-label {
+    display:block; margin-bottom:6px; color:#7b858d;
+    font-size:10px; font-weight:800; letter-spacing:.08em; text-transform:uppercase;
+  }
+  .merge-metric-card strong {
+    display:block; margin-bottom:8px; color:var(--ink);
+    font:700 25px Georgia,"Times New Roman",serif;
+  }
+  .merge-metric-card p { margin:0; color:#657079; font-size:13px; }
+
+  .implementation-title-card {
+    display:grid; grid-template-columns:48px 1fr; gap:14px; align-items:center;
+    margin-bottom:16px; padding:16px 18px;
+    border:1px solid #dde3d4; border-radius:14px; background:#f7f8f3;
+  }
+  .implementation-title-card > span {
+    width:38px; height:38px; display:grid; place-items:center;
+    border-radius:50%; background:var(--ink); color:#fff;
+    font-family:Georgia,serif; font-weight:800;
+  }
+  .implementation-title-card h3 { margin:0 0 2px; font-size:19px; }
+  .implementation-title-card p { margin:0; color:#69737c; font-size:12px; }
+
+  .complexity-explanation-card {
+    display:grid; grid-template-columns:54px 1fr; gap:17px; align-items:start;
+    margin:28px 0 22px; padding:23px 25px;
+    border:1px solid var(--line); border-radius:17px; background:#fff;
+  }
+  .complexity-card-mark {
+    width:46px; height:46px; display:grid; place-items:center;
+    border-radius:13px; background:#e9f2d8; color:#648f15;
+    font:700 22px Georgia,serif;
+  }
+  .complexity-explanation-card h3 { margin:1px 0 7px; }
+  .complexity-explanation-card p { margin:0; color:#59646d; }
+  .levels-card { margin-top:36px; }
+  .levels-card .formula-line { margin-top:18px; margin-bottom:12px; }
+
+  .tradeoff-callout {
+    display:grid; grid-template-columns:58px 1fr; gap:18px; align-items:center;
+    margin-top:36px; padding:24px 26px;
+    border-radius:18px; background:var(--ink); color:#fff;
+  }
+  .tradeoff-symbol {
+    width:50px; height:50px; display:grid; place-items:center;
+    border-radius:50%; background:#c6e77e; color:#253017;
+    font-size:24px; font-weight:800;
+  }
+  .tradeoff-callout h3 { margin:0 0 6px; color:#fff; }
+  .tradeoff-callout p { margin:0; color:#d3d8dc; }
+
+  #divide-conquer .merge-tree,
+  #merge-operation .merge-rule,
+  #full-algorithm .algorithm-equation,
+  #complexity .recursion-levels {
+    box-shadow:0 7px 24px rgba(31,38,45,.035);
+  }
+
+  @media (max-width:760px) {
+    .merge-metric-grid { grid-template-columns:1fr; }
+    .merge-highlight-card,
+    .complexity-explanation-card,
+    .tradeoff-callout { grid-template-columns:1fr; }
+  }
+</style>
+
 </head>
 
 <body class="lecture-page">
@@ -110,12 +203,15 @@
         </div>
       </div>
 
-      <div class="subsection">
-        <h3>Splitting is easy; merging does the real work</h3>
-        <p>
-          Splitting an array into halves is straightforward. The essential step is combining two halves
-          after they have already been sorted. That operation is called <em>merge</em>.
-        </p>
+      <div class="merge-highlight-card">
+        <div class="merge-highlight-icon">↔</div>
+        <div>
+          <h3>Splitting is easy; merging does the real work</h3>
+          <p>
+            Splitting an array into halves is straightforward. The essential step is combining two halves
+            after they have already been sorted. That operation is called <em>merge</em>.
+          </p>
+        </div>
       </div>
     </section>
 
@@ -202,16 +298,20 @@
         </div>
       </div>
 
-      <div class="analysis-card">
+      <div class="merge-metrics-block">
         <h3>Running time of merge</h3>
-        <p>
-          Each element is copied to the result exactly once. If the two input sequences contain
-          <span class="math">p</span> and <span class="math">q</span> elements, merging them takes
-          <span class="math">Θ(p + q)</span> time.
-        </p>
-        <p>
-          At most <span class="math">p + q − 1</span> comparisons between elements are needed.
-        </p>
+        <div class="merge-metric-grid">
+          <article class="merge-metric-card">
+            <span class="merge-metric-label">Running time</span>
+            <strong>Θ(p + q)</strong>
+            <p>Every element from the two input sequences is copied to the result exactly once.</p>
+          </article>
+          <article class="merge-metric-card">
+            <span class="merge-metric-label">Maximum comparisons</span>
+            <strong>p + q − 1</strong>
+            <p>Once one sequence is empty, the remainder of the other is appended without further comparisons.</p>
+          </article>
+        </div>
       </div>
     </section>
 
@@ -306,7 +406,13 @@
       </p>
 
       <div class="implementation-block">
-        <h3>1. Merging two sorted sequences</h3>
+        <div class="implementation-title-card">
+          <span>1</span>
+          <div>
+            <h3>Merging two sorted sequences</h3>
+            <p>The combine step: turn two sorted inputs into one sorted output.</p>
+          </div>
+        </div>
 
         <div class="code-explainer merge-code-explainer">
           <div class="annotated-code">
@@ -357,7 +463,13 @@
       </div>
 
       <div class="implementation-block">
-        <h3>2. Recursive sorting</h3>
+        <div class="implementation-title-card">
+          <span>2</span>
+          <div>
+            <h3>Recursive sorting</h3>
+            <p>The divide step: split the array, solve both halves, then call merge.</p>
+          </div>
+        </div>
 
         <div class="code-explainer merge-code-explainer">
           <div class="annotated-code">
@@ -411,13 +523,16 @@
     <section id="complexity" class="lecture-section">
       <h2>Complexity</h2>
 
-      <div class="subsection">
-        <h3>Work at one level of recursion</h3>
-        <p>
-          At any fixed level of the recursion tree, the subarrays are disjoint and together contain all
-          <span class="math">n</span> elements. Merging all subarrays on that level therefore takes
-          <span class="math">Θ(n)</span> total time.
-        </p>
+      <div class="complexity-explanation-card">
+        <div class="complexity-card-mark">Σ</div>
+        <div>
+          <h3>Work at one level of recursion</h3>
+          <p>
+            At any fixed level of the recursion tree, the subarrays are disjoint and together contain all
+            <span class="math">n</span> elements. Merging all subarrays on that level therefore takes
+            <span class="math">Θ(n)</span> total time.
+          </p>
+        </div>
       </div>
 
       <div class="recursion-levels">
@@ -456,20 +571,17 @@
         </div>
       </div>
 
-      <div class="subsection">
-        <h3>Number of levels</h3>
-        <p>
-          Each recursive step halves the size of the subproblem. Starting from
-          <span class="math">n</span>, after about <span class="math">log₂ n</span> halvings
-          the subproblem size reaches one.
-        </p>
-
-        <div class="formula-line">
-          T(n) = 2T(n / 2) + Θ(n)
-        </div>
-
-        <div class="formula-line">
-          Θ(n) per level × Θ(log n) levels = Θ(n log n)
+      <div class="complexity-explanation-card levels-card">
+        <div class="complexity-card-mark">½</div>
+        <div>
+          <h3>Number of levels</h3>
+          <p>
+            Each recursive step halves the size of the subproblem. Starting from
+            <span class="math">n</span>, after about <span class="math">log₂ n</span> halvings
+            the subproblem size reaches one.
+          </p>
+          <div class="formula-line">T(n) = 2T(n / 2) + Θ(n)</div>
+          <div class="formula-line">Θ(n) per level × Θ(log n) levels = Θ(n log n)</div>
         </div>
       </div>
 
@@ -512,12 +624,15 @@
         </article>
       </div>
 
-      <div class="subsection">
-        <h3>A useful trade-off</h3>
-        <p>
-          Compared with the elementary quadratic sorts from the previous sections, Merge Sort guarantees
-          <span class="math">Θ(n log n)</span> running time. The price is additional memory for merging.
-        </p>
+      <div class="tradeoff-callout">
+        <div class="tradeoff-symbol">⇄</div>
+        <div>
+          <h3>A useful trade-off</h3>
+          <p>
+            Compared with the elementary quadratic sorts from the previous sections, Merge Sort guarantees
+            <span class="math">Θ(n log n)</span> running time. The price is additional memory for merging.
+          </p>
+        </div>
       </div>
     </section>
 
