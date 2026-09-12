@@ -349,9 +349,12 @@
 
         <div class="bars" aria-label="Insertion Sort visualization"></div>
 
-        <div class="legend-row" aria-hidden="true">
-          <span><i class="legend-dot fixed-dot"></i>sorted prefix</span>
-          <span><i class="legend-dot active-dot"></i>current element or shift</span>
+        <div class="legend-row insertion-legend" aria-hidden="true">
+          <span><i class="legend-dot fixed-dot"></i>sorted prefix after insertion</span>
+          <span><i class="legend-dot working-dot"></i>working prefix</span>
+          <span><i class="legend-dot current-dot"></i>current element</span>
+          <span><i class="legend-dot compared-dot"></i>element being compared</span>
+          <span><i class="legend-dot untouched-dot"></i>untouched suffix</span>
         </div>
 
         <div class="step-caption" aria-live="polite">Press Next sorting step.</div>
@@ -565,12 +568,18 @@
         </article>
       </div>
 
-      <div class="next-part">
-        <h3>Back to the chapter</h3>
-        <p>
-          Return to the Sorting overview to continue with the next group of sorting algorithms.
-        </p>
-        <a class="next-part-link" href="sorting.html">Sorting overview →</a>
+      <div class="section-navigation">
+        <a class="section-nav-card section-nav-back" href="sorting.html">
+          <span class="section-nav-label">Chapter overview</span>
+          <strong>← Sorting</strong>
+          <small>Return to the structure of Chapter 1.</small>
+        </a>
+
+        <a class="section-nav-card section-nav-next" href="sorting-bubble.html">
+          <span class="section-nav-label">Next section</span>
+          <strong>Bubble Sort →</strong>
+          <small>Continue with adjacent swaps and inversions.</small>
+        </a>
       </div>
     </section>
   </main>
@@ -602,12 +611,24 @@
     return pool.slice(0, 8);
   }
 
-  function state(array, fixed, candidate, active, text) {
+  function state(
+    array,
+    fixed,
+    candidate,
+    active,
+    text,
+    working = [],
+    current = [],
+    compared = []
+  ) {
     return {
       array: [...array],
       fixed: [...fixed],
       candidate: [...candidate],
       active: [...active],
+      working: [...working],
+      current: [...current],
+      compared: [...compared],
       text
     };
   }
@@ -694,74 +715,103 @@
   function insertionSteps(input) {
     const a = [...input];
     const steps = [
-      state(a, [0], [], [], "The first element is already sorted.")
+      state(a, [0], [], [], "The first element is already sorted.", [], [], [])
     ];
 
     for (let i = 1; i < a.length; i++) {
       let pos = i;
       const movingValue = a[pos];
+      const workingRange = range(i + 1);
 
+      // Start of the outer iteration:
+      // the range 0..i is the working prefix,
+      // the current element is purple,
+      // everything to the right of i remains untouched teal.
       steps.push(
         state(
           a,
-          range(i),
           [],
+          [],
+          [],
+          `Take ${movingValue} as the current element. Insert it into the prefix on its left.`,
+          workingRange,
           [pos],
-          `Take ${movingValue} from the unsorted part and insert it into the sorted prefix.`
+          []
         )
       );
 
       while (pos > 0) {
         const leftPos = pos - 1;
         const leftValue = a[leftPos];
+        const currentValue = a[pos];
 
-        // Show the two actual values being compared.
-        // The array is NOT modified in this frame.
+        // Comparison frame:
+        // current element stays purple;
+        // the left neighbor becomes orange;
+        // other elements in the working prefix stay blue.
         steps.push(
           state(
             a,
-            range(Math.max(leftPos, 0)),
             [],
-            [leftPos, pos],
-            `Compare ${leftValue} and ${a[pos]}.`
+            [],
+            [],
+            `Compare the current element ${currentValue} with ${leftValue} on its left.`,
+            workingRange,
+            [pos],
+            [leftPos]
           )
         );
 
-        if (leftValue <= a[pos]) {
+        if (leftValue <= currentValue) {
           break;
         }
 
-        // Move the inserted value left using an adjacent SWAP.
-        // This guarantees that the displayed array is always a permutation
-        // of the original input: no duplicate temporary values can appear.
+        // Adjacent swap: the current value itself moves left.
+        // The array therefore remains a true permutation at every frame.
         [a[leftPos], a[pos]] = [a[pos], a[leftPos]];
         pos = leftPos;
 
         steps.push(
           state(
             a,
-            range(i + 1),
             [],
+            [],
+            [],
+            `${movingValue} moves one position to the left.`,
+            workingRange,
             [pos],
-            `${movingValue} moves one position to the left.`
+            []
           )
         );
       }
 
-      // Insertion complete: entire processed prefix is green; no orange.
+      // Only after the insertion is complete does the whole processed
+      // prefix become green.
       steps.push(
         state(
           a,
           range(i + 1),
           [],
           [],
-          `${movingValue} is now in its correct position inside the sorted prefix.`
+          `${movingValue} is now in the correct position. The processed prefix is sorted.`,
+          [],
+          [],
+          []
         )
       );
     }
 
     steps.push(
-      state(a, range(a.length), [], [], "The array is sorted.")
+      state(
+        a,
+        range(a.length),
+        [],
+        [],
+        "The array is sorted.",
+        [],
+        [],
+        []
+      )
     );
 
     return steps;
@@ -786,14 +836,28 @@
       bar.style.setProperty("--value", value);
       bar.textContent = value;
 
-      // Mutually exclusive visual priority:
-      // fixed (green) > candidate (purple) > active (orange) > normal (teal).
+      // Mutually exclusive visual priority.
+      // Selection Sort:
+      // fixed = green, candidate = purple, active = orange.
+      //
+      // Insertion Sort:
+      // fixed = green completed prefix,
+      // working = blue working prefix,
+      // current = purple inserted element,
+      // compared = orange neighbor,
+      // untouched suffix = default teal.
       if (step.fixed.includes(index)) {
         bar.classList.add("fixed");
+      } else if (step.current.includes(index)) {
+        bar.classList.add("current");
+      } else if (step.compared.includes(index)) {
+        bar.classList.add("compared");
       } else if (step.candidate.includes(index)) {
         bar.classList.add("candidate");
       } else if (step.active.includes(index)) {
         bar.classList.add("active");
+      } else if (step.working.includes(index)) {
+        bar.classList.add("working");
       }
 
       bars.appendChild(bar);

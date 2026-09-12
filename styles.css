@@ -1525,3 +1525,143 @@ th {
     font-size: 20px;
   }
 }
+
+
+/* =========================================================
+   v8: insertion visual states + section navigation
+   ========================================================= */
+
+/* Insertion Sort visual categories */
+.bar.working {
+  background: #6f9fc7;
+  transform: none;
+}
+
+.bar.current {
+  background: var(--purple);
+  transform: translateY(-7px);
+}
+
+.bar.compared {
+  background: var(--orange);
+  transform: translateY(-7px);
+}
+
+.working-dot {
+  background: #6f9fc7;
+}
+
+.current-dot {
+  background: var(--purple);
+}
+
+.compared-dot {
+  background: var(--orange);
+}
+
+.untouched-dot {
+  background: var(--teal);
+}
+
+.insertion-legend {
+  row-gap: 8px;
+}
+
+/* Navigation between sorting sections */
+.section-navigation {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin-top: 42px;
+}
+
+.section-nav-card {
+  min-height: 145px;
+  padding: 22px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  border: 1px solid var(--line);
+  border-radius: 17px;
+  background: #fff;
+  text-decoration: none;
+  transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+}
+
+.section-nav-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow);
+  border-color: #cbd8b1;
+}
+
+.section-nav-next {
+  text-align: right;
+}
+
+.section-nav-label {
+  margin-bottom: 5px;
+  color: #899198;
+  font-size: 10px;
+  font-weight: 780;
+  letter-spacing: .09em;
+  text-transform: uppercase;
+}
+
+.section-nav-card strong {
+  font-size: 21px;
+}
+
+.section-nav-card small {
+  margin-top: 7px;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+/* Minimal placeholder for the next section */
+.placeholder-page {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 100px 28px;
+}
+
+.placeholder-page h1 {
+  margin: 9px 0 12px;
+  font-size: 64px;
+  letter-spacing: -.05em;
+}
+
+.placeholder-page > p {
+  color: var(--muted);
+  font-size: 18px;
+}
+
+.placeholder-navigation {
+  display: flex;
+  gap: 12px;
+  margin-top: 35px;
+  flex-wrap: wrap;
+}
+
+.placeholder-navigation a {
+  padding: 10px 14px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: #fff;
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 720;
+}
+
+@media (max-width: 760px) {
+  .section-navigation {
+    grid-template-columns: 1fr;
+  }
+
+  .section-nav-next {
+    text-align: left;
+  }
+
+  .placeholder-page h1 {
+    font-size: 48px;
+  }
+}
