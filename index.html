@@ -1,161 +1,71 @@
 <!doctype html>
-<html lang="ru">
+<html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Алгоритмы: от идеи к коду — визуальный курс Аллана Аллеманда. Формальные определения, доказательства, Python и интерактивные примеры.">
-  <meta property="og:title" content="Алгоритмы | От идеи к коду">
-  <meta property="og:description" content="Визуальный курс по алгоритмам: идея, формализация, доказательство, код, задачи.">
-  <meta property="og:type" content="website">
-  <title>Алгоритмы | От идеи к коду</title>
+  <meta name="description" content="Algorithms: From Intuition to Code — a visual algorithms course by Allan Allemand.">
+  <title>Algorithms | From Intuition to Code</title>
   <link rel="stylesheet" href="styles.css">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
 </head>
 <body>
   <header class="topbar">
-    <a class="brand" href="index.html"><span class="brand-mark">A</span><span>Алгоритмы</span></a>
-    <nav class="topnav" aria-label="Основная навигация">
-      <a href="#course">Курс</a>
-      <a href="#approach">Подход</a>
-      <a href="sorting.html">Начать</a>
+    <a class="brand" href="index.html"><span class="brand-mark">A</span><span>Algorithms</span></a>
+    <nav class="topnav" aria-label="Primary navigation">
+      <a href="#course">Course</a>
+      <a href="sorting.html">Start</a>
     </nav>
   </header>
 
-  <main>
-    <section class="hero">
-      <div class="hero-copy">
-        <div class="eyebrow">Визуальный курс · Аллан Аллеманд</div>
-        <h1>Алгоритмы <span>от идеи к коду</span></h1>
-        <p class="hero-lead">
-          Сначала понять идею. Затем сформулировать алгоритм, доказать его корректность,
-          оценить сложность и только после этого написать код.
+  <main class="home-main">
+    <section class="home-hero">
+      <div>
+        <h1>Algorithms <span>from intuition to code</span></h1>
+        <p>
+          Understand the idea, state the invariant, prove correctness, analyze complexity,
+          and only then write the implementation.
         </p>
-        <div class="hero-actions">
-          <a class="button primary" href="sorting.html">Начать с сортировок →</a>
-          <a class="button secondary" href="#course">Оглавление курса</a>
-        </div>
-        <div class="hero-note">Интерактивные визуализации · доказательства · Python 3 · задачи</div>
+        <a class="home-button" href="sorting.html">Start with sorting →</a>
       </div>
 
-      <div class="hero-visual" aria-label="Иллюстрация сортировки массива">
-        <div class="hero-array">
-          <div class="hero-cell" style="--h:74%">8</div>
-          <div class="hero-cell accent" style="--h:27%">3</div>
-          <div class="hero-cell" style="--h:56%">6</div>
-          <div class="hero-cell accent2" style="--h:18%">2</div>
-          <div class="hero-cell" style="--h:65%">7</div>
-          <div class="hero-cell accent" style="--h:10%">1</div>
-          <div class="hero-cell" style="--h:46%">5</div>
-          <div class="hero-cell accent2" style="--h:36%">4</div>
-        </div>
-        <div class="hero-arrow">↓</div>
-        <div class="sorted-strip">
-          <span>1</span><span>2</span><span>3</span><span>4</span>
-          <span>5</span><span>6</span><span>7</span><span>8</span>
+      <div class="home-visual" aria-label="Sorting illustration">
+        <div class="home-bars">
+          <span style="--h:74%"></span>
+          <span style="--h:28%"></span>
+          <span style="--h:57%"></span>
+          <span style="--h:18%"></span>
+          <span style="--h:66%"></span>
+          <span style="--h:11%"></span>
+          <span style="--h:47%"></span>
+          <span style="--h:37%"></span>
         </div>
       </div>
     </section>
 
-    <section id="approach" class="section">
-      <div class="section-kicker">Структура каждой темы</div>
-      <h2>От наблюдения к строгому алгоритму</h2>
-      <p class="section-intro">
-        Цель курса — не запоминание готового кода, а понимание того, почему алгоритм устроен именно так.
-      </p>
-
-      <div class="feature-grid">
-        <article class="feature-card">
-          <div class="feature-icon">◎</div>
-          <h3>Наблюдение</h3>
-          <p>Начинаем с конкретной задачи и видим, какую структуру можно использовать.</p>
-        </article>
-        <article class="feature-card">
-          <div class="feature-icon">∑</div>
-          <h3>Формализация</h3>
-          <p>Определяем вход, выход, инварианты и необходимые свойства.</p>
-        </article>
-        <article class="feature-card">
-          <div class="feature-icon">✓</div>
-          <h3>Корректность</h3>
-          <p>Разбираем, почему алгоритм возвращает требуемый результат для любого допустимого входа.</p>
-        </article>
-        <article class="feature-card">
-          <div class="feature-icon">&lt;/&gt;</div>
-          <h3>Реализация</h3>
-          <p>Пишем рабочий код на Python 3 и поясняем содержательные строки.</p>
-        </article>
-        <article class="feature-card">
-          <div class="feature-icon">?</div>
-          <h3>Проверка</h3>
-          <p>Решаем короткие задачи, в которых требуется применить идею, а не повторить пример.</p>
-        </article>
-      </div>
-    </section>
-
-    <section id="course" class="section course-section">
-      <div class="section-kicker">Оглавление</div>
-      <h2>Курс</h2>
-
+    <section id="course" class="home-section">
+      <h2>Course</h2>
       <div class="course-grid">
         <a class="course-card live" href="sorting.html">
-          <div class="course-number">01</div>
+          <div class="course-number">1</div>
           <div>
-            <div class="course-status">часть I готова</div>
-            <h3>Сортировки</h3>
-            <p>Постановка задачи, сортировка выбором, сортировка вставками, устойчивость и анализ сложности.</p>
-            <div class="tags"><span>визуализация</span><span>доказательства</span><span>Python 3</span></div>
+            <h3>Sorting</h3>
+            <p>Bubble Sort, Selection Sort, Insertion Sort, Merge Sort, Quick Sort, Counting Sort, Radix Sort.</p>
           </div>
         </a>
-        <article class="course-card">
-          <div class="course-number">02</div><div><div class="course-status muted">планируется</div><h3>Бинарный поиск</h3><p>Поиск в отсортированном массиве и поиск по ответу.</p></div>
-        </article>
-        <article class="course-card">
-          <div class="course-number">03</div><div><div class="course-status muted">планируется</div><h3>Два указателя</h3><p>Монотонное движение, скользящее окно и задачи на пары.</p></div>
-        </article>
-        <article class="course-card">
-          <div class="course-number">04</div><div><div class="course-status muted">планируется</div><h3>Префиксные суммы</h3><p>Предобработка массива для быстрых запросов на отрезках.</p></div>
-        </article>
-        <article class="course-card">
-          <div class="course-number">05</div><div><div class="course-status muted">планируется</div><h3>Хеш-таблицы</h3><p>Поиск, частоты, коллизии и типовые применения.</p></div>
-        </article>
-        <article class="course-card">
-          <div class="course-number">06</div><div><div class="course-status muted">планируется</div><h3>Стек и очередь</h3><p>Ограничения на порядок операций как инструмент решения задач.</p></div>
-        </article>
-        <article class="course-card">
-          <div class="course-number">07</div><div><div class="course-status muted">планируется</div><h3>Деревья и кучи</h3><p>Иерархические структуры, приоритет и логарифмические операции.</p></div>
-        </article>
-        <article class="course-card">
-          <div class="course-number">08</div><div><div class="course-status muted">планируется</div><h3>Графы</h3><p>BFS, DFS, компоненты связности и кратчайшие пути.</p></div>
-        </article>
-        <article class="course-card">
-          <div class="course-number">09</div><div><div class="course-status muted">планируется</div><h3>Система непересекающихся множеств</h3><p>DSU, сжатие путей и объединение по рангу.</p></div>
-        </article>
-        <article class="course-card">
-          <div class="course-number">10</div><div><div class="course-status muted">планируется</div><h3>Жадные алгоритмы</h3><p>Локальный выбор и доказательство оптимальности.</p></div>
-        </article>
-        <article class="course-card">
-          <div class="course-number">11</div><div><div class="course-status muted">планируется</div><h3>Динамическое программирование</h3><p>Состояния, переходы, восстановление ответа и оптимизация памяти.</p></div>
-        </article>
-        <article class="course-card">
-          <div class="course-number">12</div><div><div class="course-status muted">планируется</div><h3>Строковые алгоритмы</h3><p>Префикс-функция, Z-функция, хеширование и поиск подстроки.</p></div>
-        </article>
-      </div>
-    </section>
-
-    <section class="section manifesto">
-      <div>
-        <div class="section-kicker">Главный принцип</div>
-        <h2>Код — последняя стадия решения.</h2>
-      </div>
-      <div class="manifesto-copy">
-        <p>До реализации должны быть понятны три вещи: что сохраняется на каждом шаге, почему алгоритм делает прогресс и откуда возникает его сложность.</p>
+        <article class="course-card"><div class="course-number">2</div><div><h3>Binary Search</h3><p>Searching ordered data and searching on the answer.</p></div></article>
+        <article class="course-card"><div class="course-number">3</div><div><h3>Two Pointers</h3><p>Monotone movement, pairs, and sliding windows.</p></div></article>
+        <article class="course-card"><div class="course-number">4</div><div><h3>Prefix Sums</h3><p>Preprocessing arrays for fast range queries.</p></div></article>
+        <article class="course-card"><div class="course-number">5</div><div><h3>Hash Tables</h3><p>Lookup, frequencies, collisions, and common patterns.</p></div></article>
+        <article class="course-card"><div class="course-number">6</div><div><h3>Graphs</h3><p>BFS, DFS, connectivity, and shortest paths.</p></div></article>
+        <article class="course-card"><div class="course-number">7</div><div><h3>Greedy Algorithms</h3><p>Local choices and proofs of optimality.</p></div></article>
+        <article class="course-card"><div class="course-number">8</div><div><h3>Dynamic Programming</h3><p>States, transitions, reconstruction, and optimization.</p></div></article>
       </div>
     </section>
   </main>
 
   <footer>
-    <div>Алгоритмы | От идеи к коду</div>
-    <div>© 2026 Аллан Аллеманд</div>
+    <div>Algorithms | From Intuition to Code</div>
+    <div>© 2026 Allan Allemand</div>
   </footer>
 </body>
 </html>
