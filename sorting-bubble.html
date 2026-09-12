@@ -145,15 +145,24 @@
         <div class="proof-panel">
           <h3>Why a pass fixes one element</h3>
           <p>
-            <strong>Initialization.</strong> Before the first comparison, the larger of the first two elements is placed on the right.
+            <strong>Invariant.</strong> After the comparison of positions <span class="math">j−1</span> and
+            <span class="math">j</span>, the largest element among the first
+            <span class="math">j+1</span> elements is located at position <span class="math">j</span>.
           </p>
           <p>
-            <strong>Maintenance.</strong> At every next comparison, the largest value seen so far is compared with one new neighbor.
-            The larger of the two remains on the right, so the largest value seen so far moves one step farther.
+            <strong>Initialization.</strong> After the first comparison, the larger of the first two elements
+            is in the second position. Hence the invariant holds for the first two elements.
           </p>
           <p>
-            <strong>End of the pass.</strong> After the final comparison, the largest element of the unsorted part
-            reaches its final position at the right boundary.
+            <strong>Maintenance.</strong> Suppose the largest element among the elements examined so far is at
+            position <span class="math">j</span>. We compare it with the next element. After swapping them if
+            necessary, the larger of the two is at position <span class="math">j+1</span>. Therefore the largest
+            element among the first <span class="math">j+2</span> elements is now at position
+            <span class="math">j+1</span>.
+          </p>
+          <p>
+            <strong>Termination.</strong> At the end of the pass, every element in the unsorted part has been examined.
+            Therefore its largest element is at the rightmost position of that part, which is its final position.
           </p>
         </div>
       </div>
