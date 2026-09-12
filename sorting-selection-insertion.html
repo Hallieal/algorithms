@@ -602,142 +602,175 @@
     return pool.slice(0, 8);
   }
 
+  function state(array, fixed, candidate, active, text) {
+    return {
+      array: [...array],
+      fixed: [...fixed],
+      candidate: [...candidate],
+      active: [...active],
+      text
+    };
+  }
+
   function selectionSteps(input) {
     const a = [...input];
-    const steps = [{
-      array: [...a],
-      fixed: [],
-      candidate: [],
-      active: [],
-      text: "The sorted prefix is empty."
-    }];
+    const steps = [
+      state(a, [], [], [], "The sorted prefix is empty.")
+    ];
 
     for (let i = 0; i < a.length - 1; i++) {
       let minPos = i;
 
-      steps.push({
-        array: [...a],
-        fixed: range(i),
-        candidate: [minPos],
-        active: [],
-        text: `Start the next pass. ${a[minPos]} is the current minimum of the remaining suffix.`
-      });
+      // Start of a pass: previous prefix is green; new candidate is purple.
+      steps.push(
+        state(
+          a,
+          range(i),
+          [minPos],
+          [],
+          `Start the next pass. ${a[minPos]} is the current minimum of the remaining suffix.`
+        )
+      );
 
       for (let j = i + 1; j < a.length; j++) {
-        steps.push({
-          array: [...a],
-          fixed: range(i),
-          candidate: [minPos],
-          active: [j],
-          text: `Compare ${a[j]} with the current minimum ${a[minPos]}.`
-        });
+        // Comparison: candidate is purple; only j is orange.
+        steps.push(
+          state(
+            a,
+            range(i),
+            [minPos],
+            [j],
+            `Compare ${a[j]} with the current minimum ${a[minPos]}.`
+          )
+        );
 
         if (a[j] < a[minPos]) {
           minPos = j;
-          steps.push({
-            array: [...a],
-            fixed: range(i),
-            candidate: [minPos],
-            active: [],
-            text: `${a[minPos]} becomes the new minimum.`
-          });
+
+          // New minimum: no orange element remains.
+          steps.push(
+            state(
+              a,
+              range(i),
+              [minPos],
+              [],
+              `${a[minPos]} becomes the new minimum.`
+            )
+          );
         }
       }
 
-      const oldAtI = a[i];
+      const previousValue = a[i];
       const minimum = a[minPos];
-      [a[i], a[minPos]] = [a[minPos], a[i]];
 
-      steps.push({
-        array: [...a],
-        fixed: range(i + 1),
-        candidate: [],
-        active: [],
-        text: minPos === i
-          ? `${minimum} is already in the correct position.`
-          : `Move ${minimum} into the first free position by swapping it with ${oldAtI}.`
-      });
+      if (minPos !== i) {
+        [a[i], a[minPos]] = [a[minPos], a[i]];
+      }
+
+      // IMPORTANT:
+      // the pass is finished here.
+      // The completed prefix is green; every remaining element is plain teal.
+      // No candidate and no active/orange element.
+      steps.push(
+        state(
+          a,
+          range(i + 1),
+          [],
+          [],
+          minPos === i
+            ? `${minimum} is already in the correct position. This pass is complete.`
+            : `${minimum} is placed in the first free position. This pass is complete.`
+        )
+      );
     }
 
-    steps.push({
-      array: [...a],
-      fixed: range(a.length),
-      candidate: [],
-      active: [],
-      text: "The array is sorted."
-    });
+    steps.push(
+      state(a, range(a.length), [], [], "The array is sorted.")
+    );
 
     return steps;
   }
 
   function insertionSteps(input) {
     const a = [...input];
-    const steps = [{
-      array: [...a],
-      fixed: [0],
-      candidate: [],
-      active: [],
-      text: "The first element is already sorted."
-    }];
+    const steps = [
+      state(a, [0], [], [], "The first element is already sorted.")
+    ];
 
     for (let i = 1; i < a.length; i++) {
-      let currentPos = i;
-      const key = a[currentPos];
+      let pos = i;
+      const movingValue = a[pos];
 
-      steps.push({
-        array: [...a],
-        fixed: range(i),
-        candidate: [],
-        active: [currentPos],
-        text: `Take ${key} from the unsorted part and insert it into the sorted prefix.`
-      });
+      steps.push(
+        state(
+          a,
+          range(i),
+          [],
+          [pos],
+          `Take ${movingValue} from the unsorted part and insert it into the sorted prefix.`
+        )
+      );
 
-      while (currentPos > 0 && a[currentPos - 1] > a[currentPos]) {
-        const leftValue = a[currentPos - 1];
-        const movingValue = a[currentPos];
+      while (pos > 0) {
+        const leftPos = pos - 1;
+        const leftValue = a[leftPos];
 
-        steps.push({
-          array: [...a],
-          fixed: range(Math.max(currentPos - 1, 0)),
-          candidate: [],
-          active: [currentPos - 1, currentPos],
-          text: `Compare ${leftValue} and ${movingValue}. Since ${leftValue} is larger, ${movingValue} must move left.`
-        });
+        // Show the two actual values being compared.
+        // The array is NOT modified in this frame.
+        steps.push(
+          state(
+            a,
+            range(Math.max(leftPos, 0)),
+            [],
+            [leftPos, pos],
+            `Compare ${leftValue} and ${a[pos]}.`
+          )
+        );
 
-        [a[currentPos - 1], a[currentPos]] = [a[currentPos], a[currentPos - 1]];
-        currentPos--;
+        if (leftValue <= a[pos]) {
+          break;
+        }
 
-        steps.push({
-          array: [...a],
-          fixed: range(i + 1),
-          candidate: [],
-          active: [currentPos, currentPos + 1],
-          text: `${movingValue} moves one position to the left.`
-        });
+        // Move the inserted value left using an adjacent SWAP.
+        // This guarantees that the displayed array is always a permutation
+        // of the original input: no duplicate temporary values can appear.
+        [a[leftPos], a[pos]] = [a[pos], a[leftPos]];
+        pos = leftPos;
+
+        steps.push(
+          state(
+            a,
+            range(i + 1),
+            [],
+            [pos],
+            `${movingValue} moves one position to the left.`
+          )
+        );
       }
 
-      steps.push({
-        array: [...a],
-        fixed: range(i + 1),
-        candidate: [],
-        active: [],
-        text: `${key} is now in the correct position inside the sorted prefix.`
-      });
+      // Insertion complete: entire processed prefix is green; no orange.
+      steps.push(
+        state(
+          a,
+          range(i + 1),
+          [],
+          [],
+          `${movingValue} is now in its correct position inside the sorted prefix.`
+        )
+      );
     }
 
-    steps.push({
-      array: [...a],
-      fixed: range(a.length),
-      candidate: [],
-      active: [],
-      text: "The array is sorted."
-    });
+    steps.push(
+      state(a, range(a.length), [], [], "The array is sorted.")
+    );
 
     return steps;
   }
 
   function buildSteps(type, array) {
-    return type === "selection" ? selectionSteps(array) : insertionSteps(array);
+    if (type === "selection") return selectionSteps(array);
+    if (type === "insertion") return insertionSteps(array);
+    return [];
   }
 
   function renderVisualizer(viz) {
@@ -753,9 +786,15 @@
       bar.style.setProperty("--value", value);
       bar.textContent = value;
 
-      if (step.fixed.includes(index)) bar.classList.add("fixed");
-      if (step.candidate.includes(index)) bar.classList.add("candidate");
-      if (step.active.includes(index)) bar.classList.add("active");
+      // Mutually exclusive visual priority:
+      // fixed (green) > candidate (purple) > active (orange) > normal (teal).
+      if (step.fixed.includes(index)) {
+        bar.classList.add("fixed");
+      } else if (step.candidate.includes(index)) {
+        bar.classList.add("candidate");
+      } else if (step.active.includes(index)) {
+        bar.classList.add("active");
+      }
 
       bars.appendChild(bar);
     });
@@ -783,13 +822,9 @@
       if (action === "next") {
         viz._index = Math.min(viz._index + 1, viz._steps.length - 1);
         renderVisualizer(viz);
-      }
-
-      if (action === "reset") {
+      } else if (action === "reset") {
         resetVisualizer(viz, DEFAULTS[type]);
-      }
-
-      if (action === "randomize") {
+      } else if (action === "randomize") {
         resetVisualizer(viz, randomArray());
       }
     });
@@ -821,9 +856,11 @@
       if (!visible) return;
 
       sidebarLinks.forEach(link => link.classList.remove("active"));
+
       const current = sidebarLinks.find(
         link => link.getAttribute("href") === `#${visible.target.id}`
       );
+
       if (current) current.classList.add("active");
     }, {
       rootMargin: "-20% 0px -65% 0px",

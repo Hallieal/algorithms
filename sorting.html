@@ -98,40 +98,46 @@
         </div>
       </div>
 
-      <div class="chapter-principles">
-        <h3>How we compare sorting algorithms</h3>
+      <div class="algorithm-criteria">
+        <h3>How we evaluate a sorting algorithm</h3>
 
-        <div class="principle-grid">
-          <div class="principle-item">
-            <span>1</span>
+        <div class="criteria-grid">
+          <article class="criterion-card">
+            <div class="criterion-icon criterion-correctness" aria-hidden="true">✓</div>
             <div>
-              <b>Correctness</b>
-              <p>Does the algorithm always produce the required ordering?</p>
+              <h4>Correctness</h4>
+              <p>Does the algorithm always produce the required ordering for every valid input?</p>
             </div>
-          </div>
+          </article>
 
-          <div class="principle-item">
-            <span>2</span>
+          <article class="criterion-card">
+            <div class="criterion-icon criterion-time" aria-hidden="true">↗</div>
             <div>
-              <b>Running time</b>
-              <p>How does the amount of work grow with the size of the input?</p>
+              <h4>Running time</h4>
+              <p>How does the amount of work grow as the number of elements increases?</p>
             </div>
-          </div>
+          </article>
 
-          <div class="principle-item">
-            <span>3</span>
+          <article class="criterion-card">
+            <div class="criterion-icon criterion-memory" aria-hidden="true">▦</div>
             <div>
-              <b>Extra memory</b>
-              <p>How much additional storage does the algorithm require?</p>
+              <h4>Extra memory</h4>
+              <p>How much additional storage is required beyond the input itself?</p>
             </div>
-          </div>
+          </article>
         </div>
 
-        <p class="principle-summary">
-          Asymptotic running time is important, but it does not describe every relevant property of a sorting algorithm.
-          Algorithms with the same complexity may still differ in stability, the amount of data movement,
-          their behavior on nearly sorted input, and constant factors.
-        </p>
+        <div class="asymptotic-note">
+          <div class="asymptotic-mark">Θ</div>
+          <div>
+            <h4>Asymptotic complexity is not the whole story</h4>
+            <p>
+              Two algorithms with the same asymptotic running time may still behave differently in practice.
+              Stability, the number of element moves, performance on nearly sorted data, and constant factors
+              can all matter when choosing an algorithm.
+            </p>
+          </div>
+        </div>
       </div>
 
     </section>

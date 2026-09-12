@@ -1353,3 +1353,175 @@ th {
     grid-template-columns: 1fr;
   }
 }
+
+
+/* =========================================================
+   v7: polished chapter criteria + corrected visualizers
+   ========================================================= */
+
+.algorithm-criteria {
+  margin-top: 44px;
+  padding: 30px;
+  border: 1px solid #dfe3d7;
+  border-radius: 22px;
+  background:
+    radial-gradient(circle at top right, rgba(115,155,46,.08), transparent 34%),
+    #f8f9f5;
+}
+
+.algorithm-criteria > h3 {
+  margin: 0 0 22px;
+  font-size: 23px;
+  letter-spacing: -0.02em;
+}
+
+.criteria-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+}
+
+.criterion-card {
+  min-height: 170px;
+  padding: 21px;
+  border: 1px solid var(--line);
+  border-radius: 17px;
+  background: rgba(255,255,255,.96);
+  box-shadow: 0 8px 22px rgba(31,38,45,.035);
+}
+
+.criterion-icon {
+  width: 46px;
+  height: 46px;
+  margin-bottom: 17px;
+  display: grid;
+  place-items: center;
+  border-radius: 14px;
+  font-family: Georgia, serif;
+  font-size: 24px;
+  font-weight: 800;
+}
+
+.criterion-correctness {
+  background: #e6f1dc;
+  color: #587f25;
+}
+
+.criterion-time {
+  background: #fff0d9;
+  color: #a66a16;
+}
+
+.criterion-memory {
+  background: #ece8fa;
+  color: #6656b5;
+}
+
+.criterion-card h4 {
+  margin: 0 0 7px;
+  font-size: 17px;
+}
+
+.criterion-card p {
+  margin: 0;
+  color: #657079;
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.asymptotic-note {
+  display: grid;
+  grid-template-columns: 58px 1fr;
+  gap: 17px;
+  align-items: start;
+  margin-top: 18px;
+  padding: 21px 23px;
+  border: 1px solid #d9dfcf;
+  border-left: 4px solid var(--green);
+  border-radius: 14px;
+  background: #fff;
+}
+
+.asymptotic-mark {
+  width: 50px;
+  height: 50px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--ink);
+  color: #fff;
+  font: italic 23px Georgia, serif;
+}
+
+.asymptotic-note h4 {
+  margin: 1px 0 6px;
+  font-size: 16px;
+}
+
+.asymptotic-note p {
+  margin: 0;
+  color: #5e6972;
+  font-size: 13.5px;
+}
+
+/* Finalized visual states must never inherit an orange transform. */
+.bar.fixed {
+  background: var(--green) !important;
+  transform: none !important;
+}
+
+.bar.candidate {
+  background: var(--purple);
+  transform: translateY(-7px);
+}
+
+.bar.active {
+  background: var(--orange);
+  transform: translateY(-7px);
+}
+
+/* Implementation notes: fixed badge column, all prose starts at one x-coordinate. */
+.code-note-item,
+.code-note-item.wide-note {
+  grid-template-columns: 54px minmax(0, 1fr);
+  column-gap: 12px;
+  align-items: start;
+}
+
+.code-note-item > span,
+.code-note-item.wide-note > span {
+  justify-self: center;
+  width: auto;
+  min-width: 28px;
+  height: 27px;
+  padding: 0 7px;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  background: var(--red);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 850;
+  line-height: 1;
+}
+
+.code-note-item p,
+.code-note-item.wide-note p {
+  margin: 1px 0 0;
+}
+
+@media (max-width: 760px) {
+  .criteria-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .asymptotic-note {
+    grid-template-columns: 48px 1fr;
+  }
+
+  .asymptotic-mark {
+    width: 42px;
+    height: 42px;
+    font-size: 20px;
+  }
+}
