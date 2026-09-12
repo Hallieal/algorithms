@@ -97,6 +97,43 @@
           <p>Equal elements are grouped, extrema are immediate, and binary search becomes possible.</p>
         </div>
       </div>
+
+      <div class="chapter-principles">
+        <h3>How we compare sorting algorithms</h3>
+
+        <div class="principle-grid">
+          <div class="principle-item">
+            <span>1</span>
+            <div>
+              <b>Correctness</b>
+              <p>Does the algorithm always produce the required ordering?</p>
+            </div>
+          </div>
+
+          <div class="principle-item">
+            <span>2</span>
+            <div>
+              <b>Running time</b>
+              <p>How does the amount of work grow with the size of the input?</p>
+            </div>
+          </div>
+
+          <div class="principle-item">
+            <span>3</span>
+            <div>
+              <b>Extra memory</b>
+              <p>How much additional storage does the algorithm require?</p>
+            </div>
+          </div>
+        </div>
+
+        <p class="principle-summary">
+          Asymptotic running time is important, but it does not describe every relevant property of a sorting algorithm.
+          Algorithms with the same complexity may still differ in stability, the amount of data movement,
+          their behavior on nearly sorted input, and constant factors.
+        </p>
+      </div>
+
     </section>
 
     <section id="chapter-map" class="overview-section">
@@ -106,7 +143,7 @@
         <a class="chapter-card available" href="sorting-selection-insertion.html">
           <div class="chapter-card-number">1.1</div>
           <div>
-            <h3>Selection Sort and Insertion Sort</h3>
+            <h3>Selection and Insertion Sorts</h3>
             <p>
               Two elementary comparison sorts. We use them to introduce sorted prefixes,
               correctness arguments, stability, and running-time analysis.

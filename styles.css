@@ -1288,3 +1288,68 @@ th {
     width: 100%;
   }
 }
+
+
+/* v6: chapter-level comparison criteria */
+.chapter-principles {
+  margin-top: 42px;
+  padding: 26px;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: #f7f8f3;
+}
+
+.chapter-principles h3 {
+  margin: 0 0 18px;
+  font-size: 21px;
+}
+
+.principle-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.principle-item {
+  display: grid;
+  grid-template-columns: 34px 1fr;
+  gap: 11px;
+  padding: 16px;
+  border-radius: 13px;
+  background: #fff;
+  border: 1px solid var(--line);
+}
+
+.principle-item > span {
+  width: 30px;
+  height: 30px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--ink);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.principle-item b {
+  display: block;
+  margin-bottom: 4px;
+}
+
+.principle-item p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.principle-summary {
+  margin: 20px 0 0;
+  color: #56616a;
+}
+
+@media (max-width: 760px) {
+  .principle-grid {
+    grid-template-columns: 1fr;
+  }
+}

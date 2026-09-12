@@ -3,11 +3,11 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Selection Sort and Insertion Sort: intuition, correctness, complexity, stability, Python, and interactive examples.">
-  <meta property="og:title" content="Selection Sort and Insertion Sort | Algorithms">
-  <meta property="og:description" content="Selection Sort and Insertion Sort with interactive examples and Python implementations.">
+  <meta name="description" content="Selection and Insertion Sorts: intuition, correctness, complexity, stability, Python, and interactive examples.">
+  <meta property="og:title" content="Selection and Insertion Sorts | Algorithms">
+  <meta property="og:description" content="Selection and Insertion Sorts with interactive examples and Python implementations.">
   <meta property="og:type" content="article">
-  <title>Selection Sort and Insertion Sort | Algorithms</title>
+  <title>Selection and Insertion Sorts | Algorithms</title>
   <link rel="stylesheet" href="styles.css">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
 </head>
@@ -36,7 +36,7 @@
   <main class="lecture">
     <section class="lecture-hero">
       <div class="chapter-label">Chapter 1 · Section 1</div>
-      <h1>Selection Sort and Insertion Sort</h1>
+      <h1>Selection and Insertion Sorts</h1>
       <p class="chapter-topics">
         Two elementary sorting algorithms and the basic ideas used to analyze them.
       </p>
@@ -467,7 +467,7 @@
     </section>
 
     <section id="comparison" class="lecture-section">
-      <h2>Comparison of Selection Sort and Insertion Sort</h2>
+      <h2>Comparison by key properties</h2>
 
       <div class="table-wrap">
         <table class="compare-table">
@@ -501,15 +501,6 @@
           comparing two elements, reducing the number of swaps can be useful even though the algorithm still performs
           Θ(n²) comparisons.
         </div>
-      </div>
-
-      <div class="conclusion-box">
-        <h3>Conclusion</h3>
-        <p>
-          Asymptotic running time does not describe every relevant property of an algorithm.
-          Algorithms with the same worst-case complexity may differ in stability, data movement,
-          adaptivity to the input, memory use, and constant factors.
-        </p>
       </div>
     </section>
 
@@ -661,7 +652,7 @@
         array: [...a],
         fixed: range(i + 1),
         candidate: [],
-        active: minPos === i ? [i] : [i, minPos],
+        active: [],
         text: minPos === i
           ? `${minimum} is already in the correct position.`
           : `Move ${minimum} into the first free position by swapping it with ${oldAtI}.`
@@ -690,40 +681,47 @@
     }];
 
     for (let i = 1; i < a.length; i++) {
-      const key = a[i];
-      let j = i - 1;
+      let currentPos = i;
+      const key = a[currentPos];
 
       steps.push({
         array: [...a],
         fixed: range(i),
         candidate: [],
-        active: [i],
+        active: [currentPos],
         text: `Take ${key} from the unsorted part and insert it into the sorted prefix.`
       });
 
-      while (j >= 0 && a[j] > key) {
-        const shifted = a[j];
-        a[j + 1] = a[j];
+      while (currentPos > 0 && a[currentPos - 1] > a[currentPos]) {
+        const leftValue = a[currentPos - 1];
+        const movingValue = a[currentPos];
 
         steps.push({
           array: [...a],
-          fixed: range(Math.max(j, 0)),
+          fixed: range(Math.max(currentPos - 1, 0)),
           candidate: [],
-          active: [j, j + 1],
-          text: `${shifted} is larger than ${key}, so ${shifted} moves one position to the right.`
+          active: [currentPos - 1, currentPos],
+          text: `Compare ${leftValue} and ${movingValue}. Since ${leftValue} is larger, ${movingValue} must move left.`
         });
 
-        j--;
-      }
+        [a[currentPos - 1], a[currentPos]] = [a[currentPos], a[currentPos - 1]];
+        currentPos--;
 
-      a[j + 1] = key;
+        steps.push({
+          array: [...a],
+          fixed: range(i + 1),
+          candidate: [],
+          active: [currentPos, currentPos + 1],
+          text: `${movingValue} moves one position to the left.`
+        });
+      }
 
       steps.push({
         array: [...a],
         fixed: range(i + 1),
         candidate: [],
-        active: [j + 1],
-        text: `Insert ${key} into the open position.`
+        active: [],
+        text: `${key} is now in the correct position inside the sorted prefix.`
       });
     }
 
