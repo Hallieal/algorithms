@@ -1,156 +1,260 @@
-
 const DEFAULTS = {
-  insertion: [7,3,8,2,6,4,9,1],
-  merge: [8,3,6,2,7,1,5,4],
-  quick: [6,2,9,4,7,1,8,3]
+  selection: [7, 3, 8, 2, 6, 4, 9, 1],
+  insertion: [7, 3, 8, 2, 6, 4, 9, 1]
 };
 
 function randomArray() {
   const pool = [1,2,3,4,5,6,7,8,9];
-  for (let i=pool.length-1;i>0;i--) {
-    const j=Math.floor(Math.random()*(i+1));
-    [pool[i],pool[j]]=[pool[j],pool[i]];
+  for (let i = pool.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [pool[i], pool[j]] = [pool[j], pool[i]];
   }
-  return pool.slice(0,8);
+  return pool.slice(0, 8);
+}
+
+function range(n, start = 0) {
+  return Array.from({length:n}, (_, i) => i + start);
+}
+
+function selectionSteps(input) {
+  const a = [...input];
+  const steps = [{
+    array:[...a],
+    active:[],
+    candidate:[],
+    fixed:[],
+    text:"Отсортированный префикс пока пуст."
+  }];
+
+  for (let i = 0; i < a.length - 1; i++) {
+    let minPos = i;
+
+    steps.push({
+      array:[...a],
+      active:[],
+      candidate:[minPos],
+      fixed:range(i),
+      text:`Начинаем итерацию i = ${i}. Пока считаем минимумом элемент ${a[minPos]}.`
+    });
+
+    for (let j = i + 1; j < a.length; j++) {
+      steps.push({
+        array:[...a],
+        active:[j],
+        candidate:[minPos],
+        fixed:range(i),
+        text:`Сравниваем ${a[j]} с текущим минимумом ${a[minPos]}.`
+      });
+
+      if (a[j] < a[minPos]) {
+        minPos = j;
+        steps.push({
+          array:[...a],
+          active:[],
+          candidate:[minPos],
+          fixed:range(i),
+          text:`Новый минимум неотсортированной части: ${a[minPos]}.`
+        });
+      }
+    }
+
+    if (minPos !== i) {
+      const left = a[i], right = a[minPos];
+      [a[i], a[minPos]] = [a[minPos], a[i]];
+      steps.push({
+        array:[...a],
+        active:[i, minPos],
+        candidate:[],
+        fixed:range(i + 1),
+        text:`Меняем местами ${left} и ${right}. Позиция ${i} теперь окончательна.`
+      });
+    } else {
+      steps.push({
+        array:[...a],
+        active:[i],
+        candidate:[],
+        fixed:range(i + 1),
+        text:`Минимум уже стоит на позиции ${i}. Префикс увеличивается без обмена.`
+      });
+    }
+  }
+
+  steps.push({
+    array:[...a],
+    active:[],
+    candidate:[],
+    fixed:range(a.length),
+    text:"Готово: весь массив отсортирован."
+  });
+  return steps;
 }
 
 function insertionSteps(input) {
-  const a=[...input], steps=[{array:[...a], active:[], fixed:[0], text:"The first element is a sorted prefix of length 1."}];
-  for(let i=1;i<a.length;i++){
-    const key=a[i]; let j=i-1;
-    steps.push({array:[...a],active:[i],fixed:[...Array(i).keys()],text:`Take ${key} as the next key.`});
-    while(j>=0 && a[j]>key){
-      a[j+1]=a[j];
-      steps.push({array:[...a],active:[j,j+1],fixed:[...Array(j).keys()],text:`${a[j]} is larger than ${key}, so shift it one position right.`});
+  const a = [...input];
+  const steps = [{
+    array:[...a],
+    active:[],
+    candidate:[],
+    fixed:[0],
+    text:"Первый элемент образует отсортированный префикс длины 1."
+  }];
+
+  for (let i = 1; i < a.length; i++) {
+    const key = a[i];
+    let j = i - 1;
+
+    steps.push({
+      array:[...a],
+      active:[i],
+      candidate:[],
+      fixed:range(i),
+      text:`Берём элемент ${key} и вставляем его в отсортированный префикс.`
+    });
+
+    while (j >= 0 && a[j] > key) {
+      const shifted = a[j];
+      a[j + 1] = a[j];
+      steps.push({
+        array:[...a],
+        active:[j, j + 1],
+        candidate:[],
+        fixed:range(Math.max(j, 0)),
+        text:`${shifted} > ${key}, поэтому ${shifted} сдвигается на одну позицию вправо.`
+      });
       j--;
     }
-    a[j+1]=key;
-    steps.push({array:[...a],active:[j+1],fixed:[...Array(i+1).keys()],text:`Insert ${key}. The sorted prefix now has length ${i+1}.`});
+
+    a[j + 1] = key;
+    steps.push({
+      array:[...a],
+      active:[j + 1],
+      candidate:[],
+      fixed:range(i + 1),
+      text:`Вставляем ${key} на позицию ${j + 1}. Префикс длины ${i + 1} отсортирован.`
+    });
   }
-  steps.push({array:[...a],active:[],fixed:[...Array(a.length).keys()],text:"Done. The entire array is sorted."});
+
+  steps.push({
+    array:[...a],
+    active:[],
+    candidate:[],
+    fixed:range(a.length),
+    text:"Готово: весь массив отсортирован."
+  });
   return steps;
 }
 
-function mergeSteps(input) {
-  const a=[...input], steps=[{array:[...a],active:[],fixed:[],text:"We recursively sort smaller ranges, then merge them."}];
-  const aux=new Array(a.length);
-  function sort(l,r){
-    if(r-l<=1) return;
-    const m=Math.floor((l+r)/2);
-    sort(l,m); sort(m,r);
-    let i=l,j=m,k=l;
-    steps.push({array:[...a],active:[...Array(r-l).keys()].map(x=>x+l),fixed:[],text:`Merge the sorted ranges [${l}, ${m}) and [${m}, ${r}).`});
-    while(i<m && j<r){
-      if(a[i]<=a[j]) aux[k++]=a[i++];
-      else aux[k++]=a[j++];
-    }
-    while(i<m) aux[k++]=a[i++];
-    while(j<r) aux[k++]=a[j++];
-    for(k=l;k<r;k++) a[k]=aux[k];
-    steps.push({array:[...a],active:[...Array(r-l).keys()].map(x=>x+l),fixed:[],text:`Merged range [${l}, ${r}) is now sorted.`});
-  }
-  sort(0,a.length);
-  steps.push({array:[...a],active:[],fixed:[...Array(a.length).keys()],text:"Done. All merge levels are complete."});
-  return steps;
+function buildSteps(type, array) {
+  if (type === "selection") return selectionSteps(array);
+  if (type === "insertion") return insertionSteps(array);
+  return [];
 }
 
-function quickSteps(input) {
-  const a=[...input], steps=[{array:[...a],active:[],fixed:[],text:"Partition around pivots until every subarray is trivial."}];
-  function partition(lo,hi){
-    const pivot=a[hi];
-    steps.push({array:[...a],active:[...Array(hi-lo+1).keys()].map(x=>x+lo),pivot:[hi],fixed:[],text:`Use ${pivot} as pivot for positions ${lo}…${hi}.`});
-    let i=lo;
-    for(let j=lo;j<hi;j++){
-      if(a[j]<pivot){
-        [a[i],a[j]]=[a[j],a[i]];
-        steps.push({array:[...a],active:[i,j],pivot:[hi],fixed:[],text:`${a[i]} belongs left of pivot ${pivot}.`});
-        i++;
-      }
-    }
-    [a[i],a[hi]]=[a[hi],a[i]];
-    steps.push({array:[...a],active:[i],pivot:[i],fixed:[i],text:`Pivot ${pivot} is now in its final position ${i}.`});
-    return i;
-  }
-  function sort(lo,hi){
-    if(lo>=hi) return;
-    const p=partition(lo,hi);
-    sort(lo,p-1); sort(p+1,hi);
-  }
-  sort(0,a.length-1);
-  steps.push({array:[...a],active:[],fixed:[...Array(a.length).keys()],text:"Done. Every pivot ended in its final position."});
-  return steps;
-}
+function render(viz) {
+  const bars = viz.querySelector(".bars");
+  const caption = viz.querySelector(".step-caption");
+  const step = viz._steps[viz._index];
 
-function buildSteps(type, array){
-  if(type==="insertion") return insertionSteps(array);
-  if(type==="merge") return mergeSteps(array);
-  return quickSteps(array);
-}
+  bars.innerHTML = "";
 
-function render(viz){
-  const bars=viz.querySelector(".bars");
-  const caption=viz.querySelector(".step-caption");
-  const step=viz._steps[viz._index];
-  bars.innerHTML="";
-  step.array.forEach((value,idx)=>{
-    const el=document.createElement("div");
-    el.className="bar";
+  step.array.forEach((value, idx) => {
+    const el = document.createElement("div");
+    el.className = "bar";
     el.style.setProperty("--value", value);
-    el.textContent=value;
-    if((step.active||[]).includes(idx)) el.classList.add("active");
-    if((step.fixed||[]).includes(idx)) el.classList.add("fixed");
-    if((step.pivot||[]).includes(idx)) el.classList.add("pivot");
+    el.textContent = value;
+    el.setAttribute("aria-label", `Позиция ${idx}: ${value}`);
+
+    if ((step.fixed || []).includes(idx)) el.classList.add("fixed");
+    if ((step.candidate || []).includes(idx)) el.classList.add("candidate");
+    if ((step.active || []).includes(idx)) el.classList.add("active");
+
     bars.appendChild(el);
   });
-  caption.textContent=step.text;
+
+  caption.textContent = step.text;
 }
 
-function initVisualizer(viz){
-  const type=viz.dataset.algorithm;
-  viz._array=[...DEFAULTS[type]];
-  viz._steps=buildSteps(type,viz._array);
-  viz._index=0;
+function initVisualizer(viz) {
+  const type = viz.dataset.algorithm;
+  viz._array = [...DEFAULTS[type]];
+  viz._steps = buildSteps(type, viz._array);
+  viz._index = 0;
   render(viz);
 
-  viz.querySelector('[data-action="next"]').addEventListener("click",()=>{
-    viz._index=Math.min(viz._index+1,viz._steps.length-1);
+  viz.querySelector('[data-action="next"]').addEventListener("click", () => {
+    viz._index = Math.min(viz._index + 1, viz._steps.length - 1);
     render(viz);
   });
-  viz.querySelector('[data-action="reset"]').addEventListener("click",()=>{
-    viz._array=[...DEFAULTS[type]];
-    viz._steps=buildSteps(type,viz._array);
-    viz._index=0;
+
+  viz.querySelector('[data-action="reset"]').addEventListener("click", () => {
+    viz._array = [...DEFAULTS[type]];
+    viz._steps = buildSteps(type, viz._array);
+    viz._index = 0;
     render(viz);
   });
-  viz.querySelector('[data-action="randomize"]').addEventListener("click",()=>{
-    viz._array=randomArray();
-    viz._steps=buildSteps(type,viz._array);
-    viz._index=0;
+
+  viz.querySelector('[data-action="randomize"]').addEventListener("click", () => {
+    viz._array = randomArray();
+    viz._steps = buildSteps(type, viz._array);
+    viz._index = 0;
     render(viz);
   });
 }
 
-document.addEventListener("DOMContentLoaded",()=>{
-  document.querySelectorAll(".visualizer").forEach(initVisualizer);
-
-  document.querySelectorAll(".reveal").forEach(btn=>{
-    btn.addEventListener("click",()=>{
-      const box=document.getElementById(btn.dataset.target);
+function initRevealButtons() {
+  document.querySelectorAll(".reveal").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const box = document.getElementById(btn.dataset.target);
+      if (!box) return;
       box.classList.toggle("show");
-      btn.textContent=box.classList.contains("show") ? "Hide answer" : "Show answer";
+      btn.textContent = box.classList.contains("show") ? "Скрыть ответ" : "Показать ответ";
+      btn.setAttribute("aria-expanded", box.classList.contains("show") ? "true" : "false");
     });
   });
+}
 
-  const links=[...document.querySelectorAll(".sidebar a")];
-  const sections=links.map(a=>document.querySelector(a.getAttribute("href"))).filter(Boolean);
-  const observer=new IntersectionObserver(entries=>{
-    entries.forEach(entry=>{
-      if(entry.isIntersecting){
-        links.forEach(a=>a.style.cssText="");
-        const active=links.find(a=>a.getAttribute("href")==="#"+entry.target.id);
-        if(active) active.style.cssText="background:#ecefe5;color:#17202a;font-weight:750";
-      }
-    });
-  },{rootMargin:"-25% 0px -65% 0px",threshold:0});
-  sections.forEach(s=>observer.observe(s));
+function initSidebar() {
+  const links = [...document.querySelectorAll(".sidebar a")];
+  if (!links.length) return;
+
+  const sections = links
+    .map(a => document.querySelector(a.getAttribute("href")))
+    .filter(Boolean);
+
+  const observer = new IntersectionObserver(entries => {
+    const visible = entries
+      .filter(entry => entry.isIntersecting)
+      .sort((a,b) => b.intersectionRatio - a.intersectionRatio)[0];
+
+    if (!visible) return;
+
+    links.forEach(a => a.classList.remove("active"));
+    const active = links.find(a => a.getAttribute("href") === `#${visible.target.id}`);
+    if (active) active.classList.add("active");
+  }, {
+    rootMargin:"-20% 0px -65% 0px",
+    threshold:[0, .1, .3, .6]
+  });
+
+  sections.forEach(section => observer.observe(section));
+}
+
+function updateProgress() {
+  const bar = document.getElementById("reading-progress");
+  if (!bar) return;
+
+  const doc = document.documentElement;
+  const scrollable = doc.scrollHeight - window.innerHeight;
+  const ratio = scrollable > 0 ? window.scrollY / scrollable : 0;
+  bar.style.width = `${Math.max(0, Math.min(1, ratio)) * 100}%`;
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  document.querySelectorAll(".visualizer").forEach(initVisualizer);
+  initRevealButtons();
+  initSidebar();
+  updateProgress();
 });
+
+window.addEventListener("scroll", updateProgress, {passive:true});
+window.addEventListener("resize", updateProgress);
