@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Algorithms: From Intuition to Code — a visual, interactive algorithms course by Allan Allemand.">
+  <title>Algorithms | From Intuition to Code</title>
+  <link rel="stylesheet" href="assets/styles.css">
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="index.html"><span class="brand-mark">A</span><span>Algorithms</span></a>
+    <nav class="topnav" aria-label="Primary">
+      <a href="#course">Course</a>
+      <a href="#approach">Approach</a>
+      <a href="sorting.html">Start learning</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="hero-copy">
+        <div class="eyebrow">A visual course by Allan Allemand</div>
+        <h1>Algorithms <span>| From Intuition to Code</span></h1>
+        <p class="hero-lead">
+          Learn the idea first. Then formalize it, prove it, implement it, and solve a problem with it.
+        </p>
+        <div class="hero-actions">
+          <a class="button primary" href="sorting.html">Start with sorting →</a>
+          <a class="button secondary" href="#course">See the course</a>
+        </div>
+        <div class="hero-note">Interactive visualizations · proofs · Python · exercises</div>
+      </div>
+
+      <div class="hero-visual" aria-label="Animated sorting illustration">
+        <div class="hero-array">
+          <div class="hero-cell" style="--h:74%">8</div>
+          <div class="hero-cell accent" style="--h:27%">3</div>
+          <div class="hero-cell" style="--h:56%">6</div>
+          <div class="hero-cell accent2" style="--h:18%">2</div>
+          <div class="hero-cell" style="--h:65%">7</div>
+          <div class="hero-cell accent" style="--h:10%">1</div>
+          <div class="hero-cell" style="--h:46%">5</div>
+          <div class="hero-cell accent2" style="--h:36%">4</div>
+        </div>
+        <div class="hero-arrow">↓</div>
+        <div class="sorted-strip">
+          <span>1</span><span>2</span><span>3</span><span>4</span>
+          <span>5</span><span>6</span><span>7</span><span>8</span>
+        </div>
+      </div>
+    </section>
+
+    <section id="approach" class="section">
+      <div class="section-kicker">How this course works</div>
+      <h2>One idea, seen from five angles</h2>
+      <p class="section-intro">Each chapter is built as a path from a picture in your head to a solution you can defend and implement.</p>
+
+      <div class="feature-grid">
+        <article class="feature-card">
+          <div class="feature-icon">◎</div>
+          <h3>See it</h3>
+          <p>Animations and diagrams show what changes at every step.</p>
+        </article>
+        <article class="feature-card">
+          <div class="feature-icon">∑</div>
+          <h3>Formalize it</h3>
+          <p>Definitions, invariants, asymptotic bounds, and clean pseudocode.</p>
+        </article>
+        <article class="feature-card">
+          <div class="feature-icon">✓</div>
+          <h3>Prove it</h3>
+          <p>Short correctness arguments that explain why the algorithm must work.</p>
+        </article>
+        <article class="feature-card">
+          <div class="feature-icon">&lt;/&gt;</div>
+          <h3>Code it</h3>
+          <p>Readable Python with the important lines explained.</p>
+        </article>
+        <article class="feature-card">
+          <div class="feature-icon">?</div>
+          <h3>Think with it</h3>
+          <p>Questions and exercises before the answer is revealed.</p>
+        </article>
+      </div>
+    </section>
+
+    <section id="course" class="section course-section">
+      <div class="section-kicker">Course map</div>
+      <h2>Build the toolbox in layers</h2>
+
+      <div class="course-grid">
+        <a class="course-card live" href="sorting.html">
+          <div class="course-number">01</div>
+          <div>
+            <div class="course-status">available</div>
+            <h3>Sorting</h3>
+            <p>Insertion sort, merge sort, quicksort, stability, lower bounds.</p>
+            <div class="tags"><span>visual</span><span>proofs</span><span>Python</span></div>
+          </div>
+        </a>
+        <article class="course-card">
+          <div class="course-number">02</div><div><div class="course-status muted">planned</div><h3>Binary Search</h3><p>Searching on arrays and on the answer.</p></div>
+        </article>
+        <article class="course-card">
+          <div class="course-number">03</div><div><div class="course-status muted">planned</div><h3>Two Pointers</h3><p>Monotonic movement, windows, and pair problems.</p></div>
+        </article>
+        <article class="course-card">
+          <div class="course-number">04</div><div><div class="course-status muted">planned</div><h3>Prefix Sums</h3><p>Turn repeated range work into constant-time queries.</p></div>
+        </article>
+        <article class="course-card">
+          <div class="course-number">05</div><div><div class="course-status muted">planned</div><h3>Hashing</h3><p>Fast lookup, collisions, and frequency patterns.</p></div>
+        </article>
+        <article class="course-card">
+          <div class="course-number">06</div><div><div class="course-status muted">planned</div><h3>Stacks & Queues</h3><p>Order restrictions that simplify hard-looking tasks.</p></div>
+        </article>
+        <article class="course-card">
+          <div class="course-number">07</div><div><div class="course-status muted">planned</div><h3>Trees & Heaps</h3><p>Hierarchy, recursion, priority, and logarithmic operations.</p></div>
+        </article>
+        <article class="course-card">
+          <div class="course-number">08</div><div><div class="course-status muted">planned</div><h3>Graphs</h3><p>BFS, DFS, components, shortest paths, and DAGs.</p></div>
+        </article>
+        <article class="course-card">
+          <div class="course-number">09</div><div><div class="course-status muted">planned</div><h3>Disjoint Set Union</h3><p>Connectivity with path compression and union by rank.</p></div>
+        </article>
+        <article class="course-card">
+          <div class="course-number">10</div><div><div class="course-status muted">planned</div><h3>Greedy Algorithms</h3><p>Local choices, exchange arguments, and when greed fails.</p></div>
+        </article>
+        <article class="course-card">
+          <div class="course-number">11</div><div><div class="course-status muted">planned</div><h3>Dynamic Programming</h3><p>States, transitions, reconstruction, and optimization.</p></div>
+        </article>
+        <article class="course-card">
+          <div class="course-number">12</div><div><div class="course-status muted">planned</div><h3>Strings</h3><p>Prefix function, Z-function, hashing, and pattern matching.</p></div>
+        </article>
+      </div>
+    </section>
+
+    <section class="section manifesto">
+      <div>
+        <div class="section-kicker">Algorithmic thinking</div>
+        <h2>Do not memorize the code.</h2>
+      </div>
+      <div class="manifesto-copy">
+        <p>Ask what information is preserved, what progress is guaranteed, and where the complexity comes from.</p>
+        <p>If you can answer those three questions, the implementation becomes the easy part.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div>Algorithms | From Intuition to Code</div>
+    <div>© 2026 Allan Allemand</div>
+  </footer>
+</body>
+</html>
