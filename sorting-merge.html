@@ -101,6 +101,162 @@
     .complexity-explanation-card,
     .tradeoff-callout { grid-template-columns:1fr; }
   }
+
+  .merge-runtime-explanation {
+    margin-bottom:18px; padding:18px 20px;
+    border:1px solid #e4e1db; border-radius:14px; background:#faf9f6;
+  }
+  .merge-runtime-explanation p { margin:0 0 11px; color:#59646d; }
+  .merge-runtime-explanation p:last-of-type { margin-bottom:0; }
+  .merge-runtime-flow {
+    display:flex; justify-content:center; align-items:center; gap:10px;
+    flex-wrap:wrap; margin-top:18px; padding:14px;
+    border-radius:11px; background:#fff;
+  }
+  .merge-runtime-flow span {
+    padding:7px 11px; border-radius:8px; background:#eef3e5;
+    font-size:13px; font-weight:750;
+  }
+  .merge-runtime-flow strong { color:#929aa1; }
+
+  .merge-key-observation {
+    display:grid; grid-template-columns:54px 1fr; gap:18px;
+    margin:28px 0; padding:24px 26px;
+    border:1px solid #ddd8f0; border-left:4px solid var(--purple);
+    border-radius:16px; background:#f6f4fc;
+  }
+  .merge-key-observation-icon {
+    width:46px; height:46px; display:grid; place-items:center;
+    border-radius:50%; background:var(--purple); color:#fff;
+    font:700 23px Georgia,serif;
+  }
+  .merge-key-observation h3 { margin:1px 0 7px; }
+  .merge-key-observation p { margin:0 0 9px; color:#59646d; }
+  .merge-key-observation p:last-child { margin-bottom:0; }
+
+  .merge-correctness-example {
+    display:grid; grid-template-columns:1fr 1fr; gap:14px;
+    margin:26px 0; padding:22px;
+    border:1px solid var(--line); border-radius:17px; background:#fff;
+  }
+  .merge-correctness-side { min-width:0; }
+  .merge-correctness-label {
+    display:block; margin-bottom:8px; color:#7a838b;
+    font-size:10px; font-weight:800; letter-spacing:.08em; text-transform:uppercase;
+  }
+  .merge-proof-candidate { background:var(--purple)!important; color:#fff; }
+  .merge-proof-candidate.second { background:var(--orange)!important; }
+  .merge-proof-conclusion {
+    grid-column:1 / -1; padding:13px 15px; border-radius:10px;
+    background:#edf5df; color:#55752f; text-align:center; font-weight:750;
+  }
+
+  .merge-proof-steps { display:grid; gap:13px; margin-top:30px; }
+  .merge-proof-step {
+    display:grid; grid-template-columns:46px 1fr; gap:15px;
+    padding:20px 22px; border:1px solid var(--line);
+    border-radius:15px; background:#fff;
+  }
+  .merge-proof-number {
+    width:38px; height:38px; display:grid; place-items:center;
+    border-radius:50%; background:var(--ink); color:#fff;
+    font-family:Georgia,serif; font-weight:800;
+  }
+  .merge-proof-step h3 { margin:1px 0 7px; font-size:18px; }
+  .merge-proof-step p { margin:0 0 9px; color:#59646d; }
+  .merge-proof-step p:last-child { margin-bottom:0; }
+
+  .complexity-definition-card {
+    display:grid; grid-template-columns:90px 1fr; gap:20px;
+    margin:28px 0; padding:25px;
+    border:1px solid #dce3d1; border-radius:18px; background:#f6f8f2;
+  }
+  .complexity-definition-symbol {
+    width:78px; height:78px; display:grid; place-items:center;
+    border-radius:18px; background:var(--ink); color:#fff;
+    font:italic 25px Georgia,serif;
+  }
+  .complexity-definition-card h3 { margin:0 0 7px; }
+  .complexity-definition-card p { margin:0 0 10px; color:#59646d; }
+  .complexity-definition-card ol { margin:10px 0 0 20px; color:#59646d; }
+
+  .recurrence-derivation {
+    margin:30px 0; padding:24px;
+    border:1px solid var(--line); border-radius:18px; background:#fff;
+  }
+  .recurrence-derivation > h3 { margin:0 0 17px; }
+  .recurrence-parts {
+    display:grid; grid-template-columns:1fr auto 1fr auto 1fr;
+    gap:10px; align-items:center;
+  }
+  .recurrence-part {
+    padding:15px; border-radius:12px; background:#eef3e5; text-align:center;
+  }
+  .recurrence-part.merge-work { background:#fff0dc; }
+  .recurrence-part span {
+    display:block; margin-bottom:5px; color:#7a838b;
+    font-size:10px; font-weight:800; text-transform:uppercase; letter-spacing:.06em;
+  }
+  .recurrence-part strong { font:700 19px Georgia,serif; }
+  .recurrence-plus { color:#9aa2a9; font-size:22px; text-align:center; }
+  .recurrence-derivation > p { color:#59646d; }
+
+  .log-derivation-card {
+    margin:32px 0; padding:25px;
+    border:1px solid #ddd8f0; border-radius:18px; background:#f8f6fd;
+  }
+  .log-derivation-card h3 { margin:0 0 10px; }
+  .log-derivation-card p { color:#59646d; }
+  .halving-chain {
+    display:flex; justify-content:center; align-items:center; gap:9px;
+    flex-wrap:wrap; margin:20px 0; padding:16px;
+    border-radius:12px; background:#fff;
+  }
+  .halving-chain span {
+    padding:7px 10px; border-radius:8px; background:#ede9fa;
+    font-family:Georgia,serif; font-weight:700;
+  }
+  .halving-chain strong { color:#9aa2a9; }
+
+  .merge-final-complexity {
+    display:grid; grid-template-columns:1fr auto 1fr auto 1.2fr;
+    gap:12px; align-items:center;
+    margin:32px 0; padding:22px;
+    border-radius:18px; background:var(--ink); color:#fff;
+  }
+  .merge-final-complexity-line,
+  .merge-final-complexity-result { text-align:center; }
+  .merge-final-complexity-line span,
+  .merge-final-complexity-result span {
+    display:block; margin-bottom:4px; color:#bac2c9;
+    font-size:10px; font-weight:800; text-transform:uppercase; letter-spacing:.06em;
+  }
+  .merge-final-complexity-line strong {
+    font:700 21px Georgia,serif;
+  }
+  .merge-final-complexity-result {
+    padding:14px; border-radius:12px; background:#c7e77e; color:#253017;
+  }
+  .merge-final-complexity-result span { color:#536637; }
+  .merge-final-complexity-result strong {
+    font:700 23px Georgia,serif;
+  }
+  .merge-final-complexity-times,
+  .merge-final-complexity-equals {
+    color:#89939b; font-size:24px; text-align:center;
+  }
+
+  @media (max-width:760px) {
+    .merge-correctness-example { grid-template-columns:1fr; }
+    .merge-proof-conclusion { grid-column:auto; }
+    .complexity-definition-card { grid-template-columns:1fr; }
+    .recurrence-parts { grid-template-columns:1fr; }
+    .recurrence-plus { transform:rotate(90deg); }
+    .merge-final-complexity { grid-template-columns:1fr; }
+    .merge-final-complexity-times,
+    .merge-final-complexity-equals { transform:rotate(90deg); }
+  }
+
 </style>
 
 </head>
@@ -300,50 +456,145 @@
 
       <div class="merge-metrics-block">
         <h3>Running time of merge</h3>
+
+        <div class="merge-runtime-explanation">
+          <p>
+            Suppose the left sequence contains <span class="math">p</span> elements and the right sequence
+            contains <span class="math">q</span> elements. The merged output therefore contains exactly
+            <span class="math">p + q</span> elements.
+          </p>
+
+          <p>
+            During each step, the algorithm compares the first unused elements of the two sequences
+            and permanently moves one of them to the output. No element ever moves back.
+            Hence every input element is processed exactly once.
+          </p>
+
+          <div class="merge-runtime-flow" aria-label="Each merge step moves one element to the output">
+            <span>p elements</span>
+            <strong>+</strong>
+            <span>q elements</span>
+            <strong>→</strong>
+            <span>p + q output positions</span>
+          </div>
+        </div>
+
         <div class="merge-metric-grid">
           <article class="merge-metric-card">
-            <span class="merge-metric-label">Running time</span>
+            <span class="merge-metric-label">Total work</span>
             <strong>Θ(p + q)</strong>
-            <p>Every element from the two input sequences is copied to the result exactly once.</p>
+            <p>
+              There are <span class="math">p + q</span> elements altogether, and each is copied to the
+              output exactly once.
+            </p>
           </article>
+
           <article class="merge-metric-card">
             <span class="merge-metric-label">Maximum comparisons</span>
             <strong>p + q − 1</strong>
-            <p>Once one sequence is empty, the remainder of the other is appended without further comparisons.</p>
+            <p>
+              Comparisons continue only while both sequences are nonempty. In the worst case, one sequence
+              becomes empty only after <span class="math">p + q − 1</span> elements have already been chosen.
+              The final remaining element is then appended without another comparison.
+            </p>
           </article>
         </div>
       </div>
     </section>
 
     <section id="merge-correctness" class="lecture-section">
-      <h2>Why merge works</h2>
+      <h2>Why merge is correct</h2>
 
-      <div class="two-column-block">
-        <div class="text-panel">
-          <h3>Loop invariant</h3>
+      <div class="merge-key-observation">
+        <div class="merge-key-observation-icon">!</div>
+        <div>
+          <h3>The key observation</h3>
           <p>
-            Before each step, the output contains the smallest elements from the two input sequences
-            that have already been processed, in sorted order.
+            Each input sequence is already sorted. Therefore its first unused element is the smallest element
+            that still remains in that sequence.
           </p>
           <p>
-            The first unused element of each input is the smallest remaining element of that input.
+            So if the current candidates are <span class="math">x</span> from the left sequence and
+            <span class="math">y</span> from the right sequence, the smallest element remaining anywhere
+            in the two inputs must be <span class="math">min(x, y)</span>.
           </p>
         </div>
+      </div>
 
-        <div class="proof-panel">
-          <h3>Correctness</h3>
-          <p>
-            <strong>Initialization.</strong> The output is initially empty, so the invariant holds.
-          </p>
-          <p>
-            <strong>Maintenance.</strong> The next output value is chosen as the smaller of the two first unused values.
-            No unprocessed element can be smaller than it, because both input sequences are sorted.
-          </p>
-          <p>
-            <strong>Termination.</strong> Once one input is exhausted, every element remaining in the other input
-            is already larger than or equal to the last value written. Appending the remainder preserves sorted order.
-          </p>
+      <div class="merge-correctness-example">
+        <div class="merge-correctness-side">
+          <span class="merge-correctness-label">Left</span>
+          <div class="mini-sequence">
+            <span class="merge-proof-candidate">4</span><span>7</span><span>9</span>
+          </div>
         </div>
+
+        <div class="merge-correctness-side">
+          <span class="merge-correctness-label">Right</span>
+          <div class="mini-sequence">
+            <span class="merge-proof-candidate second">5</span><span>6</span><span>12</span>
+          </div>
+        </div>
+
+        <div class="merge-proof-conclusion">
+          <span>4 is the smallest element remaining in either sequence</span>
+        </div>
+      </div>
+
+      <div class="merge-proof-steps">
+        <article class="merge-proof-step">
+          <span class="merge-proof-number">1</span>
+          <div>
+            <h3>Invariant</h3>
+            <p>
+              Before every step, the output contains exactly the smallest elements that have already been removed
+              from the two input sequences, and these elements appear in sorted order.
+            </p>
+          </div>
+        </article>
+
+        <article class="merge-proof-step">
+          <span class="merge-proof-number">2</span>
+          <div>
+            <h3>Initialization</h3>
+            <p>
+              Before the first step, the output is empty. An empty sequence is sorted, so the invariant holds.
+            </p>
+          </div>
+        </article>
+
+        <article class="merge-proof-step">
+          <span class="merge-proof-number">3</span>
+          <div>
+            <h3>Maintenance</h3>
+            <p>
+              Let <span class="math">x</span> and <span class="math">y</span> be the first unused elements
+              of the left and right sequences. Because both sequences are sorted, no later element in the left
+              sequence is smaller than <span class="math">x</span>, and no later element in the right sequence
+              is smaller than <span class="math">y</span>.
+            </p>
+            <p>
+              Therefore the smaller of <span class="math">x</span> and <span class="math">y</span> is the smallest
+              element remaining anywhere in the two inputs. Appending it to the output preserves sorted order
+              and adds exactly the next element that belongs there.
+            </p>
+          </div>
+        </article>
+
+        <article class="merge-proof-step">
+          <span class="merge-proof-number">4</span>
+          <div>
+            <h3>Termination</h3>
+            <p>
+              Eventually one input sequence becomes empty. Every remaining element of the other sequence is
+              already sorted and is at least as large as the last element written to the output.
+            </p>
+            <p>
+              We can therefore append the entire remainder. The output then contains every input element
+              exactly once and is sorted. Hence merge is correct.
+            </p>
+          </div>
+        </article>
       </div>
     </section>
 
@@ -523,14 +774,71 @@
     <section id="complexity" class="lecture-section">
       <h2>Complexity</h2>
 
+      <div class="complexity-definition-card">
+        <div class="complexity-definition-symbol">T(n)</div>
+        <div>
+          <h3>What does T(n) mean?</h3>
+          <p>
+            Let <span class="math">T(n)</span> denote the running time of Merge Sort on an array of
+            <span class="math">n</span> elements.
+          </p>
+          <p>
+            For an array of length <span class="math">n</span>, Merge Sort performs three pieces of work:
+          </p>
+          <ol>
+            <li>sort the left half of size approximately <span class="math">n / 2</span>;</li>
+            <li>sort the right half of size approximately <span class="math">n / 2</span>;</li>
+            <li>merge the two sorted halves in <span class="math">Θ(n)</span> time.</li>
+          </ol>
+        </div>
+      </div>
+
+      <div class="recurrence-derivation">
+        <h3>Where the recurrence comes from</h3>
+
+        <div class="recurrence-parts">
+          <div class="recurrence-part">
+            <span>left half</span>
+            <strong>T(n / 2)</strong>
+          </div>
+          <div class="recurrence-plus">+</div>
+          <div class="recurrence-part">
+            <span>right half</span>
+            <strong>T(n / 2)</strong>
+          </div>
+          <div class="recurrence-plus">+</div>
+          <div class="recurrence-part merge-work">
+            <span>merge</span>
+            <strong>Θ(n)</strong>
+          </div>
+        </div>
+
+        <div class="formula-line">
+          T(n) = 2T(n / 2) + Θ(n)
+        </div>
+
+        <p>
+          The factor <span class="math">2</span> appears because there are two recursive calls,
+          one for each half. The term <span class="math">Θ(n)</span> is the cost of merging the two
+          sorted halves.
+        </p>
+      </div>
+
       <div class="complexity-explanation-card">
         <div class="complexity-card-mark">Σ</div>
         <div>
           <h3>Work at one level of recursion</h3>
           <p>
-            At any fixed level of the recursion tree, the subarrays are disjoint and together contain all
-            <span class="math">n</span> elements. Merging all subarrays on that level therefore takes
-            <span class="math">Θ(n)</span> total time.
+            At a fixed level of the recursion tree, all subarrays are disjoint but together still contain
+            exactly <span class="math">n</span> elements.
+          </p>
+          <p>
+            For example, one level may contain two arrays of size <span class="math">n / 2</span>,
+            the next four arrays of size <span class="math">n / 4</span>, and so on. The total number
+            of elements merged on each level is always <span class="math">n</span>.
+          </p>
+          <p>
+            Therefore every level costs <span class="math">Θ(n)</span> total time.
           </p>
         </div>
       </div>
@@ -571,17 +879,63 @@
         </div>
       </div>
 
-      <div class="complexity-explanation-card levels-card">
-        <div class="complexity-card-mark">½</div>
-        <div>
-          <h3>Number of levels</h3>
-          <p>
-            Each recursive step halves the size of the subproblem. Starting from
-            <span class="math">n</span>, after about <span class="math">log₂ n</span> halvings
-            the subproblem size reaches one.
-          </p>
-          <div class="formula-line">T(n) = 2T(n / 2) + Θ(n)</div>
-          <div class="formula-line">Θ(n) per level × Θ(log n) levels = Θ(n log n)</div>
+      <div class="log-derivation-card">
+        <h3>Why are there log₂ n levels?</h3>
+
+        <p>
+          Every recursive step divides the subproblem size by 2:
+        </p>
+
+        <div class="halving-chain">
+          <span>n</span>
+          <strong>→</strong>
+          <span>n / 2</span>
+          <strong>→</strong>
+          <span>n / 4</span>
+          <strong>→</strong>
+          <span>n / 8</span>
+          <strong>→</strong>
+          <span>···</span>
+          <strong>→</strong>
+          <span>1</span>
+        </div>
+
+        <p>
+          After <span class="math">k</span> halvings, the subproblem size is
+          <span class="math">n / 2<sup>k</sup></span>. Recursion stops when this size reaches 1:
+        </p>
+
+        <div class="formula-line">
+          n / 2<sup>k</sup> = 1
+        </div>
+
+        <div class="formula-line">
+          2<sup>k</sup> = n
+        </div>
+
+        <div class="formula-line">
+          k = log₂ n
+        </div>
+
+        <p>
+          Thus the recursion tree has <span class="math">Θ(log n)</span> levels.
+        </p>
+      </div>
+
+      <div class="merge-final-complexity">
+        <div class="merge-final-complexity-line">
+          <span>work per level</span>
+          <strong>Θ(n)</strong>
+        </div>
+        <div class="merge-final-complexity-times">×</div>
+        <div class="merge-final-complexity-line">
+          <span>number of levels</span>
+          <strong>Θ(log n)</strong>
+        </div>
+        <div class="merge-final-complexity-equals">=</div>
+        <div class="merge-final-complexity-result">
+          <span>total running time</span>
+          <strong>Θ(n log n)</strong>
         </div>
       </div>
 
