@@ -41,7 +41,7 @@
       <div class="chapter-label">Chapter 1</div>
       <h1>Sorting</h1>
       <p class="chapter-topics">
-        Bubble Sort · Selection Sort · Insertion Sort · Merge Sort · Quick Sort · Counting Sort · Radix Sort
+        The Sorting Problem. Selection Sort. Insertion Sort.
       </p>
     </section>
 
@@ -77,13 +77,12 @@
       <div class="definition-card">
         <h3>Definition</h3>
         <p>
-          Sorting is the problem of rearranging the elements of a sequence into a specified order.
-          The output must contain exactly the same elements as the input, including repeated elements,
-          but their positions are changed so that the required ordering condition is satisfied.
+          Sorting is the process of arranging a set of elements or data according to a specified rule
+          or property, for example in ascending order, descending order, alphabetical order, or by date.
         </p>
         <p>
-          In this chapter we will usually sort numbers in nondecreasing order, although the same ideas apply
-          to decreasing order and to objects ordered by a chosen attribute.
+          A sorting algorithm is a step-by-step procedure for placing the elements of an array or list
+          in the required order. Common examples include Bubble Sort, Selection Sort, and Merge Sort.
         </p>
       </div>
 
@@ -106,28 +105,20 @@
           <p>Equal elements are grouped, extrema are immediate, and binary search becomes possible.</p>
         </div>
       </div>
-
-      <div class="analysis-principles">
-        <h3>For each sorting algorithm we will study three questions:</h3>
-        <ol class="question-list">
-          <li><span>1</span><p>Is the algorithm correct?</p></li>
-          <li><span>2</span><p>How many operations does it perform?</p></li>
-          <li><span>3</span><p>How much additional memory does it use?</p></li>
-        </ol>
-        <p class="principles-note">
-          These questions are independent. A correct algorithm may be too slow, while a fast algorithm may require
-          too much memory.
-        </p>
-      </div>
     </section>
 
     <section id="selection" class="lecture-section">
       <h2>Selection Sort</h2>
       <p class="lead">
-        At step <span class="math">i</span>, the element placed in position
-        <span class="math">i</span> should be the smallest element among
-        <span class="math">a<sub>i</sub>, a<sub>i+1</sub>, …, a<sub>n−1</sub></span>.
-        Therefore we find the minimum of the unsorted suffix and move it to position <span class="math">i</span>.
+        Selection Sort fills the array from left to right. First, it finds the smallest element in the whole array
+        and puts it in the first position. Then it finds the smallest element among those that remain and puts it
+        in the second position. The same operation is repeated until the array is sorted.
+      </p>
+      <p class="lead compact-lead">
+        More precisely, at step <span class="math">i</span> the positions before <span class="math">i</span>
+        are already fixed. The algorithm searches for the smallest element among
+        <span class="math">a<sub>i</sub>, a<sub>i+1</sub>, …, a<sub>n−1</sub></span>
+        and moves it to position <span class="math">i</span>.
       </p>
 
       <div class="step-flow" aria-label="Selection Sort steps">
@@ -135,28 +126,28 @@
           <div class="step-number">1</div>
           <div>
             <h3>Choose the unsorted part</h3>
-            <p>The first <span class="math">i</span> positions are already fixed.</p>
+            <p>The positions already filled on the left will no longer change.</p>
           </div>
         </article>
         <article class="step-item">
           <div class="step-number">2</div>
           <div>
             <h3>Find the minimum</h3>
-            <p>Scan the remaining elements and remember the position of the smallest one.</p>
+            <p>Look through the remaining elements and keep track of the smallest value found.</p>
           </div>
         </article>
         <article class="step-item">
           <div class="step-number">3</div>
           <div>
             <h3>Place it</h3>
-            <p>Swap that minimum with the first element of the unsorted part.</p>
+            <p>Move the smallest value found into the first free position.</p>
           </div>
         </article>
         <article class="step-item">
           <div class="step-number">4</div>
           <div>
             <h3>Continue</h3>
-            <p>The sorted prefix grows by one position.</p>
+            <p>One more position is now correct; repeat the same procedure for the rest.</p>
           </div>
         </article>
       </div>
@@ -165,8 +156,9 @@
         <div class="text-panel">
           <h3>Loop invariant</h3>
           <p>
-            Before iteration <span class="math">i</span>, the first <span class="math">i</span> positions contain
-            the <span class="math">i</span> smallest elements of the original array, in nondecreasing order.
+            After the first <span class="math">i</span> positions have been filled, they contain the
+            <span class="math">i</span> smallest elements of the array in sorted order.
+            The next scan finds the smallest element that is still left and places it immediately after them.
           </p>
 
           <div class="array-state">
@@ -182,14 +174,14 @@
 
         <div class="proof-panel">
           <h3>Correctness</h3>
-          <p><strong>Initialization.</strong> Before the first iteration, the sorted prefix is empty.</p>
+          <p><strong>Initialization.</strong> At the beginning, no position has been filled yet.</p>
           <p>
-            <strong>Maintenance.</strong> The minimum of the remaining suffix is placed immediately after the sorted
-            prefix. Hence the enlarged prefix contains exactly the next smallest element and remains sorted.
+            <strong>Maintenance.</strong> At each step, the smallest element that has not yet been placed is moved
+            into the first free position. Therefore the sorted part remains correct and grows by one element.
           </p>
           <p>
-            <strong>Termination.</strong> After <span class="math">n−1</span> iterations, the first
-            <span class="math">n−1</span> positions are final; the remaining element must occupy the last position.
+            <strong>Termination.</strong> Once all but one positions have been filled, the only remaining element
+            must belong in the last position. The entire array is then sorted.
           </p>
         </div>
       </div>
@@ -222,21 +214,21 @@
         <div class="annotated-code">
           <div class="code-row"><span class="line-no">1</span><code>def selection_sort(a):</code></div>
           <div class="code-row"><span class="line-no">2</span><code>    n = len(a)</code></div>
-          <div class="code-row marked" data-note="1"><span class="line-no">3</span><code>    for i in range(n - 1):</code><span class="note-marker">1</span></div>
-          <div class="code-row marked" data-note="2"><span class="line-no">4</span><code>        min_pos = i</code><span class="note-marker">2</span></div>
-          <div class="code-row marked group-start" data-note="3"><span class="line-no">5</span><code>        for j in range(i + 1, n):</code><span class="note-marker">3</span></div>
-          <div class="code-row marked" data-note="3"><span class="line-no">6</span><code>            if a[j] &lt; a[min_pos]:</code></div>
-          <div class="code-row marked group-end" data-note="3"><span class="line-no">7</span><code>                min_pos = j</code></div>
-          <div class="code-row marked" data-note="4"><span class="line-no">8</span><code>        a[i], a[min_pos] = a[min_pos], a[i]</code><span class="note-marker">4</span></div>
+          <div class="code-row marked" data-note="3"><span class="line-no">3</span><code>    for i in range(n - 1):</code><span class="note-marker">3</span></div>
+          <div class="code-row marked" data-note="4"><span class="line-no">4</span><code>        min_pos = i</code><span class="note-marker">4</span></div>
+          <div class="code-row marked group-start" data-note="5-7"><span class="line-no">5</span><code>        for j in range(i + 1, n):</code><span class="note-marker wide-marker">5–7</span></div>
+          <div class="code-row marked" data-note="5-7"><span class="line-no">6</span><code>            if a[j] &lt; a[min_pos]:</code></div>
+          <div class="code-row marked group-end" data-note="5-7"><span class="line-no">7</span><code>                min_pos = j</code></div>
+          <div class="code-row marked" data-note="8"><span class="line-no">8</span><code>        a[i], a[min_pos] = a[min_pos], a[i]</code><span class="note-marker">8</span></div>
           <div class="code-row"><span class="line-no">9</span><code>    return a</code></div>
         </div>
 
         <div class="code-notes">
           <h3>Implementation</h3>
-          <div class="code-note-item"><span>1</span><p>After iteration <span class="math">i</span>, position <span class="math">i</span> becomes final.</p></div>
-          <div class="code-note-item"><span>2</span><p>Initially, the first element of the suffix is treated as its minimum.</p></div>
-          <div class="code-note-item"><span>3</span><p>The entire unsorted suffix is scanned to find the true minimum.</p></div>
-          <div class="code-note-item"><span>4</span><p>A single swap extends the sorted prefix by one element.</p></div>
+          <div class="code-note-item"><span>3</span><p><strong>Line 3.</strong> We fill the array from left to right. During this pass, the algorithm decides which value belongs in position <span class="math">i</span>.</p></div>
+          <div class="code-note-item"><span>4</span><p><strong>Line 4.</strong> We begin by treating the value already in position <span class="math">i</span> as the smallest value in the remaining part.</p></div>
+          <div class="code-note-item wide-note"><span>5–7</span><p><strong>Lines 5–7.</strong> We inspect every later element. Whenever a smaller value is found, we remember its position.</p></div>
+          <div class="code-note-item"><span>8</span><p><strong>Line 8.</strong> After the scan, the smallest value found is moved into position <span class="math">i</span>. The sorted part of the array has grown by one element.</p></div>
         </div>
       </div>
 
@@ -298,16 +290,17 @@
     <section id="insertion" class="lecture-section">
       <h2>Insertion Sort</h2>
       <p class="lead">
-        Instead of repeatedly selecting the next minimum, Insertion Sort maintains a sorted prefix and inserts
-        the next element into its correct position inside that prefix.
+        Insertion Sort also processes the array from left to right, but it uses a different idea.
+        The left part of the array is kept sorted. The next element is taken from the unsorted part and inserted
+        into the correct place among the elements that have already been processed.
       </p>
 
       <div class="two-column-block">
         <div class="text-panel">
           <h3>Loop invariant</h3>
           <p>
-            Before iteration <span class="math">i</span>, the first <span class="math">i</span> elements are sorted
-            and contain exactly the elements that originally occupied those first <span class="math">i</span> positions.
+            Before step <span class="math">i</span>, the elements to the left of position <span class="math">i</span>
+            are already sorted. The current element is then inserted into the correct place inside this sorted part.
           </p>
 
           <div class="array-state">
@@ -323,13 +316,13 @@
 
         <div class="proof-panel">
           <h3>Correctness</h3>
-          <p><strong>Initialization.</strong> A prefix consisting of one element is sorted.</p>
+          <p><strong>Initialization.</strong> The first element alone is already sorted.</p>
           <p>
-            <strong>Maintenance.</strong> Elements larger than the current value are shifted one position to the right.
-            The current value is then inserted after the last element that is not larger than it.
+            <strong>Maintenance.</strong> To insert the next element, every larger element immediately to its left
+            is shifted one position to the right. The new element is placed in the gap that remains.
           </p>
           <p>
-            <strong>Termination.</strong> After the final iteration, the sorted prefix is the entire array.
+            <strong>Termination.</strong> When every element has been inserted, the whole array is sorted.
           </p>
         </div>
       </div>
@@ -360,22 +353,22 @@
       <div class="code-explainer">
         <div class="annotated-code">
           <div class="code-row"><span class="line-no">1</span><code>def insertion_sort(a):</code></div>
-          <div class="code-row marked" data-note="1"><span class="line-no">2</span><code>    for i in range(1, len(a)):</code><span class="note-marker">1</span></div>
-          <div class="code-row marked group-start" data-note="2"><span class="line-no">3</span><code>        key = a[i]</code><span class="note-marker">2</span></div>
-          <div class="code-row marked group-end" data-note="2"><span class="line-no">4</span><code>        j = i - 1</code></div>
-          <div class="code-row marked group-start" data-note="3"><span class="line-no">5</span><code>        while j &gt;= 0 and a[j] &gt; key:</code><span class="note-marker">3</span></div>
-          <div class="code-row marked" data-note="3"><span class="line-no">6</span><code>            a[j + 1] = a[j]</code></div>
-          <div class="code-row marked group-end" data-note="3"><span class="line-no">7</span><code>            j -= 1</code></div>
-          <div class="code-row marked" data-note="4"><span class="line-no">8</span><code>        a[j + 1] = key</code><span class="note-marker">4</span></div>
+          <div class="code-row marked" data-note="2"><span class="line-no">2</span><code>    for i in range(1, len(a)):</code><span class="note-marker">2</span></div>
+          <div class="code-row marked group-start" data-note="3-4"><span class="line-no">3</span><code>        key = a[i]</code><span class="note-marker wide-marker">3–4</span></div>
+          <div class="code-row marked group-end" data-note="3-4"><span class="line-no">4</span><code>        j = i - 1</code></div>
+          <div class="code-row marked group-start" data-note="5-7"><span class="line-no">5</span><code>        while j &gt;= 0 and a[j] &gt; key:</code><span class="note-marker wide-marker">5–7</span></div>
+          <div class="code-row marked" data-note="5-7"><span class="line-no">6</span><code>            a[j + 1] = a[j]</code></div>
+          <div class="code-row marked group-end" data-note="5-7"><span class="line-no">7</span><code>            j -= 1</code></div>
+          <div class="code-row marked" data-note="8"><span class="line-no">8</span><code>        a[j + 1] = key</code><span class="note-marker">8</span></div>
           <div class="code-row"><span class="line-no">9</span><code>    return a</code></div>
         </div>
 
         <div class="code-notes">
           <h3>Implementation</h3>
-          <div class="code-note-item"><span>1</span><p>Position 0 already forms a sorted prefix of length one.</p></div>
-          <div class="code-note-item"><span>2</span><p>Store the element being inserted and begin immediately to its left.</p></div>
-          <div class="code-note-item"><span>3</span><p>Every element larger than the current value is shifted one position to the right.</p></div>
-          <div class="code-note-item"><span>4</span><p>The vacated position is the correct insertion point.</p></div>
+          <div class="code-note-item"><span>2</span><p><strong>Line 2.</strong> The first element is already sorted by itself, so the algorithm starts with the second element and processes the array from left to right.</p></div>
+          <div class="code-note-item wide-note"><span>3–4</span><p><strong>Lines 3–4.</strong> We save the element that must be inserted and start comparing it with the element immediately to its left.</p></div>
+          <div class="code-note-item wide-note"><span>5–7</span><p><strong>Lines 5–7.</strong> While an element on the left is larger, it is shifted one position to the right. This creates space for the element being inserted.</p></div>
+          <div class="code-note-item"><span>8</span><p><strong>Line 8.</strong> When no larger element remains on the left, the saved value is placed into the open position.</p></div>
         </div>
       </div>
 
