@@ -3,25 +3,975 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Merge Sort — Chapter 1, Section 3.">
+  <meta name="description" content="Merge Sort: divide and conquer, merging sorted sequences, correctness, complexity, stability, Python, and interactive examples.">
+  <meta property="og:title" content="Merge Sort | Algorithms">
+  <meta property="og:description" content="Merge Sort with divide and conquer, interactive merging, correctness proofs, complexity analysis, and Python code.">
+  <meta property="og:type" content="article">
   <title>Merge Sort | Algorithms</title>
   <link rel="stylesheet" href="styles.css">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
 </head>
-<body>
+
+<body class="lecture-page">
+  <div class="progress-track" aria-hidden="true"><div class="progress-bar" id="reading-progress"></div></div>
+
   <header class="topbar">
     <a class="brand" href="index.html"><span class="brand-mark">A</span><span>Algorithms</span></a>
     <nav class="topnav" aria-label="Primary navigation">
       <a href="sorting.html">Sorting overview</a>
-      <a href="sorting-bubble.html">Previous section</a>
-      <a href="sorting-quick.html">Next section</a>
+      <a href="#exercises">Exercises</a>
+      <a href="index.html">Home</a>
     </nav>
   </header>
 
-  <main class="placeholder-page">
-    <div class="chapter-label">Chapter 1 · Section 3</div>
-    <h1>Merge Sort</h1>
-    <p>This section will be added next.</p>
+  <aside class="sidebar" aria-label="Section navigation">
+    <div class="sidebar-title">Chapter 1 · Section 3</div>
+    <a href="#divide-conquer">Divide and conquer</a>
+    <a href="#merge-operation">The merge operation</a>
+    <a href="#merge-correctness">Why merge works</a>
+    <a href="#full-algorithm">Merge Sort</a>
+    <a href="#implementation">Implementation</a>
+    <a href="#complexity">Complexity</a>
+    <a href="#properties">Stability and memory</a>
+    <a href="#exercises">Exercises</a>
+  </aside>
+
+  <main class="lecture">
+    <section class="lecture-hero">
+      <div class="chapter-label">Chapter 1 · Section 3</div>
+      <h1>Merge Sort</h1>
+      <p class="chapter-topics">
+        Divide the array, sort the smaller parts recursively, and merge them back together.
+      </p>
+    </section>
+
+    <section id="divide-conquer" class="lecture-section">
+      <h2>Divide and conquer</h2>
+
+      <p class="lead">
+        Merge Sort is our first sorting algorithm based on divide and conquer.
+        Instead of choosing the next element directly, we reduce one large sorting problem
+        to several smaller sorting problems.
+      </p>
+
+      <div class="dc-grid">
+        <article class="dc-card">
+          <div class="dc-number">1</div>
+          <h3>Divide</h3>
+          <p>Split the array into two smaller halves.</p>
+        </article>
+
+        <article class="dc-card">
+          <div class="dc-number">2</div>
+          <h3>Solve recursively</h3>
+          <p>Sort each half by applying the same algorithm.</p>
+        </article>
+
+        <article class="dc-card">
+          <div class="dc-number">3</div>
+          <h3>Combine</h3>
+          <p>Merge the two sorted halves into one sorted array.</p>
+        </article>
+      </div>
+
+      <div class="definition-card">
+        <h3>Base case</h3>
+        <p>
+          An array containing zero or one element is already sorted. Recursion stops when a subarray reaches this size.
+        </p>
+      </div>
+
+      <div class="merge-tree">
+        <div class="merge-tree-row">
+          <span class="merge-tree-array root-array">8 3 6 2 7 1 5 4</span>
+        </div>
+
+        <div class="merge-tree-arrow">split</div>
+
+        <div class="merge-tree-row">
+          <span class="merge-tree-array">8 3 6 2</span>
+          <span class="merge-tree-array">7 1 5 4</span>
+        </div>
+
+        <div class="merge-tree-arrow">split</div>
+
+        <div class="merge-tree-row four">
+          <span class="merge-tree-array small">8 3</span>
+          <span class="merge-tree-array small">6 2</span>
+          <span class="merge-tree-array small">7 1</span>
+          <span class="merge-tree-array small">5 4</span>
+        </div>
+
+        <div class="merge-tree-arrow">split until one element</div>
+
+        <div class="merge-tree-row eight">
+          <span>8</span><span>3</span><span>6</span><span>2</span>
+          <span>7</span><span>1</span><span>5</span><span>4</span>
+        </div>
+      </div>
+
+      <div class="subsection">
+        <h3>Splitting is easy; merging does the real work</h3>
+        <p>
+          Splitting an array into halves is straightforward. The essential step is combining two halves
+          after they have already been sorted. That operation is called <em>merge</em>.
+        </p>
+      </div>
+    </section>
+
+    <section id="merge-operation" class="lecture-section">
+      <h2>The merge operation</h2>
+
+      <p class="lead">
+        Suppose we already have two sorted sequences. To merge them, compare their first unused elements.
+        The smaller of the two must be the next element of the final sorted sequence.
+      </p>
+
+      <div class="merge-rule">
+        <div class="merge-rule-side">
+          <span class="merge-rule-label">Left</span>
+          <div class="mini-sequence"><span>2</span><span>5</span><span>8</span></div>
+        </div>
+
+        <div class="merge-rule-symbol">+</div>
+
+        <div class="merge-rule-side">
+          <span class="merge-rule-label">Right</span>
+          <div class="mini-sequence"><span>1</span><span>3</span><span>7</span></div>
+        </div>
+
+        <div class="merge-rule-symbol">→</div>
+
+        <div class="merge-rule-side result-side">
+          <span class="merge-rule-label">Merged</span>
+          <div class="mini-sequence result-sequence">
+            <span>1</span><span>2</span><span>3</span><span>5</span><span>7</span><span>8</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="merge-pointer-explanation">
+        <h3>Only two candidates matter</h3>
+        <p>
+          Because each input sequence is already sorted, its first unused element is the smallest element still left in that sequence.
+          Therefore the next output value must be the smaller of the two first unused elements.
+        </p>
+      </div>
+
+      <div class="merge-interactive" id="merge-operation-demo">
+        <div class="visualizer-head">
+          <div>
+            <h3>Interactive merge</h3>
+            <p>
+              Press <strong>Next merge step</strong>. Purple and orange mark the two current candidates;
+              green elements have already been written to the result.
+            </p>
+          </div>
+          <button type="button" class="primary-step" data-action="next-merge">Next merge step →</button>
+        </div>
+
+        <div class="merge-demo-board">
+          <div class="merge-demo-group">
+            <span class="merge-demo-title">Left</span>
+            <div class="merge-demo-array" data-role="left"></div>
+          </div>
+
+          <div class="merge-demo-group">
+            <span class="merge-demo-title">Right</span>
+            <div class="merge-demo-array" data-role="right"></div>
+          </div>
+
+          <div class="merge-demo-group output-group">
+            <span class="merge-demo-title">Output</span>
+            <div class="merge-demo-array output-array" data-role="output"></div>
+          </div>
+        </div>
+
+        <div class="legend-row" aria-hidden="true">
+          <span><i class="legend-dot merge-left-dot"></i>candidate from left</span>
+          <span><i class="legend-dot merge-right-dot"></i>candidate from right</span>
+          <span><i class="legend-dot merge-output-dot"></i>already merged</span>
+        </div>
+
+        <div class="step-caption" data-role="merge-caption" aria-live="polite">
+          Compare the first unused elements.
+        </div>
+
+        <div class="secondary-controls">
+          <button type="button" data-action="reset-merge">Reset</button>
+        </div>
+      </div>
+
+      <div class="analysis-card">
+        <h3>Running time of merge</h3>
+        <p>
+          Each element is copied to the result exactly once. If the two input sequences contain
+          <span class="math">p</span> and <span class="math">q</span> elements, merging them takes
+          <span class="math">Θ(p + q)</span> time.
+        </p>
+        <p>
+          At most <span class="math">p + q − 1</span> comparisons between elements are needed.
+        </p>
+      </div>
+    </section>
+
+    <section id="merge-correctness" class="lecture-section">
+      <h2>Why merge works</h2>
+
+      <div class="two-column-block">
+        <div class="text-panel">
+          <h3>Loop invariant</h3>
+          <p>
+            Before each step, the output contains the smallest elements from the two input sequences
+            that have already been processed, in sorted order.
+          </p>
+          <p>
+            The first unused element of each input is the smallest remaining element of that input.
+          </p>
+        </div>
+
+        <div class="proof-panel">
+          <h3>Correctness</h3>
+          <p>
+            <strong>Initialization.</strong> The output is initially empty, so the invariant holds.
+          </p>
+          <p>
+            <strong>Maintenance.</strong> The next output value is chosen as the smaller of the two first unused values.
+            No unprocessed element can be smaller than it, because both input sequences are sorted.
+          </p>
+          <p>
+            <strong>Termination.</strong> Once one input is exhausted, every element remaining in the other input
+            is already larger than or equal to the last value written. Appending the remainder preserves sorted order.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section id="full-algorithm" class="lecture-section">
+      <h2>Merge Sort</h2>
+
+      <p class="lead">
+        Merge Sort applies the merge operation recursively. Each half is sorted first;
+        only then are the two halves merged.
+      </p>
+
+      <div class="algorithm-equation">
+        <span>Merge Sort</span>
+        <strong>=</strong>
+        <span>split</span>
+        <strong>+</strong>
+        <span>sort left half</span>
+        <strong>+</strong>
+        <span>sort right half</span>
+        <strong>+</strong>
+        <span>merge</span>
+      </div>
+
+      <div class="visualizer merge-sort-visualizer" data-algorithm="merge-sort">
+        <div class="visualizer-head">
+          <div>
+            <h3>Interactive example</h3>
+            <p>
+              Press <strong>Next sorting step</strong>. Blue and orange are two sorted halves about to be merged;
+              green is the range produced by the merge.
+            </p>
+          </div>
+          <button type="button" class="primary-step" data-action="next-sort">Next sorting step →</button>
+        </div>
+
+        <div class="bars" aria-label="Merge Sort visualization"></div>
+
+        <div class="legend-row" aria-hidden="true">
+          <span><i class="legend-dot merge-sort-left-dot"></i>sorted left half</span>
+          <span><i class="legend-dot merge-sort-right-dot"></i>sorted right half</span>
+          <span><i class="legend-dot merge-sort-done-dot"></i>newly merged range</span>
+          <span><i class="legend-dot untouched-dot"></i>outside the current merge</span>
+        </div>
+
+        <div class="step-caption" aria-live="polite">Press Next sorting step.</div>
+
+        <div class="secondary-controls">
+          <button type="button" data-action="reset-sort">Reset</button>
+          <button type="button" data-action="randomize-sort">New array</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="implementation" class="lecture-section">
+      <h2>Implementation</h2>
+
+      <p class="lead">
+        It is useful to separate the implementation into two functions:
+        one function merges two sorted sequences, and the other performs the recursive splitting.
+      </p>
+
+      <div class="implementation-block">
+        <h3>1. Merging two sorted sequences</h3>
+
+        <div class="code-explainer merge-code-explainer">
+          <div class="annotated-code">
+            <div class="code-row"><span class="line-no">1</span><code>def merge(left, right):</code></div>
+            <div class="code-row"><span class="line-no">2</span><code>    result = []</code></div>
+            <div class="code-row marked"><span class="line-no">3</span><code>    i = j = 0</code></div>
+            <div class="code-row"><span class="line-no">4</span><code></code></div>
+            <div class="code-row marked"><span class="line-no">5</span><code>    while i &lt; len(left) and j &lt; len(right):</code></div>
+            <div class="code-row marked"><span class="line-no">6</span><code>        if left[i] &lt;= right[j]:</code></div>
+            <div class="code-row marked"><span class="line-no">7</span><code>            result.append(left[i])</code></div>
+            <div class="code-row"><span class="line-no">8</span><code>            i += 1</code></div>
+            <div class="code-row marked"><span class="line-no">9</span><code>        else:</code></div>
+            <div class="code-row marked"><span class="line-no">10</span><code>            result.append(right[j])</code></div>
+            <div class="code-row"><span class="line-no">11</span><code>            j += 1</code></div>
+            <div class="code-row"><span class="line-no">12</span><code></code></div>
+            <div class="code-row marked"><span class="line-no">13</span><code>    result.extend(left[i:])</code></div>
+            <div class="code-row marked"><span class="line-no">14</span><code>    result.extend(right[j:])</code></div>
+            <div class="code-row"><span class="line-no">15</span><code>    return result</code></div>
+          </div>
+
+          <div class="code-notes">
+            <h3>Implementation notes</h3>
+
+            <div class="code-note-item">
+              <span>3</span>
+              <p>
+                <strong>Line 3.</strong> The two indices identify the first unused element in each input sequence.
+              </p>
+            </div>
+
+            <div class="code-note-item wide-note">
+              <span>5–11</span>
+              <p>
+                <strong>Lines 5–11.</strong> While both sequences still contain unused elements,
+                compare the two candidates and append the smaller one.
+              </p>
+            </div>
+
+            <div class="code-note-item wide-note">
+              <span>13–14</span>
+              <p>
+                <strong>Lines 13–14.</strong> Once one sequence is exhausted, the rest of the other sequence
+                can be appended immediately because it is already sorted.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="implementation-block">
+        <h3>2. Recursive sorting</h3>
+
+        <div class="code-explainer merge-code-explainer">
+          <div class="annotated-code">
+            <div class="code-row"><span class="line-no">1</span><code>def merge_sort(a):</code></div>
+            <div class="code-row marked"><span class="line-no">2</span><code>    if len(a) &lt;= 1:</code></div>
+            <div class="code-row marked"><span class="line-no">3</span><code>        return a</code></div>
+            <div class="code-row"><span class="line-no">4</span><code></code></div>
+            <div class="code-row marked"><span class="line-no">5</span><code>    mid = len(a) // 2</code></div>
+            <div class="code-row marked"><span class="line-no">6</span><code>    left = merge_sort(a[:mid])</code></div>
+            <div class="code-row marked"><span class="line-no">7</span><code>    right = merge_sort(a[mid:])</code></div>
+            <div class="code-row"><span class="line-no">8</span><code></code></div>
+            <div class="code-row marked"><span class="line-no">9</span><code>    return merge(left, right)</code></div>
+          </div>
+
+          <div class="code-notes">
+            <h3>Implementation notes</h3>
+
+            <div class="code-note-item wide-note">
+              <span>2–3</span>
+              <p>
+                <strong>Lines 2–3.</strong> Arrays of length zero or one are already sorted; this is the base case.
+              </p>
+            </div>
+
+            <div class="code-note-item">
+              <span>5</span>
+              <p>
+                <strong>Line 5.</strong> Split the array approximately in half.
+              </p>
+            </div>
+
+            <div class="code-note-item wide-note">
+              <span>6–7</span>
+              <p>
+                <strong>Lines 6–7.</strong> Recursively sort both halves. After these calls return,
+                both variables contain sorted sequences.
+              </p>
+            </div>
+
+            <div class="code-note-item">
+              <span>9</span>
+              <p>
+                <strong>Line 9.</strong> Combine the two sorted halves using the merge procedure.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="complexity" class="lecture-section">
+      <h2>Complexity</h2>
+
+      <div class="subsection">
+        <h3>Work at one level of recursion</h3>
+        <p>
+          At any fixed level of the recursion tree, the subarrays are disjoint and together contain all
+          <span class="math">n</span> elements. Merging all subarrays on that level therefore takes
+          <span class="math">Θ(n)</span> total time.
+        </p>
+      </div>
+
+      <div class="recursion-levels">
+        <div class="recursion-level">
+          <span class="level-label">level 0</span>
+          <div class="level-block full">n</div>
+          <b>Θ(n)</b>
+        </div>
+
+        <div class="recursion-level">
+          <span class="level-label">level 1</span>
+          <div class="level-parts">
+            <div class="level-block half">n/2</div>
+            <div class="level-block half">n/2</div>
+          </div>
+          <b>Θ(n)</b>
+        </div>
+
+        <div class="recursion-level">
+          <span class="level-label">level 2</span>
+          <div class="level-parts four-parts">
+            <div class="level-block quarter">n/4</div>
+            <div class="level-block quarter">n/4</div>
+            <div class="level-block quarter">n/4</div>
+            <div class="level-block quarter">n/4</div>
+          </div>
+          <b>Θ(n)</b>
+        </div>
+
+        <div class="recursion-dots">⋮</div>
+
+        <div class="recursion-level bottom-level">
+          <span class="level-label">last level</span>
+          <div class="level-block many">single elements</div>
+          <b>Θ(n)</b>
+        </div>
+      </div>
+
+      <div class="subsection">
+        <h3>Number of levels</h3>
+        <p>
+          Each recursive step halves the size of the subproblem. Starting from
+          <span class="math">n</span>, after about <span class="math">log₂ n</span> halvings
+          the subproblem size reaches one.
+        </p>
+
+        <div class="formula-line">
+          T(n) = 2T(n / 2) + Θ(n)
+        </div>
+
+        <div class="formula-line">
+          Θ(n) per level × Θ(log n) levels = Θ(n log n)
+        </div>
+      </div>
+
+      <div class="complexity-strip">
+        <div><span>Best case</span><b>Θ(n log n)</b><small>same recursion structure</small></div>
+        <div><span>Average case</span><b>Θ(n log n)</b><small>same recursion structure</small></div>
+        <div><span>Worst case</span><b>Θ(n log n)</b><small>guaranteed</small></div>
+        <div><span>Extra memory</span><b>Θ(n)</b><small>array implementation</small></div>
+      </div>
+    </section>
+
+    <section id="properties" class="lecture-section">
+      <h2>Stability and memory</h2>
+
+      <div class="property-grid">
+        <article class="property-card">
+          <h3>Stability</h3>
+          <p>
+            Merge Sort can be stable. In the merge function above, when two values are equal,
+            the element from the left sequence is chosen first because the condition uses
+            <code>&lt;=</code>.
+          </p>
+          <p>
+            Since the left sequence contains elements that appeared earlier in the original array,
+            choosing from the left on ties preserves their relative order.
+          </p>
+        </article>
+
+        <article class="property-card">
+          <h3>Additional memory</h3>
+          <p>
+            The array-based implementation constructs temporary sequences while merging.
+            The total additional storage required at one time is
+            <span class="math">Θ(n)</span>.
+          </p>
+          <p>
+            The recursion stack has depth <span class="math">Θ(log n)</span>, which is smaller than the
+            <span class="math">Θ(n)</span> merge storage.
+          </p>
+        </article>
+      </div>
+
+      <div class="subsection">
+        <h3>A useful trade-off</h3>
+        <p>
+          Compared with the elementary quadratic sorts from the previous sections, Merge Sort guarantees
+          <span class="math">Θ(n log n)</span> running time. The price is additional memory for merging.
+        </p>
+      </div>
+    </section>
+
+    <section id="exercises" class="lecture-section">
+      <h2>Exercises</h2>
+
+      <div class="exercise-list">
+        <article class="exercise">
+          <div class="exercise-num">1</div>
+          <div>
+            <h3>Merge two sequences</h3>
+            <p>
+              Merge <code>[1, 4, 7]</code> and <code>[2, 3, 8]</code> by hand.
+            </p>
+            <button type="button" class="reveal" data-reveal="merge-ex1" aria-expanded="false">Show answer</button>
+            <div id="merge-ex1" class="answer-box" hidden>
+              The merged sequence is <code>[1, 2, 3, 4, 7, 8]</code>.
+              The chosen values are 1, 2, 3, 4, 7, and finally 8.
+            </div>
+          </div>
+        </article>
+
+        <article class="exercise">
+          <div class="exercise-num">2</div>
+          <div>
+            <h3>Recursion depth</h3>
+            <p>
+              If the input contains 16 elements, how many times can the problem size be halved before reaching subarrays of length 1?
+            </p>
+            <button type="button" class="reveal" data-reveal="merge-ex2" aria-expanded="false">Show answer</button>
+            <div id="merge-ex2" class="answer-box" hidden>
+              Four halvings: 16 → 8 → 4 → 2 → 1. Thus the recursion tree has Θ(log₂ 16) = Θ(4) nontrivial splitting levels.
+            </div>
+          </div>
+        </article>
+
+        <article class="exercise">
+          <div class="exercise-num">3</div>
+          <div>
+            <h3>Stability</h3>
+            <p>
+              Why can replacing <code>left[i] &lt;= right[j]</code> with
+              <code>left[i] &lt; right[j]</code> make the implementation unstable?
+            </p>
+            <button type="button" class="reveal" data-reveal="merge-ex3" aria-expanded="false">Show answer</button>
+            <div id="merge-ex3" class="answer-box" hidden>
+              When the values are equal, the strict comparison chooses the element from the right sequence first.
+              That element originally appeared later, so equal elements may reverse their relative order.
+            </div>
+          </div>
+        </article>
+
+        <article class="exercise">
+          <div class="exercise-num">4</div>
+          <div>
+            <h3>Maximum comparisons in one merge</h3>
+            <p>
+              Two sorted sequences have lengths <span class="math">p</span> and <span class="math">q</span>.
+              What is the maximum number of comparisons needed to merge them?
+            </p>
+            <button type="button" class="reveal" data-reveal="merge-ex4" aria-expanded="false">Show answer</button>
+            <div id="merge-ex4" class="answer-box" hidden>
+              At most <span class="math">p + q − 1</span>. In the worst case, neither sequence becomes empty
+              until only one element remains in total; that last element can then be appended without another comparison.
+            </div>
+          </div>
+        </article>
+      </div>
+
+      <div class="next-part">
+        <h3>Next section: Quick Sort</h3>
+        <p>
+          Quick Sort uses the same divide-and-conquer philosophy, but the main organizing step happens before the recursive calls:
+          the array is partitioned around a pivot.
+        </p>
+        <a class="next-part-link" href="sorting-quick.html">Quick Sort →</a>
+      </div>
+
+      <div class="next-part">
+        <h3>Previous section</h3>
+        <p>
+          Return to Bubble Sort.
+        </p>
+        <a class="next-part-link" href="sorting-bubble.html">← Bubble Sort</a>
+      </div>
+
+      <div class="next-part">
+        <h3>Back to the chapter</h3>
+        <p>
+          Return to the Sorting overview.
+        </p>
+        <a class="next-part-link" href="sorting.html">Sorting overview →</a>
+      </div>
+    </section>
   </main>
+
+  <footer class="lecture-footer">
+    <div>Algorithms</div>
+    <div>© 2026 Allan Allemand</div>
+  </footer>
+
+<script>
+(() => {
+  "use strict";
+
+  /* ---------------- Merge two sorted sequences ---------------- */
+
+  const LEFT = [2, 5, 8];
+  const RIGHT = [1, 3, 7];
+
+  function mergeOperationStates(left, right) {
+    const states = [];
+    let i = 0;
+    let j = 0;
+    const output = [];
+
+    function pushState(text) {
+      states.push({
+        left: [...left],
+        right: [...right],
+        i,
+        j,
+        output: [...output],
+        text
+      });
+    }
+
+    pushState("Compare the first unused elements.");
+
+    while (i < left.length && j < right.length) {
+      const lv = left[i];
+      const rv = right[j];
+
+      if (lv <= rv) {
+        output.push(lv);
+        i++;
+        pushState(`${lv} is smaller, so append it to the output.`);
+      } else {
+        output.push(rv);
+        j++;
+        pushState(`${rv} is smaller, so append it to the output.`);
+      }
+    }
+
+    while (i < left.length) {
+      const value = left[i];
+      output.push(value);
+      i++;
+      pushState(`The right sequence is exhausted. Append ${value} from the left.`);
+    }
+
+    while (j < right.length) {
+      const value = right[j];
+      output.push(value);
+      j++;
+      pushState(`The left sequence is exhausted. Append ${value} from the right.`);
+    }
+
+    states.push({
+      left: [...left],
+      right: [...right],
+      i,
+      j,
+      output: [...output],
+      text: "The two sequences have been merged."
+    });
+
+    return states;
+  }
+
+  function renderMergeOperation(demo) {
+    const state = demo._states[demo._index];
+
+    const leftBox = demo.querySelector('[data-role="left"]');
+    const rightBox = demo.querySelector('[data-role="right"]');
+    const outputBox = demo.querySelector('[data-role="output"]');
+    const caption = demo.querySelector('[data-role="merge-caption"]');
+
+    leftBox.replaceChildren();
+    rightBox.replaceChildren();
+    outputBox.replaceChildren();
+
+    state.left.forEach((value, idx) => {
+      const cell = document.createElement("span");
+      cell.textContent = value;
+
+      if (idx < state.i) {
+        cell.classList.add("merge-used");
+      } else if (idx === state.i) {
+        cell.classList.add("merge-left-candidate");
+      }
+
+      leftBox.appendChild(cell);
+    });
+
+    state.right.forEach((value, idx) => {
+      const cell = document.createElement("span");
+      cell.textContent = value;
+
+      if (idx < state.j) {
+        cell.classList.add("merge-used");
+      } else if (idx === state.j) {
+        cell.classList.add("merge-right-candidate");
+      }
+
+      rightBox.appendChild(cell);
+    });
+
+    state.output.forEach(value => {
+      const cell = document.createElement("span");
+      cell.textContent = value;
+      cell.classList.add("merge-output-cell");
+      outputBox.appendChild(cell);
+    });
+
+    const missing = state.left.length + state.right.length - state.output.length;
+    for (let k = 0; k < missing; k++) {
+      const cell = document.createElement("span");
+      cell.classList.add("merge-empty-cell");
+      cell.textContent = "·";
+      outputBox.appendChild(cell);
+    }
+
+    caption.textContent = state.text;
+  }
+
+  const mergeDemo = document.getElementById("merge-operation-demo");
+
+  if (mergeDemo) {
+    mergeDemo._states = mergeOperationStates(LEFT, RIGHT);
+    mergeDemo._index = 0;
+    renderMergeOperation(mergeDemo);
+
+    mergeDemo.addEventListener("click", event => {
+      const button = event.target.closest("button[data-action]");
+      if (!button) return;
+
+      if (button.dataset.action === "next-merge") {
+        mergeDemo._index = Math.min(
+          mergeDemo._index + 1,
+          mergeDemo._states.length - 1
+        );
+        renderMergeOperation(mergeDemo);
+      }
+
+      if (button.dataset.action === "reset-merge") {
+        mergeDemo._index = 0;
+        renderMergeOperation(mergeDemo);
+      }
+    });
+  }
+
+  /* ---------------- Full Merge Sort ---------------- */
+
+  const DEFAULT_SORT = [8, 3, 6, 2, 7, 1, 5, 4];
+
+  function randomArray() {
+    const pool = [1,2,3,4,5,6,7,8,9];
+    for (let i = pool.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [pool[i], pool[j]] = [pool[j], pool[i]];
+    }
+    return pool.slice(0, 8);
+  }
+
+  function indices(start, end) {
+    return Array.from({length: end - start}, (_, k) => start + k);
+  }
+
+  function mergeSortStates(input) {
+    const a = [...input];
+    const temp = new Array(a.length);
+    const states = [{
+      array: [...a],
+      left: [],
+      right: [],
+      merged: [],
+      text: "Recursively split the array until every subarray contains one element."
+    }];
+
+    function sort(lo, hi) {
+      if (hi - lo <= 1) return;
+
+      const mid = Math.floor((lo + hi) / 2);
+
+      sort(lo, mid);
+      sort(mid, hi);
+
+      states.push({
+        array: [...a],
+        left: indices(lo, mid),
+        right: indices(mid, hi),
+        merged: [],
+        text: `Merge the sorted ranges from positions ${lo} to ${mid - 1} and ${mid} to ${hi - 1}.`
+      });
+
+      let i = lo;
+      let j = mid;
+      let k = lo;
+
+      while (i < mid && j < hi) {
+        if (a[i] <= a[j]) {
+          temp[k++] = a[i++];
+        } else {
+          temp[k++] = a[j++];
+        }
+      }
+
+      while (i < mid) temp[k++] = a[i++];
+      while (j < hi) temp[k++] = a[j++];
+
+      for (k = lo; k < hi; k++) {
+        a[k] = temp[k];
+      }
+
+      states.push({
+        array: [...a],
+        left: [],
+        right: [],
+        merged: indices(lo, hi),
+        text: `The range from positions ${lo} to ${hi - 1} is now sorted.`
+      });
+    }
+
+    sort(0, a.length);
+
+    states.push({
+      array: [...a],
+      left: [],
+      right: [],
+      merged: indices(0, a.length),
+      text: "The entire array is sorted."
+    });
+
+    return states;
+  }
+
+  function renderMergeSort(viz) {
+    const state = viz._states[viz._index];
+    const bars = viz.querySelector(".bars");
+    const caption = viz.querySelector(".step-caption");
+
+    bars.replaceChildren();
+
+    state.array.forEach((value, idx) => {
+      const bar = document.createElement("div");
+      bar.className = "bar";
+      bar.style.setProperty("--value", value);
+      bar.textContent = value;
+
+      if (state.merged.includes(idx)) {
+        bar.classList.add("merge-sort-merged");
+      } else if (state.left.includes(idx)) {
+        bar.classList.add("merge-sort-left");
+      } else if (state.right.includes(idx)) {
+        bar.classList.add("merge-sort-right");
+      }
+
+      bars.appendChild(bar);
+    });
+
+    caption.textContent = state.text;
+  }
+
+  function resetMergeSort(viz, array) {
+    viz._states = mergeSortStates(array);
+    viz._index = 0;
+    renderMergeSort(viz);
+  }
+
+  const mergeSortViz = document.querySelector(
+    '.visualizer[data-algorithm="merge-sort"]'
+  );
+
+  if (mergeSortViz) {
+    resetMergeSort(mergeSortViz, DEFAULT_SORT);
+
+    mergeSortViz.addEventListener("click", event => {
+      const button = event.target.closest("button[data-action]");
+      if (!button) return;
+
+      if (button.dataset.action === "next-sort") {
+        mergeSortViz._index = Math.min(
+          mergeSortViz._index + 1,
+          mergeSortViz._states.length - 1
+        );
+        renderMergeSort(mergeSortViz);
+      } else if (button.dataset.action === "reset-sort") {
+        resetMergeSort(mergeSortViz, DEFAULT_SORT);
+      } else if (button.dataset.action === "randomize-sort") {
+        resetMergeSort(mergeSortViz, randomArray());
+      }
+    });
+  }
+
+  /* ---------------- Revealable answers ---------------- */
+
+  document.addEventListener("click", event => {
+    const button = event.target.closest("button[data-reveal]");
+    if (!button) return;
+
+    const target = document.getElementById(button.dataset.reveal);
+    if (!target) return;
+
+    target.hidden = !target.hidden;
+    button.setAttribute("aria-expanded", String(!target.hidden));
+    button.textContent = target.hidden ? "Show answer" : "Hide answer";
+  });
+
+  /* ---------------- Sidebar ---------------- */
+
+  const sidebarLinks = [...document.querySelectorAll(".sidebar a")];
+  const sections = sidebarLinks
+    .map(link => document.querySelector(link.getAttribute("href")))
+    .filter(Boolean);
+
+  if ("IntersectionObserver" in window && sections.length) {
+    const observer = new IntersectionObserver(entries => {
+      const visible = entries
+        .filter(entry => entry.isIntersecting)
+        .sort((a,b) => b.intersectionRatio - a.intersectionRatio)[0];
+
+      if (!visible) return;
+
+      sidebarLinks.forEach(link => link.classList.remove("active"));
+
+      const current = sidebarLinks.find(
+        link => link.getAttribute("href") === `#${visible.target.id}`
+      );
+
+      if (current) current.classList.add("active");
+    }, {
+      rootMargin: "-20% 0px -65% 0px",
+      threshold: [0, .1, .3, .6]
+    });
+
+    sections.forEach(section => observer.observe(section));
+  }
+
+  /* ---------------- Reading progress ---------------- */
+
+  function updateProgress() {
+    const progress = document.getElementById("reading-progress");
+    if (!progress) return;
+
+    const height = document.documentElement.scrollHeight - window.innerHeight;
+    const ratio = height > 0 ? window.scrollY / height : 0;
+    progress.style.width = `${Math.max(0, Math.min(1, ratio)) * 100}%`;
+  }
+
+  updateProgress();
+  window.addEventListener("scroll", updateProgress, {passive: true});
+  window.addEventListener("resize", updateProgress);
+})();
+</script>
 </body>
 </html>
