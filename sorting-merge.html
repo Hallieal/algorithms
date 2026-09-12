@@ -257,6 +257,51 @@
     .merge-final-complexity-equals { transform:rotate(90deg); }
   }
 
+
+  .merge-rule {
+    grid-template-columns:max-content minmax(72px,1fr) max-content minmax(72px,1fr) max-content;
+    gap:0; justify-content:center;
+  }
+  .merge-rule-side { display:flex; flex-direction:column; align-items:center; }
+  .merge-rule-label { align-self:center; text-align:center; }
+  .merge-rule-symbol { width:100%; height:100%; display:grid; place-items:center; justify-self:stretch; }
+  .result-side { justify-self:start; }
+
+  .complexity-opening-note { margin:26px 0; padding:20px 23px; border:1px solid #dce3d1; border-left:4px solid var(--green); border-radius:14px; background:#f7f9f3; }
+  .complexity-opening-note h3 { margin:0 0 7px; }
+  .complexity-opening-note p { margin:0; color:#59646d; }
+  .complexity-example-card { margin:30px 0; padding:24px; border:1px solid var(--line); border-radius:18px; background:#fff; }
+  .complexity-example-label { display:inline-block; margin-bottom:9px; padding:5px 9px; border-radius:999px; background:#edf4df; color:#587a2c; font-size:10px; font-weight:800; letter-spacing:.07em; text-transform:uppercase; }
+  .complexity-example-card h3 { margin:0 0 18px; }
+  .complexity-example-card>p { color:#59646d; }
+  .complexity-example-flow { display:grid; grid-template-columns:1fr auto 1fr auto 1fr; gap:10px; align-items:center; }
+  .complexity-example-part { padding:15px; border-radius:12px; background:#eef3e5; text-align:center; }
+  .complexity-example-part.merge-part { background:#fff0dc; }
+  .complexity-example-part span { display:block; margin-bottom:5px; color:#727c84; font-size:10px; font-weight:800; text-transform:uppercase; letter-spacing:.05em; }
+  .complexity-example-part strong { font:700 20px Georgia,"Times New Roman",serif; }
+  .complexity-example-plus { color:#9aa2a9; font-size:22px; }
+  .log-card-header { display:grid; grid-template-columns:86px 1fr; gap:17px; align-items:center; margin-bottom:20px; }
+  .log-card-symbol { min-height:62px; padding:0 10px; display:grid; place-items:center; border-radius:15px; background:var(--purple); color:#fff; font:700 18px Georgia,"Times New Roman",serif; white-space:nowrap; }
+  .log-card-header h3 { margin:0 0 4px; }
+  .log-card-header p { margin:0; color:#667079; }
+  .log-example,.log-general { padding:18px 20px; border-radius:14px; background:#fff; }
+  .log-example { margin-bottom:13px; }
+  .log-example-label { display:block; margin-bottom:10px; color:#7b858d; font-size:10px; font-weight:800; text-transform:uppercase; letter-spacing:.07em; }
+  .log-example p,.log-general p { color:#59646d; }
+  .log-general h4 { margin:0 0 8px; font-size:15px; }
+  .log-equation-stack { max-width:420px; margin:17px auto; display:grid; gap:7px; text-align:center; font:700 20px Georgia,"Times New Roman",serif; }
+  .log-equation-stack>div { padding:11px 15px; border:1px solid #e0dcee; border-radius:10px; background:#faf9fe; }
+  .log-equation-stack .log-equation-result { background:var(--purple); border-color:var(--purple); color:#fff; }
+  @media (max-width:760px) {
+    .merge-rule { grid-template-columns:1fr; gap:10px; }
+    .merge-rule-symbol { min-height:36px; transform:rotate(90deg); }
+    .result-side { justify-self:stretch; }
+    .complexity-example-flow { grid-template-columns:1fr; }
+    .complexity-example-plus { transform:rotate(90deg); text-align:center; }
+    .log-card-header { grid-template-columns:1fr; }
+    .log-card-symbol { width:max-content; min-height:48px; }
+  }
+
 </style>
 
 </head>
@@ -774,173 +819,155 @@
     <section id="complexity" class="lecture-section">
       <h2>Complexity</h2>
 
+      <div class="complexity-opening-note">
+        <h3>What are we trying to calculate?</h3>
+        <p>
+          We want to understand how the running time grows when the input contains
+          <span class="math">n</span> elements. To keep the formulas clean, first assume that
+          <span class="math">n</span> is a power of two. Nothing essential changes for other values of
+          <span class="math">n</span>.
+        </p>
+      </div>
+
       <div class="complexity-definition-card">
         <div class="complexity-definition-symbol">T(n)</div>
         <div>
           <h3>What does T(n) mean?</h3>
           <p>
-            Let <span class="math">T(n)</span> denote the running time of Merge Sort on an array of
-            <span class="math">n</span> elements.
+            <span class="math">T(n)</span> is simply notation for the time needed to sort
+            <span class="math">n</span> elements with Merge Sort. It is not a variable from the Python code;
+            it is a mathematical name for the amount of work performed by the algorithm.
           </p>
           <p>
-            For an array of length <span class="math">n</span>, Merge Sort performs three pieces of work:
+            The base case is immediate: sorting one element requires only constant work, so
+            <span class="math">T(1) = Θ(1)</span>.
           </p>
-          <ol>
-            <li>sort the left half of size approximately <span class="math">n / 2</span>;</li>
-            <li>sort the right half of size approximately <span class="math">n / 2</span>;</li>
-            <li>merge the two sorted halves in <span class="math">Θ(n)</span> time.</li>
-          </ol>
         </div>
       </div>
 
-      <div class="recurrence-derivation">
-        <h3>Where the recurrence comes from</h3>
+      <div class="complexity-example-card">
+        <div class="complexity-example-label">Example: n = 8</div>
+        <h3>What does Merge Sort do with eight elements?</h3>
 
-        <div class="recurrence-parts">
-          <div class="recurrence-part">
-            <span>left half</span>
-            <strong>T(n / 2)</strong>
+        <div class="complexity-example-flow">
+          <div class="complexity-example-part">
+            <span>sort 4 elements</span>
+            <strong>T(4)</strong>
           </div>
-          <div class="recurrence-plus">+</div>
-          <div class="recurrence-part">
-            <span>right half</span>
-            <strong>T(n / 2)</strong>
+          <div class="complexity-example-plus">+</div>
+          <div class="complexity-example-part">
+            <span>sort 4 elements</span>
+            <strong>T(4)</strong>
           </div>
-          <div class="recurrence-plus">+</div>
-          <div class="recurrence-part merge-work">
-            <span>merge</span>
-            <strong>Θ(n)</strong>
+          <div class="complexity-example-plus">+</div>
+          <div class="complexity-example-part merge-part">
+            <span>merge 8 elements</span>
+            <strong>Θ(8)</strong>
           </div>
         </div>
 
-        <div class="formula-line">
-          T(n) = 2T(n / 2) + Θ(n)
-        </div>
+        <div class="formula-line">T(8) = 2T(4) + Θ(8)</div>
 
         <p>
-          The factor <span class="math">2</span> appears because there are two recursive calls,
-          one for each half. The term <span class="math">Θ(n)</span> is the cost of merging the two
-          sorted halves.
+          The same reasoning works for any input size. An array of
+          <span class="math">n</span> elements produces two recursive problems of size
+          <span class="math">n / 2</span>, followed by one linear-time merge.
         </p>
+      </div>
+
+      <div class="recurrence-derivation">
+        <h3>The recurrence</h3>
+        <div class="recurrence-parts">
+          <div class="recurrence-part"><span>sort left half</span><strong>T(n / 2)</strong></div>
+          <div class="recurrence-plus">+</div>
+          <div class="recurrence-part"><span>sort right half</span><strong>T(n / 2)</strong></div>
+          <div class="recurrence-plus">+</div>
+          <div class="recurrence-part merge-work"><span>merge both halves</span><strong>Θ(n)</strong></div>
+        </div>
+        <div class="formula-line">T(n) = 2T(n / 2) + Θ(n)</div>
+        <p>
+          The factor <span class="math">2</span> comes from the two recursive calls.
+          The term <span class="math">Θ(n)</span> comes from merging: altogether the merge
+          must process all <span class="math">n</span> elements.
+        </p>
+      </div>
+
+      <div class="log-derivation-card">
+        <div class="log-card-header">
+          <div class="log-card-symbol">log₂ n</div>
+          <div>
+            <h3>Where does log₂ n come from?</h3>
+            <p>It is exactly the number of times the problem size can be halved before it reaches 1.</p>
+          </div>
+        </div>
+
+        <div class="log-example">
+          <span class="log-example-label">For n = 8</span>
+          <div class="halving-chain">
+            <span>8</span><strong>→</strong><span>4</span><strong>→</strong><span>2</span><strong>→</strong><span>1</span>
+          </div>
+          <p>
+            We divided by 2 three times. Since <span class="math">2³ = 8</span>,
+            the number of halvings is <span class="math">3 = log₂ 8</span>.
+          </p>
+        </div>
+
+        <div class="log-general">
+          <h4>In general</h4>
+          <p>
+            After one halving the subproblem has size <span class="math">n / 2</span>.
+            After two halvings it has size <span class="math">n / 2²</span>.
+            After <span class="math">k</span> halvings it has size <span class="math">n / 2<sup>k</sup></span>.
+          </p>
+          <p>Recursion stops when that size becomes 1:</p>
+          <div class="log-equation-stack">
+            <div>n / 2<sup>k</sup> = 1</div>
+            <div>2<sup>k</sup> = n</div>
+            <div class="log-equation-result">k = log₂ n</div>
+          </div>
+          <p>
+            So a root-to-leaf path contains exactly <span class="math">log₂ n</span> splitting steps
+            when <span class="math">n</span> is a power of two. If we also count the final level containing
+            the one-element arrays, the recursion tree has <span class="math">log₂ n + 1</span> levels.
+            For asymptotic analysis, both are <span class="math">Θ(log n)</span>.
+          </p>
+        </div>
       </div>
 
       <div class="complexity-explanation-card">
         <div class="complexity-card-mark">Σ</div>
         <div>
-          <h3>Work at one level of recursion</h3>
+          <h3>How much work is done on one merge level?</h3>
           <p>
-            At a fixed level of the recursion tree, all subarrays are disjoint but together still contain
-            exactly <span class="math">n</span> elements.
+            Consider all merges performed at the same depth of the recursion tree.
+            Their subarrays do not overlap, and together they contain all <span class="math">n</span> elements.
           </p>
           <p>
-            For example, one level may contain two arrays of size <span class="math">n / 2</span>,
-            the next four arrays of size <span class="math">n / 4</span>, and so on. The total number
-            of elements merged on each level is always <span class="math">n</span>.
-          </p>
-          <p>
-            Therefore every level costs <span class="math">Θ(n)</span> total time.
+            At one level we may merge two halves of total size <span class="math">n</span>.
+            At another level we may merge four quarters, but their total size is still <span class="math">n</span>.
+            Therefore each merge level costs <span class="math">Θ(n)</span>.
           </p>
         </div>
       </div>
 
       <div class="recursion-levels">
-        <div class="recursion-level">
-          <span class="level-label">level 0</span>
-          <div class="level-block full">n</div>
-          <b>Θ(n)</b>
-        </div>
-
-        <div class="recursion-level">
-          <span class="level-label">level 1</span>
-          <div class="level-parts">
-            <div class="level-block half">n/2</div>
-            <div class="level-block half">n/2</div>
-          </div>
-          <b>Θ(n)</b>
-        </div>
-
-        <div class="recursion-level">
-          <span class="level-label">level 2</span>
-          <div class="level-parts four-parts">
-            <div class="level-block quarter">n/4</div>
-            <div class="level-block quarter">n/4</div>
-            <div class="level-block quarter">n/4</div>
-            <div class="level-block quarter">n/4</div>
-          </div>
-          <b>Θ(n)</b>
-        </div>
-
+        <div class="recursion-level"><span class="level-label">merge level 1</span><div class="level-block full">n</div><b>Θ(n)</b></div>
+        <div class="recursion-level"><span class="level-label">merge level 2</span><div class="level-parts"><div class="level-block half">n/2</div><div class="level-block half">n/2</div></div><b>Θ(n)</b></div>
+        <div class="recursion-level"><span class="level-label">merge level 3</span><div class="level-parts four-parts"><div class="level-block quarter">n/4</div><div class="level-block quarter">n/4</div><div class="level-block quarter">n/4</div><div class="level-block quarter">n/4</div></div><b>Θ(n)</b></div>
         <div class="recursion-dots">⋮</div>
-
-        <div class="recursion-level bottom-level">
-          <span class="level-label">last level</span>
-          <div class="level-block many">single elements</div>
-          <b>Θ(n)</b>
-        </div>
-      </div>
-
-      <div class="log-derivation-card">
-        <h3>Why are there log₂ n levels?</h3>
-
-        <p>
-          Every recursive step divides the subproblem size by 2:
-        </p>
-
-        <div class="halving-chain">
-          <span>n</span>
-          <strong>→</strong>
-          <span>n / 2</span>
-          <strong>→</strong>
-          <span>n / 4</span>
-          <strong>→</strong>
-          <span>n / 8</span>
-          <strong>→</strong>
-          <span>···</span>
-          <strong>→</strong>
-          <span>1</span>
-        </div>
-
-        <p>
-          After <span class="math">k</span> halvings, the subproblem size is
-          <span class="math">n / 2<sup>k</sup></span>. Recursion stops when this size reaches 1:
-        </p>
-
-        <div class="formula-line">
-          n / 2<sup>k</sup> = 1
-        </div>
-
-        <div class="formula-line">
-          2<sup>k</sup> = n
-        </div>
-
-        <div class="formula-line">
-          k = log₂ n
-        </div>
-
-        <p>
-          Thus the recursion tree has <span class="math">Θ(log n)</span> levels.
-        </p>
+        <div class="recursion-level bottom-level"><span class="level-label">smallest merges</span><div class="level-block many">pairs of single elements</div><b>Θ(n)</b></div>
       </div>
 
       <div class="merge-final-complexity">
-        <div class="merge-final-complexity-line">
-          <span>work per level</span>
-          <strong>Θ(n)</strong>
-        </div>
+        <div class="merge-final-complexity-line"><span>work on each merge level</span><strong>Θ(n)</strong></div>
         <div class="merge-final-complexity-times">×</div>
-        <div class="merge-final-complexity-line">
-          <span>number of levels</span>
-          <strong>Θ(log n)</strong>
-        </div>
+        <div class="merge-final-complexity-line"><span>number of merge levels</span><strong>Θ(log n)</strong></div>
         <div class="merge-final-complexity-equals">=</div>
-        <div class="merge-final-complexity-result">
-          <span>total running time</span>
-          <strong>Θ(n log n)</strong>
-        </div>
+        <div class="merge-final-complexity-result"><span>total running time</span><strong>Θ(n log n)</strong></div>
       </div>
 
       <div class="complexity-strip">
-        <div><span>Best case</span><b>Θ(n log n)</b><small>same recursion structure</small></div>
+        <div><span>Best case</span><b>Θ(n log n)</b><small>same splitting and merging</small></div>
         <div><span>Average case</span><b>Θ(n log n)</b><small>same recursion structure</small></div>
         <div><span>Worst case</span><b>Θ(n log n)</b><small>guaranteed</small></div>
         <div><span>Extra memory</span><b>Θ(n)</b><small>array implementation</small></div>
