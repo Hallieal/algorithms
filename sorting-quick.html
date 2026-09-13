@@ -1303,7 +1303,7 @@
           <p>
             The code above always uses the first element, so an already sorted array produces the worst-case chain.
             If the pivot is chosen uniformly at random instead, systematically bad partitions become unlikely.
-            Randomized Quick Sort has expected running time <span class="math">Θ(n log n)</span>.
+            Randomized Quick Sort has expected running time <span class="math">Θ(loglinear)</span>.
           </p>
         </div>
       </div>
@@ -1351,7 +1351,7 @@
           </div>
 
           <div class="quick-formula">
-            Θ(log n) levels × Θ(n) per level = Θ(n log n)
+            Θ(log n) levels × Θ(n) per level = Θ(loglinear)
           </div>
         </article>
 
@@ -1388,8 +1388,8 @@
       </div>
 
       <div class="complexity-strip">
-        <div><span>Best case</span><b>Θ(n log n)</b><small>balanced partitions</small></div>
-        <div><span>Average case</span><b>Θ(n log n)</b><small>typical / randomized</small></div>
+        <div><span>Best case</span><b>Θ(loglinear)</b><small>balanced partitions</small></div>
+        <div><span>Average case</span><b>Θ(loglinear)</b><small>typical / randomized</small></div>
         <div><span>Worst case</span><b>Θ(n²)</b><small>extreme pivot repeatedly</small></div>
         <div><span>Partition step</span><b>Θ(n)</b><small>one scan</small></div>
       </div>
@@ -1462,7 +1462,7 @@
             <li>splits by position into two nearly equal halves;</li>
             <li>recursively sorts the halves;</li>
             <li>does the main combine work after recursion;</li>
-            <li>guarantees <span class="math">Θ(n log n)</span> time;</li>
+            <li>guarantees <span class="math">Θ(loglinear)</span> time;</li>
             <li>standard array implementation uses <span class="math">Θ(n)</span> extra memory;</li>
             <li>can be stable.</li>
           </ul>
@@ -1474,7 +1474,7 @@
             <li>splits according to values relative to a pivot;</li>
             <li>the partition sizes depend on the pivot;</li>
             <li>does the main organizing work before recursion;</li>
-            <li>has average / expected <span class="math">Θ(n log n)</span> time;</li>
+            <li>has average / expected <span class="math">Θ(loglinear)</span> time;</li>
             <li>can partition arrays in place;</li>
             <li>is usually not stable.</li>
           </ul>
@@ -1542,7 +1542,7 @@
             <h3>Pivot choice</h3>
             <p>
               Suppose every partition splits the array approximately in the ratio 1:3 instead of exactly in half.
-              Does the asymptotic running time remain <span class="math">Θ(n log n)</span>?
+              Does the asymptotic running time remain <span class="math">Θ(loglinear)</span>?
             </p>
             <button type="button" class="reveal" data-reveal="quick-ex4" aria-expanded="false">Show answer</button>
             <div id="quick-ex4" class="answer-box" hidden>
