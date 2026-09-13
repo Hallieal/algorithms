@@ -1,8 +1,13 @@
-# Allan's Handbook of Algorithms — v39
+# Allan's Handbook of Algorithms — v40
+
+Applications of Sorting rewritten and redesigned.
 
 Changes:
-- removed the subtitle under `Introduction to Sorting`;
-- expanded the basic idea to state that sorting is most commonly by increasing or decreasing numerical value;
-- expanded `Element, key, order` with the standard array + numerical key case and a concrete price example;
-- renamed the final section to `Evaluating Sorting Algorithms`;
-- simplified the top navigation on every Sorting page: only `Sorting overview` remains, since the site title already links to the homepage.
+- Sorting contents page no longer shows redundant navigation links at the top.
+- Applications of Sorting now explains the central idea first: sorting creates structure.
+- Added a concrete before/after example showing how duplicates become adjacent.
+- Reworked the applications into six clear cases:
+  fast search, ranking, duplicate detection/grouping, two pointers, matching/merging, intervals/scheduling.
+- Added a final three-step preprocessing model:
+  arbitrary data -> sort -> exploit order.
+- Kept only `Sorting overview` in the top navigation of the article.
