@@ -1,14 +1,7 @@
-# Algorithms site — branding update v19
+# Algorithms site — v20
 
-Changes:
-- added a new favicon based on the provided icon image: `favicon.png`;
-- updated all page headers to use the site name `Allan's Handbook of Algorithms`;
-- updated the homepage title and hero heading;
-- updated content page `<title>` tags to the format `Page title | Allan's Handbook of Algorithms`;
-- updated footer branding;
-- restored a shared `styles.css` into the flat site folder and added small brand-name styling.
-
-Files to upload if you want only the minimal branding update:
-- `favicon.png`
-- `styles.css`
-- every `*.html` page
+Changes from v19:
+- restored the exact previous `favicon.svg`;
+- all pages again reference `favicon.svg`;
+- Bubble Sort in the Sorting overview is now an active section card and includes `Open section →`, matching Selection/Insertion, Merge, and Quick Sort.
+- site branding remains `Allan's Handbook of Algorithms`.
