@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Поиск ближайшей пары точек за O(n log n) с помощью сортировки, divide and conquer и геометрического packing-аргумента.">
+  <meta property="og:title" content="Ближайшая пара точек | Гайд по алгоритмам — presented by Аллан">
+  <meta property="og:type" content="article">
+  <title>Ближайшая пара точек | Гайд по алгоритмам — presented by Аллан</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="problems.css">
+  <link rel="stylesheet" href="hard-problems.css">
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+  <link rel="icon" type="image/png" sizes="64x64" href="favicon.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+  <link href="problem-closest-pair.html" hreflang="en" rel="alternate">
+  <link href="problem-closest-pair-ru.html" hreflang="ru" rel="alternate">
+</head>
+<body class="lecture-page problem-page easy-redesign hard-redesign">
+  <div class="progress-track" aria-hidden="true"><div class="progress-bar" id="reading-progress"></div></div>
+  <header class="topbar">
+    <a class="brand" href="index-ru.html"><span class="brand-mark brand-mark-logo"><img class="brand-mark-image" src="logo.png" alt=""></span><span class="brand-name ru-brand-name"><span class="ru-brand-lines"><span>Гайд по алгоритмам</span><span class="ru-brand-presented">presented by Аллан</span></span></span></a>
+    <nav class="topnav" aria-label="Основная навигация"><a href="sorting-problems-ru.html">Практические задачи</a><a href="sorting-ru.html">Список тем</a><div aria-label="Язык" class="language-switch"><a href="problem-closest-pair.html">EN</a><span class="language-separator">·</span><span class="current">RU</span></div></nav>
+  </header>
+
+  <aside class="sidebar" aria-label="Навигация по разделу">
+    <div class="sidebar-title">Задача 9 · Сложная</div>
+    <a href="#problem">Условие</a><a href="#idea">Главная идея</a><a href="#algorithm">Алгоритм</a><a href="#correctness">Корректность и сложность</a><a href="#implementation">Реализация</a>
+  </aside>
+
+  <main class="lecture">
+    <section class="lecture-hero">
+      <div class="problem-hero-kicker"><span class="problem-title-icon hard" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="7" cy="15" r="2"/><circle cx="17" cy="9" r="2"/><path d="M9 14l6-4M4 5h2M18 19h2"/></svg></span><span>Сортировки · Практика · Сложная</span></div>
+      <h1>Ближайшая пара точек</h1>
+      <p class="chapter-topics">Два отсортированных представления одних и тех же точек позволяют заменить полный перебор на O(n log n).</p>
+      <div class="problem-meta"><span class="hard">Hard</span><span>Divide & conquer</span><span>Геометрия</span></div>
+    </section>
+
+    <section id="problem" class="lecture-section">
+      <h2>Условие</h2>
+      <p class="hard-lead">Перебрать все пары просто, но это O(n²). Нужно доказать, что подавляющее большинство пар можно вообще не рассматривать.</p>
+      <div class="easy-brief">
+        <div class="easy-brief-copy">
+          <span class="easy-kicker">Задача</span>
+          <h3>Найти минимальное евклидово расстояние</h3>
+          <p>Даны <code>n ≥ 2</code> различных точек на плоскости. Нужно найти минимальное евклидово расстояние между двумя точками и вернуть одну пару, на которой оно достигается.</p>
+          <div class="problem-equation">d(p,q) = √((pₓ−qₓ)² + (pᵧ−qᵧ)²)</div>
+        </div>
+        <div class="hard-visual-card">
+          <div class="hard-visual-label">Геометрическая картина</div>
+          <div class="closest-hard-plane" aria-label="Точки, разделённые вертикальной прямой, и выделенная центральная полоса">
+            <div class="strip-band"></div><div class="split-line"></div>
+            <span class="plot-point" style="left:13%;top:72%"></span>
+            <span class="plot-point" style="left:24%;top:31%"></span>
+            <span class="plot-point" style="left:39%;top:57%"></span>
+            <span class="plot-point closest" style="left:48%;top:48%"></span>
+            <span class="plot-point closest" style="left:55%;top:39%"></span>
+            <span class="plot-point" style="left:77%;top:68%"></span>
+            <span class="plot-point" style="left:87%;top:24%"></span>
+            <span class="closest-segment" style="left:48%;top:48%;width:48px;transform:rotate(-28deg)"></span>
+          </div>
+          <div class="strip-legend"><span>фиолетовая область = полоса ширины <b>2d</b></span><span>красные точки = кандидат через границу</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="idea" class="lecture-section">
+      <h2>Главная идея</h2>
+      <p class="hard-lead">Рекурсивно решим задачу в двух половинах. После этого улучшить найденное расстояние <code>d</code> может только пара, пересекающая линию разбиения и лежащая в узкой полосе.</p>
+      <div class="easy-insight">
+        <div class="easy-insight-card">
+          <span class="easy-kicker">Divide and conquer</span>
+          <h3>После рекурсии остаётся проверить только полосу</h3>
+          <p>Сортируем точки по x-координате и делим пополам. Пусть <code>d</code> — минимум из двух рекурсивных ответов. Если пара из разных половин ближе, чем <code>d</code>, то её горизонтальное расстояние меньше <code>d</code>. Значит, обе точки находятся не дальше <code>d</code> от линии разбиения.</p>
+          <div class="boundary-rule">
+            <div><strong>левая половина</strong><span>все пары целиком слева уже обработаны рекурсией</span></div>
+            <div><strong>правая половина</strong><span>все пары целиком справа уже обработаны рекурсией</span></div>
+            <div><strong>полоса</strong><span>только здесь может скрываться лучшая пара через границу</span></div>
+          </div>
+        </div>
+        <div class="easy-rule-stack">
+          <div class="easy-rule"><strong>sort by x</strong><p>Даёт сбалансированное геометрическое разбиение.</p></div>
+          <div class="easy-rule"><strong>sort by y</strong><p>Позволяет просматривать кандидатов в полосе снизу вверх без новой сортировки.</p></div>
+          <div class="easy-rule"><strong>следующие 7</strong><p>Packing-аргумент делает проверку полосы линейной.</p></div>
+        </div>
+      </div>
+
+      <div class="hard-visual-card" style="margin-top:20px">
+        <div class="hard-visual-label">Почему достаточно семи следующих точек?</div>
+        <p style="margin:0;color:#5d6871;font-size:13px;line-height:1.6">Зафиксируем точку <code>p</code> в полосе. Точка <code>q</code> может улучшить текущее расстояние <code>d</code> только если находится менее чем на <code>d</code> выше <code>p</code>. Все релевантные следующие кандидаты лежат в прямоугольнике ширины <code>2d</code> и высоты <code>d</code>. Разделим его линией рекурсии, а каждую половину — на четыре квадрата <code>d/2 × d/2</code>. В одном таком квадрате внутри одной рекурсивной половины не могут находиться две точки: их расстояние было бы меньше <code>d</code>, что противоречит уже найденному расстоянию для этой половины. Поэтому в прямоугольнике помещается не более восьми точек вместе с <code>p</code>, то есть после <code>p</code> нужно проверить не более семи кандидатов.</p>
+        <div class="packing-grid" aria-hidden="true">
+          <div class="packing-cell"><span class="packing-dot a"></span></div><div class="packing-cell"></div><div class="packing-cell"><span class="packing-dot b"></span></div><div class="packing-cell"></div>
+          <div class="packing-cell"></div><div class="packing-cell"><span class="packing-dot a"></span></div><div class="packing-cell"></div><div class="packing-cell"><span class="packing-dot b"></span></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="algorithm" class="lecture-section">
+      <h2>Алгоритм</h2>
+      <div class="easy-step-flow">
+        <article class="easy-step-card"><div class="easy-step-number">1</div><h3>Отсортировать дважды</h3><p>Храним те же точки в порядке по x и в порядке по y.</p></article>
+        <article class="easy-step-card"><div class="easy-step-number">2</div><h3>Разделить по x</h3><p>Делим x-порядок пополам и разбиваем y-порядок на те же два множества точек.</p></article>
+        <article class="easy-step-card"><div class="easy-step-number">3</div><h3>Рекурсивно решить половины</h3><p>Берём меньшее из двух полученных расстояний как текущее <code>d</code>.</p></article>
+        <article class="easy-step-card"><div class="easy-step-number">4</div><h3>Проверить полосу</h3><p>Оставляем точки полосы в y-порядке и для каждой проверяем максимум семь следующих.</p></article>
+      </div>
+      <div class="easy-invariant"><div class="easy-invariant-mark">I</div><div><h3>Рекурсивный инвариант</h3><p>Каждый вызов получает одно и то же множество точек в двух представлениях — отсортированном по x и по y — и возвращает настоящую ближайшую пару внутри этого множества.</p></div></div>
+    </section>
+
+    <section id="correctness" class="lecture-section">
+      <h2>Корректность и сложность</h2>
+      <div class="easy-proof-grid">
+        <div class="easy-proof-main"><div class="proof-symbol">✓</div><h3>У глобально ближайшей пары есть только три варианта</h3><p>Обе точки слева, обе справа или точки лежат по разные стороны линии разбиения. Алгоритм покрывает все три случая.</p></div>
+        <div class="easy-proof-details">
+          <div class="easy-proof-row"><span>1</span><div><h4>Пары внутри половин</h4><p>По индукции рекурсивные вызовы находят точные минимальные расстояния слева и справа.</p></div></div>
+          <div class="easy-proof-row"><span>2</span><div><h4>Пары через границу</h4><p>Если такая пара ближе <code>d</code>, обе её точки обязательно попадают в центральную полосу.</p></div></div>
+          <div class="easy-proof-row"><span>3</span><div><h4>Полоса проверяется полностью</h4><p>Packing-лемма гарантирует, что любой возможный партнёр ближе <code>d</code> находится среди следующих семи точек в y-порядке. Поэтому ни одна улучшающая пара не пропускается.</p></div></div>
+        </div>
+      </div>
+      <div class="easy-complexity-strip"><div class="easy-complexity-item"><span>Начальная сортировка</span><strong>O(n log n)</strong><p>Один раз сортируем по x и по y.</p></div><div class="easy-complexity-item"><span>Рекурсия</span><strong>O(n log n)</strong><p>На каждом уровне суммарно выполняется O(n) работы.</p></div><div class="easy-complexity-item"><span>Память</span><strong>O(n)</strong><p>Разбиения y-порядка, множества идентификаторов и полосы дают линейный пик памяти.</p></div></div>
+    </section>
+
+    <section id="implementation" class="lecture-section">
+      <h2>Реализация</h2>
+      <p class="hard-lead">Внутри рекурсии сравниваются квадраты расстояний, поэтому дорогостоящий квадратный корень вычисляется только один раз — для финального ответа.</p>
+      <div class="easy-code-layout">
+        <div class="problem-code"><div class="problem-code-head"><span>Python</span><button class="copy-code" type="button">Копировать</button></div><pre><code>from math import sqrt
+
+
+def closest_pair(points):
+    if len(points) &lt; 2:
+        raise ValueError("at least two points are required")
+
+    pts = [(x, y, i) for i, (x, y) in enumerate(points)]
+    px = sorted(pts, key=lambda p: (p[0], p[1], p[2]))
+    py = sorted(pts, key=lambda p: (p[1], p[0], p[2]))
+
+    def dist2(p, q):
+        dx = p[0] - q[0]
+        dy = p[1] - q[1]
+        return dx * dx + dy * dy
+
+    def solve(px, py):
+        n = len(px)
+        if n &lt;= 3:
+            best2 = float("inf")
+            pair = None
+            for i in range(n):
+                for j in range(i + 1, n):
+                    current = dist2(px[i], px[j])
+                    if current &lt; best2:
+                        best2 = current
+                        pair = (px[i], px[j])
+            return best2, pair
+
+        mid = n // 2
+        left_x = px[:mid]
+        right_x = px[mid:]
+        split_x = (left_x[-1][0] + right_x[0][0]) / 2
+
+        left_ids = {p[2] for p in left_x}
+        left_y, right_y = [], []
+        for p in py:
+            if p[2] in left_ids:
+                left_y.append(p)
+            else:
+                right_y.append(p)
+
+        dl2, pair_l = solve(left_x, left_y)
+        dr2, pair_r = solve(right_x, right_y)
+
+        if dl2 &lt;= dr2:
+            best2, pair = dl2, pair_l
+        else:
+            best2, pair = dr2, pair_r
+
+        strip = [
+            p for p in py
+            if (p[0] - split_x) ** 2 &lt; best2
+        ]
+
+        for i in range(len(strip)):
+            for j in range(i + 1, min(i + 8, len(strip))):
+                dy = strip[j][1] - strip[i][1]
+                if dy * dy &gt;= best2:
+                    break
+
+                current = dist2(strip[i], strip[j])
+                if current &lt; best2:
+                    best2 = current
+                    pair = (strip[i], strip[j])
+
+        return best2, pair
+
+    best2, pair = solve(px, py)
+    clean_pair = tuple((p[0], p[1]) for p in pair)
+    return sqrt(best2), clean_pair
+
+
+points = [
+    (2, 3), (12, 30), (40, 50),
+    (5, 1), (12, 10), (3, 4),
+]
+print(closest_pair(points))</code></pre></div>
+        <div class="easy-code-notes"><span class="easy-kicker">Как читать код</span><h3>Сохраняем оба порядка</h3><div class="easy-code-note"><b><code>left_ids</code></b><p>Разделяет y-отсортированный список на те же множества точек, что и x-разбиение, без повторной сортировки.</p></div><div class="easy-code-note"><b><code>strip</code></b><p>Фильтруется из уже y-отсортированного списка, поэтому автоматически остаётся отсортированным по y.</p></div><div class="easy-code-note"><b><code>min(i + 8, ...)</code></b><p>Проверяет не более семи следующих точек — ровно столько разрешает packing-лемма.</p></div></div>
+      </div>
+      <p class="easy-source-line">Задача адаптирована из <a href="https://www.geeksforgeeks.org/dsa/closest-pair-of-points-using-divide-and-conquer-algorithm/" target="_blank" rel="noopener">Closest Pair of Points using Divide and Conquer</a> на GeeksforGeeks. Доказательство, детали реализации и изложение переписаны для этого гайда.</p>
+      <div class="next-part back-problems"><h3>Назад к практике</h3><p>Выберите другую задачу уровня Easy, Medium или Hard.</p><a class="next-part-link" href="sorting-problems-ru.html">← Практические задачи</a></div>
+    </section>
+  </main>
+
+  <footer class="lecture-footer"><div>Гайд по алгоритмам · presented by Аллан</div><div>© 2026 Allan Allemand</div></footer>
+  <script src="problems.js"></script>
+  <script src="language-switch.js"></script>
+</body>
+</html>
