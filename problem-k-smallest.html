@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Keep a moving set of the k best candidates instead of sorting the whole input.">
+  <meta name="description" content="Find the k smallest elements without sorting the whole array by maintaining a max-heap of candidates.">
   <meta property="og:title" content="K Smallest Elements | Allan's Handbook of Algorithms">
   <meta property="og:type" content="article">
   <title>K Smallest Elements | Allan's Handbook of Algorithms</title>
@@ -12,76 +12,102 @@
   <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
   <link rel="icon" type="image/png" sizes="64x64" href="favicon.png">
   <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+  <link href="problem-k-smallest.html" hreflang="en" rel="alternate">
+  <link href="problem-k-smallest-ru.html" hreflang="ru" rel="alternate">
 </head>
-<body class="lecture-page problem-page">
+<body class="lecture-page problem-page easy-redesign medium-redesign">
   <div class="progress-track" aria-hidden="true"><div class="progress-bar" id="reading-progress"></div></div>
   <header class="topbar">
     <a class="brand" href="index.html"><span class="brand-mark brand-mark-logo"><img class="brand-mark-image" src="logo.png" alt=""></span><span class="brand-name">Allan's Handbook of Algorithms</span></a>
-    <nav class="topnav" aria-label="Primary navigation"><a href="sorting-problems.html">Practice problems</a><a href="sorting.html">Sorting overview</a></nav>
+    <nav class="topnav" aria-label="Primary navigation"><a href="sorting-problems.html">Practice problems</a><a href="sorting.html">Sorting overview</a><div aria-label="Language" class="language-switch"><span class="current">EN</span><span class="language-separator">·</span><a href="problem-k-smallest-ru.html">RU</a></div></nav>
   </header>
 
   <aside class="sidebar" aria-label="Section navigation">
     <div class="sidebar-title">Problem 5 · Medium</div>
-    <a href="#problem">Problem</a>
-    <a href="#idea">Key idea</a>
-    <a href="#algorithm">Algorithm</a>
-    <a href="#correctness">Why it works</a>
-    <a href="#complexity">Complexity</a>
-    <a href="#implementation">Python</a>
+    <a href="#problem">Problem</a><a href="#idea">Core idea</a><a href="#algorithm">Algorithm</a><a href="#correctness">Correctness & complexity</a><a href="#implementation">Implementation</a>
   </aside>
 
   <main class="lecture">
     <section class="lecture-hero">
-      <div class="chapter-label">Sorting · Practice</div>
-      <span class="problem-title-icon medium" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5h14M7 10h10M9 15h6M11 20h2"/><path d="m16 17 3 3 3-3"/></svg></span>
+      <div class="problem-hero-kicker"><span class="problem-title-icon medium" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 5h14M7 10h10M9 15h6M11 20h2"/><path d="m16 17 3 3 3-3"/></svg></span><span>Sorting · Practice · Medium</span></div>
       <h1>K Smallest Elements</h1>
-      <p class="chapter-topics">Keep a moving set of the k best candidates instead of sorting the whole input.</p>
-      <div class="problem-meta"><span class="medium">Medium</span><span>Sorting practice</span><span>Python</span></div>
+      <p class="chapter-topics">Keep only the values that still have a chance to belong to the answer instead of sorting everything.</p>
+      <div class="problem-meta"><span class="medium">Medium</span><span>Heap</span><span>Python</span></div>
     </section>
 
     <section id="problem" class="lecture-section">
       <h2>Problem</h2>
-      <div class="statement-card"><h3>Task</h3><p>Given an array of <code>n</code> numbers and an integer <code>k</code>, return the <code>k</code> smallest values in increasing order. Duplicates count separately.</p></div>
-      <div class="example-block"><div class="example-head">Example</div><div class="example-body"><div class="array-line"><span class="array-cell">7</span><span class="array-cell">10</span><span class="array-cell">4</span><span class="array-cell">3</span><span class="array-cell">20</span><span class="array-cell">15</span></div><div class="array-caption">k = 3</div><div style="height:14px"></div><div class="array-line"><span class="array-cell cool">3</span><span class="array-cell cool">4</span><span class="array-cell cool">7</span></div></div></div>
+      <p class="lead easy-lead">Full sorting reveals much more information than we need. Here the goal is only to identify the smallest <code>k</code> values.</p>
+      <div class="easy-brief">
+        <div class="easy-brief-copy">
+          <span class="easy-kicker">Task</span>
+          <h3>Return the k smallest values</h3>
+          <p>Given an array of <code>n</code> numbers and an integer <code>k</code>, return the <code>k</code> smallest values in increasing order. Equal values count separately.</p>
+          <div class="problem-equation">answer = the first k elements of the fully sorted array</div>
+        </div>
+        <div class="easy-demo">
+          <div class="easy-demo-label">Example · k = 3</div>
+          <div class="easy-array"><span class="easy-cell">7</span><span class="easy-cell">10</span><span class="easy-cell">4</span><span class="easy-cell">3</span><span class="easy-cell">20</span><span class="easy-cell">15</span></div>
+          <div class="easy-demo-arrow">keep only the best three ↓</div>
+          <div class="easy-array"><span class="easy-cell peak">3</span><span class="easy-cell peak">4</span><span class="easy-cell peak">7</span></div>
+          <div class="easy-demo-caption">The required output is <code>[3, 4, 7]</code>. Values 10, 15, and 20 never need to be ordered relative to one another.</div>
+        </div>
+      </div>
     </section>
 
     <section id="idea" class="lecture-section">
-      <h2>Key idea</h2>
-      <div class="idea-card"><h3>The observation</h3><p>Sorting the entire array costs <code>O(n log n)</code>, even though we only need k outputs. Instead, keep a max-heap containing the k smallest values seen so far. Its root is the largest member of the current candidate set — exactly the one to discard when a smaller value arrives.</p></div>
-      <div class="example-block"><div class="example-head">Candidate set</div><div class="example-body"><div class="visual-split"><div><div class="array-line"><span class="array-cell cool">3</span><span class="array-cell cool">7</span><span class="array-cell cool">10</span></div><div class="array-caption">current k = 3 candidates; largest candidate is 10</div></div><div class="visual-arrow">→</div><div><div class="array-line"><span class="array-cell cool">3</span><span class="array-cell cool">4</span><span class="array-cell cool">7</span></div><div class="array-caption">after seeing 4, discard 10</div></div></div></div></div>
+      <h2>Core idea</h2>
+      <p class="lead easy-lead">Maintain exactly <code>k</code> candidates. The only candidate we ever need to remove is the largest one, so that value should be available immediately.</p>
+      <div class="easy-insight">
+        <div class="easy-insight-card">
+          <span class="easy-kicker">The threshold view</span>
+          <h3>The largest candidate is the current cutoff</h3>
+          <p>Suppose the current candidates are <code>{3, 7, 10}</code>. Their maximum, 10, is the weakest member of the set. Any new value at least 10 can be ignored; any value below 10 must replace it.</p>
+          <div class="visual-split" style="margin-top:18px"><div><div class="easy-array"><span class="easy-cell peak">3</span><span class="easy-cell peak">7</span><span class="easy-cell pointer-right">10</span></div><div class="array-caption">current candidates · cutoff = 10</div></div><div class="visual-arrow">+ 4 →</div><div><div class="easy-array"><span class="easy-cell peak">3</span><span class="easy-cell peak">4</span><span class="easy-cell pointer-right">7</span></div><div class="array-caption">10 is removed; new cutoff = 7</div></div></div>
+        </div>
+        <div class="easy-rule-stack">
+          <div class="easy-rule"><strong>x ≥ M</strong><p>Ignore <code>x</code>. The current set already contains <code>k</code> values no larger than it.</p></div>
+          <div class="easy-rule"><strong>x &lt; M</strong><p>Replace the current maximum <code>M</code> by <code>x</code>; the candidate set improves.</p></div>
+          <div class="easy-rule"><strong>max-heap</strong><p>A max-heap keeps the cutoff at its root and updates it in <code>O(log k)</code>.</p></div>
+        </div>
+      </div>
+      <div class="invariant-box"><span>Why not use a min-heap?</span><p>A min-heap exposes the smallest candidate, but that is the value we most want to keep. We need fast access to the largest current candidate because that is the one that may be evicted. Python only provides a min-heap, so we store negated values to simulate a max-heap.</p></div>
     </section>
 
     <section id="algorithm" class="lecture-section">
       <h2>Algorithm</h2>
-      <div class="algorithm-steps"><article class="algorithm-step"><div class="algorithm-step-num">1</div><div><h3>Seed the heap</h3><p>Put the first <code>k</code> values into a max-heap. Python has a min-heap, so we store their negatives.</p></div></article>
-<article class="algorithm-step"><div class="algorithm-step-num">2</div><div><h3>Inspect each remaining value</h3><p>Let <code>M</code> be the largest value currently among the k candidates. If the new value is at least <code>M</code>, it cannot improve the answer.</p></div></article>
-<article class="algorithm-step"><div class="algorithm-step-num">3</div><div><h3>Replace when useful</h3><p>If the new value is smaller than <code>M</code>, remove <code>M</code> and insert the new value.</p></div></article>
-<article class="algorithm-step"><div class="algorithm-step-num">4</div><div><h3>Sort only the answer</h3><p>After the scan, the heap contains the k smallest values. Sort those k values to produce increasing output.</p></div></article></div>
-      <div class="invariant-box"><span>Invariant</span><p>After processing any prefix containing at least k elements, the heap stores exactly the k smallest values of that prefix, counting duplicates.</p></div>
+      <div class="easy-step-flow">
+        <article class="easy-step-card"><div class="easy-step-number">1</div><h3>Take the first k values</h3><p>Use them to initialize a max-heap of current candidates.</p></article>
+        <article class="easy-step-card"><div class="easy-step-number">2</div><h3>Read the cutoff</h3><p>The heap root gives the largest candidate <code>M</code>.</p></article>
+        <article class="easy-step-card"><div class="easy-step-number">3</div><h3>Keep or discard</h3><p>If <code>x &lt; M</code>, replace <code>M</code> by <code>x</code>; otherwise ignore <code>x</code>.</p></article>
+        <article class="easy-step-card"><div class="easy-step-number">4</div><h3>Sort only k values</h3><p>At the end, sort the heap contents to return the answer in increasing order.</p></article>
+      </div>
+      <div class="easy-invariant"><div class="easy-invariant-mark">I</div><div><h3>Loop invariant</h3><p>After processing any prefix of at least <code>k</code> elements, the heap contains exactly the <code>k</code> smallest values of that prefix, with multiplicities.</p></div></div>
     </section>
 
     <section id="correctness" class="lecture-section">
-      <h2>Why it works</h2>
-      <div class="correctness-card"><h3>Correctness argument</h3><p>The invariant is true after the first k elements. For the next value x, if x is not smaller than the largest current candidate M, then at least k processed values are no larger than x, so x cannot belong to the k smallest. If x &lt; M, replacing M by x removes the only candidate that can no longer be necessary and inserts a value that must enter the k-smallest set. Thus the invariant is preserved to the end.</p></div>
-    </section>
-
-    <section id="complexity" class="lecture-section">
-      <h2>Complexity</h2>
-      <div class="complexity-grid"><div class="complexity-card"><span>Time</span><strong>O(n log k)</strong><p>Each of the n − k later elements causes at most one heap replacement.</p></div>
-<div class="complexity-card"><span>Output ordering</span><strong>O(k log k)</strong><p>We sort only the k selected values at the end.</p></div>
-<div class="complexity-card"><span>Extra space</span><strong>O(k)</strong><p>The heap never stores more than k values.</p></div></div>
+      <h2>Correctness & complexity</h2>
+      <div class="easy-proof-grid">
+        <div class="easy-proof-main"><div class="proof-symbol">✓</div><h3>Why one cutoff is enough</h3><p>The candidate maximum separates values that can still enter the answer from values that definitely cannot.</p></div>
+        <div class="easy-proof-details">
+          <div class="easy-proof-row"><span>1</span><div><h4>Initialization</h4><p>For the first <code>k</code> processed values, the heap obviously contains the <code>k</code> smallest values of that prefix: it contains all of them.</p></div></div>
+          <div class="easy-proof-row"><span>2</span><div><h4>If x ≥ M</h4><p>The heap already contains <code>k</code> values no larger than <code>M ≤ x</code>. Therefore <code>x</code> cannot belong to the <code>k</code> smallest processed values.</p></div></div>
+          <div class="easy-proof-row"><span>3</span><div><h4>If x &lt; M</h4><p>The new value must enter the candidate set, while the old maximum is the only candidate that becomes unnecessary. Replacing it restores the invariant.</p></div></div>
+        </div>
+      </div>
+      <div class="easy-complexity-strip"><div class="easy-complexity-item"><span>Scan</span><strong>O(n log k)</strong><p>Each later element causes at most one heap replacement.</p></div><div class="easy-complexity-item"><span>Final ordering</span><strong>O(k log k)</strong><p>Only the selected k values are sorted.</p></div><div class="easy-complexity-item"><span>Extra space</span><strong>O(k)</strong><p>The heap stores exactly k candidates.</p></div></div>
     </section>
 
     <section id="implementation" class="lecture-section">
-      <h2>Python implementation</h2>
-      <div class="problem-code">
-        <div class="problem-code-head"><span>Python</span><button class="copy-code" type="button">Copy</button></div>
-        <pre><code>import heapq
+      <h2>Implementation</h2>
+      <p class="lead easy-lead">Negating every value turns Python's min-heap into the max-heap required by the proof.</p>
+      <div class="easy-code-layout">
+        <div class="problem-code"><div class="problem-code-head"><span>Python</span><button class="copy-code" type="button">Copy</button></div><pre><code>import heapq
 
 
 def k_smallest(a, k):
     if not 0 &lt;= k &lt;= len(a):
-        raise ValueError(&quot;k must satisfy 0 &lt;= k &lt;= len(a)&quot;)
+        raise ValueError("k must satisfy 0 <= k <= len(a)")
     if k == 0:
         return []
 
@@ -89,21 +115,24 @@ def k_smallest(a, k):
     heapq.heapify(heap)
 
     for x in a[k:]:
-        largest_candidate = -heap[0]
-        if x &lt; largest_candidate:
+        largest = -heap[0]
+        if x &lt; largest:
             heapq.heapreplace(heap, -x)
 
     return sorted(-x for x in heap)
 
 
-print(k_smallest([7, 10, 4, 3, 20, 15], 3))</code></pre>
+print(k_smallest([7, 10, 4, 3, 20, 15], 3))
+# [3, 4, 7]</code></pre></div>
+        <div class="easy-code-notes"><span class="easy-kicker">Reading the code</span><h3>The heap stores the invariant</h3><div class="easy-code-note"><b><code>-heap[0]</code></b><p>Because values are negated, the minimum stored number corresponds to the largest real candidate.</p></div><div class="easy-code-note"><b><code>heapreplace</code></b><p>Removes the current cutoff and inserts the improving value in one <code>O(log k)</code> operation.</p></div><div class="easy-code-note"><b>Final <code>sorted</code></b><p>The heap gives the correct set, not sorted output, so only those <code>k</code> values are ordered at the end.</p></div></div>
       </div>
-      <div class="source-card"><h3>Original problem</h3><p>This exercise is adapted from <a href="https://www.geeksforgeeks.org/dsa/k-largestor-smallest-elements-in-an-array/" target="_blank" rel="noopener">Find k largest elements in an array (and its symmetric k-smallest version)</a> on GeeksforGeeks. The statement and exposition on this page are rewritten for the handbook.</p></div>
-      <div class="next-part back-problems"><h3>Back to practice</h3><p>Return to the nine sorting practice problems.</p><a class="next-part-link" href="sorting-problems.html">← Practice Problems</a></div>
+      <p class="easy-source-line">Adapted from the k-smallest variant of <a href="https://www.geeksforgeeks.org/dsa/k-largestor-smallest-elements-in-an-array/" target="_blank" rel="noopener">K largest / smallest elements in an array</a> on GeeksforGeeks. The statement and exposition are rewritten for this handbook.</p>
+      <div class="next-part back-problems"><h3>Back to practice</h3><p>Choose another problem from the Easy, Medium, or Hard sets.</p><a class="next-part-link" href="sorting-problems.html">← Practice Problems</a></div>
     </section>
   </main>
 
   <footer class="lecture-footer"><div>Allan's Handbook of Algorithms</div><div>© 2026 Allan Allemand</div></footer>
   <script src="problems.js"></script>
+  <script src="language-switch.js"></script>
 </body>
 </html>
