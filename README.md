@@ -1,14 +1,8 @@
-# Allan's Handbook of Algorithms — v35
+# Allan's Handbook of Algorithms — v36
 
-Sorting chapter restructuring:
-- `sorting.html` is now a pure contents page.
-- Removed all introductory material from the overview.
-- Removed the Literature section.
-- Added a new unnumbered `Introduction` part before Elementary Comparison Sorts.
-- Added Section 1: `Introduction to Sorting`.
-- Added Section 2: `Applications of Sorting`.
-- Moved the previous introductory material into `sorting-introduction.html`.
-- Added a complete `sorting-applications.html`.
-- Shifted the existing Sorting section numbers from 1–11 to 3–13.
-- Updated old `Course` links to the current `Topics` homepage anchor.
-- Copyright footers remain.
+Changes in this version:
+- `sorting.html` updated so the chapter title hierarchy is clearer: `Sorting` is now larger and `Contents` is smaller.
+- Removed all numbered badges from the Sorting chapter contents page.
+- Added a dedicated emblem-style SVG icon for every section on the Sorting contents page.
+- Kept the grouped structure: Introduction, Elementary Comparison Sorts, Loglinear Comparison Sorts, Sorting Beyond Comparisons, and Order Statistics.
+- Added the new SVG icon files directly into the flat file structure.

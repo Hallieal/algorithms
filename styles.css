@@ -2557,3 +2557,59 @@ th {
     margin-bottom: 34px;
   }
 }
+
+
+/* v36: sorting overview card icons and heading hierarchy */
+.sorting-contents > h1 {
+  font-size: clamp(72px, 8vw, 104px);
+  margin: 0 0 8px;
+}
+
+.sorting-contents > h2 {
+  margin: 0 0 18px;
+  color: #6f7880;
+  font-size: 18px;
+  font-weight: 760;
+  letter-spacing: .02em;
+  text-transform: uppercase;
+}
+
+.section-icon-grid .chapter-card {
+  grid-template-columns: 76px 1fr;
+  align-items: start;
+}
+
+.chapter-card-icon {
+  width: 72px;
+  height: 72px;
+  display: grid;
+  place-items: center;
+  align-self: start;
+}
+
+.chapter-card-icon img {
+  width: 72px;
+  height: 72px;
+  display: block;
+}
+
+.icon-card h3 {
+  margin-top: 2px;
+}
+
+@media (max-width: 760px) {
+  .section-icon-grid .chapter-card {
+    grid-template-columns: 64px 1fr;
+    gap: 16px;
+  }
+
+  .chapter-card-icon,
+  .chapter-card-icon img {
+    width: 60px;
+    height: 60px;
+  }
+
+  .sorting-contents > h1 {
+    font-size: clamp(52px, 13vw, 74px);
+  }
+}
