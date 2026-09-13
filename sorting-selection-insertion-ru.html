@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+
+<html lang="ru">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="Сортировки выбором и вставками: интуиция, корректность, сложность, устойчивость, код на Python и интерактивные примеры." name="description"/>
+<meta content="Сортировки выбором и вставками | Allan's Handbook of Algorithms" property="og:title"/>
+<meta content="Сортировки выбором и вставками с интерактивными примерами, анализом корректности и реализациями на Python." property="og:description"/>
+<meta content="article" property="og:type"/>
+<title>Сортировки выбором и вставками | Allan's Handbook of Algorithms</title>
+<link href="styles.css" rel="stylesheet"/>
+<link href="favicon-32.png" rel="icon" sizes="32x32" type="image/png"/>
+<link href="favicon.png" rel="icon" sizes="64x64" type="image/png"/>
+<link href="apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180"/>
+<link href="sorting-selection-insertion.html" hreflang="en" rel="alternate"/><link href="sorting-selection-insertion-ru.html" hreflang="ru" rel="alternate"/></head>
+<body class="lecture-page">
+<div aria-hidden="true" class="progress-track"><div class="progress-bar" id="reading-progress"></div></div>
+<header class="topbar">
+<a class="brand" href="index-ru.html"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="logo.png"/></span><span class="brand-name">Allan's Handbook of Algorithms</span></a>
+<nav aria-label="Основная навигация" class="topnav">
+<a href="sorting-ru.html">Оглавление сортировок</a>
+<div aria-label="Язык" class="language-switch"><a href="sorting-selection-insertion.html">EN</a><span class="language-separator">·</span><span class="current">RU</span></div></nav>
+</header>
+<aside aria-label="Навигация по разделу" class="sidebar">
+<div class="sidebar-title">Глава 1 · Раздел 3</div>
+<a href="#terms">Префикс и суффикс</a>
+<a href="#selection">Сортировка выбором</a>
+<a href="#insertion">Сортировка вставками</a>
+<a href="#comparison">Сравнение</a>
+<a href="#exercises">Задачи</a>
+</aside>
+<main class="lecture">
+<section class="lecture-hero">
+<div class="chapter-label">Глава 1 · Раздел 3</div>
+<h1>Сортировки выбором и вставками</h1>
+<p class="chapter-topics">
+        Два простых алгоритма сортировки и основные идеи, которыми мы будем пользоваться при их анализе.
+      </p>
+</section>
+<section class="lecture-section" id="terms">
+<h2>Префикс и суффикс</h2>
+<p class="lead">
+        Нам постоянно придётся делить массив на левую и правую части. Поэтому сначала зафиксируем два термина, которые будут использоваться во всей главе.
+      </p>
+<div class="term-grid">
+<div class="term-card">
+<h3>Префикс</h3>
+<p>Префикс — это начальный непрерывный фрагмент последовательности: он всегда начинается с первого элемента.</p>
+<div aria-label="Prefix example" class="term-array">
+<span class="highlight-prefix">2</span>
+<span class="highlight-prefix">5</span>
+<span>3</span>
+<span>8</span>
+<span>1</span>
+</div>
+<p class="caption">Здесь 2, 5 — префикс.</p>
+</div>
+<div class="term-card">
+<h3>Суффикс</h3>
+<p>Суффикс — это конечный непрерывный фрагмент последовательности: он всегда заканчивается последним элементом.</p>
+<div aria-label="Suffix example" class="term-array">
+<span>2</span>
+<span>5</span>
+<span class="highlight-suffix">3</span>
+<span class="highlight-suffix">8</span>
+<span class="highlight-suffix">1</span>
+</div>
+<p class="caption">Здесь 3, 8, 1 — суффикс.</p>
+</div>
+</div>
+</section>
+<section class="lecture-section" id="selection">
+<h2>Сортировка выбором</h2>
+<p class="lead">
+        Сортировка выбором заполняет массив слева направо. Сначала она находит минимальный элемент во всём массиве и ставит его на первое место. Затем ищет минимум среди оставшихся элементов и ставит его на второе место. Процесс повторяется, пока весь массив не окажется отсортирован.
+      </p>
+<p class="lead compact-lead">
+        На шаге <span class="math">i</span>все позиции до <span class="math">i</span> уже окончательно заполнены. Алгоритм ищет минимальный элемент среди
+        <span class="math">a<sub>i</sub>, a<sub>i+1</sub>, …, a<sub>n−1</sub></span>
+        и переносит его в позицию <span class="math">i</span>.
+      </p>
+<div aria-label="Selection Sort steps" class="step-flow">
+<article class="step-item">
+<div class="step-number">1</div>
+<div>
+<h3>Выделяем оставшуюся часть</h3>
+<p>Позиции, уже заполненные слева, больше не изменятся.</p>
+</div>
+</article>
+<article class="step-item">
+<div class="step-number">2</div>
+<div>
+<h3>Находим минимум</h3>
+<p>Просматриваем оставшиеся элементы и запоминаем наименьшее найденное значение.</p>
+</div>
+</article>
+<article class="step-item">
+<div class="step-number">3</div>
+<div>
+<h3>Ставим минимум на место</h3>
+<p>Переносим найденный минимум в первую свободную позицию.</p>
+</div>
+</article>
+<article class="step-item">
+<div class="step-number">4</div>
+<div>
+<h3>Повторяем</h3>
+<p>Ещё одна позиция стала окончательной; применяем ту же процедуру к оставшемуся суффиксу.</p>
+</div>
+</article>
+</div>
+<div class="two-column-block">
+<div class="text-panel">
+<h3>Инвариант цикла</h3>
+<p>
+            После того как заполнены первые <span class="math">i</span> позиций, в них находятся
+            <span class="math">i</span> наименьших элементов массива в отсортированном порядке. Следующий просмотр находит минимальный из оставшихся элементов и ставит его сразу после них.
+          </p>
+<div class="array-state">
+<span class="done">1</span>
+<span class="done">3</span>
+<span class="candidate">7</span>
+<span>4</span>
+<span>8</span>
+<span>5</span>
+</div>
+<p class="caption">Зелёный префикс уже окончателен. Следующий минимум ищется в оставшемся суффиксе.</p>
+</div>
+<div class="proof-panel">
+<h3>Корректность</h3>
+<p><strong>Инициализация.</strong> В начале ещё ни одна позиция не заполнена окончательно.</p>
+<p>
+<strong>Сохранение инварианта.</strong> На каждом шаге минимальный из ещё не размещённых элементов переносится в первую свободную позицию. Поэтому отсортированная часть остаётся корректной и увеличивается на один элемент.
+          </p>
+<p>
+<strong>Завершение.</strong> Когда заполнены все позиции, кроме одной, единственный оставшийся элемент обязан занять последнее место. После этого весь массив отсортирован.
+          </p>
+</div>
+</div>
+<div class="visualizer" data-algorithm="selection">
+<div class="visualizer-head">
+<div>
+<h3>Интерактивный пример</h3>
+<p>
+              Нажимайте <strong>Следующий шаг сортировки</strong> чтобы выполнять алгоритм по одной операции за раз.
+            </p>
+</div>
+<button class="primary-step" data-action="next" type="button">Следующий шаг сортировки →</button>
+</div>
+<div aria-label="Selection Sort visualization" class="bars"></div>
+<div aria-hidden="true" class="legend-row">
+<span><i class="legend-dot fixed-dot"></i>отсортированный префикс</span>
+<span><i class="legend-dot candidate-dot"></i>текущий минимум</span>
+<span><i class="legend-dot active-dot"></i>сравниваемый элемент</span>
+</div>
+<div aria-live="polite" class="step-caption">Нажмите «Следующий шаг сортировки».</div>
+<div class="secondary-controls">
+<button data-action="reset" type="button">Сбросить</button>
+<button data-action="randomize" type="button">Новый массив</button>
+</div>
+</div>
+<div class="code-explainer">
+<div class="annotated-code">
+<div class="code-row"><span class="line-no">1</span><code>def selection_sort(a):</code></div>
+<div class="code-row"><span class="line-no">2</span><code>    n = len(a)</code></div>
+<div class="code-row marked"><span class="line-no">3</span><code>    for i in range(n - 1):</code></div>
+<div class="code-row marked"><span class="line-no">4</span><code>        min_pos = i</code></div>
+<div class="code-row marked"><span class="line-no">5</span><code>        for j in range(i + 1, n):</code></div>
+<div class="code-row marked"><span class="line-no">6</span><code>            if a[j] &lt; a[min_pos]:</code></div>
+<div class="code-row marked"><span class="line-no">7</span><code>                min_pos = j</code></div>
+<div class="code-row marked"><span class="line-no">8</span><code>        a[i], a[min_pos] = a[min_pos], a[i]</code></div>
+<div class="code-row"><span class="line-no">9</span><code>    return a</code></div>
+</div>
+<div class="code-notes">
+<h3>Реализация</h3>
+<div class="code-note-item">
+<span>3</span>
+<p>
+<strong>Строка 3.</strong> Алгоритм заполняет массив слева направо. На этой итерации он определяет, какое значение должно оказаться в позиции <span class="math">i</span>.
+            </p>
+</div>
+<div class="code-note-item">
+<span>4</span>
+<p>
+<strong>Строка 4.</strong> Перед просмотром оставшихся элементов временно предполагаем, что значение, уже стоящее в позиции <span class="math">i</span> — минимальное среди оставшихся.
+            </p>
+</div>
+<div class="code-note-item wide-note">
+<span>5–7</span>
+<p>
+<strong>Строки 5–7.</strong> Просматриваем все последующие элементы. Если встречается меньшее значение, запоминаем его позицию.
+            </p>
+</div>
+<div class="code-note-item">
+<span>8</span>
+<p>
+<strong>Строка 8.</strong> После просмотра найденное минимальное значение переносится в позицию
+              <span class="math">i</span>. Ещё одна позиция теперь заполнена окончательно.
+            </p>
+</div>
+</div>
+</div>
+<div class="subsection">
+<h3>Число сравнений</h3>
+<p>
+          На первом проходе текущий минимум сравнивается с <span class="math">n − 1</span> последующими элементами. На следующем проходе выполняется <span class="math">n − 2</span> сравнений, и так далее.
+        </p>
+<div class="formula-line">
+          (n − 1) + (n − 2) + ··· + 2 + 1 = n(n − 1) / 2
+        </div>
+<p>
+          Следовательно, сортировка выбором выполняет <span class="math">Θ(n<sup>2</sup>)</span> сравнений. Это число не зависит от того, был ли вход уже отсортирован или записан в обратном порядке.
+        </p>
+</div>
+<div class="complexity-strip">
+<div><span>Лучший случай</span><b>Θ(n²)</b><small>тот же порядок просмотров</small></div>
+<div><span>Средний случай</span><b>Θ(n²)</b><small>тот же порядок просмотров</small></div>
+<div><span>Худший случай</span><b>Θ(n²)</b><small>тот же порядок просмотров</small></div>
+<div><span>Дополнительная память</span><b>Θ(1)</b><small>на месте</small></div>
+</div>
+<div class="subsection separated">
+<h3>Устойчивость</h3>
+<p>
+          Алгоритм сортировки называется устойчивым, если элементы с одинаковыми ключами сохраняют взаимный порядок. Приведённая выше сортировка выбором на месте в общем случае неустойчива.
+        </p>
+<div class="stability-example">
+<div class="stability-side">
+<div class="person-card equal-key"><b>Alice</b><span>балл 2</span></div>
+<div class="person-card equal-key"><b>Bob</b><span>балл 2</span></div>
+<div class="person-card"><b>Cara</b><span>балл 1</span></div>
+</div>
+<div class="stability-arrow">→</div>
+<div class="stability-side">
+<div class="person-card"><b>Cara</b><span>балл 1</span></div>
+<div class="person-card reversed"><b>Bob</b><span>балл 2</span></div>
+<div class="person-card reversed"><b>Alice</b><span>балл 2</span></div>
+</div>
+</div>
+<p class="caption">
+          Среди элементов с одинаковым ключом Alice стояла перед Bob, но обмен может поменять их местами.
+        </p>
+</div>
+</section>
+<section class="lecture-section" id="insertion">
+<h2>Сортировка вставками</h2>
+<p class="lead">
+        Сортировка вставками тоже обрабатывает массив слева направо, но использует другую идею. Левая часть всё время поддерживается отсортированной. Очередной элемент берётся из неотсортированной части и вставляется на правильное место среди уже обработанных элементов.
+      </p>
+<div class="two-column-block">
+<div class="text-panel">
+<h3>Инвариант цикла</h3>
+<p>
+            Перед шагом <span class="math">i</span>элементы слева от позиции
+            <span class="math">i</span> уже отсортированы. Текущий элемент вставляется на правильное место внутри этого отсортированного префикса.
+          </p>
+<div class="array-state">
+<span class="done">1</span>
+<span class="done">3</span>
+<span class="done">6</span>
+<span class="candidate">4</span>
+<span>8</span>
+<span>7</span>
+</div>
+<p class="caption">Значение 4 нужно вставить в отсортированный префикс 1, 3, 6.</p>
+</div>
+<div class="proof-panel">
+<h3>Корректность</h3>
+<p><strong>Инициализация.</strong> Один первый элемент уже образует отсортированную последовательность.</p>
+<p>
+<strong>Сохранение инварианта.</strong> Чтобы вставить очередной элемент, все большие элементы непосредственно слева от него сдвигаются на одну позицию вправо. Новый элемент ставится в образовавшееся свободное место.
+          </p>
+<p>
+<strong>Завершение.</strong> Когда вставлены все элементы, весь массив отсортирован.
+          </p>
+</div>
+</div>
+<div class="visualizer" data-algorithm="insertion">
+<div class="visualizer-head">
+<div>
+<h3>Интерактивный пример</h3>
+<p>
+              Нажимайте <strong>Следующий шаг сортировки</strong> чтобы проследить каждый сдвиг и вставку.
+            </p>
+</div>
+<button class="primary-step" data-action="next" type="button">Следующий шаг сортировки →</button>
+</div>
+<div aria-label="Insertion Sort visualization" class="bars"></div>
+<div aria-hidden="true" class="legend-row insertion-legend">
+<span><i class="legend-dot prefix-dot"></i>префикс, с которым сравниваем</span>
+<span><i class="legend-dot current-dot"></i>текущий элемент</span>
+<span><i class="legend-dot compared-dot"></i>сравниваемый элемент</span>
+<span><i class="legend-dot untouched-dot"></i>неизменённый суффикс</span>
+<span><i class="legend-dot fixed-dot"></i>отсортированный префикс после вставки</span>
+</div>
+<div aria-live="polite" class="step-caption">Нажмите «Следующий шаг сортировки».</div>
+<div class="secondary-controls">
+<button data-action="reset" type="button">Сбросить</button>
+<button data-action="randomize" type="button">Новый массив</button>
+</div>
+</div>
+<div class="code-explainer">
+<div class="annotated-code">
+<div class="code-row"><span class="line-no">1</span><code>def insertion_sort(a):</code></div>
+<div class="code-row marked"><span class="line-no">2</span><code>    for i in range(1, len(a)):</code></div>
+<div class="code-row marked"><span class="line-no">3</span><code>        key = a[i]</code></div>
+<div class="code-row marked"><span class="line-no">4</span><code>        j = i - 1</code></div>
+<div class="code-row marked"><span class="line-no">5</span><code>        while j &gt;= 0 and a[j] &gt; key:</code></div>
+<div class="code-row marked"><span class="line-no">6</span><code>            a[j + 1] = a[j]</code></div>
+<div class="code-row marked"><span class="line-no">7</span><code>            j -= 1</code></div>
+<div class="code-row marked"><span class="line-no">8</span><code>        a[j + 1] = key</code></div>
+<div class="code-row"><span class="line-no">9</span><code>    return a</code></div>
+</div>
+<div class="code-notes">
+<h3>Реализация</h3>
+<div class="code-note-item">
+<span>2</span>
+<p>
+<strong>Строка 2.</strong> Первый элемент сам по себе уже отсортирован, поэтому алгоритм начинает со второго и движется слева направо.
+            </p>
+</div>
+<div class="code-note-item wide-note">
+<span>3–4</span>
+<p>
+<strong>Строки 3–4.</strong> Сохраняем значение, которое нужно вставить, и начинаем с элемента непосредственно слева от него.
+            </p>
+</div>
+<div class="code-note-item wide-note">
+<span>5–7</span>
+<p>
+<strong>Строки 5–7.</strong> Пока элемент слева больше вставляемого значения, сдвигаем его на одну позицию вправо. Так освобождается место для сохранённого значения.
+            </p>
+</div>
+<div class="code-note-item">
+<span>8</span>
+<p>
+<strong>Строка 8.</strong> Когда слева больше не остаётся большего элемента, сохранённое значение ставится в освободившуюся позицию.
+            </p>
+</div>
+</div>
+</div>
+<div class="subsection">
+<h3>Лучший и худший случаи</h3>
+<p>
+          Если массив уже отсортирован, внутренний цикл сразу завершается на каждом проходе. Выполняется лишь линейное число проверок и ни одного сдвига, поэтому время работы равно
+          <span class="math">Θ(n)</span>.
+        </p>
+<p>
+          Если массив записан по убыванию, каждый новый элемент должен пройти через весь отсортированный префикс.
+        </p>
+<div class="formula-line">
+          1 + 2 + ··· + (n − 1) = n(n − 1) / 2
+        </div>
+<p>
+          Следовательно, время работы в худшем случае равно <span class="math">Θ(n<sup>2</sup>)</span>.
+        </p>
+</div>
+<div class="subsection">
+<h3>Инверсии</h3>
+<p>
+          Инверсия — это пара позиций <span class="math">i &lt; j</span> для которой более ранний элемент больше более позднего. Каждый сдвиг в сортировке вставками устраняет одну инверсию.
+        </p>
+<p>
+          Если во входе <span class="math">I</span> инверсий, время работы можно точнее записать как
+          <span class="math">Θ(n + I)</span>. Поэтому сортировка вставками особенно эффективна на почти отсортированных массивах.
+        </p>
+</div>
+<div class="complexity-strip">
+<div><span>Лучший случай</span><b>Θ(n)</b><small>уже отсортирован</small></div>
+<div><span>Средний случай</span><b>Θ(n²)</b><small>квадратичное число сдвигов</small></div>
+<div><span>Худший случай</span><b>Θ(n²)</b><small>порядок по убыванию</small></div>
+<div><span>Дополнительная память</span><b>Θ(1)</b><small>на месте</small></div>
+</div>
+<div class="subsection separated">
+<h3>Устойчивость</h3>
+<p>
+          Приведённая реализация устойчива: элемент сдвигается только тогда, когда он строго больше вставляемого значения. Поэтому равные элементы никогда не проходят друг через друга.
+        </p>
+<p>
+          Если бы равные элементы тоже сдвигались, более поздний элемент мог бы оказаться перед более ранним, и сортировка перестала бы быть устойчивой.
+        </p>
+</div>
+</section>
+<section class="lecture-section" id="comparison">
+<h2>Сравнение по основным свойствам</h2>
+<div class="table-wrap">
+<table class="compare-table">
+<thead>
+<tr>
+<th>Свойство</th>
+<th>Сортировка выбором</th>
+<th>Сортировка вставками</th>
+</tr>
+</thead>
+<tbody>
+<tr><td>Время в лучшем случае</td><td>Θ(n²)</td><td>Θ(n)</td></tr>
+<tr><td>Время в среднем случае</td><td>Θ(n²)</td><td>Θ(n²)</td></tr>
+<tr><td>Время в худшем случае</td><td>Θ(n²)</td><td>Θ(n²)</td></tr>
+<tr><td>Дополнительная память</td><td>Θ(1)</td><td>Θ(1)</td></tr>
+<tr><td>Приведённая реализация устойчива</td><td>Нет</td><td>Да</td></tr>
+<tr><td>Адаптируется к почти отсортированному входу</td><td>Нет</td><td>Да</td></tr>
+<tr><td>Перемещения данных</td><td>Не более n − 1 обменов</td><td>До Θ(n²) сдвигов</td></tr>
+</tbody>
+</table>
+</div>
+<div class="exercise-inline">
+<h3>Вопрос</h3>
+<p>
+          Когда сортировка выбором всё ещё может быть полезна, несмотря на квадратичное время даже в лучшем случае?
+        </p>
+<button aria-expanded="false" class="reveal" data-reveal="comparison-answer" type="button">Показать ответ</button>
+<div class="answer-box" hidden="" id="comparison-answer">
+          Сортировка выбором выполняет не более n − 1 обменов. Если запись или перемещение элемента существенно дороже сравнения, малое число обменов может быть полезным, даже несмотря на Θ(n²) сравнений.
+        </div>
+</div>
+</section>
+<section class="lecture-section" id="exercises">
+<h2>Задачи</h2>
+<div class="exercise-list">
+<article class="exercise">
+<div class="exercise-num">1</div>
+<div>
+<h3>Точное число сравнений</h3>
+<p>Сколько сравнений элементов выполняет сортировка выбором для массива длины 8?</p>
+<button aria-expanded="false" class="reveal" data-reveal="ex1" type="button">Показать ответ</button>
+<div class="answer-box" hidden="" id="ex1">
+              7 + 6 + 5 + 4 + 3 + 2 + 1 = 28 сравнений. Начальный порядок элементов на это число не влияет.
+            </div>
+</div>
+</article>
+<article class="exercise">
+<div class="exercise-num">2</div>
+<div>
+<h3>Почти отсортированный вход</h3>
+<p>
+              Массив длины n уже отсортирован, кроме одного элемента, сдвинутого на несколько позиций влево. Какой из двух алгоритмов естественнее выбрать?
+            </p>
+<button aria-expanded="false" class="reveal" data-reveal="ex2" type="button">Показать ответ</button>
+<div class="answer-box" hidden="" id="ex2">
+              Сортировку вставками. Инверсий мало, поэтому потребуется лишь небольшое число сдвигов. Сортировка выбором всё равно выполнит Θ(n²) сравнений.
+            </div>
+</div>
+</article>
+<article class="exercise">
+<div class="exercise-num">3</div>
+<div>
+<h3>Устойчивость</h3>
+<p>
+              Почему сортировка вставками стала бы неустойчивой, если бы она сдвигала и элементы, равные вставляемому?
+            </p>
+<button aria-expanded="false" class="reveal" data-reveal="ex3" type="button">Показать ответ</button>
+<div class="answer-box" hidden="" id="ex3">
+              Более раннее вхождение равного значения могло бы сдвинуться вправо, пропустив вперёд более позднее. Исходный взаимный порядок изменился бы.
+            </div>
+</div>
+</article>
+<article class="exercise">
+<div class="exercise-num">4</div>
+<div>
+<h3>Сортировка по убыванию</h3>
+<p>Что нужно изменить в двух алгоритмах, чтобы сортировать от большего к меньшему?</p>
+<button aria-expanded="false" class="reveal" data-reveal="ex4" type="button">Показать ответ</button>
+<div class="answer-box" hidden="" id="ex4">
+              Сортировка выбором должна каждый раз выбирать максимальный из оставшихся элементов вместо минимального. Сортировка вставками должна сдвигать значения, меньшие вставляемого.
+            </div>
+</div>
+</article>
+</div>
+<div class="next-part">
+<h3>Следующий раздел: пузырьковая сортировка</h3>
+<p>
+          Дальше — пузырьковая сортировка, соседние обмены и связь между обменами и инверсиями.
+        </p>
+<a class="next-part-link" href="sorting-bubble-ru.html">Пузырьковая сортировка →</a>
+</div>
+<div class="next-part">
+<h3>Предыдущий раздел</h3>
+<p>
+          Вернуться к применениям сортировки.
+        </p>
+<a class="next-part-link" href="sorting-applications-ru.html">← Применения сортировки</a>
+</div>
+</section>
+</main>
+<footer class="lecture-footer">
+<div>Allan's Handbook of Algorithms</div>
+<div>© 2026 Allan Allemand</div>
+</footer>
+<script>
+(() => {
+  "use strict";
+
+  const DEFAULTS = {
+    selection: [7, 3, 8, 2, 6, 4, 9, 1],
+    insertion: [7, 3, 8, 2, 6, 4, 9, 1]
+  };
+
+  function range(n) {
+    return Array.from({ length: n }, (_, i) => i);
+  }
+
+  function randomArray() {
+    const pool = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+    for (let i = pool.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [pool[i], pool[j]] = [pool[j], pool[i]];
+    }
+    return pool.slice(0, 8);
+  }
+
+  function state(
+    array,
+    fixed,
+    candidate,
+    active,
+    text,
+    prefix = [],
+    current = [],
+    compared = []
+  ) {
+    return {
+      array: [...array],
+      fixed: [...fixed],
+      candidate: [...candidate],
+      active: [...active],
+      prefix: [...prefix],
+      current: [...current],
+      compared: [...compared],
+      text
+    };
+  }
+
+  function selectionSteps(input) {
+    const a = [...input];
+    const steps = [
+      state(a, [], [], [], "Отсортированный префикс пуст.")
+    ];
+
+    for (let i = 0; i < a.length - 1; i++) {
+      let minPos = i;
+
+      // Start of a pass: previous prefix is green; new candidate is purple.
+      steps.push(
+        state(
+          a,
+          range(i),
+          [minPos],
+          [],
+          `Начинаем следующий проход. ${a[minPos]} — текущий минимум оставшегося суффикса.`
+        )
+      );
+
+      for (let j = i + 1; j < a.length; j++) {
+        // Comparison: candidate is purple; only j is orange.
+        steps.push(
+          state(
+            a,
+            range(i),
+            [minPos],
+            [j],
+            `Сравниваем ${a[j]} с текущим минимумом ${a[minPos]}.`
+          )
+        );
+
+        if (a[j] < a[minPos]) {
+          minPos = j;
+
+          // New minimum: no orange element remains.
+          steps.push(
+            state(
+              a,
+              range(i),
+              [minPos],
+              [],
+              `${a[minPos]} становится новым минимумом.`
+            )
+          );
+        }
+      }
+
+      const previousValue = a[i];
+      const minimum = a[minPos];
+
+      if (minPos !== i) {
+        [a[i], a[minPos]] = [a[minPos], a[i]];
+      }
+
+      // IMPORTANT:
+      // the pass is finished here.
+      // The completed prefix is green; every remaining element is plain teal.
+      // No candidate and no active/orange element.
+      steps.push(
+        state(
+          a,
+          range(i + 1),
+          [],
+          [],
+          minPos === i
+            ? `${minimum} уже стоит на правильном месте. Проход завершён.`
+            : `${minimum} переносится в первую свободную позицию. Проход завершён.`
+        )
+      );
+    }
+
+    steps.push(
+      state(a, range(a.length), [], [], "Массив отсортирован.")
+    );
+
+    return steps;
+  }
+
+  function insertionSteps(input) {
+    const a = [...input];
+    const steps = [
+      state(a, [0], [], [], "Первый элемент уже отсортирован.")
+    ];
+
+    for (let i = 1; i < a.length; i++) {
+      let pos = i;
+      const movingValue = a[pos];
+
+      // The original prefix for this outer iteration is positions 0..i-1.
+      // It stays yellow during the whole insertion process.
+      const comparisonPrefix = range(i);
+
+      steps.push(
+        state(
+          a,
+          [],
+          [],
+          [],
+          `Берём ${movingValue} из неотсортированной части и вставляем в отсортированный префикс.`,
+          comparisonPrefix,
+          [pos],
+          []
+        )
+      );
+
+      while (pos > 0) {
+        const leftPos = pos - 1;
+        const leftValue = a[leftPos];
+        const currentValue = a[pos];
+
+        // Comparison frame:
+        // current stays purple; compared neighbor is orange;
+        // the rest of the original prefix remains yellow.
+        steps.push(
+          state(
+            a,
+            [],
+            [],
+            [],
+            `Сравниваем ${currentValue} с ${leftValue} слева от него.`,
+            comparisonPrefix,
+            [pos],
+            [leftPos]
+          )
+        );
+
+        if (leftValue <= currentValue) {
+          break;
+        }
+
+        // Adjacent swap. The moving value itself travels left,
+        // so no temporary duplicates can appear.
+        [a[leftPos], a[pos]] = [a[pos], a[leftPos]];
+        pos = leftPos;
+
+        steps.push(
+          state(
+            a,
+            [],
+            [],
+            [],
+            `${movingValue} сдвигается на одну позицию влево.`,
+            comparisonPrefix,
+            [pos],
+            []
+          )
+        );
+      }
+
+      // Only when insertion is complete does the processed prefix become green.
+      steps.push(
+        state(
+          a,
+          range(i + 1),
+          [],
+          [],
+          `${movingValue} теперь стоит на правильном месте внутри отсортированного префикса.`
+        )
+      );
+    }
+
+    steps.push(
+      state(a, range(a.length), [], [], "Массив отсортирован.")
+    );
+
+    return steps;
+  }
+
+  function buildSteps(type, array) {
+    if (type === "selection") return selectionSteps(array);
+    if (type === "insertion") return insertionSteps(array);
+    return [];
+  }
+
+  function renderVisualizer(viz) {
+    const step = viz._steps[viz._index];
+    const bars = viz.querySelector(".bars");
+    const caption = viz.querySelector(".step-caption");
+
+    bars.replaceChildren();
+
+    step.array.forEach((value, index) => {
+      const bar = document.createElement("div");
+      bar.className = "bar";
+      bar.style.setProperty("--value", value);
+      bar.textContent = value;
+
+      // Visual priority.
+      // Selection Sort keeps the original v7 colors:
+      // fixed = green, candidate = purple, active = orange.
+      //
+      // Insertion Sort adds:
+      // prefix = yellow, current = purple, compared = orange.
+      if (step.fixed.includes(index)) {
+        bar.classList.add("fixed");
+      } else if (step.current.includes(index)) {
+        bar.classList.add("current");
+      } else if (step.compared.includes(index)) {
+        bar.classList.add("compared");
+      } else if (step.candidate.includes(index)) {
+        bar.classList.add("candidate");
+      } else if (step.active.includes(index)) {
+        bar.classList.add("active");
+      } else if (step.prefix.includes(index)) {
+        bar.classList.add("prefix");
+      }
+
+      bars.appendChild(bar);
+    });
+
+    caption.textContent = step.text;
+  }
+
+  function resetVisualizer(viz, array) {
+    viz._array = [...array];
+    viz._steps = buildSteps(viz.dataset.algorithm, viz._array);
+    viz._index = 0;
+    renderVisualizer(viz);
+  }
+
+  document.querySelectorAll(".visualizer").forEach(viz => {
+    const type = viz.dataset.algorithm;
+    resetVisualizer(viz, DEFAULTS[type]);
+
+    viz.addEventListener("click", event => {
+      const button = event.target.closest("button[data-action]");
+      if (!button) return;
+
+      const action = button.dataset.action;
+
+      if (action === "next") {
+        viz._index = Math.min(viz._index + 1, viz._steps.length - 1);
+        renderVisualizer(viz);
+      } else if (action === "reset") {
+        resetVisualizer(viz, DEFAULTS[type]);
+      } else if (action === "randomize") {
+        resetVisualizer(viz, randomArray());
+      }
+    });
+  });
+
+  document.addEventListener("click", event => {
+    const button = event.target.closest("button[data-reveal]");
+    if (!button) return;
+
+    const target = document.getElementById(button.dataset.reveal);
+    if (!target) return;
+
+    target.hidden = !target.hidden;
+    button.setAttribute("aria-expanded", String(!target.hidden));
+    button.textContent = target.hidden ? "Показать ответ" : "Скрыть ответ";
+  });
+
+  const sidebarLinks = [...document.querySelectorAll(".sidebar a")];
+  const observedSections = sidebarLinks
+    .map(link => document.querySelector(link.getAttribute("href")))
+    .filter(Boolean);
+
+  if ("IntersectionObserver" in window && observedSections.length) {
+    const observer = new IntersectionObserver(entries => {
+      const visible = entries
+        .filter(entry => entry.isIntersecting)
+        .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+
+      if (!visible) return;
+
+      sidebarLinks.forEach(link => link.classList.remove("active"));
+
+      const current = sidebarLinks.find(
+        link => link.getAttribute("href") === `#${visible.target.id}`
+      );
+
+      if (current) current.classList.add("active");
+    }, {
+      rootMargin: "-20% 0px -65% 0px",
+      threshold: [0, 0.1, 0.3, 0.6]
+    });
+
+    observedSections.forEach(section => observer.observe(section));
+  }
+
+  function updateProgress() {
+    const progress = document.getElementById("reading-progress");
+    if (!progress) return;
+
+    const height = document.documentElement.scrollHeight - window.innerHeight;
+    const ratio = height > 0 ? window.scrollY / height : 0;
+    progress.style.width = `${Math.max(0, Math.min(1, ratio)) * 100}%`;
+  }
+
+  updateProgress();
+  window.addEventListener("scroll", updateProgress, { passive: true });
+  window.addEventListener("resize", updateProgress);
+})();
+</script>
+<script src="language-switch.js"></script>
+</body>
+</html>

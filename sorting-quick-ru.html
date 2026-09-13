@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 
-<html lang="en">
+<html lang="ru">
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1" name="viewport"/>
-<meta content="Quick Sort: pivot selection, partitioning, correctness, recursion, complexity, stability, Python, and interactive examples." name="description"/>
-<meta content="Quick Sort | Allan's Handbook of Algorithms" property="og:title"/>
-<meta content="Quick Sort with interactive partitioning, recursive structure, correctness, pivot choice, complexity analysis, and Python code." property="og:description"/>
+<meta content="Быстрая сортировка: выбор опорного элемента, разбиение, корректность, рекурсия, сложность, устойчивость, Python и интерактивные примеры." name="description"/>
+<meta content="Быстрая сортировка | Allan's Handbook of Algorithms" property="og:title"/>
+<meta content="Быстрая сортировка с интерактивным разбиением, структурой рекурсии, доказательством корректности, выбором опорного элемента и анализом сложности." property="og:description"/>
 <meta content="article" property="og:type"/>
-<title>Quick Sort | Allan's Handbook of Algorithms</title>
+<title>Быстрая сортировка | Allan's Handbook of Algorithms</title>
 <link href="styles.css" rel="stylesheet"/>
 <style id="quick-page-styles">
   /* =========================================================
@@ -924,71 +924,67 @@
 <body class="lecture-page">
 <div aria-hidden="true" class="progress-track"><div class="progress-bar" id="reading-progress"></div></div>
 <header class="topbar">
-<a class="brand" href="index.html"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="logo.png"/></span><span class="brand-name">Allan's Handbook of Algorithms</span></a>
-<nav aria-label="Primary navigation" class="topnav">
-<a href="sorting.html">Sorting overview</a>
-<div aria-label="Language" class="language-switch"><span class="current">EN</span><span class="language-separator">·</span><a href="sorting-quick-ru.html">RU</a></div></nav>
+<a class="brand" href="index-ru.html"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="logo.png"/></span><span class="brand-name">Allan's Handbook of Algorithms</span></a>
+<nav aria-label="Основная навигация" class="topnav">
+<a href="sorting-ru.html">Оглавление сортировок</a>
+<div aria-label="Язык" class="language-switch"><a href="sorting-quick.html">EN</a><span class="language-separator">·</span><span class="current">RU</span></div></nav>
 </header>
-<aside aria-label="Section navigation" class="sidebar">
-<div class="sidebar-title">Chapter 1 · Section 6</div>
-<a href="#idea">Pivot and partition</a>
-<a href="#correctness">Correctness</a>
-<a href="#partition-demo">Interactive partition</a>
-<a href="#recursion">Recursive structure</a>
-<a href="#implementation">Implementation</a>
-<a href="#pivot-choice">Pivot choice</a>
-<a href="#complexity">Complexity</a>
-<a href="#properties">Memory and stability</a>
-<a href="#comparison">Merge Sort vs Quick Sort</a>
-<a href="#comparison-limit">Can comparison sorting be faster?</a>
-<a href="#exercises">Exercises</a>
+<aside aria-label="Навигация по разделу" class="sidebar">
+<div class="sidebar-title">Глава 1 · Раздел 6</div>
+<a href="#idea">Опорный элемент и разбиение</a>
+<a href="#correctness">Корректность</a>
+<a href="#partition-demo">Интерактивное разбиение</a>
+<a href="#recursion">Структура рекурсии</a>
+<a href="#implementation">Реализация</a>
+<a href="#pivot-choice">Выбор опорного элемента</a>
+<a href="#complexity">Сложность</a>
+<a href="#properties">Память и устойчивость</a>
+<a href="#comparison">Сортировка слиянием и быстрая сортировка</a>
+<a href="#comparison-limit">Можно ли сортировать сравнениями быстрее?</a>
+<a href="#exercises">Задачи</a>
 </aside>
 <main class="lecture">
 <section class="lecture-hero">
-<div class="chapter-label">Chapter 1 · Section 6</div>
-<h1>Quick Sort</h1>
+<div class="chapter-label">Глава 1 · Раздел 6</div>
+<h1>Быстрая сортировка</h1>
 <p class="chapter-topics">
-        Choose a pivot, partition around it, and recursively sort the two sides.
+        Выбираем опорный элемент, разбиваем массив относительно него и рекурсивно сортируем две получившиеся части.
       </p>
 </section>
 <section class="lecture-section" id="idea">
-<h2>Pivot and partition</h2>
+<h2>Опорный элемент и разбиение</h2>
 <p class="lead">
-        Quick Sort organizes the array around one chosen element, called the <em>pivot</em>.
-        Every other element is placed on the correct side of the pivot, and the two resulting parts
-        are sorted recursively.
+        Быстрая сортировка организует массив относительно одного выбранного элемента — <em>опорного элемента</em>. Все остальные элементы распределяются по нужную сторону от него, после чего две части сортируются рекурсивно.
       </p>
 <div class="quick-principle">
 <div class="quick-principle-symbol">p</div>
 <div>
-<h3>The pivot creates a boundary</h3>
+<h3>Опорный элемент задаёт границу</h3>
 <p>
-            After partitioning, every element in the left part is at most the pivot,
-            and every element in the right part is greater than the pivot.
-            The pivot therefore belongs between the two parts in the final sorted order.
+            После разбиения каждый элемент левой части не больше опорного, а каждый элемент правой части больше него. Значит, в итоговом отсортированном массиве опорный элемент должен стоять между этими двумя частями.
           </p>
 </div>
 </div>
 <div class="quick-step-grid">
 <article class="quick-step">
 <div class="quick-step-number">1</div>
-<h3>Choose a pivot</h3>
-<p>In our educational implementation, the first element is used as the pivot.</p>
+<h3>Выбрать опорный элемент</h3>
+<p>В учебной реализации в качестве опорного используется первый элемент массива.</p>
 </article>
 <article class="quick-step">
 <div class="quick-step-number">2</div>
-<h3>Partition</h3>
-<p>Put every remaining element into the left part if it is at most the pivot, otherwise into the right part.</p>
+<h3>Разбить</h3>
+<p>Каждый оставшийся элемент отправить в левую часть, если он не больше опорного, и в правую — иначе.</p>
 </article>
 <article class="quick-step">
 <div class="quick-step-number">3</div>
-<h3>Sort recursively</h3>
-<p>Apply Quick Sort independently to the left and right parts.</p>
+<h3>Отсортировать рекурсивно</h3>
+<p>Независимо применить быструю сортировку к левой и правой частям.</p>
 </article>
 <article class="quick-step">
 <div class="quick-step-number">4</div>
-<h3>Combine</h3>
-<p>Concatenate the sorted left part, the pivot, and the sorted right part.</p>
+<h3>Объединить</h3>
+<p>Соединить отсортированную левую часть, опорный элемент и отсортированную правую часть.</p>
 </article>
 </div>
 <div class="partition-static">
@@ -1001,20 +997,20 @@
 <span class="partition-cell">8</span>
 <span class="partition-cell">6</span>
 </div>
-<div class="partition-static-arrow">partition around pivot = 5</div>
+<div class="partition-static-arrow">разбиение относительно опорного элемента = 5</div>
 <div class="partition-static-output">
 <div class="partition-group left-group">
-<span class="partition-group-label">≤ pivot</span>
+<span class="partition-group-label">≤ опорного</span>
 <span class="partition-cell">3</span>
 <span class="partition-cell">1</span>
 <span class="partition-cell">4</span>
 </div>
 <div class="partition-group pivot-group">
-<span class="partition-group-label">pivot</span>
+<span class="partition-group-label">опорного элемента</span>
 <span class="partition-cell">5</span>
 </div>
 <div class="partition-group right-group">
-<span class="partition-group-label">&gt; pivot</span>
+<span class="partition-group-label">&gt; опорного</span>
 <span class="partition-cell">7</span>
 <span class="partition-cell">8</span>
 <span class="partition-cell">6</span>
@@ -1023,15 +1019,13 @@
 </div>
 </section>
 <section class="lecture-section" id="correctness">
-<h2>Why Quick Sort is correct</h2>
+<h2>Почему быстрая сортировка корректна</h2>
 <div class="quick-boundary-card">
 <div class="quick-boundary-symbol">≤ | &gt;</div>
 <div>
-<h3>The partition property</h3>
+<h3>Свойство разбиения</h3>
 <p>
-            Partitioning establishes the only boundary we need:
-            every value in the left part is at most the pivot,
-            while every value in the right part is greater than the pivot.
+            Разбиение создаёт ровно ту границу, которая нам нужна: каждое значение слева не больше опорного, а каждое значение справа больше него.
           </p>
 </div>
 </div>
@@ -1039,116 +1033,108 @@
 <article class="quick-proof-step">
 <span>1</span>
 <div>
-<h3>Base case</h3>
+<h3>База рекурсии</h3>
 <p>
-              An array containing zero or one element is already sorted.
-              Quick Sort returns it immediately.
+              Массив из нуля или одного элемента уже отсортирован. Быстрая сортировка сразу возвращает его.
             </p>
 </div>
 </article>
 <article class="quick-proof-step">
 <span>2</span>
 <div>
-<h3>Induction assumption</h3>
+<h3>Индукционное предположение</h3>
 <p>
-              Assume that Quick Sort correctly sorts every array shorter than the current one.
-              Both partitions are shorter because the pivot itself is removed from them.
+              Предположим, что быстрая сортировка корректно сортирует любой массив, короче текущего. Обе части короче исходного массива, потому что опорный элемент в них не входит.
             </p>
 </div>
 </article>
 <article class="quick-proof-step">
 <span>3</span>
 <div>
-<h3>Recursive calls</h3>
+<h3>Рекурсивные вызовы</h3>
 <p>
-              By the induction assumption, the recursive call correctly sorts the left part
-              and the recursive call correctly sorts the right part.
+              По индукционному предположению один рекурсивный вызов корректно сортирует левую часть, а другой — правую.
             </p>
 </div>
 </article>
 <article class="quick-proof-step">
 <span>4</span>
 <div>
-<h3>Concatenation</h3>
+<h3>Объединение</h3>
 <p>
-              Every element of the sorted left part is at most the pivot, and every element of the sorted right part
-              is greater than the pivot. So the three blocks can be placed next to one another without creating
-              an inversion across their boundaries.
+              Каждый элемент отсортированной левой части не больше опорного, а каждый элемент отсортированной правой части больше него. Поэтому три блока можно поставить подряд, не создавая инверсии на границах.
             </p>
 <div aria-label="Sorted left plus pivot plus sorted right gives a sorted array" class="quick-concat-formula">
-<span class="quick-concat-left">sorted left</span>
+<span class="quick-concat-left">отсортированная левая часть</span>
 <b>+</b>
-<span class="quick-concat-pivot">pivot</span>
+<span class="quick-concat-pivot">опорного элемента</span>
 <b>+</b>
-<span class="quick-concat-right">sorted right</span>
+<span class="quick-concat-right">отсортированная правая часть</span>
 <b>→</b>
-<span class="quick-concat-result">sorted array</span>
+<span class="quick-concat-result">отсортированный массив</span>
 </div>
 </div>
 </article>
 </div>
 </section>
 <section class="lecture-section" id="partition-demo">
-<h2>Interactive partition</h2>
+<h2>Интерактивное разбиение</h2>
 <div class="partition-demo" id="quick-partition-demo">
 <div class="visualizer-head">
 <div>
-<h3>Classify one element at a time</h3>
+<h3>Распределяем элементы по одному</h3>
 <p>
-              The first element is the pivot. Press <strong>Next partition step</strong>.
-              The current element is orange; processed elements move into the blue or green group.
+              Первый элемент — опорный. Нажимайте <strong>Следующий шаг разбиения</strong>. Текущий элемент отмечен оранжевым; обработанные элементы переходят в синюю или зелёную группу.
             </p>
 </div>
-<button class="primary-step" data-action="next-partition" type="button">Next partition step →</button>
+<button class="primary-step" data-action="next-partition" type="button">Следующий шаг разбиения →</button>
 </div>
 <div class="partition-board">
 <div class="partition-demo-group input-group">
-<span class="partition-demo-title">Input</span>
+<span class="partition-demo-title">Вход</span>
 <div class="partition-demo-array" data-role="partition-input"></div>
 </div>
 <div class="partition-demo-group">
-<span class="partition-demo-title">Left: ≤ pivot</span>
+<span class="partition-demo-title">Слева: ≤ опорного</span>
 <div class="partition-demo-array" data-role="partition-left"></div>
 </div>
 <div class="partition-demo-group">
-<span class="partition-demo-title">Right: &gt; pivot</span>
+<span class="partition-demo-title">Справа: &gt; опорного</span>
 <div class="partition-demo-array" data-role="partition-right"></div>
 </div>
 </div>
 <div aria-hidden="true" class="legend-row">
-<span><i class="legend-dot quick-pivot-dot"></i>pivot</span>
-<span><i class="legend-dot quick-current-dot"></i>current element</span>
-<span><i class="legend-dot quick-left-dot"></i>left partition</span>
-<span><i class="legend-dot quick-right-dot"></i>right partition</span>
+<span><i class="legend-dot quick-pivot-dot"></i>опорного элемента</span>
+<span><i class="legend-dot quick-current-dot"></i>текущий элемент</span>
+<span><i class="legend-dot quick-left-dot"></i>левая часть</span>
+<span><i class="legend-dot quick-right-dot"></i>правая часть</span>
 </div>
 <div aria-live="polite" class="step-caption" data-role="partition-caption">
-          The pivot is 5. Start with the next element.
+          Опорный элемент равен 5. Начинаем со следующего элемента.
         </div>
 <div class="secondary-controls">
-<button data-action="reset-partition" type="button">Reset</button>
-<button data-action="new-partition" type="button">New array</button>
+<button data-action="reset-partition" type="button">Сбросить</button>
+<button data-action="new-partition" type="button">Новый массив</button>
 </div>
 </div>
 </section>
 <section class="lecture-section" id="recursion">
-<h2>Recursive structure</h2>
+<h2>Структура рекурсии</h2>
 <p class="lead">
-        Partitioning solves only one part of the problem: it places the pivot between two groups.
-        The two groups are still unsorted, so Quick Sort applies the same procedure to each of them.
+        Разбиение решает только часть задачи: опорный элемент оказывается между двумя группами. Сами группы пока не отсортированы, поэтому к каждой из них применяется та же процедура.
       </p>
 <div class="quick-trace">
-<h3>Follow the recursive calls</h3>
+<h3>Проследим рекурсивные вызовы</h3>
 <p class="quick-trace-static-intro">
-          The complete trace for <code>[5, 7, 3, 1, 4, 8, 6]</code> is shown below.
-          Every stage has the same width; recursion depth is shown by the badge rather than by narrowing or indenting the card.
+          Полная трассировка для <code>[5, 7, 3, 1, 4, 8, 6]</code> показана ниже. Все этапы имеют одинаковую ширину; глубина рекурсии указана в отдельной метке, а не с помощью сужения или отступов.
         </p>
 <div class="quick-trace-stages static-trace">
 <article class="quick-trace-stage">
 <div class="quick-trace-stage-header">
-<span class="quick-trace-stage-number">stage 1</span>
-<div class="quick-trace-depth">recursion depth 0</div>
+<span class="quick-trace-stage-number">этап 1</span>
+<div class="quick-trace-depth">глубина рекурсии 0</div>
 </div>
-<p class="quick-trace-stage-type">Partition this subarray</p>
+<p class="quick-trace-stage-type">Разбиваем этот подмассив</p>
 <div class="quick-trace-array">
 <span class="trace-pivot">5</span><span>7</span><span>3</span><span>1</span><span>4</span><span>8</span><span>6</span>
 </div>
@@ -1157,128 +1143,127 @@
 <span class="trace-pivot">5</span>
 <span class="trace-right">7</span><span class="trace-right">8</span><span class="trace-right">6</span>
 </div>
-<p class="quick-trace-stage-description">Partition [5, 7, 3, 1, 4, 8, 6] around pivot 5.</p>
+<p class="quick-trace-stage-description">Разбиваем [5, 7, 3, 1, 4, 8, 6] относительно опорного элемента 5.</p>
 </article>
 <article class="quick-trace-stage">
 <div class="quick-trace-stage-header">
-<span class="quick-trace-stage-number">stage 2</span>
-<div class="quick-trace-depth">recursion depth 1</div>
+<span class="quick-trace-stage-number">этап 2</span>
+<div class="quick-trace-depth">глубина рекурсии 1</div>
 </div>
-<p class="quick-trace-stage-type">Partition the left subarray</p>
+<p class="quick-trace-stage-type">Разбиваем левый подмассив</p>
 <div class="quick-trace-array">
 <span class="trace-pivot">3</span><span>1</span><span>4</span>
 </div>
 <div class="quick-trace-groups">
 <span class="trace-left">1</span><span class="trace-pivot">3</span><span class="trace-right">4</span>
 </div>
-<p class="quick-trace-stage-description">Partition [3, 1, 4] around pivot 3.</p>
+<p class="quick-trace-stage-description">Разбиваем [3, 1, 4] относительно опорного элемента 3.</p>
 </article>
 <article class="quick-trace-stage is-base">
 <div class="quick-trace-stage-header">
-<span class="quick-trace-stage-number">stage 3</span>
-<div class="quick-trace-depth">recursion depth 2</div>
+<span class="quick-trace-stage-number">этап 3</span>
+<div class="quick-trace-depth">глубина рекурсии 2</div>
 </div>
-<p class="quick-trace-stage-type">Base case</p>
+<p class="quick-trace-stage-type">База рекурсии</p>
 <div class="quick-trace-groups"><span class="trace-result">1</span></div>
-<p class="quick-trace-stage-description">[1] is already sorted.</p>
+<p class="quick-trace-stage-description">[1] уже отсортирован.</p>
 </article>
 <article class="quick-trace-stage is-base">
 <div class="quick-trace-stage-header">
-<span class="quick-trace-stage-number">stage 4</span>
-<div class="quick-trace-depth">recursion depth 2</div>
+<span class="quick-trace-stage-number">этап 4</span>
+<div class="quick-trace-depth">глубина рекурсии 2</div>
 </div>
-<p class="quick-trace-stage-type">Base case</p>
+<p class="quick-trace-stage-type">База рекурсии</p>
 <div class="quick-trace-groups"><span class="trace-result">4</span></div>
-<p class="quick-trace-stage-description">[4] is already sorted.</p>
+<p class="quick-trace-stage-description">[4] уже отсортирован.</p>
 </article>
 <article class="quick-trace-stage is-return">
 <div class="quick-trace-stage-header">
-<span class="quick-trace-stage-number">stage 5</span>
-<div class="quick-trace-depth">recursion depth 1</div>
+<span class="quick-trace-stage-number">этап 5</span>
+<div class="quick-trace-depth">глубина рекурсии 1</div>
 </div>
-<p class="quick-trace-stage-type">Return from the left recursive call</p>
+<p class="quick-trace-stage-type">Возвращаемся из левого рекурсивного вызова</p>
 <div class="quick-trace-groups">
 <span class="trace-left">1</span><span class="trace-pivot">3</span><span class="trace-right">4</span>
 </div>
-<div class="quick-trace-result-label">combined result</div>
+<div class="quick-trace-result-label">объединённый результат</div>
 <div class="quick-trace-groups">
 <span class="trace-result">1</span><span class="trace-result">3</span><span class="trace-result">4</span>
 </div>
-<p class="quick-trace-stage-description">The left side of the original problem is now sorted.</p>
+<p class="quick-trace-stage-description">Левая часть исходной задачи теперь отсортирована.</p>
 </article>
 <article class="quick-trace-stage">
 <div class="quick-trace-stage-header">
-<span class="quick-trace-stage-number">stage 6</span>
-<div class="quick-trace-depth">recursion depth 1</div>
+<span class="quick-trace-stage-number">этап 6</span>
+<div class="quick-trace-depth">глубина рекурсии 1</div>
 </div>
-<p class="quick-trace-stage-type">Partition the right subarray</p>
+<p class="quick-trace-stage-type">Разбиваем правый подмассив</p>
 <div class="quick-trace-array">
 <span class="trace-pivot">7</span><span>8</span><span>6</span>
 </div>
 <div class="quick-trace-groups">
 <span class="trace-left">6</span><span class="trace-pivot">7</span><span class="trace-right">8</span>
 </div>
-<p class="quick-trace-stage-description">Partition [7, 8, 6] around pivot 7.</p>
+<p class="quick-trace-stage-description">Разбиваем [7, 8, 6] относительно опорного элемента 7.</p>
 </article>
 <article class="quick-trace-stage is-base">
 <div class="quick-trace-stage-header">
-<span class="quick-trace-stage-number">stage 7</span>
-<div class="quick-trace-depth">recursion depth 2</div>
+<span class="quick-trace-stage-number">этап 7</span>
+<div class="quick-trace-depth">глубина рекурсии 2</div>
 </div>
-<p class="quick-trace-stage-type">Base case</p>
+<p class="quick-trace-stage-type">База рекурсии</p>
 <div class="quick-trace-groups"><span class="trace-result">6</span></div>
-<p class="quick-trace-stage-description">[6] is already sorted.</p>
+<p class="quick-trace-stage-description">[6] уже отсортирован.</p>
 </article>
 <article class="quick-trace-stage is-base">
 <div class="quick-trace-stage-header">
-<span class="quick-trace-stage-number">stage 8</span>
-<div class="quick-trace-depth">recursion depth 2</div>
+<span class="quick-trace-stage-number">этап 8</span>
+<div class="quick-trace-depth">глубина рекурсии 2</div>
 </div>
-<p class="quick-trace-stage-type">Base case</p>
+<p class="quick-trace-stage-type">База рекурсии</p>
 <div class="quick-trace-groups"><span class="trace-result">8</span></div>
-<p class="quick-trace-stage-description">[8] is already sorted.</p>
+<p class="quick-trace-stage-description">[8] уже отсортирован.</p>
 </article>
 <article class="quick-trace-stage is-return">
 <div class="quick-trace-stage-header">
-<span class="quick-trace-stage-number">stage 9</span>
-<div class="quick-trace-depth">recursion depth 1</div>
+<span class="quick-trace-stage-number">этап 9</span>
+<div class="quick-trace-depth">глубина рекурсии 1</div>
 </div>
-<p class="quick-trace-stage-type">Return from the right recursive call</p>
+<p class="quick-trace-stage-type">Возвращаемся из правого рекурсивного вызова</p>
 <div class="quick-trace-groups">
 <span class="trace-left">6</span><span class="trace-pivot">7</span><span class="trace-right">8</span>
 </div>
-<div class="quick-trace-result-label">combined result</div>
+<div class="quick-trace-result-label">объединённый результат</div>
 <div class="quick-trace-groups">
 <span class="trace-result">6</span><span class="trace-result">7</span><span class="trace-result">8</span>
 </div>
-<p class="quick-trace-stage-description">The right side of the original problem is now sorted.</p>
+<p class="quick-trace-stage-description">Правая часть исходной задачи теперь отсортирована.</p>
 </article>
 <article class="quick-trace-stage is-return">
 <div class="quick-trace-stage-header">
-<span class="quick-trace-stage-number">stage 10</span>
-<div class="quick-trace-depth">recursion depth 0</div>
+<span class="quick-trace-stage-number">этап 10</span>
+<div class="quick-trace-depth">глубина рекурсии 0</div>
 </div>
-<p class="quick-trace-stage-type">Return from the original call</p>
+<p class="quick-trace-stage-type">Возвращаемся из исходного вызова</p>
 <div class="quick-trace-groups">
 <span class="trace-left">1</span><span class="trace-left">3</span><span class="trace-left">4</span>
 <span class="trace-pivot">5</span>
 <span class="trace-right">6</span><span class="trace-right">7</span><span class="trace-right">8</span>
 </div>
-<div class="quick-trace-result-label">final sorted array</div>
+<div class="quick-trace-result-label">итоговый отсортированный массив</div>
 <div class="quick-trace-groups">
 <span class="trace-result">1</span><span class="trace-result">3</span><span class="trace-result">4</span>
 <span class="trace-result">5</span><span class="trace-result">6</span><span class="trace-result">7</span><span class="trace-result">8</span>
 </div>
-<p class="quick-trace-stage-description">Quick Sort returns [1, 3, 4, 5, 6, 7, 8].</p>
+<p class="quick-trace-stage-description">Быстрая сортировка возвращает [1, 3, 4, 5, 6, 7, 8].</p>
 </article>
 </div>
 </div>
 </section>
 <section class="lecture-section" id="implementation">
-<h2>Implementation</h2>
+<h2>Реализация</h2>
 <p class="lead">
-        This version mirrors the algorithm directly: choose the first element as the pivot,
-        build the two partitions, sort both recursively, and concatenate the result.
+        Эта версия буквально повторяет идею алгоритма: выбираем первый элемент как опорный, строим две части, рекурсивно сортируем каждую и соединяем результат.
       </p>
 <div class="code-explainer">
 <div class="annotated-code">
@@ -1296,64 +1281,56 @@
 <div class="code-row marked"><span class="line-no">12</span><code>    return sorted_left + [pivot] + sorted_right</code></div>
 </div>
 <div class="code-notes">
-<h3>Implementation notes</h3>
+<h3>Комментарии к реализации</h3>
 <div class="code-note-item wide-note">
 <span>2–3</span>
 <p>
-<strong>Lines 2–3.</strong> Empty and one-element arrays are already sorted.
-              This is the base case of the recursion.
+<strong>Строки 2–3.</strong> Пустой массив и массив из одного элемента уже отсортированы. Это база рекурсии.
             </p>
 </div>
 <div class="code-note-item">
 <span>5</span>
 <p>
-<strong>Line 5.</strong> The first element is chosen as the pivot.
-              This is simple, but it is not always a good pivot choice.
+<strong>Строка 5.</strong> Первый элемент выбирается опорным. Это просто, но такой выбор далеко не всегда удачен.
             </p>
 </div>
 <div class="code-note-item wide-note">
 <span>6–7</span>
 <p>
-<strong>Lines 6–7.</strong> Every remaining element is classified exactly once:
-              values at most the pivot go left; larger values go right.
+<strong>Строки 6–7.</strong> Каждый оставшийся элемент распределяется ровно один раз: значения не больше опорного идут влево, большие — вправо.
             </p>
 </div>
 <div class="code-note-item wide-note">
 <span>9–10</span>
 <p>
-<strong>Lines 9–10.</strong> The two smaller partitions are sorted recursively.
+<strong>Строки 9–10.</strong> Две меньшие части сортируются рекурсивно.
             </p>
 </div>
 <div class="code-note-item">
 <span>12</span>
 <p>
-<strong>Line 12.</strong> Because partitioning established the correct boundary,
-              placing the pivot between the two sorted parts gives the final sorted array.
+<strong>Строка 12.</strong> Поскольку разбиение уже создало правильную границу, достаточно поставить опорный элемент между двумя отсортированными частями, чтобы получить итоговый массив.
             </p>
 </div>
 </div>
 </div>
 <div class="implementation-warning">
-<h3>This educational implementation is not in-place</h3>
+<h3>Эта учебная реализация работает не на месте</h3>
 <p>
-          The list comprehensions create new <code>left</code> and <code>right</code> arrays.
-          Standard production implementations often partition the original array in place instead.
-          The time analysis below applies to the partition structure itself; memory usage depends on the implementation.
+          Генераторы списков создают новые массивы <code>left</code> и <code>right</code> . В практических реализациях исходный массив часто разбивается на месте. Анализ времени ниже относится к самой структуре разбиения; расход памяти зависит от реализации.
         </p>
 </div>
 </section>
 <section class="lecture-section" id="pivot-choice">
-<h2>Pivot choice</h2>
+<h2>Выбор опорного элемента</h2>
 <p class="lead">
-        Unlike Merge Sort, Quick Sort does not automatically create two equal subproblems.
-        The sizes of the recursive calls are determined by the pivot.
+        В отличие от сортировки слиянием, быстрая сортировка не гарантирует двух равных подзадач. Размеры рекурсивных вызовов определяются выбранным опорным элементом.
       </p>
 <div class="pivot-choice-grid">
 <article class="pivot-choice-card good">
-<h3>Balanced partition</h3>
+<h3>Сбалансированное разбиение</h3>
 <p>
-            A pivot near the median creates two parts of comparable size.
-            The recursion tree stays shallow.
+            Опорный элемент, близкий к медиане, создаёт две части сопоставимого размера. Дерево рекурсии остаётся неглубоким.
           </p>
 <div class="pivot-tree">
 <div class="pivot-tree-row"><span class="pivot-tree-node">n</span></div>
@@ -1370,10 +1347,9 @@
 </div>
 </article>
 <article class="pivot-choice-card bad">
-<h3>Highly unbalanced partition</h3>
+<h3>Сильно несбалансированное разбиение</h3>
 <p>
-            If the pivot is always the smallest or largest element, one side is empty
-            and the other contains almost the whole array.
+            Если опорный элемент каждый раз оказывается минимальным или максимальным, одна часть пуста, а другая содержит почти весь массив.
           </p>
 <div class="pivot-tree">
 <div class="pivot-tree-row"><span class="pivot-tree-node">n</span></div>
@@ -1387,44 +1363,40 @@
 <div class="random-pivot-callout">
 <div class="random-pivot-icon">?</div>
 <div>
-<h3>Why random pivots help</h3>
+<h3>Почему случайный выбор опорного элемента помогает</h3>
 <p>
-            The code above always uses the first element, so an already sorted array produces the worst-case chain.
-            If the pivot is chosen uniformly at random instead, systematically bad partitions become unlikely.
-            Randomized Quick Sort has expected running time <span class="math">Θ(loglinear)</span>.
+            В коде выше опорным всегда выбирается первый элемент, поэтому уже отсортированный массив порождает худший случай — длинную цепочку рекурсивных вызовов. Если выбирать опорный элемент равновероятно случайно, систематически неудачные разбиения становятся маловероятны. Для рандомизированной быстрой сортировки математическое ожидание времени работы равно <span class="math">Θ(loglinear)</span>.
           </p>
 </div>
 </div>
 </section>
 <section class="lecture-section" id="complexity">
-<h2>Complexity</h2>
+<h2>Сложность</h2>
 <div class="quick-principle">
 <div class="quick-principle-symbol">n</div>
 <div>
-<h3>Partitioning one subarray is linear</h3>
+<h3>Разбиение одного подмассива занимает линейное время</h3>
 <p>
-            Every element other than the pivot is inspected once to decide whether it belongs
-            to the left or right partition. Partitioning an array of length
-            <span class="math">n</span> therefore costs <span class="math">Θ(n)</span>.
+            Каждый элемент, кроме опорного, просматривается один раз, чтобы определить, в какую часть он попадает. Поэтому разбиение массива длины
+            <span class="math">n</span> занимает <span class="math">Θ(n)</span>.
           </p>
 </div>
 </div>
 <div class="quick-complexity-comparison">
 <article class="quick-complexity-case good-case">
-<h3>Balanced case</h3>
+<h3>Сбалансированный случай</h3>
 <p>
-            If partitions stay roughly balanced, the problem size is approximately halved
-            at every level. There are <span class="math">Θ(log n)</span> levels.
+            Если разбиения остаются примерно сбалансированными, размер задачи на каждом уровне примерно делится пополам. Всего получается <span class="math">Θ(log n)</span> уровней.
           </p>
 <div class="quick-levels">
 <div class="quick-level">
-<span class="quick-level-label">level 1</span>
-<div class="quick-level-bar">n elements total</div>
+<span class="quick-level-label">уровень 1</span>
+<div class="quick-level-bar">всего n элементов</div>
 <b>Θ(n)</b>
 </div>
 <div class="quick-level">
-<span class="quick-level-label">level 2</span>
-<div class="quick-level-bar">n elements total</div>
+<span class="quick-level-label">уровень 2</span>
+<div class="quick-level-bar">всего n элементов</div>
 <b>Θ(n)</b>
 </div>
 <div class="quick-level">
@@ -1434,29 +1406,28 @@
 </div>
 </div>
 <div class="quick-formula">
-            Θ(log n) levels × Θ(n) per level = Θ(loglinear)
+            Θ(log n) уровней × Θ(n) работы на уровне = Θ(n log n)
           </div>
 </article>
 <article class="quick-complexity-case bad-case">
-<h3>Worst case</h3>
+<h3>Худший случай</h3>
 <p>
-            If the pivot is always an extreme element, the subproblem decreases by only one element
-            at each recursive call. The recursion tree becomes a chain of length
+            Если опорный элемент каждый раз экстремальный, размер подзадачи при каждом рекурсивном вызове уменьшается лишь на единицу. Дерево рекурсии превращается в цепочку длины
             <span class="math">Θ(n)</span>.
           </p>
 <div class="quick-levels">
 <div class="quick-level">
-<span class="quick-level-label">call 1</span>
+<span class="quick-level-label">вызов 1</span>
 <div class="quick-level-bar">n</div>
 <b>Θ(n)</b>
 </div>
 <div class="quick-level">
-<span class="quick-level-label">call 2</span>
+<span class="quick-level-label">вызов 2</span>
 <div class="quick-level-bar">n−1</div>
 <b>Θ(n−1)</b>
 </div>
 <div class="quick-level">
-<span class="quick-level-label">call 3</span>
+<span class="quick-level-label">вызов 3</span>
 <div class="quick-level-bar">n−2</div>
 <b>Θ(n−2)</b>
 </div>
@@ -1467,103 +1438,95 @@
 </article>
 </div>
 <div class="complexity-strip">
-<div><span>Best case</span><b>Θ(loglinear)</b><small>balanced partitions</small></div>
-<div><span>Average case</span><b>Θ(loglinear)</b><small>typical / randomized</small></div>
-<div><span>Worst case</span><b>Θ(n²)</b><small>extreme pivot repeatedly</small></div>
-<div><span>Partition step</span><b>Θ(n)</b><small>one scan</small></div>
+<div><span>Лучший случай</span><b>Θ(loglinear)</b><small>сбалансированные разбиения</small></div>
+<div><span>Средний случай</span><b>Θ(loglinear)</b><small>типичный / рандомизированный</small></div>
+<div><span>Худший случай</span><b>Θ(n²)</b><small>опорный элемент постоянно экстремальный</small></div>
+<div><span>Шаг разбиения</span><b>Θ(n)</b><small>один проход</small></div>
 </div>
 </section>
 <section class="lecture-section" id="properties">
-<h2>Memory and stability</h2>
+<h2>Память и устойчивость</h2>
 <div class="quick-property-grid">
 <article class="quick-property-card">
-<h3>Memory</h3>
+<h3>Память</h3>
 <p>
-            The implementation shown above allocates new arrays for the two partitions,
-            so it is not an in-place implementation.
+            Показанная выше реализация создаёт новые массивы для двух частей, поэтому она работает не на месте.
           </p>
 <p>
-            A standard in-place Quick Sort rearranges elements inside the original array.
-            Its additional memory is then mainly the recursion stack:
-            <span class="math">Θ(log n)</span> for balanced recursion and
-            <span class="math">Θ(n)</span> in the worst case.
+            Стандартная быстрая сортировка на месте переставляет элементы внутри исходного массива. Тогда основная дополнительная память — стек рекурсии:
+            <span class="math">Θ(log n)</span> при сбалансированной рекурсии и
+            <span class="math">Θ(n)</span> в худшем случае.
           </p>
 </article>
 <article class="quick-property-card">
-<h3>Stability</h3>
+<h3>Устойчивость</h3>
 <p>
-            Quick Sort is not stable in its usual form. Partitioning and swaps can change
-            the relative order of elements with equal keys.
+            Обычная быстрая сортировка неустойчива. Разбиение и обмены могут менять взаимный порядок элементов с одинаковыми ключами.
           </p>
 <p>
-            Even the simple implementation above can move an element equal to the pivot
-            before that pivot, although the pivot originally appeared first.
+            Даже простая реализация выше может перенести элемент, равный опорному, перед самим опорным элементом, хотя изначально тот стоял раньше.
           </p>
 </article>
 </div>
 <div class="stability-example">
 <div class="stability-side">
-<div class="person-card equal-key"><b>Alice</b><span>score 2</span></div>
-<div class="person-card equal-key"><b>Bob</b><span>score 2</span></div>
-<div class="person-card"><b>Cara</b><span>score 1</span></div>
+<div class="person-card equal-key"><b>Alice</b><span>балл 2</span></div>
+<div class="person-card equal-key"><b>Bob</b><span>балл 2</span></div>
+<div class="person-card"><b>Cara</b><span>балл 1</span></div>
 </div>
 <div class="stability-arrow">→</div>
 <div class="stability-side">
-<div class="person-card"><b>Cara</b><span>score 1</span></div>
-<div class="person-card reversed"><b>Bob</b><span>score 2</span></div>
-<div class="person-card reversed"><b>Alice</b><span>score 2</span></div>
+<div class="person-card"><b>Cara</b><span>балл 1</span></div>
+<div class="person-card reversed"><b>Bob</b><span>балл 2</span></div>
+<div class="person-card reversed"><b>Alice</b><span>балл 2</span></div>
 </div>
 </div>
 <p class="caption">
-        If Alice is chosen as the pivot, Bob goes into the left partition because his key is equal to the pivot.
-        After concatenation, Bob can appear before Alice.
+        Если Alice выбрана опорным элементом, Bob попадёт в левую часть, потому что его ключ равен ключу опорного элемента. После объединения Bob может оказаться перед Alice.
       </p>
 </section>
 <section class="lecture-section" id="comparison">
-<h2>Merge Sort vs Quick Sort</h2>
+<h2>Сортировка слиянием и быстрая сортировка</h2>
 <p class="lead">
-        Both algorithms use divide and conquer, but they do the important work at different moments.
+        Оба алгоритма используют принцип «разделяй и властвуй», но основная работа выполняется в разные моменты.
       </p>
 <div class="merge-quick-grid">
 <article class="merge-quick-card">
-<h3>Merge Sort</h3>
+<h3>Сортировка слиянием</h3>
 <ul>
-<li>splits by position into two nearly equal halves;</li>
-<li>recursively sorts the halves;</li>
-<li>does the main combine work after recursion;</li>
-<li>guarantees <span class="math">Θ(loglinear)</span> time;</li>
-<li>standard array implementation uses <span class="math">Θ(n)</span> extra memory;</li>
-<li>can be stable.</li>
+<li>делит массив по позициям на две почти равные половины;</li>
+<li>рекурсивно сортирует половины;</li>
+<li>выполняет основную работу по объединению после рекурсии;</li>
+<li>гарантирует <span class="math">Θ(loglinear)</span> времени;</li>
+<li>стандартная реализация на массивах использует <span class="math">Θ(n)</span> дополнительной памяти;</li>
+<li>может быть устойчивой.</li>
 </ul>
 </article>
 <article class="merge-quick-card">
-<h3>Quick Sort</h3>
+<h3>Быстрая сортировка</h3>
 <ul>
-<li>splits according to values relative to a pivot;</li>
-<li>the partition sizes depend on the pivot;</li>
-<li>does the main organizing work before recursion;</li>
-<li>has average / expected <span class="math">Θ(loglinear)</span> time;</li>
-<li>can partition arrays in place;</li>
-<li>is usually not stable.</li>
+<li>делит массив по значениям относительно опорного элемента;</li>
+<li>размеры частей зависят от выбора опорного элемента;</li>
+<li>выполняет основную работу по упорядочиванию до рекурсии;</li>
+<li>имеет среднее / ожидаемое <span class="math">Θ(loglinear)</span> времени;</li>
+<li>может разбивать массив на месте;</li>
+<li>обычно неустойчива.</li>
 </ul>
 </article>
 </div>
 </section>
 <section class="lecture-section" id="comparison-limit">
-<h2>Can comparison sorting be faster?</h2>
+<h2>Можно ли сортировать сравнениями быстрее?</h2>
 <p class="lead">
-        Merge Sort runs in loglinear time, and randomized Quick Sort has loglinear expected running time.
-        A natural question is whether a comparison-based sorting algorithm can be asymptotically faster.
-        In the worst case, the answer is no.
+        Сортировка слиянием работает за логлинейное время, а у рандомизированной быстрой сортировки логлинейно математическое ожидание времени. Возникает естественный вопрос: можно ли асимптотически сортировать сравнениями быстрее? В худшем случае — нет.
       </p>
 <div class="comparison-limit-intuition">
 <div aria-hidden="true" class="comparison-limit-mark">?</div>
 <div>
-<h3>Sorting must distinguish every possible order</h3>
+<h3>Алгоритм должен различать все возможные порядки</h3>
 <p>
-            If the input contains <span class="math">n</span> distinct elements, then there are
-            <span class="math">n!</span> possible relative orders. A correct comparison sort must obtain
-            enough information to distinguish among all of them.
+            Если вход содержит <span class="math">n</span> различных элементов, существует
+            <span class="math">n!</span> возможных взаимных порядков. Корректный алгоритм сортировки сравнениями должен получить достаточно информации, чтобы различить каждый из них.
           </p>
 </div>
 </div>
@@ -1571,29 +1534,27 @@
 <article>
 <div class="limit-step-number">1</div>
 <div>
-<h3>One comparison gives two outcomes</h3>
+<h3>Одно сравнение даёт два исхода</h3>
 <p>
-              A comparison such as <span class="math">a &lt; b</span> has two possible answers.
-              Therefore a comparison sort can be represented by a binary decision tree.
+              Сравнение вида <span class="math">a &lt; b</span> имеет два возможных исхода. Поэтому алгоритм сортировки сравнениями можно представить бинарным деревом решений.
             </p>
 </div>
 </article>
 <article>
 <div class="limit-step-number">2</div>
 <div>
-<h3>The tree needs at least <span class="math">n!</span> leaves</h3>
+<h3>Дереву нужно не менее <span class="math">n!</span> листьев</h3>
 <p>
-              Each possible input order must lead to an appropriate final answer.
-              Hence the decision tree must contain at least one leaf for every possible order.
+              Каждый возможный порядок входа должен приводить к соответствующему правильному ответу. Значит, в дереве решений должен быть хотя бы один лист для каждого возможного порядка.
             </p>
 </div>
 </article>
 <article>
 <div class="limit-step-number">3</div>
 <div>
-<h3>A binary tree of height <span class="math">h</span> has at most <span class="math">2^h</span> leaves</h3>
+<h3>Бинарное дерево высоты <span class="math">h</span> имеет не более <span class="math">2^h</span> листьев</h3>
 <p>
-              Consequently,
+              Следовательно,
             </p>
 <div class="limit-equation">
 <span>2<sup>h</sup> ≥ n!</span>
@@ -1605,10 +1566,9 @@
 <article>
 <div class="limit-step-number">4</div>
 <div>
-<h3>The lower bound is loglinear</h3>
+<h3>Нижняя граница — логлинейная</h3>
 <p>
-              Since <span class="math">log(n!) = Θ(n log n)</span>, every comparison-based sorting algorithm
-              requires <span class="math">Ω(n log n)</span> comparisons in the worst case.
+              Поскольку <span class="math">log(n!) = Θ(n log n)</span>каждый алгоритм сортировки сравнениями требует <span class="math">Ω(n log n)</span> сравнений в худшем случае.
             </p>
 </div>
 </article>
@@ -1616,106 +1576,94 @@
 <div class="comparison-limit-conclusion">
 <div aria-hidden="true" class="comparison-limit-symbol">Ω</div>
 <div>
-<h3>Comparison sorting has reached its asymptotic limit</h3>
+<h3>Для сортировок сравнениями достигнута асимптотическая граница</h3>
 <p>
-            Merge Sort already matches this lower bound in the worst case.
-            To sort asymptotically faster, an algorithm must use information about the keys
-            beyond pairwise comparisons.
+            Сортировка слиянием уже достигает этой нижней границы в худшем случае. Чтобы сортировать асимптотически быстрее, нужно использовать информацию о ключах, выходящую за рамки попарных сравнений.
           </p>
 </div>
 </div>
 <div class="beyond-comparison-bridge">
 <div>
-<span class="example-kicker">Next idea</span>
-<h3>Can sorting itself be faster?</h3>
+<span class="example-kicker">Следующая идея</span>
+<h3>Можно ли сортировать быстрее вообще?</h3>
 <p>
-            Yes, if we exploit additional structure in the keys.
-            Counting Sort is the first example: instead of learning the order only through comparisons,
-            it uses the fact that the keys are integers from a known range.
+            Да, если использовать дополнительную структуру ключей. Первый пример — сортировка подсчётом: вместо того чтобы узнавать порядок только через сравнения, она использует тот факт, что ключи — целые числа из известного диапазона.
           </p>
 </div>
 </div>
 </section>
 <section class="lecture-section" id="exercises">
-<h2>Exercises</h2>
+<h2>Задачи</h2>
 <div class="exercise-list">
 <article class="exercise">
 <div class="exercise-num">1</div>
 <div>
-<h3>Partition by hand</h3>
+<h3>Разбейте массив вручную</h3>
 <p>
-              Using the first element as the pivot, partition
+              Используя первый элемент как опорный, разбейте
               <code>[6, 2, 9, 1, 7, 4]</code>
-              into the two groups used by the implementation above.
+              на две группы так же, как это делает реализация выше.
             </p>
-<button aria-expanded="false" class="reveal" data-reveal="quick-ex1" type="button">Show answer</button>
+<button aria-expanded="false" class="reveal" data-reveal="quick-ex1" type="button">Показать ответ</button>
 <div class="answer-box" hidden="" id="quick-ex1">
-              The pivot is 6. The left partition is <code>[2, 1, 4]</code>
-              and the right partition is <code>[9, 7]</code>.
+              Опорный элемент равен 6. Левая часть — <code>[2, 1, 4]</code>
+              а правая часть — <code>[9, 7]</code>.
             </div>
 </div>
 </article>
 <article class="exercise">
 <div class="exercise-num">2</div>
 <div>
-<h3>Worst-case input</h3>
+<h3>Вход для худшего случая</h3>
 <p>
-              Why is an already increasing array a worst-case input for the displayed implementation?
+              Почему уже отсортированный по возрастанию массив является худшим входом для показанной реализации?
             </p>
-<button aria-expanded="false" class="reveal" data-reveal="quick-ex2" type="button">Show answer</button>
+<button aria-expanded="false" class="reveal" data-reveal="quick-ex2" type="button">Показать ответ</button>
 <div class="answer-box" hidden="" id="quick-ex2">
-              The first element is always the smallest remaining value. Therefore the left partition is empty
-              and the right partition has sizes <code>n−1, n−2, ...</code>. The recursion becomes a chain,
-              producing <span class="math">Θ(n²)</span> work.
+              Первый элемент всегда оказывается минимальным среди оставшихся. Поэтому левая часть пуста, а размеры правой части последовательно равны <code>n−1, n−2, ...</code>. Рекурсия превращается в цепочку, что даёт <span class="math">Θ(n²)</span> работы.
             </div>
 </div>
 </article>
 <article class="exercise">
 <div class="exercise-num">3</div>
 <div>
-<h3>Correctness</h3>
+<h3>Корректность</h3>
 <p>
-              After the recursive calls return, why is no comparison needed between an element of the left
-              partition and an element of the right partition?
+              Почему после возврата из рекурсивных вызовов не нужно дополнительно сравнивать элементы левой и правой частей?
             </p>
-<button aria-expanded="false" class="reveal" data-reveal="quick-ex3" type="button">Show answer</button>
+<button aria-expanded="false" class="reveal" data-reveal="quick-ex3" type="button">Показать ответ</button>
 <div class="answer-box" hidden="" id="quick-ex3">
-              Partitioning already guarantees that every left value is at most the pivot and every right value
-              is greater than the pivot. Hence every left value is automatically no larger than every value
-              that appears after the pivot in the final concatenation.
+              Разбиение уже гарантирует, что каждое значение слева не больше опорного, а каждое значение справа больше него. Значит, любой левый элемент автоматически не больше любого элемента, который окажется после опорного в итоговом объединении.
             </div>
 </div>
 </article>
 <article class="exercise">
 <div class="exercise-num">4</div>
 <div>
-<h3>Pivot choice</h3>
+<h3>Выбор опорного элемента</h3>
 <p>
-              Suppose every partition splits the array approximately in the ratio 1:3 instead of exactly in half.
-              Does the asymptotic running time remain <span class="math">Θ(loglinear)</span>?
+              Пусть каждое разбиение делит массив примерно в отношении 1:3, а не пополам. Сохранится ли та же асимптотика времени <span class="math">Θ(loglinear)</span>?
             </p>
-<button aria-expanded="false" class="reveal" data-reveal="quick-ex4" type="button">Show answer</button>
+<button aria-expanded="false" class="reveal" data-reveal="quick-ex4" type="button">Показать ответ</button>
 <div class="answer-box" hidden="" id="quick-ex4">
-              Yes. The larger recursive subproblem shrinks by a constant factor on every level,
-              so the recursion depth is still <span class="math">Θ(log n)</span>.
-              The total partition work per level remains <span class="math">Θ(n)</span>.
+              Да. Более крупная рекурсивная подзадача на каждом уровне уменьшается в постоянное число раз, поэтому глубина рекурсии по-прежнему равна <span class="math">Θ(log n)</span>. Суммарная работа по разбиениям на каждом уровне остаётся равной <span class="math">Θ(n)</span>.
             </div>
 </div>
 </article>
 </div>
 <div class="next-part">
-<h3>Next section: Counting Sort</h3>
+<h3>Следующий раздел: сортировка подсчётом</h3>
 <p>
-          We now leave the comparison model and exploit additional structure in the keys.
+          Теперь выйдем за пределы модели сравнений и используем дополнительную структуру ключей.
         </p>
-<a class="next-part-link" href="sorting-counting.html">Counting Sort →</a>
+<a class="next-part-link" href="sorting-counting-ru.html">Сортировка подсчётом →</a>
 </div>
 <div class="next-part">
-<h3>Previous section</h3>
+<h3>Предыдущий раздел</h3>
 <p>
-          Return to Merge Sort.
+          Вернуться к сортировке слиянием.
         </p>
-<a class="next-part-link" href="sorting-merge.html">← Merge Sort</a>
+<a class="next-part-link" href="sorting-merge-ru.html">← Сортировка слиянием</a>
 </div>
 </section>
 </main>
@@ -1753,7 +1701,7 @@
       processedUntil: 0,
       left: [],
       right: [],
-      text: `The pivot is ${pivot}. Start with ${input[1]}.`
+      text: `Опорный элемент — ${pivot}. Начинаем с ${input[1]}.`
     }];
 
     for (let i = 1; i < input.length; i++) {
@@ -1766,7 +1714,7 @@
         processedUntil: i - 1,
         left: [...left],
         right: [...right],
-        text: `Compare ${value} with pivot ${pivot}.`
+        text: `Сравниваем ${value} с опорным элементом ${pivot}.`
       });
 
       if (value <= pivot) {
@@ -1778,7 +1726,7 @@
           processedUntil: i,
           left: [...left],
           right: [...right],
-          text: `${value} ≤ ${pivot}, so ${value} goes to the left partition.`
+          text: `${value} ≤ ${pivot}, поэтому ${value} отправляется в левую часть.`
         });
       } else {
         right.push(value);
@@ -1789,7 +1737,7 @@
           processedUntil: i,
           left: [...left],
           right: [...right],
-          text: `${value} > ${pivot}, so ${value} goes to the right partition.`
+          text: `${value} > ${pivot}, поэтому ${value} отправляется в правую часть.`
         });
       }
     }
@@ -1801,7 +1749,7 @@
       processedUntil: input.length - 1,
       left: [...left],
       right: [...right],
-      text: "Partitioning is complete. The pivot now separates the two groups."
+      text: "Разбиение завершено. Опорный элемент теперь разделяет две группы."
     });
 
     return states;
@@ -1892,7 +1840,7 @@
 
     target.hidden = !target.hidden;
     button.setAttribute("aria-expanded", String(!target.hidden));
-    button.textContent = target.hidden ? "Show answer" : "Hide answer";
+    button.textContent = target.hidden ? "Показать ответ" : "Скрыть ответ";
   });
 
   /* -------------------------------------------------------

@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+
+<html lang="ru">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="Пузырьковая сортировка: соседние обмены, корректность, сложность, инверсии, устойчивость, Python и интерактивный пример." name="description"/>
+<meta content="Пузырьковая сортировка | Allan's Handbook of Algorithms" property="og:title"/>
+<meta content="Пузырьковая сортировка с интерактивной визуализацией, доказательством корректности, анализом сложности, инверсиями и кодом на Python." property="og:description"/>
+<meta content="article" property="og:type"/>
+<title>Пузырьковая сортировка | Allan's Handbook of Algorithms</title>
+<link href="styles.css" rel="stylesheet"/>
+<link href="favicon-32.png" rel="icon" sizes="32x32" type="image/png"/>
+<link href="favicon.png" rel="icon" sizes="64x64" type="image/png"/>
+<link href="apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180"/>
+<link href="sorting-bubble.html" hreflang="en" rel="alternate"/><link href="sorting-bubble-ru.html" hreflang="ru" rel="alternate"/></head>
+<body class="lecture-page">
+<div aria-hidden="true" class="progress-track"><div class="progress-bar" id="reading-progress"></div></div>
+<header class="topbar">
+<a class="brand" href="index-ru.html"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="logo.png"/></span><span class="brand-name">Allan's Handbook of Algorithms</span></a>
+<nav aria-label="Основная навигация" class="topnav">
+<a href="sorting-ru.html">Оглавление сортировок</a>
+<div aria-label="Язык" class="language-switch"><a href="sorting-bubble.html">EN</a><span class="language-separator">·</span><span class="current">RU</span></div></nav>
+</header>
+<aside aria-label="Навигация по разделу" class="sidebar">
+<div class="sidebar-title">Глава 1 · Раздел 4</div>
+<a href="#idea">Основная идея</a>
+<a href="#correctness">Корректность</a>
+<a href="#interactive">Интерактивный пример</a>
+<a href="#implementation">Реализация</a>
+<a href="#complexity">Сложность</a>
+<a href="#inversions">Инверсии</a>
+<a href="#stability">Устойчивость</a>
+<a href="#exercises">Задачи</a>
+</aside>
+<main class="lecture">
+<section class="lecture-hero">
+<div class="chapter-label">Глава 1 · Раздел 4</div>
+<h1>Пузырьковая сортировка</h1>
+<p class="chapter-topics">
+        Сравнения соседних элементов, локальные обмены, инверсии и досрочная остановка.
+      </p>
+</section>
+<section class="lecture-section" id="idea">
+<h2>Основная идея</h2>
+<p class="lead">
+        Пузырьковая сортировка последовательно сравнивает соседние элементы. Если два соседних элемента стоят в неправильном порядке, они меняются местами. Полный проход слева направо переносит наибольший из ещё не зафиксированных элементов в конец неотсортированной части.
+      </p>
+<div class="bubble-intuition">
+<div class="bubble-intuition-copy">
+<h3>Почему сортировка называется пузырьковой?</h3>
+<p>
+            За один проход большое значение может сдвинуться на несколько позиций вправо благодаря последовательности соседних обменов. В этом смысле крупные значения постепенно «всплывают» к концу массива.
+          </p>
+</div>
+<div aria-label="A large element moving right through adjacent swaps" class="bubble-path">
+<div class="bubble-path-row">
+<span class="bubble-focus">8</span><span>3</span><span>5</span><span>2</span>
+</div>
+<div class="bubble-path-arrow">↓ сравнить и при необходимости обменять</div>
+<div class="bubble-path-row">
+<span>3</span><span class="bubble-focus">8</span><span>5</span><span>2</span>
+</div>
+<div class="bubble-path-arrow">↓ сравнить и при необходимости обменять</div>
+<div class="bubble-path-row">
+<span>3</span><span>5</span><span class="bubble-focus">8</span><span>2</span>
+</div>
+<div class="bubble-path-arrow">↓ сравнить и при необходимости обменять</div>
+<div class="bubble-path-row">
+<span>3</span><span>5</span><span>2</span><span class="bubble-final">8</span>
+</div>
+</div>
+</div>
+<div aria-label="Bubble Sort steps" class="step-flow">
+<article class="step-item">
+<div class="step-number">1</div>
+<div>
+<h3>Начинаем слева</h3>
+<p>Сравниваем первую пару соседних элементов.</p>
+</div>
+</article>
+<article class="step-item">
+<div class="step-number">2</div>
+<div>
+<h3>Меняем местами при необходимости</h3>
+<p>Если левый элемент больше правого, меняем их местами.</p>
+</div>
+</article>
+<article class="step-item">
+<div class="step-number">3</div>
+<div>
+<h3>Сдвигаемся на одну позицию вправо</h3>
+<p>Сравниваем следующую соседнюю пару и продолжаем до конца неотсортированной части.</p>
+</div>
+</article>
+<article class="step-item">
+<div class="step-number">4</div>
+<div>
+<h3>Повторяем проход</h3>
+<p>Наибольший из оставшихся элементов теперь зафиксирован справа, поэтому следующий проход можно завершить на одну позицию раньше.</p>
+</div>
+</article>
+</div>
+</section>
+<section class="lecture-section" id="correctness">
+<h2>Корректность</h2>
+<div class="two-column-block">
+<div class="text-panel">
+<h3>Инвариант одного прохода</h3>
+<p>
+            Во время прохода слева направо после сравнения, заканчивающегося в позиции
+            <span class="math">j</span>наибольший элемент среди уже просмотренных позиций находится в позиции <span class="math">j</span>.
+          </p>
+<div class="array-state">
+<span>3</span>
+<span>5</span>
+<span class="candidate">8</span>
+<span>2</span>
+<span>7</span>
+</div>
+<p class="caption">
+            После последовательных сравнений 8 с предыдущими значениями число 8 — наибольшее из уже просмотренных и сдвинулось вправо.
+          </p>
+</div>
+<div class="proof-panel">
+<h3>Почему один проход фиксирует один элемент</h3>
+<p>
+<strong>Инвариант.</strong> После сравнения позиций <span class="math">j−1</span> и
+            <span class="math">j</span>наибольший элемент среди первых
+            <span class="math">j+1</span> элементов находится в позиции <span class="math">j</span>.
+          </p>
+<p>
+<strong>Инициализация.</strong> После первого сравнения больший из первых двух элементов оказывается на второй позиции. Значит, инвариант выполняется для первых двух элементов.
+          </p>
+<p>
+<strong>Сохранение инварианта.</strong> Пусть наибольший среди уже просмотренных элементов находится в позиции <span class="math">j</span>Сравниваем его со следующим элементом. После возможного обмена больший из двух оказывается в позиции <span class="math">j+1</span>Следовательно, наибольший элемент среди первых <span class="math">j+2</span> элементов теперь находится в позиции
+            <span class="math">j+1</span>.
+          </p>
+<p>
+<strong>Завершение.</strong> К концу прохода просмотрен каждый элемент неотсортированной части. Поэтому её максимальный элемент находится в крайней правой позиции этой части — это его окончательное место.
+          </p>
+</div>
+</div>
+<div class="subsection">
+<h3>От одного прохода ко всему алгоритму</h3>
+<p>
+          После первого прохода максимальный элемент фиксируется в конце. После второго непосредственно перед ним фиксируется второй по величине. Повторяя это рассуждение, мы в итоге фиксируем все позиции.
+        </p>
+</div>
+</section>
+<section class="lecture-section" id="interactive">
+<h2>Интерактивный пример</h2>
+<div class="visualizer bubble-visualizer" data-algorithm="bubble">
+<div class="visualizer-head">
+<div>
+<h3>Проследим сравнения по одному</h3>
+<p>
+              Нажимайте <strong>Следующий шаг сортировки</strong>. Оранжевым отмечена сравниваемая пара, зелёным — уже зафиксированный суффикс.
+            </p>
+</div>
+<button class="primary-step" data-action="next" type="button">Следующий шаг сортировки →</button>
+</div>
+<div aria-label="Bubble Sort visualization" class="bars"></div>
+<div aria-hidden="true" class="legend-row">
+<span><i class="legend-dot bubble-compare-dot"></i>сравниваемая пара</span>
+<span><i class="legend-dot bubble-fixed-dot"></i>зафиксированный отсортированный суффикс</span>
+<span><i class="legend-dot untouched-dot"></i>неотсортированная часть</span>
+</div>
+<div aria-live="polite" class="step-caption">Нажмите «Следующий шаг сортировки».</div>
+<div class="secondary-controls">
+<button data-action="reset" type="button">Сбросить</button>
+<button data-action="randomize" type="button">Новый массив</button>
+</div>
+</div>
+</section>
+<section class="lecture-section" id="implementation">
+<h2>Реализация</h2>
+<p class="lead">
+        В реализации ниже добавлена досрочная остановка. Если за полный проход не произошло ни одного обмена, массив уже отсортирован и алгоритм может завершиться сразу.
+      </p>
+<div class="code-explainer">
+<div class="annotated-code">
+<div class="code-row"><span class="line-no">1</span><code>def bubble_sort(a):</code></div>
+<div class="code-row"><span class="line-no">2</span><code>    n = len(a)</code></div>
+<div class="code-row marked"><span class="line-no">3</span><code>    for end in range(n - 1, 0, -1):</code></div>
+<div class="code-row marked"><span class="line-no">4</span><code>        swapped = False</code></div>
+<div class="code-row marked"><span class="line-no">5</span><code>        for j in range(end):</code></div>
+<div class="code-row marked"><span class="line-no">6</span><code>            if a[j] &gt; a[j + 1]:</code></div>
+<div class="code-row marked"><span class="line-no">7</span><code>                a[j], a[j + 1] = a[j + 1], a[j]</code></div>
+<div class="code-row marked"><span class="line-no">8</span><code>                swapped = True</code></div>
+<div class="code-row marked"><span class="line-no">9</span><code>        if not swapped:</code></div>
+<div class="code-row marked"><span class="line-no">10</span><code>            break</code></div>
+<div class="code-row"><span class="line-no">11</span><code>    return a</code></div>
+</div>
+<div class="code-notes">
+<h3>Комментарии к реализации</h3>
+<div class="code-note-item">
+<span>3</span>
+<p>
+<strong>Строка 3.</strong> После каждого полного прохода справа фиксируется ещё один элемент, поэтому следующий проход можно завершить раньше.
+            </p>
+</div>
+<div class="code-note-item">
+<span>4</span>
+<p>
+<strong>Строка 4.</strong> Флаг показывает, изменился ли массив на текущем проходе.
+            </p>
+</div>
+<div class="code-note-item wide-note">
+<span>5–8</span>
+<p>
+<strong>Строки 5–8.</strong> Проверяется каждая соседняя пара в неотсортированной части. Если пара стоит по убыванию, элементы меняются местами.
+            </p>
+</div>
+<div class="code-note-item wide-note">
+<span>9–10</span>
+<p>
+<strong>Строки 9–10.</strong> Если за весь проход не было обменов, каждая соседняя пара уже стоит в правильном порядке. Значит, весь массив отсортирован, и алгоритм завершается.
+            </p>
+</div>
+</div>
+</div>
+</section>
+<section class="lecture-section" id="complexity">
+<h2>Сложность</h2>
+<div class="subsection">
+<h3>Без досрочной остановки</h3>
+<p>
+          На первом проходе сравнивается <span class="math">n − 1</span> соседних пар, на следующем —
+          <span class="math">n − 2</span>, и так далее.
+        </p>
+<div class="formula-line">
+          (n − 1) + (n − 2) + ··· + 2 + 1 = n(n − 1) / 2
+        </div>
+<p>
+          Следовательно, стандартная схема с вложенными циклами выполняет
+          <span class="math">Θ(n<sup>2</sup>)</span> сравнений.
+        </p>
+</div>
+<div class="subsection">
+<h3>С досрочной остановкой</h3>
+<p>
+          Если массив уже отсортирован, на первом проходе не происходит ни одного обмена, и алгоритм завершается после
+          <span class="math">n − 1</span> сравнений. Поэтому время работы в лучшем случае равно
+          <span class="math">Θ(n)</span>.
+        </p>
+</div>
+<div class="complexity-strip">
+<div><span>Лучший случай</span><b>Θ(n)</b><small>уже отсортирован</small></div>
+<div><span>Средний случай</span><b>Θ(n²)</b><small>много сравнений соседних элементов</small></div>
+<div><span>Худший случай</span><b>Θ(n²)</b><small>порядок по убыванию</small></div>
+<div><span>Дополнительная память</span><b>Θ(1)</b><small>на месте</small></div>
+</div>
+</section>
+<section class="lecture-section" id="inversions">
+<h2>Пузырьковая сортировка и инверсии</h2>
+<p class="lead">
+        У пузырьковой сортировки особенно прозрачная связь с инверсиями. Инверсия — это пара позиций <span class="math">i &lt; j</span> такая, что более раннее значение больше более позднего.
+      </p>
+<div class="inversion-example">
+<div class="inversion-array">
+<span>3</span>
+<span class="inversion-left">7</span>
+<span>5</span>
+<span class="inversion-right">2</span>
+</div>
+<p>
+          В этом массиве пара 7 и 2 образует инверсию: 7 стоит раньше, но при этом больше 2.
+        </p>
+</div>
+<div class="analysis-card">
+<h3>Что делает один соседний обмен?</h3>
+<p>
+          Пузырьковая сортировка меняет местами только соседние элементы, образующие инверсию. Такой обмен устраняет ровно эту инверсию и не меняет взаимный порядок никакой другой пары.
+        </p>
+<div class="formula-line compact-formula">
+          число обменов = числу инверсий во входном массиве
+        </div>
+<p>
+          Это не делает пузырьковую сортировку асимптотически быстрой: сравнений всё равно много. Зато мы получаем точную интерпретацию числа перемещений данных.
+        </p>
+</div>
+</section>
+<section class="lecture-section" id="stability">
+<h2>Устойчивость</h2>
+<p>
+        Приведённая реализация устойчива. Два равных элемента никогда не меняются местами: условие строгое, обмен выполняется только тогда, когда левое значение больше правого.
+      </p>
+<div class="stability-example">
+<div class="stability-side">
+<div class="person-card equal-key"><b>Alice</b><span>балл 2</span></div>
+<div class="person-card equal-key"><b>Bob</b><span>балл 2</span></div>
+<div class="person-card"><b>Cara</b><span>балл 1</span></div>
+</div>
+<div class="stability-arrow">→</div>
+<div class="stability-side">
+<div class="person-card"><b>Cara</b><span>балл 1</span></div>
+<div class="person-card equal-key"><b>Alice</b><span>балл 2</span></div>
+<div class="person-card equal-key"><b>Bob</b><span>балл 2</span></div>
+</div>
+</div>
+<p class="caption">
+        Alice остаётся перед Bob, потому что элементы с равными ключами не обмениваются.
+      </p>
+</section>
+<section class="lecture-section" id="exercises">
+<h2>Задачи</h2>
+<div class="exercise-list">
+<article class="exercise">
+<div class="exercise-num">1</div>
+<div>
+<h3>Один полный проход</h3>
+<p>
+              Каким станет массив после одного полного прохода пузырьковой сортировки слева направо для
+              <code>[5, 1, 4, 2, 8]</code>?
+            </p>
+<button aria-expanded="false" class="reveal" data-reveal="bubble-ex1" type="button">Показать ответ</button>
+<div class="answer-box" hidden="" id="bubble-ex1">
+              Получится массив <code>[1, 4, 2, 5, 8]</code>. Наибольшее значение 8 гарантированно окажется на своей окончательной позиции.
+            </div>
+</div>
+</article>
+<article class="exercise">
+<div class="exercise-num">2</div>
+<div>
+<h3>Досрочная остановка</h3>
+<p>
+              Почему отсутствие обменов на полном проходе означает, что весь массив уже отсортирован?
+            </p>
+<button aria-expanded="false" class="reveal" data-reveal="bubble-ex2" type="button">Показать ответ</button>
+<div class="answer-box" hidden="" id="bubble-ex2">
+              Если ни одна соседняя пара не стоит в убывающем порядке, то каждая пара соседей удовлетворяет требуемому порядку. По транзитивности весь массив отсортирован.
+            </div>
+</div>
+</article>
+<article class="exercise">
+<div class="exercise-num">3</div>
+<div>
+<h3>Число обменов</h3>
+<p>
+              Сколько обменов выполнит пузырьковая сортировка для <code>[3, 2, 1]</code>?
+            </p>
+<button aria-expanded="false" class="reveal" data-reveal="bubble-ex3" type="button">Показать ответ</button>
+<div class="answer-box" hidden="" id="bubble-ex3">
+              Здесь три инверсии: (3,2), (3,1) и (2,1). Следовательно, пузырьковая сортировка выполнит ровно 3 обмена.
+            </div>
+</div>
+</article>
+<article class="exercise">
+<div class="exercise-num">4</div>
+<div>
+<h3>Устойчивость</h3>
+<p>
+              Какое изменение условия сравнения может сделать эту реализацию неустойчивой?
+            </p>
+<button aria-expanded="false" class="reveal" data-reveal="bubble-ex4" type="button">Показать ответ</button>
+<div class="answer-box" hidden="" id="bubble-ex4">
+              Если менять местами и равные значения, элементы с одинаковыми ключами смогут поменять взаимный порядок.
+            </div>
+</div>
+</article>
+</div>
+<div class="next-part">
+<h3>Следующий раздел: сортировка слиянием</h3>
+<p>
+          Теперь перейдём от простых квадратичных сортировок к принципу «разделяй и властвуй» на примере сортировки слиянием.
+        </p>
+<a class="next-part-link" href="sorting-merge-ru.html">Сортировка слиянием →</a>
+</div>
+<div class="next-part">
+<h3>Предыдущий раздел</h3>
+<p>
+          Вернуться к сортировкам выбором и вставками.
+        </p>
+<a class="next-part-link" href="sorting-selection-insertion-ru.html">← Сортировки выбором и вставками</a>
+</div>
+</section>
+</main>
+<footer class="lecture-footer">
+<div>Allan's Handbook of Algorithms</div>
+<div>© 2026 Allan Allemand</div>
+</footer>
+<script>
+(() => {
+  "use strict";
+
+  const DEFAULT = [7, 3, 8, 2, 6, 4, 9, 1];
+
+  function randomArray() {
+    const pool = [1,2,3,4,5,6,7,8,9];
+    for (let i = pool.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [pool[i], pool[j]] = [pool[j], pool[i]];
+    }
+    return pool.slice(0, 8);
+  }
+
+  function state(array, compared, fixed, text) {
+    return {
+      array: [...array],
+      compared: [...compared],
+      fixed: [...fixed],
+      text
+    };
+  }
+
+  function bubbleSteps(input) {
+    const a = [...input];
+    const steps = [
+      state(a, [], [], "Вначале весь массив считается неотсортированным.")
+    ];
+
+    for (let end = a.length - 1; end > 0; end--) {
+      let swapped = false;
+
+      for (let j = 0; j < end; j++) {
+        steps.push(
+          state(
+            a,
+            [j, j + 1],
+            Array.from({length: a.length - 1 - end}, (_, k) => end + 1 + k),
+            `Сравниваем ${a[j]} и ${a[j + 1]}.`
+          )
+        );
+
+        if (a[j] > a[j + 1]) {
+          const left = a[j];
+          const right = a[j + 1];
+          [a[j], a[j + 1]] = [a[j + 1], a[j]];
+          swapped = true;
+
+          steps.push(
+            state(
+              a,
+              [],
+              Array.from({length: a.length - 1 - end}, (_, k) => end + 1 + k),
+              `${left} > ${right}, поэтому меняем их местами.`
+            )
+          );
+        }
+      }
+
+      const fixedSuffix = Array.from(
+        {length: a.length - end},
+        (_, k) => end + k
+      );
+
+      steps.push(
+        state(
+          a,
+          [],
+          fixedSuffix,
+          `Проход завершён. ${a[end]} теперь зафиксирован на своей окончательной позиции.`
+        )
+      );
+
+      if (!swapped) {
+        steps.push(
+          state(
+            a,
+            [],
+            Array.from({length: a.length}, (_, i) => i),
+            "За проход не произошло ни одного обмена, поэтому массив уже отсортирован."
+          )
+        );
+        return steps;
+      }
+    }
+
+    steps.push(
+      state(
+        a,
+        [],
+        Array.from({length: a.length}, (_, i) => i),
+        "Массив отсортирован."
+      )
+    );
+
+    return steps;
+  }
+
+  function render(viz) {
+    const step = viz._steps[viz._index];
+    const bars = viz.querySelector(".bars");
+    const caption = viz.querySelector(".step-caption");
+
+    bars.replaceChildren();
+
+    step.array.forEach((value, index) => {
+      const bar = document.createElement("div");
+      bar.className = "bar";
+      bar.style.setProperty("--value", value);
+      bar.textContent = value;
+
+      if (step.fixed.includes(index)) {
+        bar.classList.add("fixed");
+      } else if (step.compared.includes(index)) {
+        bar.classList.add("bubble-compared");
+      }
+
+      bars.appendChild(bar);
+    });
+
+    caption.textContent = step.text;
+  }
+
+  function reset(viz, array) {
+    viz._steps = bubbleSteps(array);
+    viz._index = 0;
+    render(viz);
+  }
+
+  const viz = document.querySelector('.visualizer[data-algorithm="bubble"]');
+
+  if (viz) {
+    reset(viz, DEFAULT);
+
+    viz.addEventListener("click", event => {
+      const button = event.target.closest("button[data-action]");
+      if (!button) return;
+
+      if (button.dataset.action === "next") {
+        viz._index = Math.min(viz._index + 1, viz._steps.length - 1);
+        render(viz);
+      } else if (button.dataset.action === "reset") {
+        reset(viz, DEFAULT);
+      } else if (button.dataset.action === "randomize") {
+        reset(viz, randomArray());
+      }
+    });
+  }
+
+  document.addEventListener("click", event => {
+    const button = event.target.closest("button[data-reveal]");
+    if (!button) return;
+
+    const target = document.getElementById(button.dataset.reveal);
+    if (!target) return;
+
+    target.hidden = !target.hidden;
+    button.setAttribute("aria-expanded", String(!target.hidden));
+    button.textContent = target.hidden ? "Показать ответ" : "Скрыть ответ";
+  });
+
+  const sidebarLinks = [...document.querySelectorAll(".sidebar a")];
+  const sections = sidebarLinks
+    .map(link => document.querySelector(link.getAttribute("href")))
+    .filter(Boolean);
+
+  if ("IntersectionObserver" in window && sections.length) {
+    const observer = new IntersectionObserver(entries => {
+      const visible = entries
+        .filter(entry => entry.isIntersecting)
+        .sort((a,b) => b.intersectionRatio - a.intersectionRatio)[0];
+
+      if (!visible) return;
+
+      sidebarLinks.forEach(link => link.classList.remove("active"));
+      const current = sidebarLinks.find(
+        link => link.getAttribute("href") === `#${visible.target.id}`
+      );
+      if (current) current.classList.add("active");
+    }, {
+      rootMargin: "-20% 0px -65% 0px",
+      threshold: [0, .1, .3, .6]
+    });
+
+    sections.forEach(section => observer.observe(section));
+  }
+
+  function updateProgress() {
+    const progress = document.getElementById("reading-progress");
+    if (!progress) return;
+
+    const height = document.documentElement.scrollHeight - window.innerHeight;
+    const ratio = height > 0 ? window.scrollY / height : 0;
+    progress.style.width = `${Math.max(0, Math.min(1, ratio)) * 100}%`;
+  }
+
+  updateProgress();
+  window.addEventListener("scroll", updateProgress, {passive: true});
+  window.addEventListener("resize", updateProgress);
+})();
+</script>
+<script src="language-switch.js"></script>
+</body>
+</html>

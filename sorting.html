@@ -1,234 +1,217 @@
-<!doctype html>
+<!DOCTYPE html>
+
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Sorting: chapter contents for Allan's Handbook of Algorithms.">
-  <meta property="og:title" content="Sorting | Allan's Handbook of Algorithms">
-  <meta property="og:description" content="Sorting chapter contents: foundations, comparison sorting, non-comparison sorting, and order statistics.">
-  <meta property="og:type" content="article">
-  <title>Sorting | Allan's Handbook of Algorithms</title>
-  <link rel="stylesheet" href="styles.css">
-  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
-  <link rel="icon" type="image/png" sizes="64x64" href="favicon.png">
-  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
-</head>
-
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="Sorting: chapter contents for Allan's Handbook of Algorithms." name="description"/>
+<meta content="Sorting | Allan's Handbook of Algorithms" property="og:title"/>
+<meta content="Sorting chapter contents: foundations, comparison sorting, non-comparison sorting, and order statistics." property="og:description"/>
+<meta content="article" property="og:type"/>
+<title>Sorting | Allan's Handbook of Algorithms</title>
+<link href="styles.css" rel="stylesheet"/>
+<link href="favicon-32.png" rel="icon" sizes="32x32" type="image/png"/>
+<link href="favicon.png" rel="icon" sizes="64x64" type="image/png"/>
+<link href="apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180"/>
+<link href="sorting.html" hreflang="en" rel="alternate"/><link href="sorting-ru.html" hreflang="ru" rel="alternate"/></head>
 <body>
-  <header class="topbar">
-    <a class="brand" href="index.html"><span class="brand-mark brand-mark-logo"><img class="brand-mark-image" src="logo.png" alt=""></span><span class="brand-name">Allan's Handbook of Algorithms</span></a>
-    <nav class="topnav" aria-label="Primary navigation">
-      <a href="sorting.html">Sorting overview</a>
-    </nav>
-  </header>
-
-  <main class="chapter-overview sorting-contents-page">
-    <section id="chapter-map" class="overview-section sorting-contents">
-      <div class="chapter-label">Chapter 1</div>
-      <h1>Sorting</h1>
-      <div class="sorting-part">
-        <div class="sorting-part-head">
-          <div>
-            <span class="sorting-part-kicker">Foundations</span>
-            <h3>Introduction</h3>
-          </div>
-          <p>
+<header class="topbar">
+<a class="brand" href="index.html"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="logo.png"/></span><span class="brand-name">Allan's Handbook of Algorithms</span></a>
+<nav aria-label="Primary navigation" class="topnav">
+<a href="sorting.html">Sorting overview</a>
+<div aria-label="Language" class="language-switch"><span class="current">EN</span><span class="language-separator">·</span><a href="sorting-ru.html">RU</a></div></nav>
+</header>
+<main class="chapter-overview sorting-contents-page">
+<section class="overview-section sorting-contents" id="chapter-map">
+<div class="chapter-label">Chapter 1</div>
+<h1>Sorting</h1>
+<div class="sorting-part">
+<div class="sorting-part-head">
+<div>
+<span class="sorting-part-kicker">Foundations</span>
+<h3>Introduction</h3>
+</div>
+<p>
             What sorting means, how we evaluate sorting algorithms,
             and why sorting is a fundamental preprocessing step in algorithm design.
           </p>
-        </div>
-
-        <div class="chapter-grid section-icon-grid">
-          <a class="chapter-card available icon-card" href="sorting-introduction.html">
-            <div class="chapter-card-icon"><img src="sorting-introduction.svg" alt=""></div>
-            <div>
-              <h3>Introduction to Sorting</h3>
-              <p>
+</div>
+<div class="chapter-grid section-icon-grid">
+<a class="chapter-card available icon-card" href="sorting-introduction.html">
+<div class="chapter-card-icon"><img alt="" src="sorting-introduction.svg"/></div>
+<div>
+<h3>Introduction to Sorting</h3>
+<p>
                 The sorting problem, examples, correctness, running time,
                 extra memory, and the criteria used throughout the chapter.
               </p>
-              <span class="chapter-link">Open section →</span>
-            </div>
-          </a>
-
-          <a class="chapter-card available icon-card" href="sorting-applications.html">
-            <div class="chapter-card-icon"><img src="sorting-applications.svg" alt=""></div>
-            <div>
-              <h3>Applications of Sorting</h3>
-              <p>
+<span class="chapter-link">Open section →</span>
+</div>
+</a>
+<a class="chapter-card available icon-card" href="sorting-applications.html">
+<div class="chapter-card-icon"><img alt="" src="sorting-applications.svg"/></div>
+<div>
+<h3>Applications of Sorting</h3>
+<p>
                 Search, ranking, grouping, duplicate detection,
                 range processing, and other problems simplified by ordering the data.
               </p>
-              <span class="chapter-link">Open section →</span>
-            </div>
-          </a>
-        </div>
-      </div>
-
-      <div class="sorting-part">
-        <div class="sorting-part-head">
-          <div>
-            <span class="sorting-part-kicker">Elementary Comparison Sorting</span>
-            <h3>Quadratic Comparison Sorts</h3>
-          </div>
-          <p>
+<span class="chapter-link">Open section →</span>
+</div>
+</a>
+</div>
+</div>
+<div class="sorting-part">
+<div class="sorting-part-head">
+<div>
+<span class="sorting-part-kicker">Elementary Comparison Sorting</span>
+<h3>Quadratic Comparison Sorts</h3>
+</div>
+<p>
             Simple algorithms whose running time is quadratic in the worst case.
             They are useful for understanding invariants, stability, adaptivity, and element movement.
           </p>
-        </div>
-
-        <div class="chapter-grid section-icon-grid">
-          <a class="chapter-card available icon-card" href="sorting-selection-insertion.html">
-            <div class="chapter-card-icon"><img src="sorting-selection-insertion.svg" alt=""></div>
-            <div>
-              <h3>Selection and Insertion Sorts</h3>
-              <p>
+</div>
+<div class="chapter-grid section-icon-grid">
+<a class="chapter-card available icon-card" href="sorting-selection-insertion.html">
+<div class="chapter-card-icon"><img alt="" src="sorting-selection-insertion.svg"/></div>
+<div>
+<h3>Selection and Insertion Sorts</h3>
+<p>
                 Selection of the next minimum, sorted prefixes, correctness, stability,
                 and quadratic running time.
               </p>
-              <span class="chapter-link">Open section →</span>
-            </div>
-          </a>
-
-          <a class="chapter-card available icon-card" href="sorting-bubble.html">
-            <div class="chapter-card-icon"><img src="sorting-bubble-icon.svg" alt=""></div>
-            <div>
-              <h3>Bubble Sort</h3>
-              <p>Adjacent comparisons, local swaps, inversions, stability, and early stopping.</p>
-              <span class="chapter-link">Open section →</span>
-            </div>
-          </a>
-        </div>
-      </div>
-
-      <div class="sorting-part">
-        <div class="sorting-part-head">
-          <div>
-            <span class="sorting-part-kicker">Advanced Comparison Sorting</span>
-            <h3>Loglinear Comparison Sorts</h3>
-          </div>
-          <p>
+<span class="chapter-link">Open section →</span>
+</div>
+</a>
+<a class="chapter-card available icon-card" href="sorting-bubble.html">
+<div class="chapter-card-icon"><img alt="" src="sorting-bubble-icon.svg"/></div>
+<div>
+<h3>Bubble Sort</h3>
+<p>Adjacent comparisons, local swaps, inversions, stability, and early stopping.</p>
+<span class="chapter-link">Open section →</span>
+</div>
+</a>
+</div>
+</div>
+<div class="sorting-part">
+<div class="sorting-part-head">
+<div>
+<span class="sorting-part-kicker">Advanced Comparison Sorting</span>
+<h3>Loglinear Comparison Sorts</h3>
+</div>
+<p>
             Comparison-based sorting with loglinear running time.
             After Quick Sort we explain why this is asymptotically optimal in the comparison model.
           </p>
-        </div>
-
-        <div class="chapter-grid section-icon-grid">
-          <a class="chapter-card available icon-card" href="sorting-merge.html">
-            <div class="chapter-card-icon"><img src="sorting-merge-icon.svg" alt=""></div>
-            <div>
-              <h3>Merge Sort</h3>
-              <p>
+</div>
+<div class="chapter-grid section-icon-grid">
+<a class="chapter-card available icon-card" href="sorting-merge.html">
+<div class="chapter-card-icon"><img alt="" src="sorting-merge-icon.svg"/></div>
+<div>
+<h3>Merge Sort</h3>
+<p>
                 Divide and conquer, merging sorted sequences, correctness,
                 and loglinear running time.
               </p>
-              <span class="chapter-link">Open section →</span>
-            </div>
-          </a>
-
-          <a class="chapter-card available icon-card" href="sorting-quick.html">
-            <div class="chapter-card-icon"><img src="sorting-quick-icon.svg" alt=""></div>
-            <div>
-              <h3>Quick Sort</h3>
-              <p>
+<span class="chapter-link">Open section →</span>
+</div>
+</a>
+<a class="chapter-card available icon-card" href="sorting-quick.html">
+<div class="chapter-card-icon"><img alt="" src="sorting-quick-icon.svg"/></div>
+<div>
+<h3>Quick Sort</h3>
+<p>
                 Partitioning around a pivot, recursive subproblems, pivot choice,
                 and average versus worst-case behavior.
               </p>
-              <span class="chapter-link">Open section →</span>
-            </div>
-          </a>
-        </div>
-      </div>
-
-      <div class="sorting-part">
-        <div class="sorting-part-head">
-          <div>
-            <span class="sorting-part-kicker">Using structure in the keys</span>
-            <h3>Sorting Beyond Comparisons</h3>
-          </div>
-          <p>
+<span class="chapter-link">Open section →</span>
+</div>
+</a>
+</div>
+</div>
+<div class="sorting-part">
+<div class="sorting-part-head">
+<div>
+<span class="sorting-part-kicker">Using structure in the keys</span>
+<h3>Sorting Beyond Comparisons</h3>
+</div>
+<p>
             The loglinear lower bound applies to comparison sorting.
             Additional information about the keys makes other asymptotic bounds possible.
           </p>
-        </div>
-
-        <div class="chapter-grid section-icon-grid">
-          <a class="chapter-card planned icon-card" href="sorting-counting.html">
-            <div class="chapter-card-icon"><img src="sorting-counting-icon.svg" alt=""></div>
-            <div>
-              <h3>Counting Sort</h3>
-              <p>Sorting integer keys by counting their occurrences rather than comparing pairs of elements.</p>
-              <span class="chapter-link planned-link">Coming soon →</span>
-            </div>
-          </a>
-
-          <a class="chapter-card planned icon-card" href="sorting-radix.html">
-            <div class="chapter-card-icon"><img src="sorting-radix-icon.svg" alt=""></div>
-            <div>
-              <h3>Radix Sort</h3>
-              <p>Sorting structured keys one digit or component at a time using stable intermediate passes.</p>
-              <span class="chapter-link planned-link">Coming soon →</span>
-            </div>
-          </a>
-
-          <a class="chapter-card planned icon-card" href="sorting-bucket.html">
-            <div class="chapter-card-icon"><img src="sorting-bucket-icon.svg" alt=""></div>
-            <div>
-              <h3>Bucket Sort</h3>
-              <p>Distributing values into buckets and exploiting assumptions about the input distribution.</p>
-              <span class="chapter-link planned-link">Coming soon →</span>
-            </div>
-          </a>
-        </div>
-      </div>
-
-      <div class="sorting-part">
-        <div class="sorting-part-head">
-          <div>
-            <span class="sorting-part-kicker">Selection by Rank</span>
-            <h3>Order Statistics</h3>
-          </div>
-          <p>
+</div>
+<div class="chapter-grid section-icon-grid">
+<a class="chapter-card planned icon-card" href="sorting-counting.html">
+<div class="chapter-card-icon"><img alt="" src="sorting-counting-icon.svg"/></div>
+<div>
+<h3>Counting Sort</h3>
+<p>Sorting integer keys by counting their occurrences rather than comparing pairs of elements.</p>
+<span class="chapter-link planned-link">Coming soon →</span>
+</div>
+</a>
+<a class="chapter-card planned icon-card" href="sorting-radix.html">
+<div class="chapter-card-icon"><img alt="" src="sorting-radix-icon.svg"/></div>
+<div>
+<h3>Radix Sort</h3>
+<p>Sorting structured keys one digit or component at a time using stable intermediate passes.</p>
+<span class="chapter-link planned-link">Coming soon →</span>
+</div>
+</a>
+<a class="chapter-card planned icon-card" href="sorting-bucket.html">
+<div class="chapter-card-icon"><img alt="" src="sorting-bucket-icon.svg"/></div>
+<div>
+<h3>Bucket Sort</h3>
+<p>Distributing values into buckets and exploiting assumptions about the input distribution.</p>
+<span class="chapter-link planned-link">Coming soon →</span>
+</div>
+</a>
+</div>
+</div>
+<div class="sorting-part">
+<div class="sorting-part-head">
+<div>
+<span class="sorting-part-kicker">Selection by Rank</span>
+<h3>Order Statistics</h3>
+</div>
+<p>
             Sorting reveals the complete order. If only one rank is needed,
             we can often avoid sorting the entire input.
           </p>
-        </div>
-
-        <div class="chapter-grid section-icon-grid">
-          <a class="chapter-card planned icon-card" href="sorting-min-max.html">
-            <div class="chapter-card-icon"><img src="sorting-min-max-icon.svg" alt=""></div>
-            <div>
-              <h3>Minimum and Maximum</h3>
-              <p>The simplest order statistics and the exact comparison cost of finding extrema.</p>
-              <span class="chapter-link planned-link">Coming soon →</span>
-            </div>
-          </a>
-
-          <a class="chapter-card planned icon-card" href="sorting-quickselect.html">
-            <div class="chapter-card-icon"><img src="sorting-quickselect-icon.svg" alt=""></div>
-            <div>
-              <h3>Quickselect</h3>
-              <p>Using partitioning to follow only the side that contains the required rank.</p>
-              <span class="chapter-link planned-link">Coming soon →</span>
-            </div>
-          </a>
-
-          <a class="chapter-card planned icon-card" href="sorting-deterministic-select.html">
-            <div class="chapter-card-icon"><img src="sorting-deterministic-select-icon.svg" alt=""></div>
-            <div>
-              <h3>Deterministic Linear Selection</h3>
-              <p>Median of medians and worst-case linear-time selection.</p>
-              <span class="chapter-link planned-link">Coming soon →</span>
-            </div>
-          </a>
-        </div>
-      </div>
-    </section>
-  </main>
-
-  <footer class="overview-footer">
-    <div>Allan's Handbook of Algorithms</div>
-    <div>© 2026 Allan Allemand</div>
-  </footer>
+</div>
+<div class="chapter-grid section-icon-grid">
+<a class="chapter-card planned icon-card" href="sorting-min-max.html">
+<div class="chapter-card-icon"><img alt="" src="sorting-min-max-icon.svg"/></div>
+<div>
+<h3>Minimum and Maximum</h3>
+<p>The simplest order statistics and the exact comparison cost of finding extrema.</p>
+<span class="chapter-link planned-link">Coming soon →</span>
+</div>
+</a>
+<a class="chapter-card planned icon-card" href="sorting-quickselect.html">
+<div class="chapter-card-icon"><img alt="" src="sorting-quickselect-icon.svg"/></div>
+<div>
+<h3>Quickselect</h3>
+<p>Using partitioning to follow only the side that contains the required rank.</p>
+<span class="chapter-link planned-link">Coming soon →</span>
+</div>
+</a>
+<a class="chapter-card planned icon-card" href="sorting-deterministic-select.html">
+<div class="chapter-card-icon"><img alt="" src="sorting-deterministic-select-icon.svg"/></div>
+<div>
+<h3>Deterministic Linear Selection</h3>
+<p>Median of medians and worst-case linear-time selection.</p>
+<span class="chapter-link planned-link">Coming soon →</span>
+</div>
+</a>
+</div>
+</div>
+</section>
+</main>
+<footer class="overview-footer">
+<div>Allan's Handbook of Algorithms</div>
+<div>© 2026 Allan Allemand</div>
+</footer>
+<script src="language-switch.js"></script>
 </body>
 </html>
