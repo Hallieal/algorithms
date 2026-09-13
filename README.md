@@ -1,7 +1,13 @@
-# Algorithms site — v20
+# Algorithms site — logo update v23
 
-Changes from v19:
-- restored the exact previous `favicon.svg`;
-- all pages again reference `favicon.svg`;
-- Bubble Sort in the Sorting overview is now an active section card and includes `Open section →`, matching Selection/Insertion, Merge, and Quick Sort.
-- site branding remains `Allan's Handbook of Algorithms`.
+Changes:
+- added `logo.png` using the selected graph-and-gear emblem;
+- added `favicon.png` and switched all pages to use it in the browser tab;
+- replaced the old letter A in the top-left brand mark with the new emblem on all pages;
+- preserved the flat file structure.
+
+Files you need to upload if updating manually:
+- all `*.html` pages
+- `styles.css`
+- `logo.png`
+- `favicon.png`

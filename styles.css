@@ -2290,3 +2290,26 @@ th {
     max-width: 32vw;
   }
 }
+
+
+/* v23 logo update */
+.brand-mark.brand-mark-logo {
+  background: transparent;
+  border-radius: 0;
+  padding: 0;
+  overflow: visible;
+}
+
+.brand-mark-image {
+  width: 34px;
+  height: 34px;
+  display: block;
+  object-fit: contain;
+}
+
+@media (max-width: 760px) {
+  .brand-mark-image {
+    width: 30px;
+    height: 30px;
+  }
+}
