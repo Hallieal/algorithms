@@ -1,0 +1,388 @@
+name: Apply site review fixes
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/site-review-fixes.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Apply review fixes
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+
+          ROOT = Path('.')
+
+          def read(name):
+              return (ROOT / name).read_text(encoding='utf-8')
+
+          def write(name, text):
+              (ROOT / name).write_text(text, encoding='utf-8', newline='\n')
+
+          def add_after_stylesheet(text, href):
+              tag1 = '<link href="styles.css" rel="stylesheet"/>'
+              tag2 = '<link rel="stylesheet" href="styles.css">'
+              new = f'<link href="{href}" rel="stylesheet"/>'
+              if href in text:
+                  return text
+              if tag1 in text:
+                  return text.replace(tag1, tag1 + '\n' + new, 1)
+              if tag2 in text:
+                  return text.replace(tag2, tag2 + '\n' + new, 1)
+              raise RuntimeError(f'Could not add stylesheet {href}')
+
+          # --------------------------------------------------
+          # 1. Home page: make current availability explicit.
+          # --------------------------------------------------
+          home = read('index.html')
+          if 'course-status-note' not in home:
+              home = home.replace(
+                  '<h2>Topics</h2>\n<div class="course-grid">',
+                  '<h2>Topics</h2>\n<p class="course-status-note"><strong>Sorting is currently the only published chapter.</strong> The remaining topics are part of the roadmap and will be added gradually.</p>\n<div class="course-grid">',
+                  1,
+              )
+          home = home.replace('<article class="course-card">', '<article class="course-card planned" aria-disabled="true">')
+          home = home.replace(
+              'Quadratic and loglinear comparison sorts, with advanced topics on non-comparison sorting and order statistics.',
+              'Comparison sorting, applications, proofs, interactive explanations, and practice problems.',
+          )
+          write('index.html', home)
+
+          home_ru = read('index-ru.html')
+          if 'course-status-note' not in home_ru:
+              home_ru = home_ru.replace(
+                  '<h2>Темы</h2>\n<div class="course-grid">',
+                  '<h2>Темы</h2>\n<p class="course-status-note"><strong>Сейчас полностью опубликована только глава о сортировках.</strong> Остальные темы показывают план развития гайда и будут добавляться постепенно.</p>\n<div class="course-grid">',
+                  1,
+              )
+          home_ru = home_ru.replace('<article class="course-card">', '<article class="course-card planned" aria-disabled="true">')
+          home_ru = home_ru.replace(
+              'Квадратичные и логлинейные сортировки сравнениями; продвинутые темы — сортировки без сравнений и порядковые статистики.',
+              'Сортировки сравнениями, применения, доказательства, наглядные объяснения и практические задачи.',
+          )
+          write('index-ru.html', home_ru)
+
+          # Shared status styling.
+          styles = read('styles.css')
+          marker = '/* ---------- Availability states ---------- */'
+          if marker not in styles:
+              styles += r'''
+
+/* ---------- Availability states ---------- */
+.course-status-note {
+  max-width: 760px;
+  margin: -12px 0 26px;
+  color: #68727d;
+  font-size: 14px;
+  line-height: 1.65;
+}
+.course-status-note strong { color: var(--ink); }
+
+.course-card.planned {
+  background: #f1f0ec;
+  border-color: #e7e3dc;
+  opacity: .54;
+  cursor: default;
+  user-select: none;
+}
+.course-card.planned .course-icon { background: #eceae5; }
+.course-card.planned .course-icon img { filter: grayscale(.55); opacity: .78; }
+.course-card.planned h3 { color: #596169; }
+.course-card.planned p { color: #858b90; }
+
+.chapter-card.planned {
+  background: #f3f2ee !important;
+  border-color: #e5e1da !important;
+  opacity: .56;
+  cursor: default;
+  box-shadow: none !important;
+  transform: none !important;
+  user-select: none;
+}
+.chapter-card.planned:hover { box-shadow: none !important; transform: none !important; }
+.chapter-card.planned .chapter-card-icon { filter: grayscale(.5); opacity: .75; }
+.chapter-card.planned .planned-link {
+  color: #7f868b;
+  letter-spacing: .01em;
+}
+
+.lecture-crosslink {
+  margin-top: 22px;
+  padding: 16px 18px;
+  border: 1px solid #dfe5d5;
+  border-radius: 13px;
+  background: #f7f9f3;
+  color: #5d6770;
+  font-size: 13px;
+}
+.lecture-crosslink a { color: #527327; font-weight: 780; text-decoration: none; }
+.lecture-crosslink a:hover { text-decoration: underline; }
+'''
+          write('styles.css', styles)
+
+          # --------------------------------------------------
+          # 2. Sorting overview: planned topics are not links.
+          # --------------------------------------------------
+          def disable_planned_cards(name, planned_text):
+              text = read(name)
+              pattern = re.compile(r'<a class="chapter-card planned icon-card" href="[^"]+">(.*?)</a>', re.S)
+              text, n = pattern.subn(r'<article class="chapter-card planned icon-card" aria-disabled="true">\1</article>', text)
+              if n not in (0, 6):
+                  raise RuntimeError(f'{name}: expected 6 planned cards, changed {n}')
+              text = re.sub(r'<span class="chapter-link planned-link">.*?</span>', f'<span class="chapter-link planned-link">{planned_text}</span>', text)
+              return text
+
+          sorting = disable_planned_cards('sorting.html', 'In development')
+          sorting = sorting.replace(
+              'and average versus worst-case behavior.\n              </p>',
+              'and average versus worst-case behavior. The section also compares Merge Sort and Quick Sort and closes with the comparison-sorting lower bound.\n              </p>',
+              1,
+          )
+          sorting = sorting.replace(
+              'The sections below go beyond the main sorting sequence and are not part of the core course for now.',
+              'The sections below are planned for a later stage. Their cards are intentionally inactive until the material is ready.',
+          )
+          write('sorting.html', sorting)
+
+          sorting_ru = disable_planned_cards('sorting-ru.html', 'В разработке')
+          sorting_ru = sorting_ru.replace(
+              'различие между средним и худшим случаями.\n              </p>',
+              'различие между средним и худшим случаями. В этом же разделе сравниваются Merge Sort и Quick Sort и разбирается нижняя граница для сортировок сравнениями.\n              </p>',
+              1,
+          )
+          sorting_ru = sorting_ru.replace(
+              'Разделы ниже выходят за рамки основной части курса по сортировкам и пока не входят в основной курс.',
+              'Разделы ниже запланированы на более поздний этап. Карточки намеренно неактивны, пока материал не готов.',
+          )
+          if 'problems.css' not in sorting_ru:
+              sorting_ru = sorting_ru.replace('<link href="styles.css" rel="stylesheet"/>', '<link href="styles.css" rel="stylesheet"/>\n<link href="problems.css" rel="stylesheet"/>', 1)
+          if 'class="practice-entry"' not in sorting_ru:
+              practice_ru = r'''
+
+<div class="practice-entry" aria-labelledby="practice-entry-title">
+  <div class="practice-entry-mark" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M8.4 14.8A6 6 0 1 1 15.6 14.8C14.7 15.5 14.2 16.3 14 17H10c-.2-.7-.7-1.5-1.6-2.2Z"/><path d="m10.2 8.7-1.7 1.5 1.7 1.5M13.8 8.7l1.7 1.5-1.7 1.5"/></svg></div>
+  <div class="practice-entry-copy">
+    <span class="sorting-part-kicker">Практика</span>
+    <h3 id="practice-entry-title">Практические задачи</h3>
+    <p>Закрепите идеи главы на задачах трёх уровней сложности.</p>
+  </div>
+  <a class="practice-entry-button" href="sorting-problems-ru.html">Открыть задачи →</a>
+</div>
+'''
+              sorting_ru = sorting_ru.replace('\n<div class="advanced-topics-divider">', practice_ru + '\n<div class="advanced-topics-divider">', 1)
+          write('sorting-ru.html', sorting_ru)
+
+          # --------------------------------------------------
+          # 3. Applications: bilingual navigation + practice links.
+          # --------------------------------------------------
+          apps = read('sorting-applications.html')
+          if 'sorting-applications-ru.html' not in apps:
+              apps = apps.replace('</head>', '<link href="sorting-applications.html" hreflang="en" rel="alternate"/><link href="sorting-applications-ru.html" hreflang="ru" rel="alternate"/>\n</head>', 1)
+          old_nav = '<nav class="topnav" aria-label="Primary navigation">\n      <a href="sorting.html">Sorting overview</a>\n    </nav>'
+          if old_nav in apps:
+              apps = apps.replace(old_nav, '<nav class="topnav" aria-label="Primary navigation">\n      <a href="sorting.html">Sorting overview</a>\n      <div aria-label="Language" class="language-switch"><span class="current">EN</span><span class="language-separator">·</span><a href="sorting-applications-ru.html">RU</a></div>\n    </nav>', 1)
+
+          def add_application_practice(text, title, label, links):
+              pattern = re.compile(r'(<article class="application-card">(?:(?!<article class="application-card">).)*?<h3>' + re.escape(title) + r'</h3>.*?)(</article>)', re.S)
+              m = pattern.search(text)
+              if not m:
+                  raise RuntimeError(f'Application card not found: {title}')
+              block = m.group(1)
+              if 'application-practice' in block:
+                  return text
+              body = ['<div class="application-practice">', f'<span class="application-practice-label">{label}</span>']
+              body += [f'<a href="{href}">{caption} →</a>' for href, caption in links]
+              body.append('</div>')
+              ins = '\n          ' + '\n          '.join(body) + '\n        '
+              return text[:m.start(1)] + block + ins + m.group(2) + text[m.end(2):]
+
+          apps = add_application_practice(apps, 'Ranking', 'Practice', [('problem-top-k-frequent.html', 'Top K Frequent Elements')])
+
+          apps_ru = read('sorting-applications-ru.html')
+          apps_ru = add_application_practice(apps_ru, 'Ранжирование', 'Практика · EN', [('problem-top-k-frequent.html', 'K самых частых элементов')])
+          apps_ru = add_application_practice(apps_ru, 'Пары и интервалы', 'Практика · EN', [('problem-two-sum-sorted.html', 'Two Sum'), ('problem-meeting-rooms.html', 'Meeting Rooms')])
+          apps_ru = add_application_practice(apps_ru, 'Объединение упорядоченных данных', 'Практика · EN', [('problem-merge-without-space.html', 'Слияние без дополнительной памяти')])
+          apps_ru = add_application_practice(apps_ru, 'Характеристики порядка', 'Практика · EN', [('problem-k-smallest.html', 'K наименьших элементов')])
+
+          # Extract Applications CSS once and share it between EN/RU.
+          m = re.search(r'<style>\s*(.*?)\s*</style>', apps, re.S)
+          if m:
+              write('sorting-applications.css', m.group(1).strip() + '\n')
+              apps = apps[:m.start()] + apps[m.end():]
+          apps = add_after_stylesheet(apps, 'sorting-applications.css')
+          apps_ru = re.sub(r'<style>\s*.*?\s*</style>', '', apps_ru, count=1, flags=re.S)
+          apps_ru = add_after_stylesheet(apps_ru, 'sorting-applications.css')
+          write('sorting-applications.html', apps)
+          write('sorting-applications-ru.html', apps_ru)
+
+          # --------------------------------------------------
+          # 4. Practice overview gets an EN/RU switch.
+          # --------------------------------------------------
+          p = read('sorting-problems.html')
+          if 'sorting-problems-ru.html' not in p:
+              p = p.replace('</head>', '  <link href="sorting-problems.html" hreflang="en" rel="alternate">\n  <link href="sorting-problems-ru.html" hreflang="ru" rel="alternate">\n</head>', 1)
+              p = p.replace(
+                  '<nav class="topnav" aria-label="Primary navigation"><a href="sorting.html">Sorting overview</a></nav>',
+                  '<nav class="topnav" aria-label="Primary navigation"><a href="sorting.html">Sorting overview</a><div aria-label="Language" class="language-switch"><span class="current">EN</span><span class="language-separator">·</span><a href="sorting-problems-ru.html">RU</a></div></nav>',
+                  1,
+              )
+          if 'language-switch.js' not in p:
+              p = p.replace('</body>', '  <script src="language-switch.js"></script>\n</body>', 1)
+          write('sorting-problems.html', p)
+
+          # Russian practice index. Solution pages remain English for now; the page says so explicitly.
+          ru_index = r'''<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Девять практических задач по сортировкам трёх уровней сложности.">
+  <meta property="og:title" content="Практические задачи | Гайд по алгоритмам — presented by Аллан">
+  <meta property="og:type" content="article">
+  <title>Практические задачи | Гайд по алгоритмам — presented by Аллан</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="problems.css">
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+  <link rel="icon" type="image/png" sizes="64x64" href="favicon.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+  <link href="sorting-problems.html" hreflang="en" rel="alternate">
+  <link href="sorting-problems-ru.html" hreflang="ru" rel="alternate">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="index-ru.html"><span class="brand-mark brand-mark-logo"><img class="brand-mark-image" src="logo.png" alt=""></span><span class="brand-name ru-brand-name"><span class="ru-brand-lines"><span>Гайд по алгоритмам</span><span class="ru-brand-presented">presented by Аллан</span></span></span></a>
+    <nav class="topnav" aria-label="Основная навигация"><a href="sorting-ru.html">Список тем</a><div aria-label="Язык" class="language-switch"><a href="sorting-problems.html">EN</a><span class="language-separator">·</span><span class="current">RU</span></div></nav>
+  </header>
+  <main class="problems-main">
+    <section class="problems-hero">
+      <div class="chapter-label">Сортировки · Практика</div>
+      <h1>Практические задачи</h1>
+      <p>Задачи разных уровней сложности для закрепления идей из главы о сортировках.</p>
+    </section>
+    <section class="problem-level" aria-labelledby="easy-title">
+      <div class="problem-level-head"><h2 id="easy-title">Лёгкие</h2><p>Три короткие задачи, каждая строится вокруг одной простой идеи.</p></div>
+      <div class="problem-grid">
+        <a class="problem-card easy" href="problem-wave-form.html"><div class="problem-card-top"><span class="problem-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 12c2.2-6 4.2-6 6 0s3.8 6 6 0 4-6 6 0"/></svg></span><span class="difficulty-pill">Easy</span></div><h3>Волновая перестановка</h3><p>Преобразовать отсортированный массив в чередование пиков и впадин соседними обменами.</p><div class="problem-tags"><span class="problem-tag">локальные обмены</span><span class="problem-tag">O(n)</span></div><span class="problem-open">Открыть решение · EN →</span></a>
+        <a class="problem-card easy" href="problem-two-sum-sorted.html"><div class="problem-card-top"><span class="problem-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 7h7M4 17h7M20 12h-8"/><path d="m8 4 3 3-3 3M16 9l-4 3 4 3"/></svg></span><span class="difficulty-pill">Easy</span></div><h3>Two Sum в отсортированном массиве</h3><p>Использовать упорядоченность массива, чтобы отбрасывать невозможные пары двумя указателями.</p><div class="problem-tags"><span class="problem-tag">два указателя</span><span class="problem-tag">O(n)</span></div><span class="problem-open">Открыть решение · EN →</span></a>
+        <a class="problem-card easy" href="problem-meeting-rooms.html"><div class="problem-card-top"><span class="problem-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M7 3v4M17 3v4M3 10h18M8 14h3M13 14h3"/></svg></span><span class="difficulty-pill">Easy</span></div><h3>Пересечения встреч</h3><p>Отсортировать интервалы по началу так, чтобы возможные конфликты оказались соседними.</p><div class="problem-tags"><span class="problem-tag">интервалы</span><span class="problem-tag">O(n log n)</span></div><span class="problem-open">Открыть решение · EN →</span></a>
+      </div>
+    </section>
+    <section class="problem-level" aria-labelledby="medium-title">
+      <div class="problem-level-head"><h2 id="medium-title">Средние</h2><p>Задачи, где одна центральная идея сортировки раскрывает решение.</p></div>
+      <div class="problem-grid">
+        <a class="problem-card medium" href="problem-three-way-partitioning.html"><div class="problem-card-top"><span class="problem-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 5h5v14H4zM10 8h4v11h-4zM15 3h5v16h-5z"/></svg></span><span class="difficulty-pill">Medium</span></div><h3>Трёхчастное разбиение</h3><p>Разделить массив на элементы ниже диапазона, внутри диапазона и выше диапазона за один проход.</p><div class="problem-tags"><span class="problem-tag">разбиение</span><span class="problem-tag">O(n)</span></div><span class="problem-open">Открыть решение · EN →</span></a>
+        <a class="problem-card medium" href="problem-k-smallest.html"><div class="problem-card-top"><span class="problem-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 5h14M7 10h10M9 15h6M11 20h2"/><path d="m16 17 3 3 3-3"/></svg></span><span class="difficulty-pill">Medium</span></div><h3>K наименьших элементов</h3><p>Поддерживать только k лучших кандидатов вместо полной сортировки всего массива.</p><div class="problem-tags"><span class="problem-tag">куча</span><span class="problem-tag">O(n log k)</span></div><span class="problem-open">Открыть решение · EN →</span></a>
+        <a class="problem-card medium" href="problem-inversion-count.html"><div class="problem-card-top"><span class="problem-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 6h4l10 12M5 18h4L19 6"/><path d="m16 5 3 1-1 3M16 19l3-1-1-3"/></svg></span><span class="difficulty-pill">Medium</span></div><h3>Число инверсий</h3><p>Использовать этап слияния, чтобы посчитать степень неупорядоченности без перебора всех пар.</p><div class="problem-tags"><span class="problem-tag">merge sort</span><span class="problem-tag">O(n log n)</span></div><span class="problem-open">Открыть решение · EN →</span></a>
+      </div>
+    </section>
+    <section class="problem-level" aria-labelledby="hard-title">
+      <div class="problem-level-head"><h2 id="hard-title">Сложные</h2><p>Задачи, где сортировка становится частью более крупного алгоритмического рассуждения.</p></div>
+      <div class="problem-grid">
+        <a class="problem-card hard" href="problem-top-k-frequent.html"><div class="problem-card-top"><span class="problem-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 19V9M10 19V5M15 19v-7M20 19V8"/><path d="M3 19h19"/></svg></span><span class="difficulty-pill">Hard</span></div><h3>K самых частых элементов</h3><p>Построить частоты, определить правильный порядок и извлечь первые k элементов.</p><div class="problem-tags"><span class="problem-tag">частоты</span><span class="problem-tag">ранжирование</span></div><span class="problem-open">Открыть решение · EN →</span></a>
+        <a class="problem-card hard" href="problem-merge-without-space.html"><div class="problem-card-top"><span class="problem-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 6h6l4 6 4-6h2M4 18h6l4-6 4 6h2"/><path d="m18 4 2 2-2 2M18 16l2 2-2 2"/></svg></span><span class="difficulty-pill">Hard</span></div><h3>Слияние без дополнительной памяти</h3><p>Слить два отсортированных массива на месте, рассматривая их как одну виртуальную последовательность.</p><div class="problem-tags"><span class="problem-tag">in-place</span><span class="problem-tag">O(1) extra</span></div><span class="problem-open">Открыть решение · EN →</span></a>
+        <a class="problem-card hard" href="problem-closest-pair.html"><div class="problem-card-top"><span class="problem-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="7" cy="15" r="2"/><circle cx="17" cy="9" r="2"/><path d="M9 14l6-4M4 5h2M18 19h2"/></svg></span><span class="difficulty-pill">Hard</span></div><h3>Ближайшая пара точек</h3><p>Отсортировать точки, разделить плоскость и доказать, что в средней полосе достаточно проверить лишь константное число соседей.</p><div class="problem-tags"><span class="problem-tag">геометрия</span><span class="problem-tag">divide & conquer</span></div><span class="problem-open">Открыть решение · EN →</span></a>
+      </div>
+    </section>
+    <div class="problems-source-note">Подбор задач следует спискам Easy, Medium и Hard в коллекции Sorting Algorithms на GeeksforGeeks. Формулировки и объяснения переписаны для этого гайда. Полные страницы решений пока остаются на английском.</div>
+  </main>
+  <footer class="overview-footer"><div>Гайд по алгоритмам · presented by Аллан</div><div>© 2026 Allan Allemand</div></footer>
+  <script src="language-switch.js"></script>
+</body>
+</html>
+'''
+          write('sorting-problems-ru.html', ru_index)
+
+          # --------------------------------------------------
+          # 5. Bubble Sort: make the inversion connection explicit.
+          # --------------------------------------------------
+          bubble = read('sorting-bubble.html')
+          if 'Compare with Insertion Sort' not in bubble:
+              note = '<div class="lecture-crosslink"><strong>Compare with Insertion Sort.</strong> Insertion Sort also becomes faster on nearly sorted data, and inversions give a useful way to describe that adaptivity. <a href="sorting-selection-insertion.html">Revisit Selection &amp; Insertion Sorts →</a></div>'
+              bubble = re.sub(r'(<section class="lecture-section" id="inversions">.*?)(</section>)', lambda m: m.group(1) + note + '\n' + m.group(2), bubble, count=1, flags=re.S)
+          write('sorting-bubble.html', bubble)
+
+          bubble_ru = read('sorting-bubble-ru.html')
+          if 'Сравните с сортировкой вставками' not in bubble_ru:
+              note = '<div class="lecture-crosslink"><strong>Сравните с сортировкой вставками.</strong> Сортировка вставками тоже ускоряется на почти отсортированных данных, а число инверсий удобно описывает эту адаптивность. <a href="sorting-selection-insertion-ru.html">Вернуться к сортировкам выбором и вставками →</a></div>'
+              bubble_ru = re.sub(r'(<section class="lecture-section" id="inversions">.*?)(</section>)', lambda m: m.group(1) + note + '\n' + m.group(2), bubble_ru, count=1, flags=re.S)
+          write('sorting-bubble-ru.html', bubble_ru)
+
+          # --------------------------------------------------
+          # 6. Move large page-local CSS out of Merge/Quick HTML.
+          # --------------------------------------------------
+          def externalize_css(en_name, ru_name, style_id, css_name):
+              en = read(en_name)
+              ru = read(ru_name)
+              pat = re.compile(r'<style id="' + re.escape(style_id) + r'">\s*(.*?)\s*</style>', re.S)
+              m = pat.search(en)
+              if m:
+                  write(css_name, m.group(1).strip() + '\n')
+                  en = en[:m.start()] + en[m.end():]
+              ru = pat.sub('', ru, count=1)
+              en = add_after_stylesheet(en, css_name)
+              ru = add_after_stylesheet(ru, css_name)
+              write(en_name, en)
+              write(ru_name, ru)
+
+          externalize_css('sorting-merge.html', 'sorting-merge-ru.html', 'merge-page-refinements', 'sorting-merge-page.css')
+          externalize_css('sorting-quick.html', 'sorting-quick-ru.html', 'quick-page-styles', 'sorting-quick-page.css')
+
+          # --------------------------------------------------
+          # 7. Remove obsolete/deployment-artifact files.
+          # --------------------------------------------------
+          obsolete = [
+              'sorting-counting-radix.html',
+              'APPLY_FIXES.bat',
+              'APPLY_FORMULA_FIXES.bat',
+              'apply_formula_fixes.py',
+              'apply_site_fixes.py',
+              'README-PRACTICE-UPDATE.txt',
+              'README-SITE-FIXES.txt',
+              'README-v5.txt',
+          ]
+          for name in obsolete:
+              path = ROOT / name
+              if path.exists():
+                  path.unlink()
+
+          # --------------------------------------------------
+          # Validation
+          # --------------------------------------------------
+          assert 'href="sorting-counting.html"' not in read('sorting.html')
+          assert 'href="sorting-quickselect.html"' not in read('sorting.html')
+          assert 'href="sorting-counting-ru.html"' not in read('sorting-ru.html')
+          assert 'course-status-note' in read('index.html')
+          assert 'course-status-note' in read('index-ru.html')
+          assert 'sorting-problems-ru.html' in read('sorting-problems.html')
+          assert (ROOT / 'sorting-problems-ru.html').exists()
+          assert (ROOT / 'sorting-merge-page.css').exists()
+          assert (ROOT / 'sorting-quick-page.css').exists()
+          assert '<style id="merge-page-refinements">' not in read('sorting-merge.html')
+          assert '<style id="quick-page-styles">' not in read('sorting-quick.html')
+          print('All site review fixes validated.')
+          PY
+
+      - name: Commit changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git diff --cached --check
+          if git diff --cached --quiet; then
+            echo "No changes needed"
+          else
+            git commit -m "Apply remaining sorting site review fixes"
+            git push origin main
+          fi
