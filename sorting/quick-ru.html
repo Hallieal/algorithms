@@ -1,0 +1,925 @@
+<!DOCTYPE html>
+
+<html lang="ru">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="Быстрая сортировка: выбор опорного элемента, разбиение, корректность, рекурсия, сложность, устойчивость, Python и интерактивные примеры." name="description"/>
+<meta content="Быстрая сортировка | Гайд по алгоритмам — presented by Аллан" property="og:title"/>
+<meta content="Быстрая сортировка с интерактивным разбиением, структурой рекурсии, доказательством корректности, выбором опорного элемента и анализом сложности." property="og:description"/>
+<meta content="article" property="og:type"/>
+<title>Быстрая сортировка | Гайд по алгоритмам — presented by Аллан</title>
+<link href="../assets/css/styles.css" rel="stylesheet"/>
+<link href="styles/quick-page.css" rel="stylesheet"/>
+
+<link href="../assets/images/favicon-32.png" rel="icon" sizes="32x32" type="image/png"/>
+<link href="../assets/images/favicon.png" rel="icon" sizes="64x64" type="image/png"/>
+<link href="../assets/images/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180"/>
+<link href="quick.html" hreflang="en" rel="alternate"/><link href="quick-ru.html" hreflang="ru" rel="alternate"/></head>
+<body class="lecture-page">
+<div aria-hidden="true" class="progress-track"><div class="progress-bar" id="reading-progress"></div></div>
+<header class="topbar">
+<a class="brand" href="../index-ru.html"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name ru-brand-name"><span class="ru-brand-lines"><span>Гайд по алгоритмам</span><span class="ru-brand-presented">presented by Аллан</span></span></span></a>
+<nav aria-label="Основная навигация" class="topnav">
+<a href="index-ru.html">Список тем</a>
+<div aria-label="Язык" class="language-switch"><a href="quick.html">EN</a><span class="language-separator">·</span><span class="current">RU</span></div></nav>
+</header>
+<aside aria-label="Навигация по разделу" class="sidebar">
+<div class="sidebar-title">Глава 1 · Раздел 6</div>
+<a href="#idea">Опорный элемент и разбиение</a>
+<a href="#correctness">Корректность</a>
+<a href="#partition-demo">Интерактивное разбиение</a>
+<a href="#recursion">Структура рекурсии</a>
+<a href="#implementation">Реализация</a>
+<a href="#pivot-choice">Выбор опорного элемента</a>
+<a href="#complexity">Сложность</a>
+<a href="#properties">Память и устойчивость</a>
+<a href="#comparison">Сортировка слиянием и быстрая сортировка</a>
+<a href="#comparison-limit">Можно ли сортировать сравнениями быстрее?</a>
+<a href="#exercises">Задачи</a>
+</aside>
+<main class="lecture">
+<section class="lecture-hero">
+<div class="chapter-label">Глава 1 · Раздел 6</div>
+<h1>Быстрая сортировка</h1>
+<p class="chapter-topics">
+        Выбираем опорный элемент, разбиваем массив относительно него и рекурсивно сортируем две получившиеся части.
+      </p>
+</section>
+<section class="lecture-section" id="idea">
+<h2>Опорный элемент и разбиение</h2>
+<p class="lead">
+        Быстрая сортировка организует массив относительно одного выбранного элемента — <em>опорного элемента</em>. Все остальные элементы распределяются по нужную сторону от него, после чего две части сортируются рекурсивно.
+      </p>
+<div class="quick-principle">
+<div class="quick-principle-symbol">p</div>
+<div>
+<h3>Опорный элемент задаёт границу</h3>
+<p>
+            После разбиения каждый элемент левой части не больше опорного, а каждый элемент правой части больше него. Значит, в итоговом отсортированном массиве опорный элемент должен стоять между этими двумя частями.
+          </p>
+</div>
+</div>
+<div class="quick-step-grid">
+<article class="quick-step">
+<div class="quick-step-number">1</div>
+<h3>Выбрать опорный элемент</h3>
+<p>В учебной реализации в качестве опорного используется первый элемент массива.</p>
+</article>
+<article class="quick-step">
+<div class="quick-step-number">2</div>
+<h3>Разбить</h3>
+<p>Каждый оставшийся элемент отправить в левую часть, если он не больше опорного, и в правую — иначе.</p>
+</article>
+<article class="quick-step">
+<div class="quick-step-number">3</div>
+<h3>Отсортировать рекурсивно</h3>
+<p>Независимо применить быструю сортировку к левой и правой частям.</p>
+</article>
+<article class="quick-step">
+<div class="quick-step-number">4</div>
+<h3>Объединить</h3>
+<p>Соединить отсортированную левую часть, опорный элемент и отсортированную правую часть.</p>
+</article>
+</div>
+<div class="partition-static">
+<div class="partition-static-input">
+<span class="partition-cell pivot">5</span>
+<span class="partition-cell">7</span>
+<span class="partition-cell">3</span>
+<span class="partition-cell">1</span>
+<span class="partition-cell">4</span>
+<span class="partition-cell">8</span>
+<span class="partition-cell">6</span>
+</div>
+<div class="partition-static-arrow">разбиение относительно опорного элемента = 5</div>
+<div class="partition-static-output">
+<div class="partition-group left-group">
+<span class="partition-group-label">≤ опорного</span>
+<span class="partition-cell">3</span>
+<span class="partition-cell">1</span>
+<span class="partition-cell">4</span>
+</div>
+<div class="partition-group pivot-group">
+<span class="partition-group-label">опорного элемента</span>
+<span class="partition-cell">5</span>
+</div>
+<div class="partition-group right-group">
+<span class="partition-group-label">&gt; опорного</span>
+<span class="partition-cell">7</span>
+<span class="partition-cell">8</span>
+<span class="partition-cell">6</span>
+</div>
+</div>
+</div>
+</section>
+<section class="lecture-section" id="correctness">
+<h2>Почему быстрая сортировка корректна</h2>
+<div class="quick-boundary-card">
+<div class="quick-boundary-symbol">≤ | &gt;</div>
+<div>
+<h3>Свойство разбиения</h3>
+<p>
+            Разбиение создаёт ровно ту границу, которая нам нужна: каждое значение слева не больше опорного, а каждое значение справа больше него.
+          </p>
+</div>
+</div>
+<div class="quick-proof-grid">
+<article class="quick-proof-step">
+<span>1</span>
+<div>
+<h3>База рекурсии</h3>
+<p>
+              Массив из нуля или одного элемента уже отсортирован. Быстрая сортировка сразу возвращает его.
+            </p>
+</div>
+</article>
+<article class="quick-proof-step">
+<span>2</span>
+<div>
+<h3>Индукционное предположение</h3>
+<p>
+              Предположим, что быстрая сортировка корректно сортирует любой массив, короче текущего. Обе части короче исходного массива, потому что опорный элемент в них не входит.
+            </p>
+</div>
+</article>
+<article class="quick-proof-step">
+<span>3</span>
+<div>
+<h3>Рекурсивные вызовы</h3>
+<p>
+              По индукционному предположению один рекурсивный вызов корректно сортирует левую часть, а другой — правую.
+            </p>
+</div>
+</article>
+<article class="quick-proof-step">
+<span>4</span>
+<div>
+<h3>Объединение</h3>
+<p>
+              Каждый элемент отсортированной левой части не больше опорного, а каждый элемент отсортированной правой части больше него. Поэтому три блока можно поставить подряд, не создавая инверсии на границах.
+            </p>
+<div aria-label="Sorted left plus pivot plus sorted right gives a sorted array" class="quick-concat-formula">
+<span class="quick-concat-left">отсортированная левая часть</span>
+<b>+</b>
+<span class="quick-concat-pivot">опорного элемента</span>
+<b>+</b>
+<span class="quick-concat-right">отсортированная правая часть</span>
+<b>→</b>
+<span class="quick-concat-result">отсортированный массив</span>
+</div>
+</div>
+</article>
+</div>
+</section>
+<section class="lecture-section" id="partition-demo">
+<h2>Интерактивное разбиение</h2>
+<div class="partition-demo" id="quick-partition-demo">
+<div class="visualizer-head">
+<div>
+<h3>Распределяем элементы по одному</h3>
+<p>
+              Первый элемент — опорный. Нажимайте <strong>Следующий шаг разбиения</strong>. Текущий элемент отмечен оранжевым; обработанные элементы переходят в синюю или зелёную группу.
+            </p>
+</div>
+<button class="primary-step" data-action="next-partition" type="button">Следующий шаг разбиения →</button>
+</div>
+<div class="partition-board">
+<div class="partition-demo-group input-group">
+<span class="partition-demo-title">Вход</span>
+<div class="partition-demo-array" data-role="partition-input"></div>
+</div>
+<div class="partition-demo-group">
+<span class="partition-demo-title">Слева: ≤ опорного</span>
+<div class="partition-demo-array" data-role="partition-left"></div>
+</div>
+<div class="partition-demo-group">
+<span class="partition-demo-title">Справа: &gt; опорного</span>
+<div class="partition-demo-array" data-role="partition-right"></div>
+</div>
+</div>
+<div aria-hidden="true" class="legend-row">
+<span><i class="legend-dot quick-pivot-dot"></i>опорного элемента</span>
+<span><i class="legend-dot quick-current-dot"></i>текущий элемент</span>
+<span><i class="legend-dot quick-left-dot"></i>левая часть</span>
+<span><i class="legend-dot quick-right-dot"></i>правая часть</span>
+</div>
+<div aria-live="polite" class="step-caption" data-role="partition-caption">
+          Опорный элемент равен 5. Начинаем со следующего элемента.
+        </div>
+<div class="secondary-controls">
+<button data-action="reset-partition" type="button">Сбросить</button>
+<button data-action="new-partition" type="button">Новый массив</button>
+</div>
+</div>
+</section>
+<section class="lecture-section" id="recursion">
+<h2>Структура рекурсии</h2>
+<p class="lead">
+        Разбиение решает только часть задачи: опорный элемент оказывается между двумя группами. Сами группы пока не отсортированы, поэтому к каждой из них применяется та же процедура.
+      </p>
+<div class="quick-trace">
+<h3>Проследим рекурсивные вызовы</h3>
+<p class="quick-trace-static-intro">
+          Полная трассировка для <code>[5, 7, 3, 1, 4, 8, 6]</code> показана ниже. Все этапы имеют одинаковую ширину; глубина рекурсии указана в отдельной метке, а не с помощью сужения или отступов.
+        </p>
+<div class="quick-trace-stages static-trace">
+<article class="quick-trace-stage">
+<div class="quick-trace-stage-header">
+<span class="quick-trace-stage-number">этап 1</span>
+<div class="quick-trace-depth">глубина рекурсии 0</div>
+</div>
+<p class="quick-trace-stage-type">Разбиваем этот подмассив</p>
+<div class="quick-trace-array">
+<span class="trace-pivot">5</span><span>7</span><span>3</span><span>1</span><span>4</span><span>8</span><span>6</span>
+</div>
+<div class="quick-trace-groups">
+<span class="trace-left">3</span><span class="trace-left">1</span><span class="trace-left">4</span>
+<span class="trace-pivot">5</span>
+<span class="trace-right">7</span><span class="trace-right">8</span><span class="trace-right">6</span>
+</div>
+<p class="quick-trace-stage-description">Разбиваем [5, 7, 3, 1, 4, 8, 6] относительно опорного элемента 5.</p>
+</article>
+<article class="quick-trace-stage">
+<div class="quick-trace-stage-header">
+<span class="quick-trace-stage-number">этап 2</span>
+<div class="quick-trace-depth">глубина рекурсии 1</div>
+</div>
+<p class="quick-trace-stage-type">Разбиваем левый подмассив</p>
+<div class="quick-trace-array">
+<span class="trace-pivot">3</span><span>1</span><span>4</span>
+</div>
+<div class="quick-trace-groups">
+<span class="trace-left">1</span><span class="trace-pivot">3</span><span class="trace-right">4</span>
+</div>
+<p class="quick-trace-stage-description">Разбиваем [3, 1, 4] относительно опорного элемента 3.</p>
+</article>
+<article class="quick-trace-stage is-base">
+<div class="quick-trace-stage-header">
+<span class="quick-trace-stage-number">этап 3</span>
+<div class="quick-trace-depth">глубина рекурсии 2</div>
+</div>
+<p class="quick-trace-stage-type">База рекурсии</p>
+<div class="quick-trace-groups"><span class="trace-result">1</span></div>
+<p class="quick-trace-stage-description">[1] уже отсортирован.</p>
+</article>
+<article class="quick-trace-stage is-base">
+<div class="quick-trace-stage-header">
+<span class="quick-trace-stage-number">этап 4</span>
+<div class="quick-trace-depth">глубина рекурсии 2</div>
+</div>
+<p class="quick-trace-stage-type">База рекурсии</p>
+<div class="quick-trace-groups"><span class="trace-result">4</span></div>
+<p class="quick-trace-stage-description">[4] уже отсортирован.</p>
+</article>
+<article class="quick-trace-stage is-return">
+<div class="quick-trace-stage-header">
+<span class="quick-trace-stage-number">этап 5</span>
+<div class="quick-trace-depth">глубина рекурсии 1</div>
+</div>
+<p class="quick-trace-stage-type">Возвращаемся из левого рекурсивного вызова</p>
+<div class="quick-trace-groups">
+<span class="trace-left">1</span><span class="trace-pivot">3</span><span class="trace-right">4</span>
+</div>
+<div class="quick-trace-result-label">объединённый результат</div>
+<div class="quick-trace-groups">
+<span class="trace-result">1</span><span class="trace-result">3</span><span class="trace-result">4</span>
+</div>
+<p class="quick-trace-stage-description">Левая часть исходной задачи теперь отсортирована.</p>
+</article>
+<article class="quick-trace-stage">
+<div class="quick-trace-stage-header">
+<span class="quick-trace-stage-number">этап 6</span>
+<div class="quick-trace-depth">глубина рекурсии 1</div>
+</div>
+<p class="quick-trace-stage-type">Разбиваем правый подмассив</p>
+<div class="quick-trace-array">
+<span class="trace-pivot">7</span><span>8</span><span>6</span>
+</div>
+<div class="quick-trace-groups">
+<span class="trace-left">6</span><span class="trace-pivot">7</span><span class="trace-right">8</span>
+</div>
+<p class="quick-trace-stage-description">Разбиваем [7, 8, 6] относительно опорного элемента 7.</p>
+</article>
+<article class="quick-trace-stage is-base">
+<div class="quick-trace-stage-header">
+<span class="quick-trace-stage-number">этап 7</span>
+<div class="quick-trace-depth">глубина рекурсии 2</div>
+</div>
+<p class="quick-trace-stage-type">База рекурсии</p>
+<div class="quick-trace-groups"><span class="trace-result">6</span></div>
+<p class="quick-trace-stage-description">[6] уже отсортирован.</p>
+</article>
+<article class="quick-trace-stage is-base">
+<div class="quick-trace-stage-header">
+<span class="quick-trace-stage-number">этап 8</span>
+<div class="quick-trace-depth">глубина рекурсии 2</div>
+</div>
+<p class="quick-trace-stage-type">База рекурсии</p>
+<div class="quick-trace-groups"><span class="trace-result">8</span></div>
+<p class="quick-trace-stage-description">[8] уже отсортирован.</p>
+</article>
+<article class="quick-trace-stage is-return">
+<div class="quick-trace-stage-header">
+<span class="quick-trace-stage-number">этап 9</span>
+<div class="quick-trace-depth">глубина рекурсии 1</div>
+</div>
+<p class="quick-trace-stage-type">Возвращаемся из правого рекурсивного вызова</p>
+<div class="quick-trace-groups">
+<span class="trace-left">6</span><span class="trace-pivot">7</span><span class="trace-right">8</span>
+</div>
+<div class="quick-trace-result-label">объединённый результат</div>
+<div class="quick-trace-groups">
+<span class="trace-result">6</span><span class="trace-result">7</span><span class="trace-result">8</span>
+</div>
+<p class="quick-trace-stage-description">Правая часть исходной задачи теперь отсортирована.</p>
+</article>
+<article class="quick-trace-stage is-return">
+<div class="quick-trace-stage-header">
+<span class="quick-trace-stage-number">этап 10</span>
+<div class="quick-trace-depth">глубина рекурсии 0</div>
+</div>
+<p class="quick-trace-stage-type">Возвращаемся из исходного вызова</p>
+<div class="quick-trace-groups">
+<span class="trace-left">1</span><span class="trace-left">3</span><span class="trace-left">4</span>
+<span class="trace-pivot">5</span>
+<span class="trace-right">6</span><span class="trace-right">7</span><span class="trace-right">8</span>
+</div>
+<div class="quick-trace-result-label">итоговый отсортированный массив</div>
+<div class="quick-trace-groups">
+<span class="trace-result">1</span><span class="trace-result">3</span><span class="trace-result">4</span>
+<span class="trace-result">5</span><span class="trace-result">6</span><span class="trace-result">7</span><span class="trace-result">8</span>
+</div>
+<p class="quick-trace-stage-description">Быстрая сортировка возвращает [1, 3, 4, 5, 6, 7, 8].</p>
+</article>
+</div>
+</div>
+</section>
+<section class="lecture-section" id="implementation">
+<h2>Реализация</h2>
+<p class="lead">
+        Эта версия буквально повторяет идею алгоритма: выбираем первый элемент как опорный, строим две части, рекурсивно сортируем каждую и соединяем результат.
+      </p>
+<div class="code-explainer">
+<div class="annotated-code">
+<div class="code-row"><span class="line-no">1</span><code>def quick_sort(a):</code></div>
+<div class="code-row marked"><span class="line-no">2</span><code>    if len(a) &lt; 2:</code></div>
+<div class="code-row marked"><span class="line-no">3</span><code>        return a</code></div>
+<div class="code-row"><span class="line-no">4</span><code></code></div>
+<div class="code-row marked"><span class="line-no">5</span><code>    pivot = a[0]</code></div>
+<div class="code-row marked"><span class="line-no">6</span><code>    left = [x for x in a[1:] if x &lt;= pivot]</code></div>
+<div class="code-row marked"><span class="line-no">7</span><code>    right = [x for x in a[1:] if x &gt; pivot]</code></div>
+<div class="code-row"><span class="line-no">8</span><code></code></div>
+<div class="code-row marked"><span class="line-no">9</span><code>    sorted_left = quick_sort(left)</code></div>
+<div class="code-row marked"><span class="line-no">10</span><code>    sorted_right = quick_sort(right)</code></div>
+<div class="code-row"><span class="line-no">11</span><code></code></div>
+<div class="code-row marked"><span class="line-no">12</span><code>    return sorted_left + [pivot] + sorted_right</code></div>
+</div>
+<div class="code-notes">
+<h3>Комментарии к реализации</h3>
+<div class="code-note-item wide-note">
+<span>2–3</span>
+<p>
+<strong>Строки 2–3.</strong> Пустой массив и массив из одного элемента уже отсортированы. Это база рекурсии.
+            </p>
+</div>
+<div class="code-note-item">
+<span>5</span>
+<p>
+<strong>Строка 5.</strong> Первый элемент выбирается опорным. Это просто, но такой выбор далеко не всегда удачен.
+            </p>
+</div>
+<div class="code-note-item wide-note">
+<span>6–7</span>
+<p>
+<strong>Строки 6–7.</strong> Каждый оставшийся элемент распределяется ровно один раз: значения не больше опорного идут влево, большие — вправо.
+            </p>
+</div>
+<div class="code-note-item wide-note">
+<span>9–10</span>
+<p>
+<strong>Строки 9–10.</strong> Две меньшие части сортируются рекурсивно.
+            </p>
+</div>
+<div class="code-note-item">
+<span>12</span>
+<p>
+<strong>Строка 12.</strong> Поскольку разбиение уже создало правильную границу, достаточно поставить опорный элемент между двумя отсортированными частями, чтобы получить итоговый массив.
+            </p>
+</div>
+</div>
+</div>
+<div class="implementation-warning">
+<h3>Эта учебная реализация работает не на месте</h3>
+<p>
+          Генераторы списков создают новые массивы <code>left</code> и <code>right</code> . В практических реализациях исходный массив часто разбивается на месте. Анализ времени ниже относится к самой структуре разбиения; расход памяти зависит от реализации.
+        </p>
+</div>
+</section>
+<section class="lecture-section" id="pivot-choice">
+<h2>Выбор опорного элемента</h2>
+<p class="lead">
+        В отличие от сортировки слиянием, быстрая сортировка не гарантирует двух равных подзадач. Размеры рекурсивных вызовов определяются выбранным опорным элементом.
+      </p>
+<div class="pivot-choice-grid">
+<article class="pivot-choice-card good">
+<h3>Сбалансированное разбиение</h3>
+<p>
+            Опорный элемент, близкий к медиане, создаёт две части сопоставимого размера. Дерево рекурсии остаётся неглубоким.
+          </p>
+<div class="pivot-tree">
+<div class="pivot-tree-row"><span class="pivot-tree-node">n</span></div>
+<div class="pivot-tree-row">
+<span class="pivot-tree-node">n/2</span>
+<span class="pivot-tree-node">n/2</span>
+</div>
+<div class="pivot-tree-row">
+<span class="pivot-tree-node">n/4</span>
+<span class="pivot-tree-node">n/4</span>
+<span class="pivot-tree-node">n/4</span>
+<span class="pivot-tree-node">n/4</span>
+</div>
+</div>
+</article>
+<article class="pivot-choice-card bad">
+<h3>Сильно несбалансированное разбиение</h3>
+<p>
+            Если опорный элемент каждый раз оказывается минимальным или максимальным, одна часть пуста, а другая содержит почти весь массив.
+          </p>
+<div class="pivot-tree">
+<div class="pivot-tree-row"><span class="pivot-tree-node">n</span></div>
+<div class="pivot-tree-row"><span class="pivot-tree-node">n−1</span></div>
+<div class="pivot-tree-row"><span class="pivot-tree-node">n−2</span></div>
+<div class="pivot-tree-row"><span class="pivot-tree-node">⋮</span></div>
+<div class="pivot-tree-row"><span class="pivot-tree-node">1</span></div>
+</div>
+</article>
+</div>
+<div class="random-pivot-callout">
+<div class="random-pivot-icon">?</div>
+<div>
+<h3>Почему случайный выбор опорного элемента помогает</h3>
+<p>
+            В коде выше опорным всегда выбирается первый элемент, поэтому уже отсортированный массив порождает худший случай — длинную цепочку рекурсивных вызовов. Если выбирать опорный элемент равновероятно случайно, систематически неудачные разбиения становятся маловероятны. Для рандомизированной быстрой сортировки математическое ожидание времени работы равно <span class="math">Θ(n log n)</span>.
+          </p>
+</div>
+</div>
+</section>
+<section class="lecture-section" id="complexity">
+<h2>Сложность</h2>
+<div class="quick-principle">
+<div class="quick-principle-symbol">n</div>
+<div>
+<h3>Разбиение одного подмассива занимает линейное время</h3>
+<p>
+            Каждый элемент, кроме опорного, просматривается один раз, чтобы определить, в какую часть он попадает. Поэтому разбиение массива длины
+            <span class="math">n</span> занимает <span class="math">Θ(n)</span>.
+          </p>
+</div>
+</div>
+<div class="quick-complexity-comparison">
+<article class="quick-complexity-case good-case">
+<h3>Сбалансированный случай</h3>
+<p>
+            Если разбиения остаются примерно сбалансированными, размер задачи на каждом уровне примерно делится пополам. Всего получается <span class="math">Θ(log n)</span> уровней.
+          </p>
+<div class="quick-levels">
+<div class="quick-level">
+<span class="quick-level-label">уровень 1</span>
+<div class="quick-level-bar">всего n элементов</div>
+<b>Θ(n)</b>
+</div>
+<div class="quick-level">
+<span class="quick-level-label">уровень 2</span>
+<div class="quick-level-bar">всего n элементов</div>
+<b>Θ(n)</b>
+</div>
+<div class="quick-level">
+<span class="quick-level-label">⋮</span>
+<div class="quick-level-bar">⋮</div>
+<b>⋮</b>
+</div>
+</div>
+<div class="quick-formula">
+            Θ(log n) уровней × Θ(n) работы на уровне = Θ(n log n)
+          </div>
+</article>
+<article class="quick-complexity-case bad-case">
+<h3>Худший случай</h3>
+<p>
+            Если опорный элемент каждый раз экстремальный, размер подзадачи при каждом рекурсивном вызове уменьшается лишь на единицу. Дерево рекурсии превращается в цепочку длины
+            <span class="math">Θ(n)</span>.
+          </p>
+<div class="quick-levels">
+<div class="quick-level">
+<span class="quick-level-label">вызов 1</span>
+<div class="quick-level-bar">n</div>
+<b>Θ(n)</b>
+</div>
+<div class="quick-level">
+<span class="quick-level-label">вызов 2</span>
+<div class="quick-level-bar">n−1</div>
+<b>Θ(n−1)</b>
+</div>
+<div class="quick-level">
+<span class="quick-level-label">вызов 3</span>
+<div class="quick-level-bar">n−2</div>
+<b>Θ(n−2)</b>
+</div>
+</div>
+<div class="quick-formula">
+            n + (n − 1) + ··· + 1 = Θ(n²)
+          </div>
+</article>
+</div>
+<div class="complexity-strip">
+<div><span>Лучший случай</span><b>Θ(n log n)</b><small>сбалансированные разбиения</small></div>
+<div><span>Средний случай</span><b>Θ(n log n)</b><small>типичный / рандомизированный</small></div>
+<div><span>Худший случай</span><b>Θ(n²)</b><small>опорный элемент постоянно экстремальный</small></div>
+<div><span>Шаг разбиения</span><b>Θ(n)</b><small>один проход</small></div>
+</div>
+</section>
+<section class="lecture-section" id="properties">
+<h2>Память и устойчивость</h2>
+<div class="quick-property-grid">
+<article class="quick-property-card">
+<h3>Память</h3>
+<p>
+            Показанная выше реализация создаёт новые массивы для двух частей, поэтому она работает не на месте.
+          </p>
+<p>
+            Стандартная быстрая сортировка на месте переставляет элементы внутри исходного массива. Тогда основная дополнительная память — стек рекурсии:
+            <span class="math">Θ(log n)</span> при сбалансированной рекурсии и
+            <span class="math">Θ(n)</span> в худшем случае.
+          </p>
+</article>
+<article class="quick-property-card">
+<h3>Устойчивость</h3>
+<p>
+            Обычная быстрая сортировка неустойчива. Разбиение и обмены могут менять взаимный порядок элементов с одинаковыми ключами.
+          </p>
+<p>
+            Даже простая реализация выше может перенести элемент, равный опорному, перед самим опорным элементом, хотя изначально тот стоял раньше.
+          </p>
+</article>
+</div>
+<div class="stability-example">
+<div class="stability-side">
+<div class="person-card equal-key"><b>Alice</b><span>балл 2</span></div>
+<div class="person-card equal-key"><b>Bob</b><span>балл 2</span></div>
+<div class="person-card"><b>Cara</b><span>балл 1</span></div>
+</div>
+<div class="stability-arrow">→</div>
+<div class="stability-side">
+<div class="person-card"><b>Cara</b><span>балл 1</span></div>
+<div class="person-card reversed"><b>Bob</b><span>балл 2</span></div>
+<div class="person-card reversed"><b>Alice</b><span>балл 2</span></div>
+</div>
+</div>
+<p class="caption">
+        Если Alice выбрана опорным элементом, Bob попадёт в левую часть, потому что его ключ равен ключу опорного элемента. После объединения Bob может оказаться перед Alice.
+      </p>
+</section>
+<section class="lecture-section" id="comparison">
+<h2>Сортировка слиянием и быстрая сортировка</h2>
+<p class="lead">
+        Оба алгоритма используют принцип «разделяй и властвуй», но основная работа выполняется в разные моменты.
+      </p>
+<div class="merge-quick-grid">
+<article class="merge-quick-card">
+<h3>Сортировка слиянием</h3>
+<ul>
+<li>делит массив по позициям на две почти равные половины;</li>
+<li>рекурсивно сортирует половины;</li>
+<li>выполняет основную работу по объединению после рекурсии;</li>
+<li>гарантирует <span class="math">Θ(n log n)</span> времени;</li>
+<li>стандартная реализация на массивах использует <span class="math">Θ(n)</span> дополнительной памяти;</li>
+<li>может быть устойчивой.</li>
+</ul>
+</article>
+<article class="merge-quick-card">
+<h3>Быстрая сортировка</h3>
+<ul>
+<li>делит массив по значениям относительно опорного элемента;</li>
+<li>размеры частей зависят от выбора опорного элемента;</li>
+<li>выполняет основную работу по упорядочиванию до рекурсии;</li>
+<li>имеет среднее / ожидаемое <span class="math">Θ(n log n)</span> времени;</li>
+<li>может разбивать массив на месте;</li>
+<li>обычно неустойчива.</li>
+</ul>
+</article>
+</div>
+</section>
+<section class="lecture-section" id="comparison-limit">
+<h2>Можно ли сортировать сравнениями быстрее?</h2>
+<p class="lead">
+        Сортировка слиянием работает за логлинейное время, а у рандомизированной быстрой сортировки логлинейно математическое ожидание времени. Возникает естественный вопрос: можно ли асимптотически сортировать сравнениями быстрее? В худшем случае — нет.
+      </p>
+<div class="comparison-limit-intuition">
+<div aria-hidden="true" class="comparison-limit-mark">?</div>
+<div>
+<h3>Алгоритм должен различать все возможные порядки</h3>
+<p>
+            Если вход содержит <span class="math">n</span> различных элементов, существует
+            <span class="math">n!</span> возможных взаимных порядков. Корректный алгоритм сортировки сравнениями должен получить достаточно информации, чтобы различить каждый из них.
+          </p>
+</div>
+</div>
+<div class="comparison-limit-proof">
+<article>
+<div class="limit-step-number">1</div>
+<div>
+<h3>Одно сравнение даёт два исхода</h3>
+<p>
+              Сравнение вида <span class="math">a &lt; b</span> имеет два возможных исхода. Поэтому алгоритм сортировки сравнениями можно представить бинарным деревом решений.
+            </p>
+</div>
+</article>
+<article>
+<div class="limit-step-number">2</div>
+<div>
+<h3>Дереву нужно не менее <span class="math">n!</span> листьев</h3>
+<p>
+              Каждый возможный порядок входа должен приводить к соответствующему правильному ответу. Значит, в дереве решений должен быть хотя бы один лист для каждого возможного порядка.
+            </p>
+</div>
+</article>
+<article>
+<div class="limit-step-number">3</div>
+<div>
+<h3>Бинарное дерево высоты <span class="math">h</span> имеет не более <span class="math">2^h</span> листьев</h3>
+<p>
+              Следовательно,
+            </p>
+<div class="limit-equation">
+<span>2<sup>h</sup> ≥ n!</span>
+<span class="limit-equation-arrow">⇒</span>
+<span>h ≥ log<sub>2</sub>(n!)</span>
+</div>
+</div>
+</article>
+<article>
+<div class="limit-step-number">4</div>
+<div>
+<h3>Нижняя граница — логлинейная</h3>
+<p>
+              Поскольку <span class="math">log(n!) = Θ(n log n)</span>каждый алгоритм сортировки сравнениями требует <span class="math">Ω(n log n)</span> сравнений в худшем случае.
+            </p>
+</div>
+</article>
+</div>
+<div class="comparison-limit-conclusion">
+<div aria-hidden="true" class="comparison-limit-symbol">Ω</div>
+<div>
+<h3>Для сортировок сравнениями достигнута асимптотическая граница</h3>
+<p>
+            Сортировка слиянием уже достигает этой нижней границы в худшем случае. Чтобы сортировать асимптотически быстрее, нужно использовать информацию о ключах, выходящую за рамки попарных сравнений.
+          </p>
+</div>
+</div>
+<div class="beyond-comparison-bridge">
+<div>
+<span class="example-kicker">Следующая идея</span>
+<h3>Можно ли сортировать быстрее вообще?</h3>
+<p>
+            Да, если использовать дополнительную структуру ключей. Первый пример — сортировка подсчётом: вместо того чтобы узнавать порядок только через сравнения, она использует тот факт, что ключи — целые числа из известного диапазона.
+          </p>
+</div>
+</div>
+</section>
+<section class="lecture-section" id="exercises">
+<h2>Задачи</h2>
+<div class="exercise-list">
+<article class="exercise">
+<div class="exercise-num">1</div>
+<div>
+<h3>Разбейте массив вручную</h3>
+<p>
+              Используя первый элемент как опорный, разбейте
+              <code>[6, 2, 9, 1, 7, 4]</code>
+              на две группы так же, как это делает реализация выше.
+            </p>
+<button aria-expanded="false" class="reveal" data-reveal="quick-ex1" type="button">Показать ответ</button>
+<div class="answer-box" hidden="" id="quick-ex1">
+              Опорный элемент равен 6. Левая часть — <code>[2, 1, 4]</code>
+              а правая часть — <code>[9, 7]</code>.
+            </div>
+</div>
+</article>
+<article class="exercise">
+<div class="exercise-num">2</div>
+<div>
+<h3>Вход для худшего случая</h3>
+<p>
+              Почему уже отсортированный по возрастанию массив является худшим входом для показанной реализации?
+            </p>
+<button aria-expanded="false" class="reveal" data-reveal="quick-ex2" type="button">Показать ответ</button>
+<div class="answer-box" hidden="" id="quick-ex2">
+              Первый элемент всегда оказывается минимальным среди оставшихся. Поэтому левая часть пуста, а размеры правой части последовательно равны <code>n−1, n−2, ...</code>. Рекурсия превращается в цепочку, что даёт <span class="math">Θ(n²)</span> работы.
+            </div>
+</div>
+</article>
+<article class="exercise">
+<div class="exercise-num">3</div>
+<div>
+<h3>Корректность</h3>
+<p>
+              Почему после возврата из рекурсивных вызовов не нужно дополнительно сравнивать элементы левой и правой частей?
+            </p>
+<button aria-expanded="false" class="reveal" data-reveal="quick-ex3" type="button">Показать ответ</button>
+<div class="answer-box" hidden="" id="quick-ex3">
+              Разбиение уже гарантирует, что каждое значение слева не больше опорного, а каждое значение справа больше него. Значит, любой левый элемент автоматически не больше любого элемента, который окажется после опорного в итоговом объединении.
+            </div>
+</div>
+</article>
+<article class="exercise">
+<div class="exercise-num">4</div>
+<div>
+<h3>Выбор опорного элемента</h3>
+<p>
+              Пусть каждое разбиение делит массив примерно в отношении 1:3, а не пополам. Сохранится ли та же асимптотика времени <span class="math">Θ(n log n)</span>?
+            </p>
+<button aria-expanded="false" class="reveal" data-reveal="quick-ex4" type="button">Показать ответ</button>
+<div class="answer-box" hidden="" id="quick-ex4">
+              Да. Более крупная рекурсивная подзадача на каждом уровне уменьшается в постоянное число раз, поэтому глубина рекурсии по-прежнему равна <span class="math">Θ(log n)</span>. Суммарная работа по разбиениям на каждом уровне остаётся равной <span class="math">Θ(n)</span>.
+            </div>
+</div>
+</article>
+</div>
+<div class="next-part">
+<h3>Перейти к практике</h3>
+<p>
+          На этом опубликованная основная часть главы о сортировках пока заканчивается. Закрепите идеи главы на задачах возрастающей сложности.
+        </p>
+<a class="next-part-link" href="problems/index-ru.html">Практические задачи →</a>
+</div>
+<div class="next-part">
+<h3>Предыдущий раздел</h3>
+<p>
+          Вернуться к сортировке слиянием.
+        </p>
+<a class="next-part-link" href="merge-ru.html">← Сортировка слиянием</a>
+</div>
+</section>
+</main>
+<footer class="lecture-footer">
+<div>Гайд по алгоритмам · presented by Аллан</div>
+<div>© 2026 Allan Allemand</div>
+</footer>
+<script src="../assets/js/lecture-core.js"></script>
+<script>
+(() => {
+  "use strict";
+
+  /* -------------------------------------------------------
+     Interactive partition
+     ------------------------------------------------------- */
+
+  const DEFAULT_PARTITION = [5, 7, 3, 1, 4, 8, 6];
+
+  function randomUniqueArray() {
+    const pool = [1,2,3,4,5,6,7,8,9];
+    for (let i = pool.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [pool[i], pool[j]] = [pool[j], pool[i]];
+    }
+    return pool.slice(0, 7);
+  }
+
+  function partitionStates(input) {
+    const pivot = input[0];
+    const left = [];
+    const right = [];
+    const states = [{
+      input: [...input],
+      pivot,
+      currentIndex: 1,
+      processedUntil: 0,
+      left: [],
+      right: [],
+      text: `Опорный элемент — ${pivot}. Начинаем с ${input[1]}.`
+    }];
+
+    for (let i = 1; i < input.length; i++) {
+      const value = input[i];
+
+      states.push({
+        input: [...input],
+        pivot,
+        currentIndex: i,
+        processedUntil: i - 1,
+        left: [...left],
+        right: [...right],
+        text: `Сравниваем ${value} с опорным элементом ${pivot}.`
+      });
+
+      if (value <= pivot) {
+        left.push(value);
+        states.push({
+          input: [...input],
+          pivot,
+          currentIndex: -1,
+          processedUntil: i,
+          left: [...left],
+          right: [...right],
+          text: `${value} ≤ ${pivot}, поэтому ${value} отправляется в левую часть.`
+        });
+      } else {
+        right.push(value);
+        states.push({
+          input: [...input],
+          pivot,
+          currentIndex: -1,
+          processedUntil: i,
+          left: [...left],
+          right: [...right],
+          text: `${value} > ${pivot}, поэтому ${value} отправляется в правую часть.`
+        });
+      }
+    }
+
+    states.push({
+      input: [...input],
+      pivot,
+      currentIndex: -1,
+      processedUntil: input.length - 1,
+      left: [...left],
+      right: [...right],
+      text: "Разбиение завершено. Опорный элемент теперь разделяет две группы."
+    });
+
+    return states;
+  }
+
+  function renderPartition(demo) {
+    const s = demo._states[demo._index];
+    const inputBox = demo.querySelector('[data-role="partition-input"]');
+    const leftBox = demo.querySelector('[data-role="partition-left"]');
+    const rightBox = demo.querySelector('[data-role="partition-right"]');
+    const caption = demo.querySelector('[data-role="partition-caption"]');
+
+    inputBox.replaceChildren();
+    leftBox.replaceChildren();
+    rightBox.replaceChildren();
+
+    s.input.forEach((value, i) => {
+      const cell = document.createElement("span");
+      cell.textContent = value;
+
+      if (i === 0) {
+        cell.classList.add("partition-demo-pivot");
+      } else if (i === s.currentIndex) {
+        cell.classList.add("partition-demo-current");
+      } else if (i <= s.processedUntil) {
+        cell.classList.add("partition-demo-processed");
+      }
+
+      inputBox.appendChild(cell);
+    });
+
+    s.left.forEach(value => {
+      const cell = document.createElement("span");
+      cell.textContent = value;
+      cell.classList.add("partition-demo-left");
+      leftBox.appendChild(cell);
+    });
+
+    s.right.forEach(value => {
+      const cell = document.createElement("span");
+      cell.textContent = value;
+      cell.classList.add("partition-demo-right");
+      rightBox.appendChild(cell);
+    });
+
+    caption.textContent = s.text;
+  }
+
+  function resetPartition(demo, array) {
+    demo._states = partitionStates(array);
+    demo._index = 0;
+    renderPartition(demo);
+  }
+
+  const partitionDemo = document.getElementById("quick-partition-demo");
+  if (partitionDemo) {
+    LectureCore.mountStepper(partitionDemo, {
+      initial: DEFAULT_PARTITION,
+      build: partitionStates,
+      render: renderPartition,
+      randomize: randomUniqueArray,
+      store: "_states",
+      nextAction: "next-partition",
+      resetAction: "reset-partition",
+      randomizeAction: "new-partition"
+    });
+  }
+
+  /* -------------------------------------------------------
+     Revealable answers
+     ------------------------------------------------------- */
+
+})();
+</script>
+<script src="../assets/js/language-switch.js"></script>
+</body>
+</html>

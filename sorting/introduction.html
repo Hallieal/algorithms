@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="Introduction to sorting: the sorting problem, keys, ordering rules, correctness, running time, and memory." name="description"/>
+<meta content="Introduction to Sorting | Allan's Handbook of Algorithms" property="og:title"/>
+<meta content="article" property="og:type"/>
+<title>Introduction to Sorting | Allan's Handbook of Algorithms</title>
+<link href="../assets/css/styles.css" rel="stylesheet"/>
+<link href="../assets/images/favicon-32.png" rel="icon" sizes="32x32" type="image/png"/>
+<link href="../assets/images/favicon.png" rel="icon" sizes="64x64" type="image/png"/>
+<link href="../assets/images/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180"/>
+<link href="introduction.html" hreflang="en" rel="alternate"/><link href="introduction-ru.html" hreflang="ru" rel="alternate"/></head>
+<body class="lecture-page">
+<header class="topbar">
+<a class="brand" href="../"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name">Allan's Handbook of Algorithms</span></a>
+<nav aria-label="Primary navigation" class="topnav">
+<a href="./">Sorting overview</a>
+<div aria-label="Language" class="language-switch"><span class="current">EN</span><span class="language-separator">·</span><a href="introduction-ru.html">RU</a></div></nav>
+</header>
+<aside aria-label="Section navigation" class="sidebar">
+<div class="sidebar-title">Sorting · Introduction</div>
+<a href="#idea">The basic idea</a>
+<a href="#ingredients">Element, key, order</a>
+<a href="#definition">What sorted means</a>
+<a href="#criteria">Evaluation criteria</a>
+</aside>
+<main class="lecture">
+<section class="lecture-hero sorting-intro-hero">
+<div class="chapter-label">Sorting · Introduction</div>
+<h1>Introduction to Sorting</h1>
+</section>
+<section class="lecture-section" id="idea">
+<h2>The basic idea</h2>
+<p class="lead sorting-intro-lead">
+        A list can contain exactly the information we need and still be difficult to use because its elements
+        are in an arbitrary order. Sorting imposes structure: we choose a rule, compare elements by the relevant
+        characteristic, and rearrange them so the required order becomes explicit. Most often, the rule is simply
+        increasing or decreasing order of a numerical value.
+      </p>
+<div class="music-sort-example">
+<div class="music-example-head">
+<div>
+<span class="example-kicker">Example</span>
+<h3>Sort a playlist by play count</h3>
+</div>
+<p>
+            The play counts below are illustrative. We want the most played song first.
+          </p>
+</div>
+<div class="music-sort-grid">
+<div class="music-stage">
+<div class="music-stage-label">Before sorting</div>
+<div class="song-row">
+<div class="song-rank muted-rank">·</div>
+<div class="song-main">
+<b>Elvis Presley</b>
+<span>Can't Help Falling in Love</span>
+</div>
+<div class="song-count">84</div>
+</div>
+<div class="song-row">
+<div class="song-rank muted-rank">·</div>
+<div class="song-main">
+<b>Queen</b>
+<span>Bohemian Rhapsody</span>
+</div>
+<div class="song-count">137</div>
+</div>
+<div class="song-row">
+<div class="song-rank muted-rank">·</div>
+<div class="song-main">
+<b>The Beatles</b>
+<span>Hey Jude</span>
+</div>
+<div class="song-count">96</div>
+</div>
+<div class="song-row">
+<div class="song-rank muted-rank">·</div>
+<div class="song-main">
+<b>ABBA</b>
+<span>Dancing Queen</span>
+</div>
+<div class="song-count">112</div>
+</div>
+</div>
+<div aria-hidden="true" class="music-sort-arrow">
+<span>sort by plays</span>
+<b>→</b>
+</div>
+<div class="music-stage sorted-stage">
+<div class="music-stage-label">After sorting</div>
+<div class="song-row">
+<div class="song-rank">1</div>
+<div class="song-main">
+<b>Queen</b>
+<span>Bohemian Rhapsody</span>
+</div>
+<div class="song-count">137</div>
+</div>
+<div class="song-row">
+<div class="song-rank">2</div>
+<div class="song-main">
+<b>ABBA</b>
+<span>Dancing Queen</span>
+</div>
+<div class="song-count">112</div>
+</div>
+<div class="song-row">
+<div class="song-rank">3</div>
+<div class="song-main">
+<b>The Beatles</b>
+<span>Hey Jude</span>
+</div>
+<div class="song-count">96</div>
+</div>
+<div class="song-row">
+<div class="song-rank">4</div>
+<div class="song-main">
+<b>Elvis Presley</b>
+<span>Can't Help Falling in Love</span>
+</div>
+<div class="song-count">84</div>
+</div>
+</div>
+</div>
+<div class="same-data-note">
+<div aria-hidden="true" class="same-data-icon">↔</div>
+<div>
+<h4>The data did not change</h4>
+<p>
+              The same four song records are present before and after sorting. Only their positions changed.
+            </p>
+</div>
+</div>
+</div>
+</section>
+<section class="lecture-section" id="ingredients">
+<h2>Element, key, order</h2>
+<p class="lead">
+        A sorting problem becomes precise once three things are clear: what the elements are,
+        which part of each element determines its position, and in which direction the order should go.
+        The standard case is an array of elements, each carrying a numerical key, that we want to arrange
+        in increasing or decreasing order of that key. For example, we may sort products by price from lowest
+        to highest, while moving each complete product record together with its price.
+      </p>
+<div class="sorting-anatomy">
+<article class="sorting-anatomy-card">
+<div aria-hidden="true" class="sorting-anatomy-icon element-icon">▤</div>
+<h3>Element</h3>
+<p>The complete object that moves when we sort.</p>
+<div class="anatomy-example">
+<b>Queen</b>
+<span>Bohemian Rhapsody · 137 plays</span>
+</div>
+</article>
+<article class="sorting-anatomy-card">
+<div aria-hidden="true" class="sorting-anatomy-icon key-icon">#</div>
+<h3>Key</h3>
+<p>The value used to decide where the element belongs.</p>
+<div class="anatomy-example single-value">
+<b>137</b>
+<span>play count</span>
+</div>
+</article>
+<article class="sorting-anatomy-card">
+<div aria-hidden="true" class="sorting-anatomy-icon order-icon">↓</div>
+<h3>Order</h3>
+<p>The rule that tells us which key should come first.</p>
+<div class="anatomy-example single-value">
+<b>descending</b>
+<span>larger play count first</span>
+</div>
+</article>
+</div>
+<div class="ordering-examples">
+<div class="ordering-example">
+<span>Numbers</span>
+<b>2, 5, 7, 11</b>
+<small>ascending value</small>
+</div>
+<div class="ordering-example">
+<span>Names</span>
+<b>Adams, Bell, Chen</b>
+<small>alphabetical order</small>
+</div>
+<div class="ordering-example">
+<span>Events</span>
+<b>09:10, 11:45, 16:20</b>
+<small>chronological order</small>
+</div>
+</div>
+</section>
+<section class="lecture-section" id="definition">
+<h2>What does sorted mean?</h2>
+<div class="sorting-definition">
+<div class="definition-main">
+<span class="definition-label">Definition</span>
+<p>
+            A sorting algorithm rearranges a sequence so that the keys of its elements follow the chosen order.
+            The output must contain exactly the same elements as the input: no element is created, removed, or duplicated.
+          </p>
+</div>
+<div class="definition-properties">
+<article>
+<div class="property-mark">1</div>
+<div>
+<h3>Order property</h3>
+<p>
+                Reading from left to right, every element appears in a position consistent with the chosen ordering rule.
+              </p>
+</div>
+</article>
+<article>
+<div class="property-mark">2</div>
+<div>
+<h3>Preservation property</h3>
+<p>
+                The output contains the same collection of elements as the input, only rearranged.
+              </p>
+</div>
+</article>
+</div>
+</div>
+<div class="number-sort-demo">
+<div>
+<span>input</span>
+<div class="number-cells">
+<b>7</b><b>2</b><b>9</b><b>2</b><b>5</b>
+</div>
+</div>
+<div class="number-sort-arrow">→</div>
+<div>
+<span>sorted output</span>
+<div class="number-cells sorted-number-cells">
+<b>2</b><b>2</b><b>5</b><b>7</b><b>9</b>
+</div>
+</div>
+</div>
+</section>
+<section class="lecture-section" id="criteria">
+<h2>Evaluating Sorting Algorithms</h2>
+<p class="lead">
+        Many algorithms can produce exactly the same sorted output. The interesting question is how they get there.
+        Throughout this chapter we will compare them using three main criteria.
+      </p>
+<div class="algorithm-criteria sorting-intro-criteria">
+<div class="criteria-grid">
+<article class="criterion-card">
+<div aria-hidden="true" class="criterion-icon criterion-correctness">✓</div>
+<div>
+<h4>Correctness</h4>
+<p>Does the algorithm always return a valid sorted arrangement?</p>
+</div>
+</article>
+<article class="criterion-card">
+<div aria-hidden="true" class="criterion-icon criterion-time">↗</div>
+<div>
+<h4>Running time</h4>
+<p>How quickly does the amount of work grow when the input becomes larger?</p>
+</div>
+</article>
+<article class="criterion-card">
+<div aria-hidden="true" class="criterion-icon criterion-memory">▦</div>
+<div>
+<h4>Extra memory</h4>
+<p>How much additional storage does the algorithm need while rearranging the input?</p>
+</div>
+</article>
+</div>
+<div class="sorting-intro-final-note">
+<div aria-hidden="true" class="sorting-intro-final-mark">≠</div>
+<div>
+<h4>The fastest algorithm is not always the best algorithm</h4>
+<p>
+              Two sorting algorithms may have similar running times but differ in memory usage,
+              stability, behavior on nearly sorted data, or the number of element moves.
+              Those distinctions will appear naturally as we study the algorithms themselves.
+            </p>
+</div>
+</div>
+</div>
+<div class="next-part">
+<h3>Next section: Applications of Sorting</h3>
+<p>
+          Continue with the main problems and algorithmic patterns that become easier once the data is ordered.
+        </p>
+<a class="next-part-link" href="applications.html">Applications of Sorting →</a>
+</div>
+</section>
+</main>
+<footer class="lecture-footer">
+<div>Allan's Handbook of Algorithms</div>
+<div>© 2026 Allan Allemand</div>
+</footer>
+<script src="../assets/js/language-switch.js"></script>
+</body>
+</html>

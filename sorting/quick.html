@@ -1,0 +1,977 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="Quick Sort: pivot selection, partitioning, correctness, recursion, complexity, stability, Python, and interactive examples." name="description"/>
+<meta content="Quick Sort | Allan's Handbook of Algorithms" property="og:title"/>
+<meta content="Quick Sort with interactive partitioning, recursive structure, correctness, pivot choice, complexity analysis, and Python code." property="og:description"/>
+<meta content="article" property="og:type"/>
+<title>Quick Sort | Allan's Handbook of Algorithms</title>
+<link href="../assets/css/styles.css" rel="stylesheet"/>
+<link href="styles/quick-page.css" rel="stylesheet"/>
+
+<link href="../assets/images/favicon-32.png" rel="icon" sizes="32x32" type="image/png"/>
+<link href="../assets/images/favicon.png" rel="icon" sizes="64x64" type="image/png"/>
+<link href="../assets/images/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180"/>
+<link href="quick.html" hreflang="en" rel="alternate"/><link href="quick-ru.html" hreflang="ru" rel="alternate"/></head>
+<body class="lecture-page">
+<div aria-hidden="true" class="progress-track"><div class="progress-bar" id="reading-progress"></div></div>
+<header class="topbar">
+<a class="brand" href="../"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name">Allan's Handbook of Algorithms</span></a>
+<nav aria-label="Primary navigation" class="topnav">
+<a href="./">Sorting overview</a>
+<div aria-label="Language" class="language-switch"><span class="current">EN</span><span class="language-separator">·</span><a href="quick-ru.html">RU</a></div></nav>
+</header>
+<aside aria-label="Section navigation" class="sidebar">
+<div class="sidebar-title">Chapter 1 · Section 6</div>
+<a href="#idea">Pivot and partition</a>
+<a href="#correctness">Correctness</a>
+<a href="#partition-demo">Interactive partition</a>
+<a href="#recursion">Recursive structure</a>
+<a href="#implementation">Implementation</a>
+<a href="#pivot-choice">Pivot choice</a>
+<a href="#complexity">Complexity</a>
+<a href="#properties">Memory and stability</a>
+<a href="#comparison">Merge Sort vs Quick Sort</a>
+<a href="#comparison-limit">Can comparison sorting be faster?</a>
+<a href="#exercises">Exercises</a>
+</aside>
+<main class="lecture">
+<section class="lecture-hero">
+<div class="chapter-label">Chapter 1 · Section 6</div>
+<h1>Quick Sort</h1>
+<p class="chapter-topics">
+        Choose a pivot, partition around it, and recursively sort the two sides.
+      </p>
+</section>
+<section class="lecture-section" id="idea">
+<h2>Pivot and partition</h2>
+<p class="lead">
+        Quick Sort organizes the array around one chosen element, called the <em>pivot</em>.
+        Every other element is placed on the correct side of the pivot, and the two resulting parts
+        are sorted recursively.
+      </p>
+<div class="quick-principle">
+<div class="quick-principle-symbol">p</div>
+<div>
+<h3>The pivot creates a boundary</h3>
+<p>
+            After partitioning, every element in the left part is at most the pivot,
+            and every element in the right part is greater than the pivot.
+            The pivot therefore belongs between the two parts in the final sorted order.
+          </p>
+</div>
+</div>
+<div class="quick-step-grid">
+<article class="quick-step">
+<div class="quick-step-number">1</div>
+<h3>Choose a pivot</h3>
+<p>In our educational implementation, the first element is used as the pivot.</p>
+</article>
+<article class="quick-step">
+<div class="quick-step-number">2</div>
+<h3>Partition</h3>
+<p>Put every remaining element into the left part if it is at most the pivot, otherwise into the right part.</p>
+</article>
+<article class="quick-step">
+<div class="quick-step-number">3</div>
+<h3>Sort recursively</h3>
+<p>Apply Quick Sort independently to the left and right parts.</p>
+</article>
+<article class="quick-step">
+<div class="quick-step-number">4</div>
+<h3>Combine</h3>
+<p>Concatenate the sorted left part, the pivot, and the sorted right part.</p>
+</article>
+</div>
+<div class="partition-static">
+<div class="partition-static-input">
+<span class="partition-cell pivot">5</span>
+<span class="partition-cell">7</span>
+<span class="partition-cell">3</span>
+<span class="partition-cell">1</span>
+<span class="partition-cell">4</span>
+<span class="partition-cell">8</span>
+<span class="partition-cell">6</span>
+</div>
+<div class="partition-static-arrow">partition around pivot = 5</div>
+<div class="partition-static-output">
+<div class="partition-group left-group">
+<span class="partition-group-label">≤ pivot</span>
+<span class="partition-cell">3</span>
+<span class="partition-cell">1</span>
+<span class="partition-cell">4</span>
+</div>
+<div class="partition-group pivot-group">
+<span class="partition-group-label">pivot</span>
+<span class="partition-cell">5</span>
+</div>
+<div class="partition-group right-group">
+<span class="partition-group-label">&gt; pivot</span>
+<span class="partition-cell">7</span>
+<span class="partition-cell">8</span>
+<span class="partition-cell">6</span>
+</div>
+</div>
+</div>
+</section>
+<section class="lecture-section" id="correctness">
+<h2>Why Quick Sort is correct</h2>
+<div class="quick-boundary-card">
+<div class="quick-boundary-symbol">≤ | &gt;</div>
+<div>
+<h3>The partition property</h3>
+<p>
+            Partitioning establishes the only boundary we need:
+            every value in the left part is at most the pivot,
+            while every value in the right part is greater than the pivot.
+          </p>
+</div>
+</div>
+<div class="quick-proof-grid">
+<article class="quick-proof-step">
+<span>1</span>
+<div>
+<h3>Base case</h3>
+<p>
+              An array containing zero or one element is already sorted.
+              Quick Sort returns it immediately.
+            </p>
+</div>
+</article>
+<article class="quick-proof-step">
+<span>2</span>
+<div>
+<h3>Induction assumption</h3>
+<p>
+              Assume that Quick Sort correctly sorts every array shorter than the current one.
+              Both partitions are shorter because the pivot itself is removed from them.
+            </p>
+</div>
+</article>
+<article class="quick-proof-step">
+<span>3</span>
+<div>
+<h3>Recursive calls</h3>
+<p>
+              By the induction assumption, the recursive call correctly sorts the left part
+              and the recursive call correctly sorts the right part.
+            </p>
+</div>
+</article>
+<article class="quick-proof-step">
+<span>4</span>
+<div>
+<h3>Concatenation</h3>
+<p>
+              Every element of the sorted left part is at most the pivot, and every element of the sorted right part
+              is greater than the pivot. So the three blocks can be placed next to one another without creating
+              an inversion across their boundaries.
+            </p>
+<div aria-label="Sorted left plus pivot plus sorted right gives a sorted array" class="quick-concat-formula">
+<span class="quick-concat-left">sorted left</span>
+<b>+</b>
+<span class="quick-concat-pivot">pivot</span>
+<b>+</b>
+<span class="quick-concat-right">sorted right</span>
+<b>→</b>
+<span class="quick-concat-result">sorted array</span>
+</div>
+</div>
+</article>
+</div>
+</section>
+<section class="lecture-section" id="partition-demo">
+<h2>Interactive partition</h2>
+<div class="partition-demo" id="quick-partition-demo">
+<div class="visualizer-head">
+<div>
+<h3>Classify one element at a time</h3>
+<p>
+              The first element is the pivot. Press <strong>Next partition step</strong>.
+              The current element is orange; processed elements move into the blue or green group.
+            </p>
+</div>
+<button class="primary-step" data-action="next-partition" type="button">Next partition step →</button>
+</div>
+<div class="partition-board">
+<div class="partition-demo-group input-group">
+<span class="partition-demo-title">Input</span>
+<div class="partition-demo-array" data-role="partition-input"></div>
+</div>
+<div class="partition-demo-group">
+<span class="partition-demo-title">Left: ≤ pivot</span>
+<div class="partition-demo-array" data-role="partition-left"></div>
+</div>
+<div class="partition-demo-group">
+<span class="partition-demo-title">Right: &gt; pivot</span>
+<div class="partition-demo-array" data-role="partition-right"></div>
+</div>
+</div>
+<div aria-hidden="true" class="legend-row">
+<span><i class="legend-dot quick-pivot-dot"></i>pivot</span>
+<span><i class="legend-dot quick-current-dot"></i>current element</span>
+<span><i class="legend-dot quick-left-dot"></i>left partition</span>
+<span><i class="legend-dot quick-right-dot"></i>right partition</span>
+</div>
+<div aria-live="polite" class="step-caption" data-role="partition-caption">
+          The pivot is 5. Start with the next element.
+        </div>
+<div class="secondary-controls">
+<button data-action="reset-partition" type="button">Reset</button>
+<button data-action="new-partition" type="button">New array</button>
+</div>
+</div>
+</section>
+<section class="lecture-section" id="recursion">
+<h2>Recursive structure</h2>
+<p class="lead">
+        Partitioning solves only one part of the problem: it places the pivot between two groups.
+        The two groups are still unsorted, so Quick Sort applies the same procedure to each of them.
+      </p>
+<div class="quick-trace">
+<h3>Follow the recursive calls</h3>
+<p class="quick-trace-static-intro">
+          The complete trace for <code>[5, 7, 3, 1, 4, 8, 6]</code> is shown below.
+          Every stage has the same width; recursion depth is shown by the badge rather than by narrowing or indenting the card.
+        </p>
+<div class="quick-trace-stages static-trace">
+<article class="quick-trace-stage">
+<div class="quick-trace-stage-header">
+<span class="quick-trace-stage-number">stage 1</span>
+<div class="quick-trace-depth">recursion depth 0</div>
+</div>
+<p class="quick-trace-stage-type">Partition this subarray</p>
+<div class="quick-trace-array">
+<span class="trace-pivot">5</span><span>7</span><span>3</span><span>1</span><span>4</span><span>8</span><span>6</span>
+</div>
+<div class="quick-trace-groups">
+<span class="trace-left">3</span><span class="trace-left">1</span><span class="trace-left">4</span>
+<span class="trace-pivot">5</span>
+<span class="trace-right">7</span><span class="trace-right">8</span><span class="trace-right">6</span>
+</div>
+<p class="quick-trace-stage-description">Partition [5, 7, 3, 1, 4, 8, 6] around pivot 5.</p>
+</article>
+<article class="quick-trace-stage">
+<div class="quick-trace-stage-header">
+<span class="quick-trace-stage-number">stage 2</span>
+<div class="quick-trace-depth">recursion depth 1</div>
+</div>
+<p class="quick-trace-stage-type">Partition the left subarray</p>
+<div class="quick-trace-array">
+<span class="trace-pivot">3</span><span>1</span><span>4</span>
+</div>
+<div class="quick-trace-groups">
+<span class="trace-left">1</span><span class="trace-pivot">3</span><span class="trace-right">4</span>
+</div>
+<p class="quick-trace-stage-description">Partition [3, 1, 4] around pivot 3.</p>
+</article>
+<article class="quick-trace-stage is-base">
+<div class="quick-trace-stage-header">
+<span class="quick-trace-stage-number">stage 3</span>
+<div class="quick-trace-depth">recursion depth 2</div>
+</div>
+<p class="quick-trace-stage-type">Base case</p>
+<div class="quick-trace-groups"><span class="trace-result">1</span></div>
+<p class="quick-trace-stage-description">[1] is already sorted.</p>
+</article>
+<article class="quick-trace-stage is-base">
+<div class="quick-trace-stage-header">
+<span class="quick-trace-stage-number">stage 4</span>
+<div class="quick-trace-depth">recursion depth 2</div>
+</div>
+<p class="quick-trace-stage-type">Base case</p>
+<div class="quick-trace-groups"><span class="trace-result">4</span></div>
+<p class="quick-trace-stage-description">[4] is already sorted.</p>
+</article>
+<article class="quick-trace-stage is-return">
+<div class="quick-trace-stage-header">
+<span class="quick-trace-stage-number">stage 5</span>
+<div class="quick-trace-depth">recursion depth 1</div>
+</div>
+<p class="quick-trace-stage-type">Return from the left recursive call</p>
+<div class="quick-trace-groups">
+<span class="trace-left">1</span><span class="trace-pivot">3</span><span class="trace-right">4</span>
+</div>
+<div class="quick-trace-result-label">combined result</div>
+<div class="quick-trace-groups">
+<span class="trace-result">1</span><span class="trace-result">3</span><span class="trace-result">4</span>
+</div>
+<p class="quick-trace-stage-description">The left side of the original problem is now sorted.</p>
+</article>
+<article class="quick-trace-stage">
+<div class="quick-trace-stage-header">
+<span class="quick-trace-stage-number">stage 6</span>
+<div class="quick-trace-depth">recursion depth 1</div>
+</div>
+<p class="quick-trace-stage-type">Partition the right subarray</p>
+<div class="quick-trace-array">
+<span class="trace-pivot">7</span><span>8</span><span>6</span>
+</div>
+<div class="quick-trace-groups">
+<span class="trace-left">6</span><span class="trace-pivot">7</span><span class="trace-right">8</span>
+</div>
+<p class="quick-trace-stage-description">Partition [7, 8, 6] around pivot 7.</p>
+</article>
+<article class="quick-trace-stage is-base">
+<div class="quick-trace-stage-header">
+<span class="quick-trace-stage-number">stage 7</span>
+<div class="quick-trace-depth">recursion depth 2</div>
+</div>
+<p class="quick-trace-stage-type">Base case</p>
+<div class="quick-trace-groups"><span class="trace-result">6</span></div>
+<p class="quick-trace-stage-description">[6] is already sorted.</p>
+</article>
+<article class="quick-trace-stage is-base">
+<div class="quick-trace-stage-header">
+<span class="quick-trace-stage-number">stage 8</span>
+<div class="quick-trace-depth">recursion depth 2</div>
+</div>
+<p class="quick-trace-stage-type">Base case</p>
+<div class="quick-trace-groups"><span class="trace-result">8</span></div>
+<p class="quick-trace-stage-description">[8] is already sorted.</p>
+</article>
+<article class="quick-trace-stage is-return">
+<div class="quick-trace-stage-header">
+<span class="quick-trace-stage-number">stage 9</span>
+<div class="quick-trace-depth">recursion depth 1</div>
+</div>
+<p class="quick-trace-stage-type">Return from the right recursive call</p>
+<div class="quick-trace-groups">
+<span class="trace-left">6</span><span class="trace-pivot">7</span><span class="trace-right">8</span>
+</div>
+<div class="quick-trace-result-label">combined result</div>
+<div class="quick-trace-groups">
+<span class="trace-result">6</span><span class="trace-result">7</span><span class="trace-result">8</span>
+</div>
+<p class="quick-trace-stage-description">The right side of the original problem is now sorted.</p>
+</article>
+<article class="quick-trace-stage is-return">
+<div class="quick-trace-stage-header">
+<span class="quick-trace-stage-number">stage 10</span>
+<div class="quick-trace-depth">recursion depth 0</div>
+</div>
+<p class="quick-trace-stage-type">Return from the original call</p>
+<div class="quick-trace-groups">
+<span class="trace-left">1</span><span class="trace-left">3</span><span class="trace-left">4</span>
+<span class="trace-pivot">5</span>
+<span class="trace-right">6</span><span class="trace-right">7</span><span class="trace-right">8</span>
+</div>
+<div class="quick-trace-result-label">final sorted array</div>
+<div class="quick-trace-groups">
+<span class="trace-result">1</span><span class="trace-result">3</span><span class="trace-result">4</span>
+<span class="trace-result">5</span><span class="trace-result">6</span><span class="trace-result">7</span><span class="trace-result">8</span>
+</div>
+<p class="quick-trace-stage-description">Quick Sort returns [1, 3, 4, 5, 6, 7, 8].</p>
+</article>
+</div>
+</div>
+</section>
+<section class="lecture-section" id="implementation">
+<h2>Implementation</h2>
+<p class="lead">
+        This version mirrors the algorithm directly: choose the first element as the pivot,
+        build the two partitions, sort both recursively, and concatenate the result.
+      </p>
+<div class="code-explainer">
+<div class="annotated-code">
+<div class="code-row"><span class="line-no">1</span><code>def quick_sort(a):</code></div>
+<div class="code-row marked"><span class="line-no">2</span><code>    if len(a) &lt; 2:</code></div>
+<div class="code-row marked"><span class="line-no">3</span><code>        return a</code></div>
+<div class="code-row"><span class="line-no">4</span><code></code></div>
+<div class="code-row marked"><span class="line-no">5</span><code>    pivot = a[0]</code></div>
+<div class="code-row marked"><span class="line-no">6</span><code>    left = [x for x in a[1:] if x &lt;= pivot]</code></div>
+<div class="code-row marked"><span class="line-no">7</span><code>    right = [x for x in a[1:] if x &gt; pivot]</code></div>
+<div class="code-row"><span class="line-no">8</span><code></code></div>
+<div class="code-row marked"><span class="line-no">9</span><code>    sorted_left = quick_sort(left)</code></div>
+<div class="code-row marked"><span class="line-no">10</span><code>    sorted_right = quick_sort(right)</code></div>
+<div class="code-row"><span class="line-no">11</span><code></code></div>
+<div class="code-row marked"><span class="line-no">12</span><code>    return sorted_left + [pivot] + sorted_right</code></div>
+</div>
+<div class="code-notes">
+<h3>Implementation notes</h3>
+<div class="code-note-item wide-note">
+<span>2–3</span>
+<p>
+<strong>Lines 2–3.</strong> Empty and one-element arrays are already sorted.
+              This is the base case of the recursion.
+            </p>
+</div>
+<div class="code-note-item">
+<span>5</span>
+<p>
+<strong>Line 5.</strong> The first element is chosen as the pivot.
+              This is simple, but it is not always a good pivot choice.
+            </p>
+</div>
+<div class="code-note-item wide-note">
+<span>6–7</span>
+<p>
+<strong>Lines 6–7.</strong> Every remaining element is classified exactly once:
+              values at most the pivot go left; larger values go right.
+            </p>
+</div>
+<div class="code-note-item wide-note">
+<span>9–10</span>
+<p>
+<strong>Lines 9–10.</strong> The two smaller partitions are sorted recursively.
+            </p>
+</div>
+<div class="code-note-item">
+<span>12</span>
+<p>
+<strong>Line 12.</strong> Because partitioning established the correct boundary,
+              placing the pivot between the two sorted parts gives the final sorted array.
+            </p>
+</div>
+</div>
+</div>
+<div class="implementation-warning">
+<h3>This educational implementation is not in-place</h3>
+<p>
+          The list comprehensions create new <code>left</code> and <code>right</code> arrays.
+          Standard production implementations often partition the original array in place instead.
+          The time analysis below applies to the partition structure itself; memory usage depends on the implementation.
+        </p>
+</div>
+</section>
+<section class="lecture-section" id="pivot-choice">
+<h2>Pivot choice</h2>
+<p class="lead">
+        Unlike Merge Sort, Quick Sort does not automatically create two equal subproblems.
+        The sizes of the recursive calls are determined by the pivot.
+      </p>
+<div class="pivot-choice-grid">
+<article class="pivot-choice-card good">
+<h3>Balanced partition</h3>
+<p>
+            A pivot near the median creates two parts of comparable size.
+            The recursion tree stays shallow.
+          </p>
+<div class="pivot-tree">
+<div class="pivot-tree-row"><span class="pivot-tree-node">n</span></div>
+<div class="pivot-tree-row">
+<span class="pivot-tree-node">n/2</span>
+<span class="pivot-tree-node">n/2</span>
+</div>
+<div class="pivot-tree-row">
+<span class="pivot-tree-node">n/4</span>
+<span class="pivot-tree-node">n/4</span>
+<span class="pivot-tree-node">n/4</span>
+<span class="pivot-tree-node">n/4</span>
+</div>
+</div>
+</article>
+<article class="pivot-choice-card bad">
+<h3>Highly unbalanced partition</h3>
+<p>
+            If the pivot is always the smallest or largest element, one side is empty
+            and the other contains almost the whole array.
+          </p>
+<div class="pivot-tree">
+<div class="pivot-tree-row"><span class="pivot-tree-node">n</span></div>
+<div class="pivot-tree-row"><span class="pivot-tree-node">n−1</span></div>
+<div class="pivot-tree-row"><span class="pivot-tree-node">n−2</span></div>
+<div class="pivot-tree-row"><span class="pivot-tree-node">⋮</span></div>
+<div class="pivot-tree-row"><span class="pivot-tree-node">1</span></div>
+</div>
+</article>
+</div>
+<div class="random-pivot-callout">
+<div class="random-pivot-icon">?</div>
+<div>
+<h3>Why random pivots help</h3>
+<p>
+            The code above always uses the first element, so an already sorted array produces the worst-case chain.
+            If the pivot is chosen uniformly at random instead, systematically bad partitions become unlikely.
+            Randomized Quick Sort has expected running time <span class="math">Θ(n log n)</span>.
+          </p>
+</div>
+</div>
+</section>
+<section class="lecture-section" id="complexity">
+<h2>Complexity</h2>
+<div class="quick-principle">
+<div class="quick-principle-symbol">n</div>
+<div>
+<h3>Partitioning one subarray is linear</h3>
+<p>
+            Every element other than the pivot is inspected once to decide whether it belongs
+            to the left or right partition. Partitioning an array of length
+            <span class="math">n</span> therefore costs <span class="math">Θ(n)</span>.
+          </p>
+</div>
+</div>
+<div class="quick-complexity-comparison">
+<article class="quick-complexity-case good-case">
+<h3>Balanced case</h3>
+<p>
+            If partitions stay roughly balanced, the problem size is approximately halved
+            at every level. There are <span class="math">Θ(log n)</span> levels.
+          </p>
+<div class="quick-levels">
+<div class="quick-level">
+<span class="quick-level-label">level 1</span>
+<div class="quick-level-bar">n elements total</div>
+<b>Θ(n)</b>
+</div>
+<div class="quick-level">
+<span class="quick-level-label">level 2</span>
+<div class="quick-level-bar">n elements total</div>
+<b>Θ(n)</b>
+</div>
+<div class="quick-level">
+<span class="quick-level-label">⋮</span>
+<div class="quick-level-bar">⋮</div>
+<b>⋮</b>
+</div>
+</div>
+<div class="quick-formula">
+            Θ(log n) levels × Θ(n) per level = Θ(n log n)
+          </div>
+</article>
+<article class="quick-complexity-case bad-case">
+<h3>Worst case</h3>
+<p>
+            If the pivot is always an extreme element, the subproblem decreases by only one element
+            at each recursive call. The recursion tree becomes a chain of length
+            <span class="math">Θ(n)</span>.
+          </p>
+<div class="quick-levels">
+<div class="quick-level">
+<span class="quick-level-label">call 1</span>
+<div class="quick-level-bar">n</div>
+<b>Θ(n)</b>
+</div>
+<div class="quick-level">
+<span class="quick-level-label">call 2</span>
+<div class="quick-level-bar">n−1</div>
+<b>Θ(n−1)</b>
+</div>
+<div class="quick-level">
+<span class="quick-level-label">call 3</span>
+<div class="quick-level-bar">n−2</div>
+<b>Θ(n−2)</b>
+</div>
+</div>
+<div class="quick-formula">
+            n + (n − 1) + ··· + 1 = Θ(n²)
+          </div>
+</article>
+</div>
+<div class="complexity-strip">
+<div><span>Best case</span><b>Θ(n log n)</b><small>balanced partitions</small></div>
+<div><span>Average case</span><b>Θ(n log n)</b><small>typical / randomized</small></div>
+<div><span>Worst case</span><b>Θ(n²)</b><small>extreme pivot repeatedly</small></div>
+<div><span>Partition step</span><b>Θ(n)</b><small>one scan</small></div>
+</div>
+</section>
+<section class="lecture-section" id="properties">
+<h2>Memory and stability</h2>
+<div class="quick-property-grid">
+<article class="quick-property-card">
+<h3>Memory</h3>
+<p>
+            The implementation shown above allocates new arrays for the two partitions,
+            so it is not an in-place implementation.
+          </p>
+<p>
+            A standard in-place Quick Sort rearranges elements inside the original array.
+            Its additional memory is then mainly the recursion stack:
+            <span class="math">Θ(log n)</span> for balanced recursion and
+            <span class="math">Θ(n)</span> in the worst case.
+          </p>
+</article>
+<article class="quick-property-card">
+<h3>Stability</h3>
+<p>
+            Quick Sort is not stable in its usual form. Partitioning and swaps can change
+            the relative order of elements with equal keys.
+          </p>
+<p>
+            Even the simple implementation above can move an element equal to the pivot
+            before that pivot, although the pivot originally appeared first.
+          </p>
+</article>
+</div>
+<div class="stability-example">
+<div class="stability-side">
+<div class="person-card equal-key"><b>Alice</b><span>score 2</span></div>
+<div class="person-card equal-key"><b>Bob</b><span>score 2</span></div>
+<div class="person-card"><b>Cara</b><span>score 1</span></div>
+</div>
+<div class="stability-arrow">→</div>
+<div class="stability-side">
+<div class="person-card"><b>Cara</b><span>score 1</span></div>
+<div class="person-card reversed"><b>Bob</b><span>score 2</span></div>
+<div class="person-card reversed"><b>Alice</b><span>score 2</span></div>
+</div>
+</div>
+<p class="caption">
+        If Alice is chosen as the pivot, Bob goes into the left partition because his key is equal to the pivot.
+        After concatenation, Bob can appear before Alice.
+      </p>
+</section>
+<section class="lecture-section" id="comparison">
+<h2>Merge Sort vs Quick Sort</h2>
+<p class="lead">
+        Both algorithms use divide and conquer, but they do the important work at different moments.
+      </p>
+<div class="merge-quick-grid">
+<article class="merge-quick-card">
+<h3>Merge Sort</h3>
+<ul>
+<li>splits by position into two nearly equal halves;</li>
+<li>recursively sorts the halves;</li>
+<li>does the main combine work after recursion;</li>
+<li>guarantees <span class="math">Θ(n log n)</span> time;</li>
+<li>standard array implementation uses <span class="math">Θ(n)</span> extra memory;</li>
+<li>can be stable.</li>
+</ul>
+</article>
+<article class="merge-quick-card">
+<h3>Quick Sort</h3>
+<ul>
+<li>splits according to values relative to a pivot;</li>
+<li>the partition sizes depend on the pivot;</li>
+<li>does the main organizing work before recursion;</li>
+<li>has average / expected <span class="math">Θ(n log n)</span> time;</li>
+<li>can partition arrays in place;</li>
+<li>is usually not stable.</li>
+</ul>
+</article>
+</div>
+</section>
+<section class="lecture-section" id="comparison-limit">
+<h2>Can comparison sorting be faster?</h2>
+<p class="lead">
+        Merge Sort runs in loglinear time, and randomized Quick Sort has loglinear expected running time.
+        A natural question is whether a comparison-based sorting algorithm can be asymptotically faster.
+        In the worst case, the answer is no.
+      </p>
+<div class="comparison-limit-intuition">
+<div aria-hidden="true" class="comparison-limit-mark">?</div>
+<div>
+<h3>Sorting must distinguish every possible order</h3>
+<p>
+            If the input contains <span class="math">n</span> distinct elements, then there are
+            <span class="math">n!</span> possible relative orders. A correct comparison sort must obtain
+            enough information to distinguish among all of them.
+          </p>
+</div>
+</div>
+<div class="comparison-limit-proof">
+<article>
+<div class="limit-step-number">1</div>
+<div>
+<h3>One comparison gives two outcomes</h3>
+<p>
+              A comparison such as <span class="math">a &lt; b</span> has two possible answers.
+              Therefore a comparison sort can be represented by a binary decision tree.
+            </p>
+</div>
+</article>
+<article>
+<div class="limit-step-number">2</div>
+<div>
+<h3>The tree needs at least <span class="math">n!</span> leaves</h3>
+<p>
+              Each possible input order must lead to an appropriate final answer.
+              Hence the decision tree must contain at least one leaf for every possible order.
+            </p>
+</div>
+</article>
+<article>
+<div class="limit-step-number">3</div>
+<div>
+<h3>A binary tree of height <span class="math">h</span> has at most <span class="math">2^h</span> leaves</h3>
+<p>
+              Consequently,
+            </p>
+<div class="limit-equation">
+<span>2<sup>h</sup> ≥ n!</span>
+<span class="limit-equation-arrow">⇒</span>
+<span>h ≥ log<sub>2</sub>(n!)</span>
+</div>
+</div>
+</article>
+<article>
+<div class="limit-step-number">4</div>
+<div>
+<h3>The lower bound is loglinear</h3>
+<p>
+              Since <span class="math">log(n!) = Θ(n log n)</span>, every comparison-based sorting algorithm
+              requires <span class="math">Ω(n log n)</span> comparisons in the worst case.
+            </p>
+</div>
+</article>
+</div>
+<div class="comparison-limit-conclusion">
+<div aria-hidden="true" class="comparison-limit-symbol">Ω</div>
+<div>
+<h3>Comparison sorting has reached its asymptotic limit</h3>
+<p>
+            Merge Sort already matches this lower bound in the worst case.
+            To sort asymptotically faster, an algorithm must use information about the keys
+            beyond pairwise comparisons.
+          </p>
+</div>
+</div>
+<div class="beyond-comparison-bridge">
+<div>
+<span class="example-kicker">Next idea</span>
+<h3>Can sorting itself be faster?</h3>
+<p>
+            Yes, if we exploit additional structure in the keys.
+            Counting Sort is the first example: instead of learning the order only through comparisons,
+            it uses the fact that the keys are integers from a known range.
+          </p>
+</div>
+</div>
+</section>
+<section class="lecture-section" id="exercises">
+<h2>Exercises</h2>
+<div class="exercise-list">
+<article class="exercise">
+<div class="exercise-num">1</div>
+<div>
+<h3>Partition by hand</h3>
+<p>
+              Using the first element as the pivot, partition
+              <code>[6, 2, 9, 1, 7, 4]</code>
+              into the two groups used by the implementation above.
+            </p>
+<button aria-expanded="false" class="reveal" data-reveal="quick-ex1" type="button">Show answer</button>
+<div class="answer-box" hidden="" id="quick-ex1">
+              The pivot is 6. The left partition is <code>[2, 1, 4]</code>
+              and the right partition is <code>[9, 7]</code>.
+            </div>
+</div>
+</article>
+<article class="exercise">
+<div class="exercise-num">2</div>
+<div>
+<h3>Worst-case input</h3>
+<p>
+              Why is an already increasing array a worst-case input for the displayed implementation?
+            </p>
+<button aria-expanded="false" class="reveal" data-reveal="quick-ex2" type="button">Show answer</button>
+<div class="answer-box" hidden="" id="quick-ex2">
+              The first element is always the smallest remaining value. Therefore the left partition is empty
+              and the right partition has sizes <code>n−1, n−2, ...</code>. The recursion becomes a chain,
+              producing <span class="math">Θ(n²)</span> work.
+            </div>
+</div>
+</article>
+<article class="exercise">
+<div class="exercise-num">3</div>
+<div>
+<h3>Correctness</h3>
+<p>
+              After the recursive calls return, why is no comparison needed between an element of the left
+              partition and an element of the right partition?
+            </p>
+<button aria-expanded="false" class="reveal" data-reveal="quick-ex3" type="button">Show answer</button>
+<div class="answer-box" hidden="" id="quick-ex3">
+              Partitioning already guarantees that every left value is at most the pivot and every right value
+              is greater than the pivot. Hence every left value is automatically no larger than every value
+              that appears after the pivot in the final concatenation.
+            </div>
+</div>
+</article>
+<article class="exercise">
+<div class="exercise-num">4</div>
+<div>
+<h3>Pivot choice</h3>
+<p>
+              Suppose every partition splits the array approximately in the ratio 1:3 instead of exactly in half.
+              Does the asymptotic running time remain <span class="math">Θ(n log n)</span>?
+            </p>
+<button aria-expanded="false" class="reveal" data-reveal="quick-ex4" type="button">Show answer</button>
+<div class="answer-box" hidden="" id="quick-ex4">
+              Yes. The larger recursive subproblem shrinks by a constant factor on every level,
+              so the recursion depth is still <span class="math">Θ(log n)</span>.
+              The total partition work per level remains <span class="math">Θ(n)</span>.
+            </div>
+</div>
+</article>
+</div>
+<div class="next-part">
+<h3>Continue with practice</h3>
+<p>
+          The published core sorting sequence ends here for now. Apply the ideas from this chapter to problems of increasing difficulty.
+        </p>
+<a class="next-part-link" href="problems/">Practice Problems →</a>
+</div>
+<div class="next-part">
+<h3>Previous section</h3>
+<p>
+          Return to Merge Sort.
+        </p>
+<a class="next-part-link" href="merge.html">← Merge Sort</a>
+</div>
+</section>
+</main>
+<footer class="lecture-footer">
+<div>Allan's Handbook of Algorithms</div>
+<div>© 2026 Allan Allemand</div>
+</footer>
+<script src="../assets/js/lecture-core.js"></script>
+<script>
+(() => {
+  "use strict";
+
+  /* -------------------------------------------------------
+     Interactive partition
+     ------------------------------------------------------- */
+
+  const DEFAULT_PARTITION = [5, 7, 3, 1, 4, 8, 6];
+
+  function randomUniqueArray() {
+    const pool = [1,2,3,4,5,6,7,8,9];
+    for (let i = pool.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [pool[i], pool[j]] = [pool[j], pool[i]];
+    }
+    return pool.slice(0, 7);
+  }
+
+  function partitionStates(input) {
+    const pivot = input[0];
+    const left = [];
+    const right = [];
+    const states = [{
+      input: [...input],
+      pivot,
+      currentIndex: 1,
+      processedUntil: 0,
+      left: [],
+      right: [],
+      text: `The pivot is ${pivot}. Start with ${input[1]}.`
+    }];
+
+    for (let i = 1; i < input.length; i++) {
+      const value = input[i];
+
+      states.push({
+        input: [...input],
+        pivot,
+        currentIndex: i,
+        processedUntil: i - 1,
+        left: [...left],
+        right: [...right],
+        text: `Compare ${value} with pivot ${pivot}.`
+      });
+
+      if (value <= pivot) {
+        left.push(value);
+        states.push({
+          input: [...input],
+          pivot,
+          currentIndex: -1,
+          processedUntil: i,
+          left: [...left],
+          right: [...right],
+          text: `${value} ≤ ${pivot}, so ${value} goes to the left partition.`
+        });
+      } else {
+        right.push(value);
+        states.push({
+          input: [...input],
+          pivot,
+          currentIndex: -1,
+          processedUntil: i,
+          left: [...left],
+          right: [...right],
+          text: `${value} > ${pivot}, so ${value} goes to the right partition.`
+        });
+      }
+    }
+
+    states.push({
+      input: [...input],
+      pivot,
+      currentIndex: -1,
+      processedUntil: input.length - 1,
+      left: [...left],
+      right: [...right],
+      text: "Partitioning is complete. The pivot now separates the two groups."
+    });
+
+    return states;
+  }
+
+  function renderPartition(demo) {
+    const s = demo._states[demo._index];
+    const inputBox = demo.querySelector('[data-role="partition-input"]');
+    const leftBox = demo.querySelector('[data-role="partition-left"]');
+    const rightBox = demo.querySelector('[data-role="partition-right"]');
+    const caption = demo.querySelector('[data-role="partition-caption"]');
+
+    inputBox.replaceChildren();
+    leftBox.replaceChildren();
+    rightBox.replaceChildren();
+
+    s.input.forEach((value, i) => {
+      const cell = document.createElement("span");
+      cell.textContent = value;
+
+      if (i === 0) {
+        cell.classList.add("partition-demo-pivot");
+      } else if (i === s.currentIndex) {
+        cell.classList.add("partition-demo-current");
+      } else if (i <= s.processedUntil) {
+        cell.classList.add("partition-demo-processed");
+      }
+
+      inputBox.appendChild(cell);
+    });
+
+    s.left.forEach(value => {
+      const cell = document.createElement("span");
+      cell.textContent = value;
+      cell.classList.add("partition-demo-left");
+      leftBox.appendChild(cell);
+    });
+
+    s.right.forEach(value => {
+      const cell = document.createElement("span");
+      cell.textContent = value;
+      cell.classList.add("partition-demo-right");
+      rightBox.appendChild(cell);
+    });
+
+    caption.textContent = s.text;
+  }
+
+  function resetPartition(demo, array) {
+    demo._states = partitionStates(array);
+    demo._index = 0;
+    renderPartition(demo);
+  }
+
+  const partitionDemo = document.getElementById("quick-partition-demo");
+  if (partitionDemo) {
+    LectureCore.mountStepper(partitionDemo, {
+      initial: DEFAULT_PARTITION,
+      build: partitionStates,
+      render: renderPartition,
+      randomize: randomUniqueArray,
+      store: "_states",
+      nextAction: "next-partition",
+      resetAction: "reset-partition",
+      randomizeAction: "new-partition"
+    });
+  }
+
+  /* -------------------------------------------------------
+     Revealable answers
+     ------------------------------------------------------- */
+
+})();
+</script>
+<script src="../assets/js/language-switch.js"></script>
+</body>
+</html>

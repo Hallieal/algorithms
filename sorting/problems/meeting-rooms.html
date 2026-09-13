@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Determine whether any meeting intervals overlap by sorting them by start time.">
+  <meta property="og:title" content="Meeting Rooms | Allan's Handbook of Algorithms">
+  <meta property="og:type" content="article">
+  <title>Meeting Rooms | Allan's Handbook of Algorithms</title>
+  <link rel="stylesheet" href="../../assets/css/styles.css">
+  <link rel="stylesheet" href="assets/problems.css">
+  <link rel="icon" type="image/png" sizes="32x32" href="../../assets/images/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="64x64" href="../../assets/images/favicon.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="../../assets/images/apple-touch-icon.png">
+</head>
+<body class="lecture-page problem-page easy-redesign">
+  <div class="progress-track" aria-hidden="true"><div class="progress-bar" id="reading-progress"></div></div>
+  <header class="topbar">
+    <a class="brand" href="../../"><span class="brand-mark brand-mark-logo"><img class="brand-mark-image" src="../../assets/images/logo.png" alt=""></span><span class="brand-name">Allan's Handbook of Algorithms</span></a>
+    <nav class="topnav" aria-label="Primary navigation"><a href="./">Practice problems</a><a href="../">Sorting overview</a></nav>
+  </header>
+  <aside class="sidebar" aria-label="Section navigation">
+    <div class="sidebar-title">Problem 3 · Easy</div>
+    <a href="#problem">Problem</a><a href="#idea">Core idea</a><a href="#algorithm">Algorithm</a><a href="#correctness">Correctness & complexity</a><a href="#implementation">Implementation</a>
+  </aside>
+  <main class="lecture">
+    <section class="lecture-hero">
+      <div class="problem-hero-kicker"><span class="problem-title-icon easy" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M7 3v4M17 3v4M3 10h18M8 14h3M13 14h3"/></svg></span><span>Sorting · Practice · Easy</span></div>
+      <h1>Meeting Rooms</h1>
+      <p class="chapter-topics">Sort intervals once so that every possible scheduling conflict becomes local.</p>
+      <div class="problem-meta"><span class="easy">Easy</span><span>Sorting practice</span><span>Python</span></div>
+    </section>
+    <section id="problem" class="lecture-section">
+      <h2>Problem</h2>
+      <p class="lead easy-lead">A schedule can contain many intervals, and checking every pair is unnecessary. The right ordering turns a global conflict question into a local one.</p>
+      <div class="easy-brief">
+        <div class="easy-brief-copy">
+          <span class="easy-kicker">Task</span>
+          <h3>Can one person attend every meeting?</h3>
+          <p>Each meeting is an interval <code>[start, end]</code>. Determine whether any two meetings overlap. A meeting is allowed to start exactly when the previous one ends.</p>
+          <div class="problem-equation">conflict ⇔ end[i] &gt; start[i+1]</div>
+        </div>
+        <div class="easy-demo">
+          <div class="easy-demo-label">Example after sorting by start time</div>
+          <div class="meeting-timeline">
+            <div class="meeting-track"><span>[1, 3]</span><div class="meeting-line"><i class="meeting-block" style="left:0%;width:28%">1–3</i></div></div>
+            <div class="meeting-track"><span>[3, 5]</span><div class="meeting-line"><i class="meeting-block" style="left:28%;width:28%">3–5</i></div></div>
+            <div class="meeting-track"><span>[6, 9]</span><div class="meeting-line"><i class="meeting-block conflict" style="left:57%;width:42%">6–9</i></div></div>
+            <div class="meeting-track"><span>[8, 10]</span><div class="meeting-line"><i class="meeting-block conflict" style="left:78%;width:22%">8–10</i></div></div>
+          </div>
+          <div class="meeting-axis"><span>1</span><span>3</span><span>5</span><span>7</span><span>9</span><span>10</span></div>
+          <div class="easy-demo-caption">The last two meetings overlap because 9 &gt; 8. The first two only touch at time 3, which is allowed.</div>
+        </div>
+      </div>
+    </section>
+
+    <section id="idea" class="lecture-section">
+      <h2>Core idea</h2>
+      <p class="lead easy-lead">Sort meetings by starting time. Once starts are ordered, an interval can only create a new conflict by extending past the start of the very next interval.</p>
+      <div class="easy-insight">
+        <div class="easy-insight-card">
+          <span class="easy-kicker">Locality after sorting</span>
+          <h3>Sorting exposes every conflict between neighbors</h3>
+          <p>Suppose the meetings are ordered by start time. If meeting <code>i</code> ends no later than meeting <code>i+1</code> starts, then it also ends no later than every still later meeting starts. So meeting <code>i</code> cannot conflict with anything beyond its immediate neighbor.</p>
+        </div>
+        <div class="easy-rule-stack">
+          <div class="easy-rule"><strong>end &lt; start</strong><p>There is a gap between the meetings: definitely safe.</p></div>
+          <div class="easy-rule"><strong>end = start</strong><p>The meetings touch at one time point; this is allowed.</p></div>
+          <div class="easy-rule"><strong>end &gt; start</strong><p>The meetings overlap, so one person cannot attend both.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="algorithm" class="lecture-section">
+      <h2>Algorithm</h2>
+      <div class="easy-step-flow">
+        <article class="easy-step-card"><div class="easy-step-number">1</div><h3>Sort by start time</h3><p>Order all intervals increasingly by their first coordinate.</p></article>
+        <article class="easy-step-card"><div class="easy-step-number">2</div><h3>Look only next door</h3><p>For each <code>i</code>, compare the end of meeting <code>i</code> with the start of meeting <code>i+1</code>.</p></article>
+        <article class="easy-step-card"><div class="easy-step-number">3</div><h3>Reject an overlap</h3><p>If <code>end[i] &gt; start[i+1]</code>, return <code>False</code> immediately.</p></article>
+        <article class="easy-step-card"><div class="easy-step-number">4</div><h3>Accept the schedule</h3><p>If the scan finishes without a conflict, every meeting can be attended.</p></article>
+      </div>
+      <div class="easy-invariant"><div class="easy-invariant-mark">I</div><div><h3>Loop invariant</h3><p>Before checking the next adjacent pair, all meetings in the already scanned prefix are mutually non-overlapping in chronological order.</p></div></div>
+    </section>
+
+    <section id="correctness" class="lecture-section">
+      <h2>Correctness & complexity</h2>
+      <div class="easy-proof-grid">
+        <div class="easy-proof-main"><div class="proof-symbol">▭</div><h3>Why adjacent intervals are enough</h3><p>After sorting by start time, any later meeting begins no earlier than the next meeting. Therefore, if the current meeting does not reach the next start, it cannot reach any later start either.</p></div>
+        <div class="easy-proof-details">
+          <div class="easy-proof-row"><span>1</span><div><h4>If an adjacent pair overlaps</h4><p>The schedule is immediately impossible, so returning <code>False</code> is correct.</p></div></div>
+          <div class="easy-proof-row"><span>2</span><div><h4>If an adjacent pair does not overlap</h4><p>For sorted starts, <code>start[i+1] ≤ start[j]</code> for every <code>j &gt; i+1</code>. Hence <code>end[i] ≤ start[i+1]</code> implies <code>end[i] ≤ start[j]</code>.</p></div></div>
+          <div class="easy-proof-row"><span>3</span><div><h4>If the scan succeeds</h4><p>No meeting overlaps its next neighbor, and by the previous argument no non-adjacent overlap is possible either.</p></div></div>
+        </div>
+      </div>
+      <div class="easy-complexity-strip"><div class="easy-complexity-item"><span>Time</span><strong>O(n log n)</strong><p>Sorting dominates the linear scan.</p></div><div class="easy-complexity-item"><span>Extra space</span><strong>O(n)</strong><p>This version creates a sorted copy of the interval list.</p></div><div class="easy-complexity-item"><span>Boundary rule</span><strong>Touching is allowed</strong><p>Only strict inequality <code>end &gt; next start</code> is a conflict.</p></div></div>
+    </section>
+
+    <section id="implementation" class="lecture-section">
+      <h2>Implementation</h2>
+            <p class="lead easy-lead">After sorting, the implementation needs only one comparison for each neighboring pair of intervals.</p>
+      <div class="easy-code-layout">
+        <div class="problem-code"><div class="problem-code-head"><span>Python</span><button class="copy-code" type="button">Copy</button></div><pre><code>def can_attend_all(meetings):
+    ordered = sorted(meetings, key=lambda interval: interval[0])
+
+    for i in range(len(ordered) - 1):
+        if ordered[i][1] &gt; ordered[i + 1][0]:
+            return False
+
+    return True</code></pre></div>
+        <div class="easy-code-notes"><span class="easy-kicker">Reading the code</span><h3>Sort once, then scan once</h3><div class="easy-code-note"><b>Sort key = start time</b><p>Only the first coordinate determines the chronological order needed by the proof.</p></div><div class="easy-code-note"><b>Strict comparison</b><p><code>&gt;</code> marks a real overlap. Using <code>&gt;=</code> would incorrectly reject back-to-back meetings.</p></div><div class="easy-code-note"><b>Early return</b><p>One overlapping adjacent pair is already enough to make the schedule impossible.</p></div></div>
+      </div>
+      <p class="easy-source-line">Adapted from <a href="https://www.geeksforgeeks.org/dsa/meeting-rooms-check-if-a-person-can-attend-all-meetings/" target="_blank" rel="noopener">Meeting Rooms — Check if a person can attend all meetings</a> on GeeksforGeeks. The statement and exposition are rewritten for this handbook.</p>
+      <div class="next-part back-problems"><h3>Back to practice</h3><p>Choose another problem from the Easy, Medium, or Hard sets.</p><a class="next-part-link" href="./">← Practice Problems</a></div>
+    </section>
+  </main>
+  <footer class="lecture-footer"><div>Allan's Handbook of Algorithms</div><div>© 2026 Allan Allemand</div></footer>
+  <script src="assets/problems.js"></script>
+</body>
+</html>

@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+
+<html lang="ru">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="Введение в сортировки: постановка задачи, ключи, порядок, корректность, время работы и память." name="description"/>
+<meta content="Введение в сортировки | Гайд по алгоритмам — presented by Аллан" property="og:title"/>
+<meta content="article" property="og:type"/>
+<title>Введение в сортировки | Гайд по алгоритмам — presented by Аллан</title>
+<link href="../assets/css/styles.css" rel="stylesheet"/>
+<link href="../assets/images/favicon-32.png" rel="icon" sizes="32x32" type="image/png"/>
+<link href="../assets/images/favicon.png" rel="icon" sizes="64x64" type="image/png"/>
+<link href="../assets/images/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180"/>
+<link href="introduction.html" hreflang="en" rel="alternate"/><link href="introduction-ru.html" hreflang="ru" rel="alternate"/></head>
+<body class="lecture-page">
+<header class="topbar">
+<a class="brand" href="../index-ru.html"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name ru-brand-name"><span class="ru-brand-lines"><span>Гайд по алгоритмам</span><span class="ru-brand-presented">presented by Аллан</span></span></span></a>
+<nav aria-label="Основная навигация" class="topnav">
+<a href="index-ru.html">Список тем</a>
+<div aria-label="Язык" class="language-switch"><a href="introduction.html">EN</a><span class="language-separator">·</span><span class="current">RU</span></div></nav>
+</header>
+<aside aria-label="Навигация по разделу" class="sidebar">
+<div class="sidebar-title">Сортировки · Введение</div>
+<a href="#idea">Основная идея</a>
+<a href="#ingredients">Элемент, ключ и порядок</a>
+<a href="#definition">Что значит «отсортировано»</a>
+<a href="#criteria">Критерии оценки</a>
+</aside>
+<main class="lecture">
+<section class="lecture-hero sorting-intro-hero">
+<div class="chapter-label">Сортировки · Введение</div>
+<h1>Введение в сортировки</h1>
+</section>
+<section class="lecture-section" id="idea">
+<h2>Основная идея</h2>
+<p class="lead sorting-intro-lead">
+        Список может содержать всю нужную информацию и при этом оставаться неудобным для работы, если его элементы расположены в произвольном порядке. Сортировка придаёт данным структуру: мы выбираем правило, сравниваем элементы по нужной характеристике и переставляем их так, чтобы требуемый порядок стал явным. Чаще всего речь идёт просто о порядке по возрастанию или по убыванию некоторого численного значения.
+      </p>
+<div class="music-sort-example">
+<div class="music-example-head">
+<div>
+<span class="example-kicker">Пример</span>
+<h3>Упорядочим плейлист по числу прослушиваний</h3>
+</div>
+<p>
+            Числа прослушиваний здесь условные. Мы хотим поставить самые часто прослушиваемые песни в начало.
+          </p>
+</div>
+<div class="music-sort-grid">
+<div class="music-stage">
+<div class="music-stage-label">До сортировки</div>
+<div class="song-row">
+<div class="song-rank muted-rank">·</div>
+<div class="song-main">
+<b>Elvis Presley</b>
+<span>Can't Help Falling in Love</span>
+</div>
+<div class="song-count">84</div>
+</div>
+<div class="song-row">
+<div class="song-rank muted-rank">·</div>
+<div class="song-main">
+<b>Queen</b>
+<span>Bohemian Rhapsody</span>
+</div>
+<div class="song-count">137</div>
+</div>
+<div class="song-row">
+<div class="song-rank muted-rank">·</div>
+<div class="song-main">
+<b>The Beatles</b>
+<span>Hey Jude</span>
+</div>
+<div class="song-count">96</div>
+</div>
+<div class="song-row">
+<div class="song-rank muted-rank">·</div>
+<div class="song-main">
+<b>ABBA</b>
+<span>Dancing Queen</span>
+</div>
+<div class="song-count">112</div>
+</div>
+</div>
+<div aria-hidden="true" class="music-sort-arrow">
+<span>сортируем по прослушиваниям</span>
+<b>→</b>
+</div>
+<div class="music-stage sorted-stage">
+<div class="music-stage-label">После сортировки</div>
+<div class="song-row">
+<div class="song-rank">1</div>
+<div class="song-main">
+<b>Queen</b>
+<span>Bohemian Rhapsody</span>
+</div>
+<div class="song-count">137</div>
+</div>
+<div class="song-row">
+<div class="song-rank">2</div>
+<div class="song-main">
+<b>ABBA</b>
+<span>Dancing Queen</span>
+</div>
+<div class="song-count">112</div>
+</div>
+<div class="song-row">
+<div class="song-rank">3</div>
+<div class="song-main">
+<b>The Beatles</b>
+<span>Hey Jude</span>
+</div>
+<div class="song-count">96</div>
+</div>
+<div class="song-row">
+<div class="song-rank">4</div>
+<div class="song-main">
+<b>Elvis Presley</b>
+<span>Can't Help Falling in Love</span>
+</div>
+<div class="song-count">84</div>
+</div>
+</div>
+</div>
+<div class="same-data-note">
+<div aria-hidden="true" class="same-data-icon">↔</div>
+<div>
+<h4>Данные не изменились</h4>
+<p>
+              До и после сортировки перед нами те же четыре записи о песнях. Изменился только их порядок.
+            </p>
+</div>
+</div>
+</div>
+</section>
+<section class="lecture-section" id="ingredients">
+<h2>Элемент, ключ и порядок</h2>
+<p class="lead">
+        Постановка задачи сортировки становится точной, когда определены три вещи: какие объекты мы сортируем, какая характеристика определяет их положение и в каком направлении должен идти порядок. Типичный случай — массив элементов, у каждого из которых есть численный ключ; элементы нужно расположить по возрастанию или убыванию этого ключа. Например, товары можно отсортировать по цене от меньшей к большей, при этом вместе с ценой перемещается вся запись о товаре.
+      </p>
+<div class="sorting-anatomy">
+<article class="sorting-anatomy-card">
+<div aria-hidden="true" class="sorting-anatomy-icon element-icon">▤</div>
+<h3>Элемент</h3>
+<p>Целый объект, который перемещается при сортировке.</p>
+<div class="anatomy-example">
+<b>Queen</b>
+<span>Bohemian Rhapsody · 137 прослушиваний</span>
+</div>
+</article>
+<article class="sorting-anatomy-card">
+<div aria-hidden="true" class="sorting-anatomy-icon key-icon">#</div>
+<h3>Ключ</h3>
+<p>Значение, по которому определяется место элемента.</p>
+<div class="anatomy-example single-value">
+<b>137</b>
+<span>число прослушиваний</span>
+</div>
+</article>
+<article class="sorting-anatomy-card">
+<div aria-hidden="true" class="sorting-anatomy-icon order-icon">↓</div>
+<h3>Порядок</h3>
+<p>Правило, определяющее, какой ключ должен идти раньше.</p>
+<div class="anatomy-example single-value">
+<b>по убыванию</b>
+<span>большее число прослушиваний — раньше</span>
+</div>
+</article>
+</div>
+<div class="ordering-examples">
+<div class="ordering-example">
+<span>Числа</span>
+<b>2, 5, 7, 11</b>
+<small>по возрастанию</small>
+</div>
+<div class="ordering-example">
+<span>Имена</span>
+<b>Adams, Bell, Chen</b>
+<small>алфавитный порядок</small>
+</div>
+<div class="ordering-example">
+<span>События</span>
+<b>09:10, 11:45, 16:20</b>
+<small>хронологический порядок</small>
+</div>
+</div>
+</section>
+<section class="lecture-section" id="definition">
+<h2>Что значит «отсортировано»?</h2>
+<div class="sorting-definition">
+<div class="definition-main">
+<span class="definition-label">Определение</span>
+<p>
+            Алгоритм сортировки переставляет элементы последовательности так, чтобы их ключи шли в заданном порядке. При этом набор элементов должен сохраниться в точности: ничего нельзя добавить, удалить или продублировать.
+          </p>
+</div>
+<div class="definition-properties">
+<article>
+<div class="property-mark">1</div>
+<div>
+<h3>Свойство порядка</h3>
+<p>
+                Если читать последовательность слева направо, элементы располагаются в соответствии с выбранным правилом порядка.
+              </p>
+</div>
+</article>
+<article>
+<div class="property-mark">2</div>
+<div>
+<h3>Свойство сохранения</h3>
+<p>
+                В результате содержатся ровно те же элементы, что и на входе, только в другом порядке.
+              </p>
+</div>
+</article>
+</div>
+</div>
+<div class="number-sort-demo">
+<div>
+<span>вход</span>
+<div class="number-cells">
+<b>7</b><b>2</b><b>9</b><b>2</b><b>5</b>
+</div>
+</div>
+<div class="number-sort-arrow">→</div>
+<div>
+<span>результат сортировки</span>
+<div class="number-cells sorted-number-cells">
+<b>2</b><b>2</b><b>5</b><b>7</b><b>9</b>
+</div>
+</div>
+</div>
+</section>
+<section class="lecture-section" id="criteria">
+<h2>Как оценивать алгоритмы сортировки</h2>
+<p class="lead">
+        Разные алгоритмы могут приводить к одному и тому же отсортированному результату. Различие — в том, как именно они к нему приходят. В этой главе мы будем сравнивать алгоритмы по трём основным критериям.
+      </p>
+<div class="algorithm-criteria sorting-intro-criteria">
+<div class="criteria-grid">
+<article class="criterion-card">
+<div aria-hidden="true" class="criterion-icon criterion-correctness">✓</div>
+<div>
+<h4>Корректность</h4>
+<p>Всегда ли алгоритм выдаёт корректно отсортированную последовательность?</p>
+</div>
+</article>
+<article class="criterion-card">
+<div aria-hidden="true" class="criterion-icon criterion-time">↗</div>
+<div>
+<h4>Время работы</h4>
+<p>Как растёт объём работы при увеличении размера входа?</p>
+</div>
+</article>
+<article class="criterion-card">
+<div aria-hidden="true" class="criterion-icon criterion-memory">▦</div>
+<div>
+<h4>Дополнительная память</h4>
+<p>Сколько дополнительной памяти требуется алгоритму во время перестановки элементов?</p>
+</div>
+</article>
+</div>
+<div class="sorting-intro-final-note">
+<div aria-hidden="true" class="sorting-intro-final-mark">≠</div>
+<div>
+<h4>Самый быстрый алгоритм не всегда оказывается лучшим</h4>
+<p>
+              Два алгоритма сортировки могут иметь близкое время работы, но различаться по расходу памяти, устойчивости, поведению на почти отсортированных данных или числу перемещений элементов. Эти различия будут естественно появляться по мере изучения конкретных алгоритмов.
+            </p>
+</div>
+</div>
+</div>
+<div class="next-part">
+<h3>Следующий раздел: применения сортировки</h3>
+<p>
+          Дальше разберём задачи и алгоритмические приёмы, которые становятся проще после упорядочивания данных.
+        </p>
+<a class="next-part-link" href="applications-ru.html">Применения сортировки →</a>
+</div>
+</section>
+</main>
+<footer class="lecture-footer">
+<div>Гайд по алгоритмам · presented by Аллан</div>
+<div>© 2026 Allan Allemand</div>
+</footer>
+<script src="../assets/js/language-switch.js"></script>
+</body>
+</html>

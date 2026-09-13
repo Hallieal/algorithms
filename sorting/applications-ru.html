@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+
+<html lang="ru">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="Применения сортировки: поиск, ранжирование, группировка, обнаружение повторов и обработка диапазонов." name="description"/>
+<meta content="Применения сортировки | Гайд по алгоритмам — presented by Аллан" property="og:title"/>
+<meta content="article" property="og:type"/>
+<title>Применения сортировки | Гайд по алгоритмам — presented by Аллан</title>
+<link href="../assets/css/styles.css" rel="stylesheet"/>
+<link href="styles/applications.css" rel="stylesheet"/>
+<link href="../assets/images/favicon-32.png" rel="icon" sizes="32x32" type="image/png"/>
+<link href="../assets/images/favicon.png" rel="icon" sizes="64x64" type="image/png"/>
+<link href="../assets/images/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180"/>
+
+<link href="applications.html" hreflang="en" rel="alternate"/><link href="applications-ru.html" hreflang="ru" rel="alternate"/></head>
+<body class="lecture-page">
+<header class="topbar">
+<a class="brand" href="../index-ru.html"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name ru-brand-name"><span class="ru-brand-lines"><span>Гайд по алгоритмам</span><span class="ru-brand-presented">presented by Аллан</span></span></span></a>
+<nav aria-label="Основная навигация" class="topnav">
+<a href="index-ru.html">Список тем</a>
+<div aria-label="Язык" class="language-switch"><a href="applications.html">EN</a><span class="language-separator">·</span><span class="current">RU</span></div></nav>
+</header>
+<aside aria-label="Навигация по разделу" class="sidebar">
+<div class="sidebar-title">Глава 1 · Раздел 2</div>
+<a href="#why">Почему сортировка полезна</a>
+<a href="#applications">Применения</a>
+<a href="#preprocessing">Сортировка как предобработка</a>
+</aside>
+<main class="lecture">
+<section class="lecture-hero">
+<div class="chapter-label">Глава 1 · Раздел 2</div>
+<h1>Применения сортировки</h1>
+<p class="chapter-topics">
+        Сортировка часто нужна не как конечный ответ, а как этап предобработки, который придаёт данным структуру.
+      </p>
+</section>
+<section class="lecture-section" id="why">
+<h2>Почему сортировка полезна</h2>
+<p class="lead">
+        В неотсортированной последовательности глобальная структура скрыта. После сортировки близкие значения оказываются рядом, равные становятся соседними, экстремумы переходят к краям, а многие запросы можно обрабатывать простым проходом или поиском по упорядоченной последовательности.
+      </p>
+<div class="concept-row">
+<div class="concept-card">
+<div class="mini-array unsorted">
+<span>8</span><span>2</span><span>8</span><span>5</span><span>1</span><span>5</span>
+</div>
+<h3>Неупорядоченные данные</h3>
+<p>Равные или близкие значения могут быть разделены множеством несвязанных с ними элементов.</p>
+</div>
+<div class="concept-arrow">→</div>
+<div class="concept-card">
+<div class="mini-array sorted">
+<span>1</span><span>2</span><span>5</span><span>5</span><span>8</span><span>8</span>
+</div>
+<h3>Упорядоченные данные</h3>
+<p>Равные значения стоят рядом, а взаимный порядок значений становится явным.</p>
+</div>
+</div>
+</section>
+<section class="lecture-section" id="applications">
+<h2>Типичные применения</h2>
+<div class="application-grid">
+<article class="application-card">
+<div class="application-mark">⌕</div>
+<h3>Быстрый поиск</h3>
+<p>
+            После сортировки целевой элемент можно искать двоичным поиском за логарифмическое время. Поэтому одноразовая сортировка оправдана, если по одним и тем же данным предстоит выполнять много поисковых запросов.
+          </p>
+</article>
+<article class="application-card">
+<div class="application-mark">#</div>
+<h3>Ранжирование</h3>
+<p>
+            Баллы, цены, времена и другие численные показатели часто сортируют, чтобы определить места, вывести лучшие или худшие значения либо построить упорядоченный отчёт.
+          </p>
+
+          <div class="application-practice">
+          <span class="application-practice-label">Практика</span>
+          <a href="problems/top-k-frequent-ru.html">K самых частых элементов →</a>
+          </div>
+        </article>
+<article class="application-card">
+<div class="application-mark">=</div>
+<h3>Поиск повторов</h3>
+<p>
+            После сортировки одинаковые элементы оказываются рядом. Одного прохода достаточно, чтобы найти повторы и сгруппировать равные ключи.
+          </p>
+</article>
+<article class="application-card">
+<div class="application-mark">↔</div>
+<h3>Пары и интервалы</h3>
+<p>
+            Многие алгоритмы с двумя указателями и методы обработки интервалов начинаются с сортировки. Благодаря порядку указатели могут двигаться монотонно, а не перебирать все пары.
+          </p>
+
+          <div class="application-practice">
+          <span class="application-practice-label">Практика · EN</span>
+          <a href="problems/two-sum-sorted.html">Two Sum →</a>
+          <a href="problems/meeting-rooms.html">Meeting Rooms →</a>
+          </div>
+        </article>
+<article class="application-card">
+<div class="application-mark">∪</div>
+<h3>Объединение упорядоченных данных</h3>
+<p>
+            Две отсортированные последовательности можно эффективно слить. Похожими проходами удобно находить пересечения, объединения и совпадения между упорядоченными наборами.
+          </p>
+
+          <div class="application-practice">
+          <span class="application-practice-label">Практика</span>
+          <a href="problems/merge-without-space-ru.html">Слияние без дополнительной памяти →</a>
+          </div>
+        </article>
+<article class="application-card">
+<div class="application-mark">↥</div>
+<h3>Характеристики порядка</h3>
+<p>
+            После сортировки легко увидеть минимум, максимум, медиану, квантили и другие порядковые статистики. Позже мы увидим, когда для этих задач полная сортировка вообще не нужна.
+          </p>
+
+          <div class="application-practice">
+          <span class="application-practice-label">Практика</span>
+          <a href="problems/k-smallest-ru.html">K наименьших элементов →</a>
+          </div>
+        </article>
+</div>
+<div class="application-example">
+<h3>Сортировка меняет представление задачи</h3>
+<p>
+          Затраты на сортировку нередко окупаются гораздо более простым алгоритмом после неё. Этот приём будет встречаться постоянно: сначала упорядочить данные, затем использовать получившуюся структуру.
+        </p>
+</div>
+</section>
+<section class="lecture-section" id="preprocessing">
+<h2>Сортировка как предобработка</h2>
+<p class="lead">
+        Сортировка особенно полезна, если упорядоченная последовательность будет использоваться многократно. Одноразовая предобработка может существенно ускорить последующие операции и упростить рассуждения о них.
+      </p>
+<div class="definition-card">
+<p>
+          Поэтому важно спрашивать не только о цене самой сортировки, но и о том, какую структуру она создаёт и смогут ли последующие операции эту структуру использовать.
+        </p>
+</div>
+<div class="next-part">
+<h3>Следующий раздел: сортировки выбором и вставками</h3>
+<p>
+          Начнём изучение конкретных алгоритмов с двух простых сортировок сравнениями.
+        </p>
+<a class="next-part-link" href="selection-insertion-ru.html">Сортировки выбором и вставками →</a>
+</div>
+<div class="next-part">
+<h3>Предыдущий раздел</h3>
+<p>
+          Вернуться ко введению в сортировки.
+        </p>
+<a class="next-part-link" href="introduction-ru.html">← Введение в сортировки</a>
+</div>
+</section>
+</main>
+<footer class="lecture-footer">
+<div>Гайд по алгоритмам · presented by Аллан</div>
+<div>© 2026 Allan Allemand</div>
+</footer>
+<script src="../assets/js/language-switch.js"></script>
+</body>
+</html>

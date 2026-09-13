@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Трёхчастное разбиение массива относительно диапазона за один линейный проход и O(1) дополнительной памяти.">
+  <meta property="og:title" content="Трёхчастное разбиение | Гайд по алгоритмам — presented by Аллан">
+  <meta property="og:type" content="article">
+  <title>Трёхчастное разбиение | Гайд по алгоритмам — presented by Аллан</title>
+  <link rel="stylesheet" href="../../assets/css/styles.css">
+  <link rel="stylesheet" href="assets/problems.css">
+  <link rel="icon" type="image/png" sizes="32x32" href="../../assets/images/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="64x64" href="../../assets/images/favicon.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="../../assets/images/apple-touch-icon.png">
+  <link href="three-way-partitioning.html" hreflang="en" rel="alternate">
+  <link href="three-way-partitioning-ru.html" hreflang="ru" rel="alternate">
+</head>
+<body class="lecture-page problem-page easy-redesign medium-redesign">
+  <div class="progress-track" aria-hidden="true"><div class="progress-bar" id="reading-progress"></div></div>
+  <header class="topbar">
+    <a class="brand" href="../../index-ru.html"><span class="brand-mark brand-mark-logo"><img class="brand-mark-image" src="../../assets/images/logo.png" alt=""></span><span class="brand-name ru-brand-name"><span class="ru-brand-lines"><span>Гайд по алгоритмам</span><span class="ru-brand-presented">presented by Аллан</span></span></span></a>
+    <nav class="topnav" aria-label="Основная навигация"><a href="index-ru.html">Практические задачи</a><a href="../index-ru.html">Список тем</a><div aria-label="Язык" class="language-switch"><a href="three-way-partitioning.html">EN</a><span class="language-separator">·</span><span class="current">RU</span></div></nav>
+  </header>
+
+  <aside class="sidebar" aria-label="Навигация по странице">
+    <div class="sidebar-title">Задача 4 · Medium</div>
+    <a href="#problem">Условие</a><a href="#idea">Главная идея</a><a href="#algorithm">Алгоритм</a><a href="#correctness">Корректность и сложность</a><a href="#implementation">Реализация</a>
+  </aside>
+
+  <main class="lecture">
+    <section class="lecture-hero">
+      <div class="problem-hero-kicker"><span class="problem-title-icon medium" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 5h5v14H4zM10 8h4v11h-4zM15 3h5v16h-5z"/></svg></span><span>Сортировки · Практика · Medium</span></div>
+      <h1>Трёхчастное разбиение</h1>
+      <p class="chapter-topics">Распределить каждый элемент по одной из трёх областей значений, просмотрев массив всего один раз.</p>
+      <div class="problem-meta"><span class="medium">Medium</span><span>Partitioning</span><span>Python</span></div>
+    </section>
+
+    <section id="problem" class="lecture-section">
+      <h2>Условие</h2>
+      <p class="lead easy-lead">Полностью сортировать массив не требуется. Нужно только, чтобы каждый элемент оказался в правильной из трёх групп.</p>
+      <div class="easy-brief">
+        <div class="easy-brief-copy">
+          <span class="easy-kicker">Задача</span>
+          <h3>Разбить массив относительно диапазона</h3>
+          <p>Дан массив <code>a</code> и два значения <code>low ≤ high</code>. Переставьте элементы так, чтобы сначала шли все значения меньше <code>low</code>, затем все значения из <code>[low, high]</code>, а затем все значения больше <code>high</code>. Порядок внутри каждой группы не важен.</p>
+          <div class="problem-equation">&lt; low &nbsp;&nbsp; | &nbsp;&nbsp; low ≤ x ≤ high &nbsp;&nbsp; | &nbsp;&nbsp; &gt; high</div>
+        </div>
+        <div class="easy-demo">
+          <div class="easy-demo-label">Пример · диапазон [14, 20]</div>
+          <div class="easy-array"><span class="easy-cell">1</span><span class="easy-cell">14</span><span class="easy-cell">5</span><span class="easy-cell">20</span><span class="easy-cell">4</span><span class="easy-cell">54</span><span class="easy-cell">3</span><span class="easy-cell">32</span></div>
+          <div class="easy-demo-arrow">один из допустимых результатов ↓</div>
+          <div class="array-line"><span class="array-cell left">1</span><span class="array-cell left">5</span><span class="array-cell left">4</span><span class="array-cell left">3</span><span class="array-cell middle">20</span><span class="array-cell middle">14</span><span class="array-cell right">32</span><span class="array-cell right">54</span></div>
+          <div class="easy-demo-caption">Точный порядок внутри каждого цвета не важен: важны только три области.</div>
+        </div>
+      </div>
+    </section>
+
+    <section id="idea" class="lecture-section">
+      <h2>Главная идея</h2>
+      <p class="lead easy-lead">Будем поддерживать уже классифицированные части массива с обоих концов, а неизвестный отрезок постепенно сжимать.</p>
+      <div class="easy-insight">
+        <div class="easy-insight-card">
+          <span class="easy-kicker">Четыре области</span>
+          <h3>Три готовые области и одна неизвестная</h3>
+          <p>В каждый момент позиции до <code>left</code> уже содержат только маленькие значения, позиции от <code>left</code> до <code>i-1</code> — только значения из диапазона, а позиции после <code>right</code> — только большие. Неизвестным остаётся лишь <code>a[i:right+1]</code>.</p>
+          <div class="example-block" style="margin:16px 0 0"><div class="example-body"><div class="array-line"><span class="array-cell left">мал.</span><span class="array-cell left">мал.</span><span class="array-cell middle">внутри</span><span class="array-cell hot">a[i]</span><span class="array-cell hot">?</span><span class="array-cell hot">?</span><span class="array-cell right">бол.</span></div><div class="array-caption">левая область | средняя область | неизвестная область | правая область</div></div></div>
+        </div>
+        <div class="easy-rule-stack">
+          <div class="easy-rule"><strong>&lt; low</strong><p>Меняем текущий элемент с <code>a[left]</code>. Затем и <code>left</code>, и <code>i</code> сдвигаются вправо.</p></div>
+          <div class="easy-rule"><strong>внутри</strong><p>Элемент уже находится в правильной средней области. Сдвигаем только <code>i</code>.</p></div>
+          <div class="easy-rule"><strong>&gt; high</strong><p>Меняем элемент с <code>a[right]</code> и уменьшаем <code>right</code>. <code>i</code> пока не двигаем.</p></div>
+        </div>
+      </div>
+      <div class="invariant-box"><span>Почему в случае большого элемента i не двигается?</span><p>Значение, пришедшее с правой границы, ещё ни разу не проверялось. Если сразу увеличить <code>i</code>, его можно пропустить. Сначала нужно классифицировать новый элемент на позиции <code>i</code>.</p></div>
+    </section>
+
+    <section id="algorithm" class="lecture-section">
+      <h2>Алгоритм</h2>
+      <div class="easy-step-flow">
+        <article class="easy-step-card"><div class="easy-step-number">1</div><h3>Заводим три указателя</h3><p><code>left = 0</code>, <code>i = 0</code>, <code>right = n - 1</code>.</p></article>
+        <article class="easy-step-card"><div class="easy-step-number">2</div><h3>Классифицируем a[i]</h3><p>Сравниваем текущее значение с <code>low</code> и <code>high</code>.</p></article>
+        <article class="easy-step-card"><div class="easy-step-number">3</div><h3>Расширяем готовую область</h3><p>Перемещаем значение в левую, среднюю или правую часть, используя не более одного обмена.</p></article>
+        <article class="easy-step-card"><div class="easy-step-number">4</div><h3>Останавливаемся при i &gt; right</h3><p>Неизвестная область пуста, значит все элементы классифицированы.</p></article>
+      </div>
+      <div class="easy-invariant"><div class="easy-invariant-mark">I</div><div><h3>Инвариант цикла</h3><p>Перед каждой итерацией <code>a[:left]</code> содержит только значения меньше <code>low</code>, <code>a[left:i]</code> — только значения из диапазона, а <code>a[right+1:]</code> — только значения больше <code>high</code>.</p></div></div>
+    </section>
+
+    <section id="correctness" class="lecture-section">
+      <h2>Корректность и сложность</h2>
+      <div class="easy-proof-grid">
+        <div class="easy-proof-main"><div class="proof-symbol">✓</div><h3>Почему инварианта достаточно</h3><p>Каждая ветка помещает текущий элемент ровно в ту область, где он должен находиться, и не разрушает уже готовые части массива.</p></div>
+        <div class="easy-proof-details">
+          <div class="easy-proof-row"><span>1</span><div><h4>Инициализация</h4><p>В начале все три готовые области пусты, поэтому инвариант выполнен автоматически.</p></div></div>
+          <div class="easy-proof-row"><span>2</span><div><h4>Сохранение</h4><p>Маленький элемент расширяет левую область, элемент из диапазона — среднюю, большой — правую. Значение, пришедшее после обмена справа, обязательно проверяется до продвижения <code>i</code>.</p></div></div>
+          <div class="easy-proof-row"><span>3</span><div><h4>Завершение</h4><p>Каждая итерация уменьшает неизвестную область на одну позицию. Когда <code>i &gt; right</code>, неизвестных элементов не остаётся, и весь массив имеет требуемый вид.</p></div></div>
+        </div>
+      </div>
+      <div class="easy-complexity-strip"><div class="easy-complexity-item"><span>Время</span><strong>O(n)</strong><p>Каждая позиция один раз покидает неизвестную область.</p></div><div class="easy-complexity-item"><span>Доп. память</span><strong>O(1)</strong><p>Нужны только три индекса и временное место для обмена.</p></div><div class="easy-complexity-item"><span>Стабильность</span><strong>Нет</strong><p>Обмены могут менять относительный порядок внутри группы.</p></div></div>
+    </section>
+
+    <section id="implementation" class="lecture-section">
+      <h2>Реализация</h2>
+      <p class="lead easy-lead">Код почти дословно повторяет три случая из алгоритма.</p>
+      <div class="easy-code-layout">
+        <div class="problem-code"><div class="problem-code-head"><span>Python</span><button class="copy-code" type="button">Копировать</button></div><pre><code>def three_way_partition(a, low, high):
+    left = 0
+    i = 0
+    right = len(a) - 1
+
+    while i &lt;= right:
+        if a[i] &lt; low:
+            a[left], a[i] = a[i], a[left]
+            left += 1
+            i += 1
+
+        elif a[i] &gt; high:
+            a[i], a[right] = a[right], a[i]
+            right -= 1
+
+        else:
+            i += 1
+
+    return a
+
+
+values = [1, 14, 5, 20, 4, 54, 3, 32]
+print(three_way_partition(values, 14, 20))</code></pre></div>
+        <div class="easy-code-notes"><span class="easy-kicker">Как читать код</span><h3>Асимметрия указателей здесь принципиальна</h3><div class="easy-code-note"><b>Маленький или средний элемент</b><p>Текущая позиция полностью классифицирована, поэтому <code>i</code> можно увеличить.</p></div><div class="easy-code-note"><b>Большой элемент</b><p>Двигается только <code>right</code>. Новое значение на позиции <code>i</code> ещё нужно проверить.</p></div><div class="easy-code-note"><b>In-place</b><p>Дополнительный массив не строится: три области формируются прямо внутри исходного массива.</p></div></div>
+      </div>
+      <p class="easy-source-line">Задача адаптирована из <a href="https://www.geeksforgeeks.org/dsa/three-way-partitioning-of-an-array-around-a-given-range/" target="_blank" rel="noopener">Three way partitioning of an array around a given range</a> на GeeksforGeeks. Формулировка и объяснение переписаны для этого гайда.</p>
+      <div class="next-part back-problems"><h3>Назад к практике</h3><p>Выберите другую задачу уровня Easy, Medium или Hard.</p><a class="next-part-link" href="index-ru.html">← Практические задачи</a></div>
+    </section>
+  </main>
+
+  <footer class="lecture-footer"><div>Гайд по алгоритмам · presented by Аллан</div><div>© 2026 Allan Allemand</div></footer>
+  <script src="assets/problems.js"></script>
+  <script src="../../assets/js/language-switch.js"></script>
+</body>
+</html>

@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Найти k наименьших элементов, не сортируя весь массив: поддерживать max-heap кандидатов.">
+  <meta property="og:title" content="K наименьших элементов | Гайд по алгоритмам — presented by Аллан">
+  <meta property="og:type" content="article">
+  <title>K наименьших элементов | Гайд по алгоритмам — presented by Аллан</title>
+  <link rel="stylesheet" href="../../assets/css/styles.css">
+  <link rel="stylesheet" href="assets/problems.css">
+  <link rel="icon" type="image/png" sizes="32x32" href="../../assets/images/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="64x64" href="../../assets/images/favicon.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="../../assets/images/apple-touch-icon.png">
+  <link href="k-smallest.html" hreflang="en" rel="alternate">
+  <link href="k-smallest-ru.html" hreflang="ru" rel="alternate">
+</head>
+<body class="lecture-page problem-page easy-redesign medium-redesign">
+  <div class="progress-track" aria-hidden="true"><div class="progress-bar" id="reading-progress"></div></div>
+  <header class="topbar">
+    <a class="brand" href="../../index-ru.html"><span class="brand-mark brand-mark-logo"><img class="brand-mark-image" src="../../assets/images/logo.png" alt=""></span><span class="brand-name ru-brand-name"><span class="ru-brand-lines"><span>Гайд по алгоритмам</span><span class="ru-brand-presented">presented by Аллан</span></span></span></a>
+    <nav class="topnav" aria-label="Основная навигация"><a href="index-ru.html">Практические задачи</a><a href="../index-ru.html">Список тем</a><div aria-label="Язык" class="language-switch"><a href="k-smallest.html">EN</a><span class="language-separator">·</span><span class="current">RU</span></div></nav>
+  </header>
+
+  <aside class="sidebar" aria-label="Навигация по странице">
+    <div class="sidebar-title">Задача 5 · Medium</div>
+    <a href="#problem">Условие</a><a href="#idea">Главная идея</a><a href="#algorithm">Алгоритм</a><a href="#correctness">Корректность и сложность</a><a href="#implementation">Реализация</a>
+  </aside>
+
+  <main class="lecture">
+    <section class="lecture-hero">
+      <div class="problem-hero-kicker"><span class="problem-title-icon medium" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 5h14M7 10h10M9 15h6M11 20h2"/><path d="m16 17 3 3 3-3"/></svg></span><span>Сортировки · Практика · Medium</span></div>
+      <h1>K наименьших элементов</h1>
+      <p class="chapter-topics">Хранить только те значения, которые ещё могут попасть в ответ, вместо сортировки всего массива.</p>
+      <div class="problem-meta"><span class="medium">Medium</span><span>Куча</span><span>Python</span></div>
+    </section>
+
+    <section id="problem" class="lecture-section">
+      <h2>Условие</h2>
+      <p class="lead easy-lead">Полная сортировка даёт гораздо больше информации, чем нужно. Нас интересуют только первые <code>k</code> элементов итогового порядка.</p>
+      <div class="easy-brief">
+        <div class="easy-brief-copy">
+          <span class="easy-kicker">Задача</span>
+          <h3>Вернуть k наименьших значений</h3>
+          <p>Дан массив из <code>n</code> чисел и целое <code>k</code>. Верните <code>k</code> наименьших значений в возрастающем порядке. Повторяющиеся значения считаются отдельно.</p>
+          <div class="problem-equation">ответ = первые k элементов полностью отсортированного массива</div>
+        </div>
+        <div class="easy-demo">
+          <div class="easy-demo-label">Пример · k = 3</div>
+          <div class="easy-array"><span class="easy-cell">7</span><span class="easy-cell">10</span><span class="easy-cell">4</span><span class="easy-cell">3</span><span class="easy-cell">20</span><span class="easy-cell">15</span></div>
+          <div class="easy-demo-arrow">оставляем только три лучших ↓</div>
+          <div class="easy-array"><span class="easy-cell peak">3</span><span class="easy-cell peak">4</span><span class="easy-cell peak">7</span></div>
+          <div class="easy-demo-caption">Ответ — <code>[3, 4, 7]</code>. Взаимный порядок 10, 15 и 20 вообще не требуется вычислять.</div>
+        </div>
+      </div>
+    </section>
+
+    <section id="idea" class="lecture-section">
+      <h2>Главная идея</h2>
+      <p class="lead easy-lead">Поддерживаем ровно <code>k</code> кандидатов. Единственный кандидат, которого когда-либо понадобится удалить, — самый большой из них, поэтому он должен быть доступен мгновенно.</p>
+      <div class="easy-insight">
+        <div class="easy-insight-card">
+          <span class="easy-kicker">Порог</span>
+          <h3>Максимальный кандидат — текущая граница</h3>
+          <p>Пусть текущие кандидаты — <code>{3, 7, 10}</code>. Их максимум 10 — самый слабый элемент набора. Любое новое значение не меньше 10 можно игнорировать; любое значение меньше 10 должно заменить его.</p>
+          <div class="visual-split" style="margin-top:18px"><div><div class="easy-array"><span class="easy-cell peak">3</span><span class="easy-cell peak">7</span><span class="easy-cell pointer-right">10</span></div><div class="array-caption">текущие кандидаты · порог = 10</div></div><div class="visual-arrow">+ 4 →</div><div><div class="easy-array"><span class="easy-cell peak">3</span><span class="easy-cell peak">4</span><span class="easy-cell pointer-right">7</span></div><div class="array-caption">10 удалён; новый порог = 7</div></div></div>
+        </div>
+        <div class="easy-rule-stack">
+          <div class="easy-rule"><strong>x ≥ M</strong><p>Игнорируем <code>x</code>. Уже есть <code>k</code> обработанных значений, не превосходящих его.</p></div>
+          <div class="easy-rule"><strong>x &lt; M</strong><p>Заменяем текущий максимум <code>M</code> на <code>x</code>: набор кандидатов становится лучше.</p></div>
+          <div class="easy-rule"><strong>max-heap</strong><p>Max-heap хранит порог в корне и обновляет его за <code>O(log k)</code>.</p></div>
+        </div>
+      </div>
+      <div class="invariant-box"><span>Почему не min-heap?</span><p>Min-heap показывает наименьший кандидат, а его мы как раз хотим сохранить. Нам нужен быстрый доступ к крупнейшему кандидату, потому что именно он может быть вытеснен. В Python реализована min-heap, поэтому мы храним отрицания чисел и тем самым имитируем max-heap.</p></div>
+    </section>
+
+    <section id="algorithm" class="lecture-section">
+      <h2>Алгоритм</h2>
+      <div class="easy-step-flow">
+        <article class="easy-step-card"><div class="easy-step-number">1</div><h3>Берём первые k значений</h3><p>Строим из них max-heap текущих кандидатов.</p></article>
+        <article class="easy-step-card"><div class="easy-step-number">2</div><h3>Смотрим на порог</h3><p>Корень кучи — крупнейший кандидат <code>M</code>.</p></article>
+        <article class="easy-step-card"><div class="easy-step-number">3</div><h3>Оставляем или отбрасываем</h3><p>Если <code>x &lt; M</code>, заменяем <code>M</code> на <code>x</code>; иначе игнорируем <code>x</code>.</p></article>
+        <article class="easy-step-card"><div class="easy-step-number">4</div><h3>Сортируем только k значений</h3><p>В конце сортируем содержимое кучи, чтобы вернуть ответ в возрастающем порядке.</p></article>
+      </div>
+      <div class="easy-invariant"><div class="easy-invariant-mark">I</div><div><h3>Инвариант цикла</h3><p>После обработки любого префикса длины не меньше <code>k</code> куча содержит в точности <code>k</code> наименьших значений этого префикса с учётом повторений.</p></div></div>
+    </section>
+
+    <section id="correctness" class="lecture-section">
+      <h2>Корректность и сложность</h2>
+      <div class="easy-proof-grid">
+        <div class="easy-proof-main"><div class="proof-symbol">✓</div><h3>Почему одного порога достаточно</h3><p>Максимум среди кандидатов отделяет значения, которые ещё могут попасть в ответ, от значений, которые уже точно не попадут.</p></div>
+        <div class="easy-proof-details">
+          <div class="easy-proof-row"><span>1</span><div><h4>Инициализация</h4><p>После первых <code>k</code> элементов куча содержит все обработанные значения, а значит — ровно <code>k</code> наименьших.</p></div></div>
+          <div class="easy-proof-row"><span>2</span><div><h4>Если x ≥ M</h4><p>В куче уже есть <code>k</code> значений, не превосходящих <code>M ≤ x</code>. Следовательно, <code>x</code> не может входить в <code>k</code> наименьших обработанных значений.</p></div></div>
+          <div class="easy-proof-row"><span>3</span><div><h4>Если x &lt; M</h4><p>Новое значение должно войти в набор кандидатов, а старый максимум становится лишним. Его замена восстанавливает инвариант.</p></div></div>
+        </div>
+      </div>
+      <div class="easy-complexity-strip"><div class="easy-complexity-item"><span>Просмотр</span><strong>O(n log k)</strong><p>Каждый следующий элемент вызывает не более одной операции замены в куче.</p></div><div class="easy-complexity-item"><span>Сортировка ответа</span><strong>O(k log k)</strong><p>Сортируются только выбранные k значений.</p></div><div class="easy-complexity-item"><span>Доп. память</span><strong>O(k)</strong><p>Куча хранит ровно k кандидатов.</p></div></div>
+    </section>
+
+    <section id="implementation" class="lecture-section">
+      <h2>Реализация</h2>
+      <p class="lead easy-lead">Отрицание значений превращает стандартную min-heap Python в нужную нам max-heap.</p>
+      <div class="easy-code-layout">
+        <div class="problem-code"><div class="problem-code-head"><span>Python</span><button class="copy-code" type="button">Копировать</button></div><pre><code>import heapq
+
+
+def k_smallest(a, k):
+    if not 0 &lt;= k &lt;= len(a):
+        raise ValueError("k must satisfy 0 <= k <= len(a)")
+    if k == 0:
+        return []
+
+    heap = [-x for x in a[:k]]
+    heapq.heapify(heap)
+
+    for x in a[k:]:
+        largest = -heap[0]
+        if x &lt; largest:
+            heapq.heapreplace(heap, -x)
+
+    return sorted(-x for x in heap)
+
+
+print(k_smallest([7, 10, 4, 3, 20, 15], 3))
+# [3, 4, 7]</code></pre></div>
+        <div class="easy-code-notes"><span class="easy-kicker">Как читать код</span><h3>Куча буквально хранит инвариант</h3><div class="easy-code-note"><b><code>-heap[0]</code></b><p>Из-за отрицаний минимальное хранимое число соответствует максимальному настоящему кандидату.</p></div><div class="easy-code-note"><b><code>heapreplace</code></b><p>Удаляет текущий порог и вставляет улучшившее набор значение одной операцией за <code>O(log k)</code>.</p></div><div class="easy-code-note"><b>Финальный <code>sorted</code></b><p>Куча хранит правильное множество значений, но не выдаёт их в отсортированном порядке, поэтому сортируем только эти <code>k</code> чисел.</p></div></div>
+      </div>
+      <p class="easy-source-line">Задача адаптирована из варианта про k наименьших элементов в <a href="https://www.geeksforgeeks.org/dsa/k-largestor-smallest-elements-in-an-array/" target="_blank" rel="noopener">K largest / smallest elements in an array</a> на GeeksforGeeks. Формулировка и объяснение переписаны для этого гайда.</p>
+      <div class="next-part back-problems"><h3>Назад к практике</h3><p>Выберите другую задачу уровня Easy, Medium или Hard.</p><a class="next-part-link" href="index-ru.html">← Практические задачи</a></div>
+    </section>
+  </main>
+
+  <footer class="lecture-footer"><div>Гайд по алгоритмам · presented by Аллан</div><div>© 2026 Allan Allemand</div></footer>
+  <script src="assets/problems.js"></script>
+  <script src="../../assets/js/language-switch.js"></script>
+</body>
+</html>

@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Rank distinct values by frequency and tie-break by value to find the top k frequent elements.">
+  <meta property="og:title" content="Top K Frequent Elements | Allan's Handbook of Algorithms">
+  <meta property="og:type" content="article">
+  <title>Top K Frequent Elements | Allan's Handbook of Algorithms</title>
+  <link rel="stylesheet" href="../../assets/css/styles.css">
+  <link rel="stylesheet" href="assets/problems.css">
+  <link rel="stylesheet" href="assets/hard-problems.css">
+  <link rel="icon" type="image/png" sizes="32x32" href="../../assets/images/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="64x64" href="../../assets/images/favicon.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="../../assets/images/apple-touch-icon.png">
+  <link href="top-k-frequent.html" hreflang="en" rel="alternate">
+  <link href="top-k-frequent-ru.html" hreflang="ru" rel="alternate">
+</head>
+<body class="lecture-page problem-page easy-redesign hard-redesign">
+  <div class="progress-track" aria-hidden="true"><div class="progress-bar" id="reading-progress"></div></div>
+  <header class="topbar">
+    <a class="brand" href="../../"><span class="brand-mark brand-mark-logo"><img class="brand-mark-image" src="../../assets/images/logo.png" alt=""></span><span class="brand-name">Allan's Handbook of Algorithms</span></a>
+    <nav class="topnav" aria-label="Primary navigation"><a href="./">Practice problems</a><a href="../">Sorting overview</a><div aria-label="Language" class="language-switch"><span class="current">EN</span><span class="language-separator">·</span><a href="top-k-frequent-ru.html">RU</a></div></nav>
+  </header>
+
+  <aside class="sidebar" aria-label="Section navigation">
+    <div class="sidebar-title">Problem 7 · Hard</div>
+    <a href="#problem">Problem</a><a href="#idea">Core idea</a><a href="#algorithm">Algorithm</a><a href="#correctness">Correctness & complexity</a><a href="#implementation">Implementation</a>
+  </aside>
+
+  <main class="lecture">
+    <section class="lecture-hero">
+      <div class="problem-hero-kicker"><span class="problem-title-icon hard" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 19V9M10 19V5M15 19v-7M20 19V8"/><path d="M3 19h19"/></svg></span><span>Sorting · Practice · Hard</span></div>
+      <h1>Top K Frequent Elements</h1>
+      <p class="chapter-topics">Turn raw occurrences into sortable records, then make the ranking rule explicit.</p>
+      <div class="problem-meta"><span class="hard">Hard</span><span>Frequency ranking</span><span>Python</span></div>
+    </section>
+
+    <section id="problem" class="lecture-section">
+      <h2>Problem</h2>
+      <p class="hard-lead">The array itself is not what we want to order. The answer depends on how often each distinct value appears.</p>
+      <div class="easy-brief">
+        <div class="easy-brief-copy">
+          <span class="easy-kicker">Task</span>
+          <h3>Return the k highest-priority values</h3>
+          <p>Given an integer array and an integer <code>k</code>, return the <code>k</code> distinct values with highest frequency. If two values have the same frequency, the larger value ranks first.</p>
+          <div class="problem-equation">priority(x) = (frequency(x), x), both in descending order</div>
+        </div>
+        <div class="hard-visual-card">
+          <div class="hard-visual-label">Example · k = 2</div>
+          <div class="easy-array"><span class="easy-cell">3</span><span class="easy-cell">1</span><span class="easy-cell">4</span><span class="easy-cell">4</span><span class="easy-cell">5</span><span class="easy-cell">2</span><span class="easy-cell">6</span><span class="easy-cell">1</span></div>
+          <div class="easy-demo-arrow">count first, rank second ↓</div>
+          <div class="frequency-board">
+            <div class="frequency-row"><span class="frequency-value">4</span><div class="frequency-track"><div class="frequency-fill" style="--w:100%"></div></div><span class="frequency-count">2 times</span></div>
+            <div class="frequency-row"><span class="frequency-value">1</span><div class="frequency-track"><div class="frequency-fill" style="--w:100%"></div></div><span class="frequency-count">2 times</span></div>
+            <div class="frequency-row"><span class="frequency-value">6</span><div class="frequency-track"><div class="frequency-fill" style="--w:50%"></div></div><span class="frequency-count">1 time</span></div>
+          </div>
+          <div class="easy-demo-caption">4 and 1 tie on frequency, so 4 comes first because it is larger. The answer is <code>[4, 1]</code>.</div>
+        </div>
+      </div>
+    </section>
+
+    <section id="idea" class="lecture-section">
+      <h2>Core idea</h2>
+      <p class="hard-lead">Compress the input into one record per distinct value. Once frequency is stored explicitly, the problem becomes an ordinary sorting problem on a two-component key.</p>
+      <div class="easy-insight">
+        <div class="easy-insight-card">
+          <span class="easy-kicker">Change the representation</span>
+          <h3>Sort records, not occurrences</h3>
+          <p>For each distinct value <code>x</code>, create the record <code>(x, frequency[x])</code>. The required global order is: larger frequency first; if frequencies tie, larger value first.</p>
+          <div class="ranking-key">
+            <div><strong>4 → (2, 4)</strong><span>frequency 2, value 4</span></div>
+            <div><strong>1 → (2, 1)</strong><span>same frequency, smaller value</span></div>
+            <div><strong>6 → (1, 6)</strong><span>lower frequency</span></div>
+          </div>
+        </div>
+        <div class="easy-rule-stack">
+          <div class="easy-rule"><strong>1st key</strong><p>Frequency is primary: more occurrences always mean higher rank.</p></div>
+          <div class="easy-rule"><strong>2nd key</strong><p>The value breaks ties: among equal frequencies, larger values come first.</p></div>
+          <div class="easy-rule"><strong>Python</strong><p><code>(-freq[x], -x)</code> converts both descending rules into the default ascending tuple order.</p></div>
+        </div>
+      </div>
+      <div class="hard-note"><strong>Why this is a sorting problem.</strong> Counting alone gives the data needed for the answer, but not its order. The crucial modeling step is to identify the exact comparison key before sorting.</div>
+    </section>
+
+    <section id="algorithm" class="lecture-section">
+      <h2>Algorithm</h2>
+      <div class="easy-step-flow">
+        <article class="easy-step-card"><div class="easy-step-number">1</div><h3>Count</h3><p>Build a frequency table in one pass through the array.</p></article>
+        <article class="easy-step-card"><div class="easy-step-number">2</div><h3>Keep distinct values</h3><p>There are only <code>m</code> records to rank, where <code>m</code> is the number of distinct values.</p></article>
+        <article class="easy-step-card"><div class="easy-step-number">3</div><h3>Sort by the rule</h3><p>Sort with key <code>(-frequency, -value)</code>.</p></article>
+        <article class="easy-step-card"><div class="easy-step-number">4</div><h3>Take the first k</h3><p>The first <code>k</code> records are exactly the requested values.</p></article>
+      </div>
+      <div class="easy-invariant"><div class="easy-invariant-mark">I</div><div><h3>Ordering invariant</h3><p>In the ranked list, every earlier value either has larger frequency than a later value, or has the same frequency and a larger numeric value.</p></div></div>
+    </section>
+
+    <section id="correctness" class="lecture-section">
+      <h2>Correctness & complexity</h2>
+      <div class="easy-proof-grid">
+        <div class="easy-proof-main"><div class="proof-symbol">✓</div><h3>The sort key is the specification</h3><p>There is no approximation: the comparison used by the algorithm is exactly the priority rule stated in the problem.</p></div>
+        <div class="easy-proof-details">
+          <div class="easy-proof-row"><span>1</span><div><h4>Counting preserves all relevant information</h4><p>Each distinct value appears once in the frequency table together with its exact number of occurrences.</p></div></div>
+          <div class="easy-proof-row"><span>2</span><div><h4>Sorting produces the required total order</h4><p>Lexicographic order on <code>(-frequency, -value)</code> places higher frequencies first and resolves every tie by larger value.</p></div></div>
+          <div class="easy-proof-row"><span>3</span><div><h4>The answer is a prefix</h4><p>Therefore no value after position <code>k</code> can outrank any value inside the first <code>k</code> positions.</p></div></div>
+        </div>
+      </div>
+      <div class="easy-complexity-strip"><div class="easy-complexity-item"><span>Counting</span><strong>O(n)</strong><p>One pass over all observations.</p></div><div class="easy-complexity-item"><span>Ranking</span><strong>O(m log m)</strong><p>Only the m distinct values are sorted.</p></div><div class="easy-complexity-item"><span>Extra space</span><strong>O(m)</strong><p>The frequency table stores one entry per distinct value.</p></div></div>
+      <div class="hard-note"><strong>If k is tiny.</strong> A min-heap of size <code>k</code> can reduce the ranking stage to <code>O(m log k)</code>. Here we deliberately use sorting because the full ordering rule is the main idea of this chapter.</div>
+    </section>
+
+    <section id="implementation" class="lecture-section">
+      <h2>Implementation</h2>
+      <p class="hard-lead">The code is short because all of the reasoning is concentrated in the sort key.</p>
+      <div class="easy-code-layout">
+        <div class="problem-code"><div class="problem-code-head"><span>Python</span><button class="copy-code" type="button">Copy</button></div><pre><code>from collections import Counter
+
+
+def top_k_frequent(a, k):
+    freq = Counter(a)
+
+    if not 0 &lt;= k &lt;= len(freq):
+        raise ValueError(
+            "k must not exceed the number of distinct values"
+        )
+
+    ranked = sorted(
+        freq,
+        key=lambda x: (-freq[x], -x),
+    )
+    return ranked[:k]
+
+
+print(top_k_frequent(
+    [3, 1, 4, 4, 5, 2, 6, 1], 2
+))
+# [4, 1]</code></pre></div>
+        <div class="easy-code-notes"><span class="easy-kicker">Reading the code</span><h3>The key contains the whole problem</h3><div class="easy-code-note"><b><code>Counter(a)</code></b><p>Compresses repeated observations into one exact frequency per value.</p></div><div class="easy-code-note"><b><code>-freq[x]</code></b><p>Higher frequency must come first, so we negate it for ascending sort.</p></div><div class="easy-code-note"><b><code>-x</code></b><p>Among ties, the larger value must come first, so the second component is negated too.</p></div></div>
+      </div>
+      <p class="easy-source-line">Adapted from <a href="https://www.geeksforgeeks.org/dsa/find-k-numbers-occurrences-given-array/" target="_blank" rel="noopener">Top K Frequent in an Array</a> on GeeksforGeeks. The statement and exposition are rewritten for this handbook.</p>
+      <div class="next-part back-problems"><h3>Back to practice</h3><p>Choose another problem from the Easy, Medium, or Hard sets.</p><a class="next-part-link" href="./">← Practice Problems</a></div>
+    </section>
+  </main>
+
+  <footer class="lecture-footer"><div>Allan's Handbook of Algorithms</div><div>© 2026 Allan Allemand</div></footer>
+  <script src="assets/problems.js"></script>
+  <script src="../../assets/js/language-switch.js"></script>
+</body>
+</html>

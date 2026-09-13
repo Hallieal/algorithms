@@ -1,11 +1,30 @@
-# Bilingual AHA site — v45
+# Allan's Handbook of Algorithms (AHA)
 
-Changes:
-- Russian branding is now two-line:
-  - `Гайд по алгоритмам`
-  - `presented by Аллан`
-- Applied the new Russian branding to the homepage and all Russian page headers.
-- Browser/meta titles use the one-line equivalent:
-  `Гайд по алгоритмам — presented by Аллан`.
-- Fixed the language switch so `EN` and `RU` always keep identical fixed width,
-  regardless of which language is currently active.
+Bilingual algorithm handbook published with GitHub Pages.
+
+## Repository structure
+
+```text
+/
+├── index.html
+├── index-ru.html
+├── assets/
+│   ├── css/
+│   ├── js/
+│   └── images/
+└── sorting/
+    ├── index.html
+    ├── index-ru.html
+    ├── *.html                 # theory pages
+    ├── styles/                # page-specific theory CSS
+    ├── assets/                # Sorting chapter artwork
+    └── problems/
+        ├── index.html
+        ├── index-ru.html
+        ├── *.html             # practice problems
+        └── assets/            # practice CSS / JS
+```
+
+The same chapter structure can be reused for future topics such as graphs, dynamic programming, and binary search.
+
+Live site: https://hallieal.github.io/algorithms/

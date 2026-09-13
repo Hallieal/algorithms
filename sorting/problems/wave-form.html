@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Rearrange a sorted array into alternating peaks and valleys using pairwise swaps.">
+  <meta property="og:title" content="Sort in Wave Form | Allan's Handbook of Algorithms">
+  <meta property="og:type" content="article">
+  <title>Sort in Wave Form | Allan's Handbook of Algorithms</title>
+  <link rel="stylesheet" href="../../assets/css/styles.css">
+  <link rel="stylesheet" href="assets/problems.css">
+  <link rel="icon" type="image/png" sizes="32x32" href="../../assets/images/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="64x64" href="../../assets/images/favicon.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="../../assets/images/apple-touch-icon.png">
+</head>
+<body class="lecture-page problem-page easy-redesign">
+  <div class="progress-track" aria-hidden="true"><div class="progress-bar" id="reading-progress"></div></div>
+  <header class="topbar">
+    <a class="brand" href="../../"><span class="brand-mark brand-mark-logo"><img class="brand-mark-image" src="../../assets/images/logo.png" alt=""></span><span class="brand-name">Allan's Handbook of Algorithms</span></a>
+    <nav class="topnav" aria-label="Primary navigation"><a href="./">Practice problems</a><a href="../">Sorting overview</a></nav>
+  </header>
+  <aside class="sidebar" aria-label="Section navigation">
+    <div class="sidebar-title">Problem 1 · Easy</div>
+    <a href="#problem">Problem</a><a href="#idea">Core idea</a><a href="#algorithm">Algorithm</a><a href="#correctness">Correctness & complexity</a><a href="#implementation">Implementation</a>
+  </aside>
+  <main class="lecture">
+    <section class="lecture-hero">
+      <div class="problem-hero-kicker"><span class="problem-title-icon easy" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12c2.2-6 4.2-6 6 0s3.8 6 6 0 4-6 6 0"/></svg></span><span>Sorting · Practice · Easy</span></div>
+      <h1>Sort in Wave Form</h1>
+      <p class="chapter-topics">Turn a sorted sequence into alternating peaks and valleys with one linear pass.</p>
+      <div class="problem-meta"><span class="easy">Easy</span><span>Sorting practice</span><span>Python</span></div>
+    </section>
+    <section id="problem" class="lecture-section">
+      <h2>Problem</h2>
+      <p class="lead easy-lead">A sorted array is already highly structured. The task is to rearrange it into a wave without destroying that structure more than necessary.</p>
+      <div class="easy-brief">
+        <div class="easy-brief-copy">
+          <span class="easy-kicker">Task</span>
+          <h3>Create alternating peaks and valleys</h3>
+          <p>Given an array sorted in non-decreasing order, rearrange it in place so that every even position is a local peak and every odd position is a local valley.</p>
+          <div class="problem-equation">a[0] ≥ a[1] ≤ a[2] ≥ a[3] ≤ ···</div>
+        </div>
+        <div class="easy-demo">
+          <div class="easy-demo-label">Example</div>
+          <div class="easy-array"><span class="easy-cell">1</span><span class="easy-cell">2</span><span class="easy-cell">3</span><span class="easy-cell">4</span><span class="easy-cell">5</span><span class="easy-cell">6</span></div>
+          <div class="easy-demo-arrow">swap each adjacent pair ↓</div>
+          <div class="easy-array"><span class="easy-cell peak">2</span><span class="easy-cell valley">1</span><span class="easy-cell peak">4</span><span class="easy-cell valley">3</span><span class="easy-cell peak">6</span><span class="easy-cell valley">5</span></div>
+          <div class="easy-demo-caption">The result satisfies 2 ≥ 1 ≤ 4 ≥ 3 ≤ 6 ≥ 5.</div>
+        </div>
+      </div>
+    </section>
+
+    <section id="idea" class="lecture-section">
+      <h2>Core idea</h2>
+      <p class="lead easy-lead">Because the input is sorted, we do not need to search for peaks. The larger element of every adjacent pair is already on the right; one swap moves it to the peak position.</p>
+      <div class="easy-insight">
+        <div class="easy-insight-card">
+          <span class="easy-kicker">Observation</span>
+          <h3>Pairwise swaps are enough</h3>
+          <p>For every pair <code>(a[2i], a[2i+1])</code>, sorted order gives <code>a[2i] ≤ a[2i+1]</code>. After swapping, the pair becomes a peak followed by a valley. The only thing left to check is the boundary between consecutive pairs.</p>
+          <div class="wave-pair-board">
+            <div class="wave-pair"><small>pair 1</small><div class="wave-pair-values"><span class="easy-cell peak">2</span><span class="easy-cell valley">1</span></div></div>
+            <div class="wave-pair"><small>pair 2</small><div class="wave-pair-values"><span class="easy-cell peak">4</span><span class="easy-cell valley">3</span></div></div>
+            <div class="wave-pair"><small>pair 3</small><div class="wave-pair-values"><span class="easy-cell peak">6</span><span class="easy-cell valley">5</span></div></div>
+          </div>
+        </div>
+        <div class="easy-rule-stack">
+          <div class="easy-rule"><strong>inside pair</strong><p>After swapping, the left element is at least the right element: peak ≥ valley.</p></div>
+          <div class="easy-rule"><strong>between pairs</strong><p>The first pair's valley came earlier in the sorted array, so it is no larger than the next pair's peak.</p></div>
+          <div class="easy-rule"><strong>odd n</strong><p>If one element remains at the end, it is already at an even peak position and needs no swap.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="algorithm" class="lecture-section">
+      <h2>Algorithm</h2>
+      <div class="easy-step-flow">
+        <article class="easy-step-card"><div class="easy-step-number">1</div><h3>Start at index 0</h3><p>The first two elements form the first sorted pair.</p></article>
+        <article class="easy-step-card"><div class="easy-step-number">2</div><h3>Swap the pair</h3><p>Exchange <code>a[i]</code> and <code>a[i+1]</code>, placing the larger value first.</p></article>
+        <article class="easy-step-card"><div class="easy-step-number">3</div><h3>Jump by two</h3><p>Set <code>i ← i + 2</code>. Process pairs independently from left to right.</p></article>
+        <article class="easy-step-card"><div class="easy-step-number">4</div><h3>Stop at the last pair</h3><p>If the array length is odd, the final unpaired element stays where it is.</p></article>
+      </div>
+      <div class="easy-invariant"><div class="easy-invariant-mark">I</div><div><h3>Loop invariant</h3><p>After processing the first <code>2k</code> positions, that entire prefix already satisfies the wave inequalities and will never be modified again.</p></div></div>
+    </section>
+
+    <section id="correctness" class="lecture-section">
+      <h2>Correctness & complexity</h2>
+      <div class="easy-proof-grid">
+        <div class="easy-proof-main"><div class="proof-symbol">✓</div><h3>Why the construction works</h3><p>Every required inequality is either inside one swapped pair or lies on the boundary between two consecutive pairs. Sorted order proves both types at once.</p></div>
+        <div class="easy-proof-details">
+          <div class="easy-proof-row"><span>1</span><div><h4>Inside each pair</h4><p>Originally <code>x ≤ y</code>. We output <code>y, x</code>, so the peak inequality <code>y ≥ x</code> holds.</p></div></div>
+          <div class="easy-proof-row"><span>2</span><div><h4>Across the boundary</h4><p>For consecutive sorted pairs <code>x ≤ y ≤ z ≤ w</code>, the output is <code>y, x, w, z</code>. In particular <code>x ≤ w</code>, giving the valley inequality between the pairs.</p></div></div>
+          <div class="easy-proof-row"><span>3</span><div><h4>All positions are covered</h4><p>Thus every neighboring inequality in the final array has the required direction.</p></div></div>
+        </div>
+      </div>
+      <div class="easy-complexity-strip"><div class="easy-complexity-item"><span>Time</span><strong>O(n)</strong><p>Each complete pair is visited once.</p></div><div class="easy-complexity-item"><span>Extra space</span><strong>O(1)</strong><p>All swaps are performed in place.</p></div><div class="easy-complexity-item"><span>Precondition</span><strong>Sorted input</strong><p>The proof relies on the original monotone order.</p></div></div>
+    </section>
+
+    <section id="implementation" class="lecture-section">
+      <h2>Implementation</h2>
+            <p class="lead easy-lead">The implementation mirrors the proof: each iteration handles one disjoint adjacent pair.</p>
+      <div class="easy-code-layout">
+        <div class="problem-code"><div class="problem-code-head"><span>Python</span><button class="copy-code" type="button">Copy</button></div><pre><code>def wave_from_sorted(a):
+    for i in range(0, len(a) - 1, 2):
+        a[i], a[i + 1] = a[i + 1], a[i]
+    return a
+
+
+print(wave_from_sorted([1, 2, 3, 4, 5, 6]))
+# [2, 1, 4, 3, 6, 5]</code></pre></div>
+        <div class="easy-code-notes"><span class="easy-kicker">Reading the code</span><h3>Only one line does real work</h3><div class="easy-code-note"><b><code>range(0, n - 1, 2)</code></b><p>Visits the left endpoint of every complete pair and skips directly to the next one.</p></div><div class="easy-code-note"><b>Parallel assignment</b><p>Python swaps the two values without allocating an auxiliary array.</p></div></div>
+      </div>
+      <p class="easy-source-line">Adapted from <a href="https://www.geeksforgeeks.org/dsa/sort-array-wave-form-2/" target="_blank" rel="noopener">Sort an array in wave form</a> on GeeksforGeeks. The statement and exposition are rewritten for this handbook.</p>
+      <div class="next-part back-problems"><h3>Back to practice</h3><p>Choose another problem from the Easy, Medium, or Hard sets.</p><a class="next-part-link" href="./">← Practice Problems</a></div>
+    </section>
+  </main>
+  <footer class="lecture-footer"><div>Allan's Handbook of Algorithms</div><div>© 2026 Allan Allemand</div></footer>
+  <script src="assets/problems.js"></script>
+</body>
+</html>

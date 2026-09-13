@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Ранжирование различных значений по частоте и дополнительному правилу для поиска k самых частых элементов.">
+  <meta property="og:title" content="K самых частых элементов | Гайд по алгоритмам — presented by Аллан">
+  <meta property="og:type" content="article">
+  <title>K самых частых элементов | Гайд по алгоритмам — presented by Аллан</title>
+  <link rel="stylesheet" href="../../assets/css/styles.css">
+  <link rel="stylesheet" href="assets/problems.css">
+  <link rel="stylesheet" href="assets/hard-problems.css">
+  <link rel="icon" type="image/png" sizes="32x32" href="../../assets/images/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="64x64" href="../../assets/images/favicon.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="../../assets/images/apple-touch-icon.png">
+  <link href="top-k-frequent.html" hreflang="en" rel="alternate">
+  <link href="top-k-frequent-ru.html" hreflang="ru" rel="alternate">
+</head>
+<body class="lecture-page problem-page easy-redesign hard-redesign">
+  <div class="progress-track" aria-hidden="true"><div class="progress-bar" id="reading-progress"></div></div>
+  <header class="topbar">
+    <a class="brand" href="../../index-ru.html"><span class="brand-mark brand-mark-logo"><img class="brand-mark-image" src="../../assets/images/logo.png" alt=""></span><span class="brand-name ru-brand-name"><span class="ru-brand-lines"><span>Гайд по алгоритмам</span><span class="ru-brand-presented">presented by Аллан</span></span></span></a>
+    <nav class="topnav" aria-label="Основная навигация"><a href="index-ru.html">Практические задачи</a><a href="../index-ru.html">Список тем</a><div aria-label="Язык" class="language-switch"><a href="top-k-frequent.html">EN</a><span class="language-separator">·</span><span class="current">RU</span></div></nav>
+  </header>
+
+  <aside class="sidebar" aria-label="Навигация по разделу">
+    <div class="sidebar-title">Задача 7 · Сложная</div>
+    <a href="#problem">Условие</a><a href="#idea">Главная идея</a><a href="#algorithm">Алгоритм</a><a href="#correctness">Корректность и сложность</a><a href="#implementation">Реализация</a>
+  </aside>
+
+  <main class="lecture">
+    <section class="lecture-hero">
+      <div class="problem-hero-kicker"><span class="problem-title-icon hard" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 19V9M10 19V5M15 19v-7M20 19V8"/><path d="M3 19h19"/></svg></span><span>Сортировки · Практика · Сложная</span></div>
+      <h1>K самых частых элементов</h1>
+      <p class="chapter-topics">Преобразуем сырые вхождения в записи, которые уже можно честно ранжировать.</p>
+      <div class="problem-meta"><span class="hard">Hard</span><span>Частоты и ранжирование</span><span>Python</span></div>
+    </section>
+
+    <section id="problem" class="lecture-section">
+      <h2>Условие</h2>
+      <p class="hard-lead">Сортировать исходный массив здесь бессмысленно: ответ определяется не положением элементов, а частотой каждого различного значения.</p>
+      <div class="easy-brief">
+        <div class="easy-brief-copy">
+          <span class="easy-kicker">Задача</span>
+          <h3>Вернуть k значений с наибольшим приоритетом</h3>
+          <p>Дан целочисленный массив и число <code>k</code>. Нужно вернуть <code>k</code> различных значений с наибольшей частотой. Если частоты совпадают, выше ставится большее значение.</p>
+          <div class="problem-equation">priority(x) = (frequency(x), x), оба компонента по убыванию</div>
+        </div>
+        <div class="hard-visual-card">
+          <div class="hard-visual-label">Пример · k = 2</div>
+          <div class="easy-array"><span class="easy-cell">3</span><span class="easy-cell">1</span><span class="easy-cell">4</span><span class="easy-cell">4</span><span class="easy-cell">5</span><span class="easy-cell">2</span><span class="easy-cell">6</span><span class="easy-cell">1</span></div>
+          <div class="easy-demo-arrow">сначала считаем, затем ранжируем ↓</div>
+          <div class="frequency-board">
+            <div class="frequency-row"><span class="frequency-value">4</span><div class="frequency-track"><div class="frequency-fill" style="--w:100%"></div></div><span class="frequency-count">2 раза</span></div>
+            <div class="frequency-row"><span class="frequency-value">1</span><div class="frequency-track"><div class="frequency-fill" style="--w:100%"></div></div><span class="frequency-count">2 раза</span></div>
+            <div class="frequency-row"><span class="frequency-value">6</span><div class="frequency-track"><div class="frequency-fill" style="--w:50%"></div></div><span class="frequency-count">1 раз</span></div>
+          </div>
+          <div class="easy-demo-caption">У 4 и 1 одинаковая частота, поэтому первым идёт 4 как большее значение. Ответ: <code>[4, 1]</code>.</div>
+        </div>
+      </div>
+    </section>
+
+    <section id="idea" class="lecture-section">
+      <h2>Главная идея</h2>
+      <p class="hard-lead">Сожмём вход до одной записи на каждое различное значение. После этого задача превращается в обычную сортировку по составному ключу.</p>
+      <div class="easy-insight">
+        <div class="easy-insight-card">
+          <span class="easy-kicker">Меняем представление</span>
+          <h3>Сортируем записи, а не отдельные вхождения</h3>
+          <p>Для каждого значения <code>x</code> создаём запись <code>(x, frequency[x])</code>. Нужный порядок однозначен: сначала по убыванию частоты, а при равенстве — по убыванию самого значения.</p>
+          <div class="ranking-key">
+            <div><strong>4 → (2, 4)</strong><span>частота 2, значение 4</span></div>
+            <div><strong>1 → (2, 1)</strong><span>та же частота, меньшее значение</span></div>
+            <div><strong>6 → (1, 6)</strong><span>меньшая частота</span></div>
+          </div>
+        </div>
+        <div class="easy-rule-stack">
+          <div class="easy-rule"><strong>1-й ключ</strong><p>Частота главнее всего: больше вхождений — выше позиция.</p></div>
+          <div class="easy-rule"><strong>2-й ключ</strong><p>При равных частотах более крупное число должно стоять раньше.</p></div>
+          <div class="easy-rule"><strong>Python</strong><p><code>(-freq[x], -x)</code> переводит оба правила по убыванию в обычную сортировку по возрастанию кортежей.</p></div>
+        </div>
+      </div>
+      <div class="hard-note"><strong>Почему это задача на сортировку.</strong> Подсчёт частот создаёт нужные данные, но ещё не задаёт ответ. Главный шаг — явно сформулировать ключ сравнения, который полностью совпадает с условием.</div>
+    </section>
+
+    <section id="algorithm" class="lecture-section">
+      <h2>Алгоритм</h2>
+      <div class="easy-step-flow">
+        <article class="easy-step-card"><div class="easy-step-number">1</div><h3>Посчитать частоты</h3><p>За один проход строим таблицу частот.</p></article>
+        <article class="easy-step-card"><div class="easy-step-number">2</div><h3>Оставить различные значения</h3><p>Если различных значений <code>m</code>, ранжировать нужно только <code>m</code> записей.</p></article>
+        <article class="easy-step-card"><div class="easy-step-number">3</div><h3>Отсортировать</h3><p>Используем ключ <code>(-frequency, -value)</code>.</p></article>
+        <article class="easy-step-card"><div class="easy-step-number">4</div><h3>Взять префикс</h3><p>Первые <code>k</code> значений и есть ответ.</p></article>
+      </div>
+      <div class="easy-invariant"><div class="easy-invariant-mark">I</div><div><h3>Инвариант порядка</h3><p>В отсортированном списке каждое более раннее значение либо имеет большую частоту, либо при равной частоте имеет большее числовое значение.</p></div></div>
+    </section>
+
+    <section id="correctness" class="lecture-section">
+      <h2>Корректность и сложность</h2>
+      <div class="easy-proof-grid">
+        <div class="easy-proof-main"><div class="proof-symbol">✓</div><h3>Ключ сортировки буквально повторяет условие</h3><p>Алгоритм не использует эвристику: его правило сравнения — это в точности правило приоритета из задачи.</p></div>
+        <div class="easy-proof-details">
+          <div class="easy-proof-row"><span>1</span><div><h4>Подсчёт сохраняет всю существенную информацию</h4><p>Для каждого различного значения хранится точное число его появлений.</p></div></div>
+          <div class="easy-proof-row"><span>2</span><div><h4>Сортировка создаёт нужный полный порядок</h4><p>Лексикографическая сортировка по <code>(-frequency, -value)</code> ставит выше большую частоту и корректно разрешает все ничьи.</p></div></div>
+          <div class="easy-proof-row"><span>3</span><div><h4>Ответ — это префикс</h4><p>Ни одно значение после позиции <code>k</code> не может иметь больший приоритет, чем значение внутри первых <code>k</code> позиций.</p></div></div>
+        </div>
+      </div>
+      <div class="easy-complexity-strip"><div class="easy-complexity-item"><span>Подсчёт</span><strong>O(n)</strong><p>Один проход по всем элементам.</p></div><div class="easy-complexity-item"><span>Ранжирование</span><strong>O(m log m)</strong><p>Сортируются только m различных значений.</p></div><div class="easy-complexity-item"><span>Память</span><strong>O(m)</strong><p>Таблица частот хранит одну запись на различное значение.</p></div></div>
+      <div class="hard-note"><strong>Если k очень мало.</strong> Можно хранить min-heap размера <code>k</code> и снизить этап ранжирования до <code>O(m log k)</code>. Здесь оставлена сортировка, потому что именно полный порядок является основной идеей главы.</div>
+    </section>
+
+    <section id="implementation" class="lecture-section">
+      <h2>Реализация</h2>
+      <p class="hard-lead">Код короткий, потому что всё содержательное рассуждение уже выражено в ключе сортировки.</p>
+      <div class="easy-code-layout">
+        <div class="problem-code"><div class="problem-code-head"><span>Python</span><button class="copy-code" type="button">Копировать</button></div><pre><code>from collections import Counter
+
+
+def top_k_frequent(a, k):
+    freq = Counter(a)
+
+    if not 0 &lt;= k &lt;= len(freq):
+        raise ValueError(
+            "k must not exceed the number of distinct values"
+        )
+
+    ranked = sorted(
+        freq,
+        key=lambda x: (-freq[x], -x),
+    )
+    return ranked[:k]
+
+
+print(top_k_frequent(
+    [3, 1, 4, 4, 5, 2, 6, 1], 2
+))
+# [4, 1]</code></pre></div>
+        <div class="easy-code-notes"><span class="easy-kicker">Как читать код</span><h3>Весь смысл находится в ключе</h3><div class="easy-code-note"><b><code>Counter(a)</code></b><p>Сжимает повторяющиеся элементы до одной точной частоты на значение.</p></div><div class="easy-code-note"><b><code>-freq[x]</code></b><p>Большая частота должна стоять раньше, поэтому компонент берётся со знаком минус.</p></div><div class="easy-code-note"><b><code>-x</code></b><p>При равных частотах более крупное значение тоже должно стоять раньше.</p></div></div>
+      </div>
+      <p class="easy-source-line">Задача адаптирована из <a href="https://www.geeksforgeeks.org/dsa/find-k-numbers-occurrences-given-array/" target="_blank" rel="noopener">Top K Frequent in an Array</a> на GeeksforGeeks. Формулировка и объяснение переписаны для этого гайда.</p>
+      <div class="next-part back-problems"><h3>Назад к практике</h3><p>Выберите другую задачу уровня Easy, Medium или Hard.</p><a class="next-part-link" href="index-ru.html">← Практические задачи</a></div>
+    </section>
+  </main>
+
+  <footer class="lecture-footer"><div>Гайд по алгоритмам · presented by Аллан</div><div>© 2026 Allan Allemand</div></footer>
+  <script src="assets/problems.js"></script>
+  <script src="../../assets/js/language-switch.js"></script>
+</body>
+</html>
