@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Introduction to sorting: what sorting means and how sorting algorithms are evaluated.">
+  <meta name="description" content="Introduction to sorting: the sorting problem, keys, ordering rules, correctness, running time, and memory.">
   <meta property="og:title" content="Introduction to Sorting | Allan's Handbook of Algorithms">
   <meta property="og:type" content="article">
   <title>Introduction to Sorting | Allan's Handbook of Algorithms</title>
@@ -24,106 +24,267 @@
   </header>
 
   <aside class="sidebar" aria-label="Section navigation">
-    <div class="sidebar-title">Chapter 1 · Section 1</div>
-    <a href="#meaning">What sorting means</a>
-    <a href="#definition">Definition</a>
-    <a href="#before-after">Before and after</a>
-    <a href="#criteria">How we evaluate algorithms</a>
+    <div class="sidebar-title">Sorting · Introduction</div>
+    <a href="#idea">The basic idea</a>
+    <a href="#ingredients">Element, key, order</a>
+    <a href="#definition">What sorted means</a>
+    <a href="#criteria">How algorithms differ</a>
   </aside>
 
   <main class="lecture">
-    <section class="lecture-hero">
-      <div class="chapter-label">Chapter 1 · Section 1</div>
+    <section class="lecture-hero sorting-intro-hero">
+      <div class="chapter-label">Sorting · Introduction</div>
       <h1>Introduction to Sorting</h1>
       <p class="chapter-topics">
-        The sorting problem and the criteria used to analyze sorting algorithms.
+        Sorting means keeping the same data and changing only its order according to a chosen rule.
       </p>
     </section>
 
-    <section id="meaning" class="lecture-section">
-      <h2>What does it mean to sort a sequence?</h2>
+    <section id="idea" class="lecture-section">
+      <h2>The basic idea</h2>
 
-      <div class="story-example">
-        <div class="story-copy">
-          <h3>Finding the most played songs</h3>
+      <p class="lead sorting-intro-lead">
+        A list can contain exactly the information we need and still be difficult to use because its elements
+        are in an arbitrary order. Sorting imposes structure: we choose a rule, compare elements by that rule,
+        and rearrange them so the required order becomes explicit.
+      </p>
+
+      <div class="music-sort-example">
+        <div class="music-example-head">
+          <div>
+            <span class="example-kicker">Example</span>
+            <h3>Sort a playlist by play count</h3>
+          </div>
           <p>
-            Suppose you have a list of songs together with the number of times each song has been played.
-            You want the most frequently played songs to appear first.
-          </p>
-          <p>
-            One simple procedure is to find the song with the largest play count, place it first,
-            and then repeat the same operation for the remaining songs.
-          </p>
-          <p>
-            We will also study more efficient ways to sort data, especially when the number of elements becomes large.
+            The play counts below are illustrative. We want the most played song first.
           </p>
         </div>
 
-        <div class="ranking-demo" aria-label="Example of sorting songs by play count">
-          <div class="ranking-row"><span>North</span><b>38</b></div>
-          <div class="ranking-row"><span>Glass</span><b>91</b></div>
-          <div class="ranking-row"><span>River</span><b>54</b></div>
-          <div class="ranking-row"><span>Signal</span><b>73</b></div>
+        <div class="music-sort-grid">
+          <div class="music-stage">
+            <div class="music-stage-label">Before sorting</div>
 
-          <div class="ranking-arrow">↓ sort by play count</div>
+            <div class="song-row">
+              <div class="song-rank muted-rank">·</div>
+              <div class="song-main">
+                <b>Elvis Presley</b>
+                <span>Can't Help Falling in Love</span>
+              </div>
+              <div class="song-count">84</div>
+            </div>
 
-          <div class="ranking-row sorted-row"><span>Glass</span><b>91</b></div>
-          <div class="ranking-row sorted-row"><span>Signal</span><b>73</b></div>
-          <div class="ranking-row sorted-row"><span>River</span><b>54</b></div>
-          <div class="ranking-row sorted-row"><span>North</span><b>38</b></div>
+            <div class="song-row">
+              <div class="song-rank muted-rank">·</div>
+              <div class="song-main">
+                <b>Queen</b>
+                <span>Bohemian Rhapsody</span>
+              </div>
+              <div class="song-count">137</div>
+            </div>
+
+            <div class="song-row">
+              <div class="song-rank muted-rank">·</div>
+              <div class="song-main">
+                <b>The Beatles</b>
+                <span>Hey Jude</span>
+              </div>
+              <div class="song-count">96</div>
+            </div>
+
+            <div class="song-row">
+              <div class="song-rank muted-rank">·</div>
+              <div class="song-main">
+                <b>ABBA</b>
+                <span>Dancing Queen</span>
+              </div>
+              <div class="song-count">112</div>
+            </div>
+          </div>
+
+          <div class="music-sort-arrow" aria-hidden="true">
+            <span>sort by plays</span>
+            <b>→</b>
+          </div>
+
+          <div class="music-stage sorted-stage">
+            <div class="music-stage-label">After sorting</div>
+
+            <div class="song-row">
+              <div class="song-rank">1</div>
+              <div class="song-main">
+                <b>Queen</b>
+                <span>Bohemian Rhapsody</span>
+              </div>
+              <div class="song-count">137</div>
+            </div>
+
+            <div class="song-row">
+              <div class="song-rank">2</div>
+              <div class="song-main">
+                <b>ABBA</b>
+                <span>Dancing Queen</span>
+              </div>
+              <div class="song-count">112</div>
+            </div>
+
+            <div class="song-row">
+              <div class="song-rank">3</div>
+              <div class="song-main">
+                <b>The Beatles</b>
+                <span>Hey Jude</span>
+              </div>
+              <div class="song-count">96</div>
+            </div>
+
+            <div class="song-row">
+              <div class="song-rank">4</div>
+              <div class="song-main">
+                <b>Elvis Presley</b>
+                <span>Can't Help Falling in Love</span>
+              </div>
+              <div class="song-count">84</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="same-data-note">
+          <div class="same-data-icon" aria-hidden="true">↔</div>
+          <div>
+            <h4>The data did not change</h4>
+            <p>
+              The same four song records are present before and after sorting. Only their positions changed.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="ingredients" class="lecture-section">
+      <h2>Element, key, order</h2>
+
+      <p class="lead">
+        A sorting problem becomes precise once three things are clear: what the elements are,
+        which part of each element determines its position, and in which direction the order should go.
+      </p>
+
+      <div class="sorting-anatomy">
+        <article class="sorting-anatomy-card">
+          <div class="sorting-anatomy-icon element-icon" aria-hidden="true">▤</div>
+          <h3>Element</h3>
+          <p>The complete object that moves when we sort.</p>
+          <div class="anatomy-example">
+            <b>Queen</b>
+            <span>Bohemian Rhapsody · 137 plays</span>
+          </div>
+        </article>
+
+        <article class="sorting-anatomy-card">
+          <div class="sorting-anatomy-icon key-icon" aria-hidden="true">#</div>
+          <h3>Key</h3>
+          <p>The value used to decide where the element belongs.</p>
+          <div class="anatomy-example single-value">
+            <b>137</b>
+            <span>play count</span>
+          </div>
+        </article>
+
+        <article class="sorting-anatomy-card">
+          <div class="sorting-anatomy-icon order-icon" aria-hidden="true">↓</div>
+          <h3>Order</h3>
+          <p>The rule that tells us which key should come first.</p>
+          <div class="anatomy-example single-value">
+            <b>descending</b>
+            <span>larger play count first</span>
+          </div>
+        </article>
+      </div>
+
+      <div class="ordering-examples">
+        <div class="ordering-example">
+          <span>Numbers</span>
+          <b>2, 5, 7, 11</b>
+          <small>ascending value</small>
+        </div>
+        <div class="ordering-example">
+          <span>Names</span>
+          <b>Adams, Bell, Chen</b>
+          <small>alphabetical order</small>
+        </div>
+        <div class="ordering-example">
+          <span>Events</span>
+          <b>09:10, 11:45, 16:20</b>
+          <small>chronological order</small>
         </div>
       </div>
     </section>
 
     <section id="definition" class="lecture-section">
-      <h2>Definition</h2>
+      <h2>What does sorted mean?</h2>
 
-      <div class="definition-card">
-        <p>
-          Sorting is the process of arranging a set of elements or data according to a specified rule
-          or property, for example in ascending order, descending order, alphabetical order, or by date.
-        </p>
-        <p>
-          A sorting algorithm is a step-by-step procedure for placing the elements of an array or list
-          in the required order. Common examples include Bubble Sort, Selection Sort, and Merge Sort.
-        </p>
-      </div>
-    </section>
-
-    <section id="before-after" class="lecture-section">
-      <h2>Before and after sorting</h2>
-
-      <div class="concept-row">
-        <div class="concept-card">
-          <div class="mini-array unsorted">
-            <span>7</span><span>2</span><span>9</span><span>2</span><span>5</span>
-          </div>
-          <h3>Before sorting</h3>
-          <p>The relative positions of neighboring elements carry little global structure.</p>
+      <div class="sorting-definition">
+        <div class="definition-main">
+          <span class="definition-label">Definition</span>
+          <p>
+            A sorting algorithm rearranges a sequence so that the keys of its elements follow the chosen order.
+            The output must contain exactly the same elements as the input: no element is created, removed, or duplicated.
+          </p>
         </div>
 
-        <div class="concept-arrow">→</div>
+        <div class="definition-properties">
+          <article>
+            <div class="property-mark">1</div>
+            <div>
+              <h3>Order property</h3>
+              <p>
+                Reading from left to right, every element appears in a position consistent with the chosen ordering rule.
+              </p>
+            </div>
+          </article>
 
-        <div class="concept-card">
-          <div class="mini-array sorted">
-            <span>2</span><span>2</span><span>5</span><span>7</span><span>9</span>
+          <article>
+            <div class="property-mark">2</div>
+            <div>
+              <h3>Preservation property</h3>
+              <p>
+                The output contains the same collection of elements as the input, only rearranged.
+              </p>
+            </div>
+          </article>
+        </div>
+      </div>
+
+      <div class="number-sort-demo">
+        <div>
+          <span>input</span>
+          <div class="number-cells">
+            <b>7</b><b>2</b><b>9</b><b>2</b><b>5</b>
           </div>
-          <h3>After sorting</h3>
-          <p>Equal elements are grouped, extrema are immediate, and binary search becomes possible.</p>
+        </div>
+        <div class="number-sort-arrow">→</div>
+        <div>
+          <span>sorted output</span>
+          <div class="number-cells sorted-number-cells">
+            <b>2</b><b>2</b><b>5</b><b>7</b><b>9</b>
+          </div>
         </div>
       </div>
     </section>
 
     <section id="criteria" class="lecture-section">
-      <h2>How we evaluate a sorting algorithm</h2>
+      <h2>Different algorithms, same task</h2>
 
-      <div class="algorithm-criteria">
+      <p class="lead">
+        Many algorithms can produce exactly the same sorted output. The interesting question is how they get there.
+        Throughout this chapter we will compare them using three main criteria.
+      </p>
+
+      <div class="algorithm-criteria sorting-intro-criteria">
         <div class="criteria-grid">
           <article class="criterion-card">
             <div class="criterion-icon criterion-correctness" aria-hidden="true">✓</div>
             <div>
               <h4>Correctness</h4>
-              <p>Does the algorithm always produce the required ordering for every valid input?</p>
+              <p>Does the algorithm always return a valid sorted arrangement?</p>
             </div>
           </article>
 
@@ -131,7 +292,7 @@
             <div class="criterion-icon criterion-time" aria-hidden="true">↗</div>
             <div>
               <h4>Running time</h4>
-              <p>How does the amount of work grow as the number of elements increases?</p>
+              <p>How quickly does the amount of work grow when the input becomes larger?</p>
             </div>
           </article>
 
@@ -139,19 +300,19 @@
             <div class="criterion-icon criterion-memory" aria-hidden="true">▦</div>
             <div>
               <h4>Extra memory</h4>
-              <p>How much additional storage is required beyond the input itself?</p>
+              <p>How much additional storage does the algorithm need while rearranging the input?</p>
             </div>
           </article>
         </div>
 
-        <div class="asymptotic-note">
-          <div class="asymptotic-mark">Θ</div>
+        <div class="sorting-intro-final-note">
+          <div class="sorting-intro-final-mark" aria-hidden="true">≠</div>
           <div>
-            <h4>Asymptotic complexity is not the whole story</h4>
+            <h4>The fastest algorithm is not always the best algorithm</h4>
             <p>
-              Two algorithms with the same asymptotic running time may still behave differently in practice.
-              Stability, the number of element moves, performance on nearly sorted data, and constant factors
-              can all matter when choosing an algorithm.
+              Two sorting algorithms may have similar running times but differ in memory usage,
+              stability, behavior on nearly sorted data, or the number of element moves.
+              Those distinctions will appear naturally as we study the algorithms themselves.
             </p>
           </div>
         </div>
