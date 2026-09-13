@@ -11,19 +11,21 @@ for path in sorted(ROOT.glob('sorting-*.html')):
 
     def refactor_script(match):
         body = match.group(1)
-        if 'data-reveal' not in body or 'sidebarLinks' not in body or 'updateProgress' not in body:
+        if 'button[data-reveal]' not in body or 'sidebarLinks' not in body or 'updateProgress' not in body:
             return match.group(0)
 
-        reveal_pos = body.find('Revealable answers')
-        if reveal_pos < 0:
-            return match.group(0)
-
-        comment_start = body.rfind('/*', 0, reveal_pos)
+        reveal_pos = body.find('button[data-reveal]')
+        event_start = body.rfind('document.addEventListener', 0, reveal_pos)
         close_pos = body.rfind('})();')
-        if comment_start < 0 or close_pos < comment_start:
+        if event_start < 0 or close_pos < event_start:
             raise RuntimeError(f'Could not isolate common lecture JS in {path.name}')
 
-        kept = body[:comment_start].rstrip() + '\n\n})();\n'
+        # Include a nearby section comment when there is one, but never consume
+        # algorithm-specific code just because an older comment exists farther up.
+        comment_start = body.rfind('/*', 0, event_start)
+        start = comment_start if comment_start >= 0 and event_start - comment_start < 500 else event_start
+
+        kept = body[:start].rstrip() + '\n\n})();\n'
         return '<script>\n' + kept + '</script>'
 
     text = re.sub(r'<script>\s*(.*?)\s*</script>', refactor_script, text, flags=re.S)
@@ -59,9 +61,12 @@ for path in sorted(ROOT.glob('sorting-*.html')):
 for path in sorted(ROOT.glob('sorting-*.html')):
     text = path.read_text(encoding='utf-8')
     if SHARED in text:
-        assert 'Revealable answers' not in text, path.name
         assert 'const sidebarLinks' not in text, path.name
         assert 'function updateProgress()' not in text, path.name
+        # The inline script may still contain algorithm-specific click handlers,
+        # but reveal-button handling must now be centralized.
+        inline_scripts = re.findall(r'<script>\s*(.*?)\s*</script>', text, flags=re.S)
+        assert not any('button[data-reveal]' in s for s in inline_scripts), path.name
 
 quick = (ROOT / 'sorting-quick.html').read_text(encoding='utf-8')
 quick_ru = (ROOT / 'sorting-quick-ru.html').read_text(encoding='utf-8')
