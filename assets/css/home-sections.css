@@ -1,7 +1,7 @@
 /* Homepage group spacing */
 #core-topics,
 #further-study {
-  padding-top: 128px;
+  padding-top: 30px;
 }
 
 #foundations h2,
@@ -13,6 +13,6 @@
 @media (max-width: 760px) {
   #core-topics,
   #further-study {
-    padding-top: 92px;
+    padding-top: 30px;
   }
 }
