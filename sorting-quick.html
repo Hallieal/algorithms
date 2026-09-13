@@ -766,6 +766,156 @@
       overflow-x:auto;
     }
   }
+
+
+  /* Comparison-sorting lower bound */
+  .comparison-limit-intuition {
+    display:grid;
+    grid-template-columns:58px 1fr;
+    gap:18px;
+    align-items:start;
+    margin:30px 0;
+    padding:24px 26px;
+    border:1px solid #ddd8f0;
+    border-left:4px solid var(--purple);
+    border-radius:17px;
+    background:#f8f6fc;
+  }
+
+  .comparison-limit-mark {
+    width:50px;
+    height:50px;
+    display:grid;
+    place-items:center;
+    border-radius:14px;
+    background:#ebe6f7;
+    color:#6e59a8;
+    font-size:24px;
+    font-weight:850;
+  }
+
+  .comparison-limit-intuition h3,
+  .comparison-limit-conclusion h3,
+  .beyond-comparison-bridge h3 {
+    margin:1px 0 7px;
+  }
+
+  .comparison-limit-intuition p,
+  .comparison-limit-conclusion p,
+  .beyond-comparison-bridge p {
+    margin:0;
+    color:#5e6870;
+  }
+
+  .comparison-limit-proof {
+    display:grid;
+    gap:13px;
+    margin:28px 0;
+  }
+
+  .comparison-limit-proof article {
+    display:grid;
+    grid-template-columns:44px 1fr;
+    gap:15px;
+    padding:21px 23px;
+    border:1px solid var(--line);
+    border-radius:15px;
+    background:#fff;
+  }
+
+  .limit-step-number {
+    width:36px;
+    height:36px;
+    display:grid;
+    place-items:center;
+    border-radius:50%;
+    background:var(--ink);
+    color:#fff;
+    font:800 14px Georgia,serif;
+  }
+
+  .comparison-limit-proof h3 {
+    margin:1px 0 7px;
+    font-size:17px;
+  }
+
+  .comparison-limit-proof p {
+    margin:0;
+    color:#616c74;
+  }
+
+  .limit-equation {
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:22px;
+    margin-top:16px;
+    padding:18px 16px;
+    border:1px solid #e2dfd7;
+    border-radius:13px;
+    background:#faf9f6;
+    font:700 19px Georgia,serif;
+    white-space:nowrap;
+  }
+
+  .limit-equation-arrow {
+    color:#90979d;
+  }
+
+  .comparison-limit-conclusion {
+    display:grid;
+    grid-template-columns:58px 1fr;
+    gap:18px;
+    align-items:start;
+    margin:30px 0 18px;
+    padding:24px 26px;
+    border:1px solid #dce5ce;
+    border-left:4px solid var(--green);
+    border-radius:17px;
+    background:#f7f9f3;
+  }
+
+  .comparison-limit-symbol {
+    width:50px;
+    height:50px;
+    display:grid;
+    place-items:center;
+    border-radius:14px;
+    background:#e4efd4;
+    color:#5e8527;
+    font:800 22px Georgia,serif;
+  }
+
+  .beyond-comparison-bridge {
+    margin:18px 0 0;
+    padding:23px 25px;
+    border-radius:17px;
+    background:var(--ink);
+    color:#fff;
+  }
+
+  .beyond-comparison-bridge h3 {
+    color:#fff;
+  }
+
+  .beyond-comparison-bridge p {
+    color:#d5dadd;
+  }
+
+  @media (max-width:760px) {
+    .comparison-limit-intuition,
+    .comparison-limit-conclusion {
+      grid-template-columns:1fr;
+    }
+
+    .limit-equation {
+      gap:10px;
+      font-size:16px;
+      overflow-x:auto;
+      justify-content:flex-start;
+    }
+  }
+
 </style>
   <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
   <link rel="icon" type="image/png" sizes="64x64" href="favicon.png">
@@ -793,6 +943,7 @@
     <a href="#complexity">Complexity</a>
     <a href="#properties">Memory and stability</a>
     <a href="#comparison">Merge Sort vs Quick Sort</a>
+    <a href="#comparison-limit">Can comparison sorting be faster?</a>
     <a href="#exercises">Exercises</a>
   </aside>
 
@@ -1480,6 +1631,103 @@
       </div>
     </section>
 
+
+    <section id="comparison-limit" class="lecture-section">
+      <h2>Can comparison sorting be faster?</h2>
+
+      <p class="lead">
+        Merge Sort runs in loglinear time, and randomized Quick Sort has loglinear expected running time.
+        A natural question is whether a comparison-based sorting algorithm can be asymptotically faster.
+        In the worst case, the answer is no.
+      </p>
+
+      <div class="comparison-limit-intuition">
+        <div class="comparison-limit-mark" aria-hidden="true">?</div>
+        <div>
+          <h3>Sorting must distinguish every possible order</h3>
+          <p>
+            If the input contains <span class="math">n</span> distinct elements, then there are
+            <span class="math">n!</span> possible relative orders. A correct comparison sort must obtain
+            enough information to distinguish among all of them.
+          </p>
+        </div>
+      </div>
+
+      <div class="comparison-limit-proof">
+        <article>
+          <div class="limit-step-number">1</div>
+          <div>
+            <h3>One comparison gives two outcomes</h3>
+            <p>
+              A comparison such as <span class="math">a &lt; b</span> has two possible answers.
+              Therefore a comparison sort can be represented by a binary decision tree.
+            </p>
+          </div>
+        </article>
+
+        <article>
+          <div class="limit-step-number">2</div>
+          <div>
+            <h3>The tree needs at least <span class="math">n!</span> leaves</h3>
+            <p>
+              Each possible input order must lead to an appropriate final answer.
+              Hence the decision tree must contain at least one leaf for every possible order.
+            </p>
+          </div>
+        </article>
+
+        <article>
+          <div class="limit-step-number">3</div>
+          <div>
+            <h3>A binary tree of height <span class="math">h</span> has at most <span class="math">2^h</span> leaves</h3>
+            <p>
+              Consequently,
+            </p>
+            <div class="limit-equation">
+              <span>2<sup>h</sup> ≥ n!</span>
+              <span class="limit-equation-arrow">⇒</span>
+              <span>h ≥ log<sub>2</sub>(n!)</span>
+            </div>
+          </div>
+        </article>
+
+        <article>
+          <div class="limit-step-number">4</div>
+          <div>
+            <h3>The lower bound is loglinear</h3>
+            <p>
+              Since <span class="math">log(n!) = Θ(n log n)</span>, every comparison-based sorting algorithm
+              requires <span class="math">Ω(n log n)</span> comparisons in the worst case.
+            </p>
+          </div>
+        </article>
+      </div>
+
+      <div class="comparison-limit-conclusion">
+        <div class="comparison-limit-symbol" aria-hidden="true">Ω</div>
+        <div>
+          <h3>Comparison sorting has reached its asymptotic limit</h3>
+          <p>
+            Merge Sort already matches this lower bound in the worst case.
+            To sort asymptotically faster, an algorithm must use information about the keys
+            beyond pairwise comparisons.
+          </p>
+        </div>
+      </div>
+
+      <div class="beyond-comparison-bridge">
+        <div>
+          <span class="example-kicker">Next idea</span>
+          <h3>Can sorting itself be faster?</h3>
+          <p>
+            Yes, if we exploit additional structure in the keys.
+            Counting Sort is the first example: instead of learning the order only through comparisons,
+            it uses the fact that the keys are integers from a known range.
+          </p>
+        </div>
+      </div>
+    </section>
+
     <section id="exercises" class="lecture-section">
       <h2>Exercises</h2>
 
@@ -1553,11 +1801,11 @@
       </div>
 
       <div class="next-part">
-        <h3>Next section: Limits of Comparison Sorting</h3>
+        <h3>Next section: Counting Sort</h3>
         <p>
-          The next section asks how fast any comparison-based sorting algorithm can be in the worst case.
+          We now leave the comparison model and exploit additional structure in the keys.
         </p>
-        <a class="next-part-link" href="sorting-limits.html">Limits of Comparison Sorting →</a>
+        <a class="next-part-link" href="sorting-counting.html">Counting Sort →</a>
       </div>
 
       <div class="next-part">

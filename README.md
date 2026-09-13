@@ -1,9 +1,11 @@
-# Allan's Handbook of Algorithms — v40
+# Allan's Handbook of Algorithms — v41
 
-Navigation update for the Sorting chapter:
-- Introduction to Sorting now links forward to Applications of Sorting.
-- Applications of Sorting links backward to Introduction to Sorting and forward to Selection and Insertion Sorts.
-- Selection and Insertion Sorts now links backward to Applications of Sorting instead of the chapter overview.
-- Removed all `Back to the chapter` cards from Bubble Sort, Merge Sort, and Quick Sort.
-- Sorting Overview remains available in the top bar on every detailed Sorting page.
-- Corrected the Quick Sort transition text to describe Limits of Comparison Sorting accurately.
+Comparison-sorting lower bound restructuring:
+- removed the standalone `Limits of Comparison Sorting` page;
+- removed its card and icon from the Sorting overview;
+- added a compact but complete lower-bound section to the end of Quick Sort;
+- the Quick Sort page now explains the decision-tree argument:
+  `n!` possible orders, binary comparisons, `2^h >= n!`, and the `Omega(n log n)` worst-case lower bound;
+- added a bridge explaining why non-comparison sorting can do better;
+- Quick Sort now links directly to Counting Sort;
+- shifted subsequent placeholder section numbers down by one.
