@@ -26,6 +26,16 @@
   font: 800 28px Georgia, "Times New Roman", serif;
 }
 
+.practice-entry-mark svg {
+  width: 29px;
+  height: 29px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
 .practice-entry-copy h3 {
   margin: 2px 0 7px;
   font-size: 25px;
@@ -223,6 +233,61 @@
 }
 
 .problems-source-note a { color: var(--ink); font-weight: 720; }
+
+
+.problem-icon {
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  border-radius: 12px;
+}
+
+.problem-icon svg {
+  width: 22px;
+  height: 22px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.problem-card.easy .problem-icon { background: #e8f3ef; color: #3e8175; }
+.problem-card.medium .problem-icon { background: #edf3e2; color: #5f8129; }
+.problem-card.hard .problem-icon { background: #efeafa; color: #6e59ad; }
+
+.problem-card.easy .difficulty-pill { background: #eaf4f1; color: #458177; }
+.problem-card.medium .difficulty-pill { background: #f0f4e8; color: #698531; }
+.problem-card.hard .difficulty-pill { background: #f1edf9; color: #735fb2; }
+
+.problem-card.easy .problem-open { color: var(--teal); }
+.problem-card.medium .problem-open { color: var(--green); }
+.problem-card.hard .problem-open { color: var(--purple); }
+
+.problem-title-icon {
+  width: 52px;
+  height: 52px;
+  display: grid;
+  place-items: center;
+  margin: 0 0 16px;
+  border-radius: 15px;
+  background: #f0f4e8;
+  color: #62822e;
+}
+.problem-title-icon.easy { background: #eaf4f1; color: #438176; }
+.problem-title-icon.hard { background: #f1edf9; color: #705aae; }
+.problem-title-icon svg {
+  width: 28px;
+  height: 28px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.problem-meta .easy { color: #3f8176; border-color: #cfe6df; background: #f3faf8; }
 
 /* Individual problem pages */
 .problem-page .lecture-hero {
