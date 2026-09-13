@@ -1,0 +1,33 @@
+name: Patch Introduction UI
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/intro-ui-patch.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - name: Apply Introduction UI patch
+        run: python .intro_ui_patch.py
+      - name: Validate growth JavaScript
+        run: node --check introduction/growth.js
+      - name: Commit changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          if git diff --cached --quiet; then
+            echo "No changes needed"
+          else
+            git commit -m "Polish Introduction icon and growth slider"
+            git push origin main
+          fi
