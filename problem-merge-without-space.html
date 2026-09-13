@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Merge two sorted arrays while keeping their original sizes and using constant auxiliary memory.">
+  <meta property="og:title" content="Merge Without Extra Space | Allan's Handbook of Algorithms">
+  <meta property="og:type" content="article">
+  <title>Merge Without Extra Space | Allan's Handbook of Algorithms</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="problems.css">
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+  <link rel="icon" type="image/png" sizes="64x64" href="favicon.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+</head>
+<body class="lecture-page problem-page">
+  <div class="progress-track" aria-hidden="true"><div class="progress-bar" id="reading-progress"></div></div>
+  <header class="topbar">
+    <a class="brand" href="index.html"><span class="brand-mark brand-mark-logo"><img class="brand-mark-image" src="logo.png" alt=""></span><span class="brand-name">Allan's Handbook of Algorithms</span></a>
+    <nav class="topnav" aria-label="Primary navigation"><a href="sorting-problems.html">Practice problems</a><a href="sorting.html">Sorting overview</a></nav>
+  </header>
+
+  <aside class="sidebar" aria-label="Section navigation">
+    <div class="sidebar-title">Problem 5 · Hard</div>
+    <a href="#problem">Problem</a>
+    <a href="#idea">Key idea</a>
+    <a href="#algorithm">Algorithm</a>
+    <a href="#correctness">Why it works</a>
+    <a href="#complexity">Complexity</a>
+    <a href="#implementation">Python</a>
+  </aside>
+
+  <main class="lecture">
+    <section class="lecture-hero">
+      <div class="chapter-label">Sorting · Practice</div>
+      <h1>Merge Without Extra Space</h1>
+      <p class="chapter-topics">Merge two sorted arrays while keeping their original sizes and using constant auxiliary memory.</p>
+      <div class="problem-meta"><span class="hard">Hard</span><span>Sorting practice</span><span>Python</span></div>
+    </section>
+
+    <section id="problem" class="lecture-section">
+      <h2>Problem</h2>
+      <div class="statement-card"><h3>Task</h3><p>Two arrays <code>a</code> and <code>b</code> are individually sorted. Rearrange their existing elements so that, after the operation, <code>a</code> contains the smallest <code>len(a)</code> values and <code>b</code> contains the remaining values, with both arrays sorted. Do not allocate an auxiliary array proportional to the input size.</p></div>
+      <div class="example-block"><div class="example-head">Example</div><div class="example-body"><div class="array-line"><span class="array-cell">1</span><span class="array-cell">5</span><span class="array-cell">9</span><span class="array-cell">10</span><span class="array-cell">15</span><span class="array-cell">20</span></div><div class="array-caption">a</div><div style="height:10px"></div><div class="array-line"><span class="array-cell">2</span><span class="array-cell">3</span><span class="array-cell">8</span><span class="array-cell">13</span></div><div class="array-caption">b</div><div style="height:14px"></div><div class="array-line"><span class="array-cell cool">1</span><span class="array-cell cool">2</span><span class="array-cell cool">3</span><span class="array-cell cool">5</span><span class="array-cell cool">8</span><span class="array-cell cool">9</span></div><div class="array-caption">new a</div><div style="height:10px"></div><div class="array-line"><span class="array-cell middle">10</span><span class="array-cell middle">13</span><span class="array-cell middle">15</span><span class="array-cell middle">20</span></div><div class="array-caption">new b</div></div></div>
+    </section>
+
+    <section id="idea" class="lecture-section">
+      <h2>Key idea</h2>
+      <div class="idea-card"><h3>The observation</h3><p>Pretend the two arrays are one virtual sequence of length <code>n + m</code>. We cannot perform an ordinary merge because that needs a temporary output array. Instead, compare values that are a certain gap apart, swap them when out of order, then repeatedly shrink the gap until it reaches 1. This is a Shell-sort-style way to move badly misplaced values long distances early.</p></div>
+      <div class="example-block"><div class="example-head">Virtual combined sequence</div><div class="example-body"><div class="array-line"><span class="array-cell cool">a[0]</span><span class="array-cell cool">a[1]</span><span class="array-cell cool">…</span><span class="array-cell middle">b[0]</span><span class="array-cell middle">b[1]</span><span class="array-cell middle">…</span></div><div class="array-caption">Indices 0 … n−1 map to a; indices n … n+m−1 map to b.</div></div></div>
+    </section>
+
+    <section id="algorithm" class="lecture-section">
+      <h2>Algorithm</h2>
+      <div class="algorithm-steps"><article class="algorithm-step"><div class="algorithm-step-num">1</div><div><h3>Choose the first gap</h3><p>Start with <code>ceil((n + m) / 2)</code>.</p></div></article>
+<article class="algorithm-step"><div class="algorithm-step-num">2</div><div><h3>Scan gap-separated pairs</h3><p>For every virtual pair <code>(i, i + gap)</code>, compare the two represented values and swap them if they are out of order.</p></div></article>
+<article class="algorithm-step"><div class="algorithm-step-num">3</div><div><h3>Shrink the gap</h3><p>Replace <code>gap</code> by <code>ceil(gap / 2)</code>.</p></div></article>
+<article class="algorithm-step"><div class="algorithm-step-num">4</div><div><h3>Finish at gap 1</h3><p>After the final adjacent comparison pass, the virtual combined sequence is sorted.</p></div></article>
+<article class="algorithm-step"><div class="algorithm-step-num">5</div><div><h3>Read the result</h3><p>Because the first n virtual positions are exactly array <code>a</code>, they contain the n smallest values; the rest remain in <code>b</code>.</p></div></article></div>
+      <div class="invariant-box"><span>Invariant</span><p>After each gap pass, every pair of positions compared at that gap is in nondecreasing order. Because the two original blocks start internally sorted, decreasing gaps progressively remove cross-boundary disorder until the virtual sequence is fully ordered.</p></div>
+    </section>
+
+    <section id="correctness" class="lecture-section">
+      <h2>Why it works</h2>
+      <div class="correctness-card"><h3>Correctness argument</h3><p>The operation is equivalent to applying the standard gap method to the virtual concatenation <code>a + b</code>, except that reads and swaps are routed to the appropriate physical array. No value is created or removed. The decreasing-gap passes move elements that are far from their final side across the boundary; the final gap-1 pass removes the remaining local inversions. Thus the virtual sequence is sorted, which means its first n positions — exactly array a — are the n smallest elements and the remaining positions form sorted array b.</p></div>
+    </section>
+
+    <section id="complexity" class="lecture-section">
+      <h2>Complexity</h2>
+      <div class="complexity-grid"><div class="complexity-card"><span>Time</span><strong>O((n+m) log(n+m))</strong><p>There are logarithmically many gap values and each pass scans O(n+m) pairs.</p></div>
+<div class="complexity-card"><span>Extra space</span><strong>O(1)</strong><p>Only indices, the gap, and swap temporaries are stored.</p></div>
+<div class="complexity-card"><span>Input structure</span><strong>Two sorted arrays</strong><p>The method exploits the fact that disorder exists mainly across the boundary, not arbitrarily everywhere.</p></div></div>
+    </section>
+
+    <section id="implementation" class="lecture-section">
+      <h2>Python implementation</h2>
+      <div class="problem-code">
+        <div class="problem-code-head"><span>Python</span><button class="copy-code" type="button">Copy</button></div>
+        <pre><code>def merge_without_extra_space(a, b):
+    n = len(a)
+    m = len(b)
+    total = n + m
+
+    def get(i):
+        return a[i] if i &lt; n else b[i - n]
+
+    def put(i, value):
+        if i &lt; n:
+            a[i] = value
+        else:
+            b[i - n] = value
+
+    gap = (total + 1) // 2
+
+    while gap &gt; 0:
+        i = 0
+        j = gap
+
+        while j &lt; total:
+            left = get(i)
+            right = get(j)
+            if left &gt; right:
+                put(i, right)
+                put(j, left)
+            i += 1
+            j += 1
+
+        if gap == 1:
+            break
+        gap = (gap + 1) // 2
+
+    return a, b
+
+
+a = [1, 5, 9, 10, 15, 20]
+b = [2, 3, 8, 13]
+print(merge_without_extra_space(a, b))</code></pre>
+      </div>
+      <div class="source-card"><h3>Original problem</h3><p>This exercise is adapted from <a href="https://www.geeksforgeeks.org/dsa/merge-two-sorted-arrays-o1-extra-space/" target="_blank" rel="noopener">Merge Two Sorted Arrays Without Extra Space</a> on GeeksforGeeks. The statement and exposition on this page are rewritten for the handbook.</p></div>
+      <div class="next-part back-problems"><h3>Back to practice</h3><p>Return to the six selected sorting problems.</p><a class="next-part-link" href="sorting-problems.html">← Practice Problems</a></div>
+    </section>
+  </main>
+
+  <footer class="lecture-footer"><div>Allan's Handbook of Algorithms</div><div>© 2026 Allan Allemand</div></footer>
+  <script src="problems.js"></script>
+</body>
+</html>

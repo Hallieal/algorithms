@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Six medium and hard sorting problems with full solutions, correctness arguments, complexity analysis, and Python implementations.">
+  <meta property="og:title" content="Sorting Problems | Allan's Handbook of Algorithms">
+  <meta property="og:type" content="article">
+  <title>Sorting Problems | Allan's Handbook of Algorithms</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="problems.css">
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+  <link rel="icon" type="image/png" sizes="64x64" href="favicon.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="index.html"><span class="brand-mark brand-mark-logo"><img class="brand-mark-image" src="logo.png" alt=""></span><span class="brand-name">Allan's Handbook of Algorithms</span></a>
+    <nav class="topnav" aria-label="Primary navigation"><a href="sorting.html">Sorting overview</a></nav>
+  </header>
+
+  <main class="problems-main">
+    <section class="problems-hero">
+      <div class="chapter-label">Sorting · Practice</div>
+      <h1>Practice Problems</h1>
+      <p>
+        Six problems chosen to make the main ideas of the sorting chapter do real work.
+        Each solution develops an algorithm, states the key invariant or geometric fact,
+        proves correctness, and ends with a Python implementation.
+      </p>
+    </section>
+
+    <section class="problem-level" aria-labelledby="medium-title">
+      <div class="problem-level-head">
+        <h2 id="medium-title">Medium</h2>
+        <p>Three problems where one central sorting idea unlocks the solution.</p>
+      </div>
+      <div class="problem-grid">
+        <a class="problem-card" href="problem-three-way-partitioning.html">
+          <div class="problem-card-top"><span class="problem-number">1</span><span class="difficulty-pill">Medium</span></div>
+          <h3>Three-Way Partitioning</h3>
+          <p>Rearrange an array into values below a range, values inside it, and values above it — in one scan.</p>
+          <div class="problem-tags"><span class="problem-tag">partitioning</span><span class="problem-tag">two boundaries</span><span class="problem-tag">O(n)</span></div>
+          <span class="problem-open">Open solution →</span>
+        </a>
+
+        <a class="problem-card" href="problem-k-smallest.html">
+          <div class="problem-card-top"><span class="problem-number">2</span><span class="difficulty-pill">Medium</span></div>
+          <h3>K Smallest Elements</h3>
+          <p>Keep exactly the best k candidates seen so far instead of sorting every element in the input.</p>
+          <div class="problem-tags"><span class="problem-tag">partial order</span><span class="problem-tag">heap</span><span class="problem-tag">O(n log k)</span></div>
+          <span class="problem-open">Open solution →</span>
+        </a>
+
+        <a class="problem-card" href="problem-inversion-count.html">
+          <div class="problem-card-top"><span class="problem-number">3</span><span class="difficulty-pill">Medium</span></div>
+          <h3>Inversion Count</h3>
+          <p>Use the merge step to count how far an array is from sorted order without examining every pair.</p>
+          <div class="problem-tags"><span class="problem-tag">merge sort</span><span class="problem-tag">counting</span><span class="problem-tag">O(n log n)</span></div>
+          <span class="problem-open">Open solution →</span>
+        </a>
+      </div>
+    </section>
+
+    <section class="problem-level" aria-labelledby="hard-title">
+      <div class="problem-level-head">
+        <h2 id="hard-title">Hard</h2>
+        <p>Problems where sorting is one component of a larger algorithmic argument.</p>
+      </div>
+      <div class="problem-grid">
+        <a class="problem-card hard" href="problem-top-k-frequent.html">
+          <div class="problem-card-top"><span class="problem-number">4</span><span class="difficulty-pill">Hard</span></div>
+          <h3>Top K Frequent Elements</h3>
+          <p>Turn raw values into frequency records, define the correct ordering, and extract the top k.</p>
+          <div class="problem-tags"><span class="problem-tag">frequency map</span><span class="problem-tag">custom key</span><span class="problem-tag">ranking</span></div>
+          <span class="problem-open">Open solution →</span>
+        </a>
+
+        <a class="problem-card hard" href="problem-merge-without-space.html">
+          <div class="problem-card-top"><span class="problem-number">5</span><span class="difficulty-pill">Hard</span></div>
+          <h3>Merge Without Extra Space</h3>
+          <p>Merge two sorted arrays in place by viewing them as one virtual sequence and shrinking a comparison gap.</p>
+          <div class="problem-tags"><span class="problem-tag">in-place</span><span class="problem-tag">gap method</span><span class="problem-tag">O(1) extra</span></div>
+          <span class="problem-open">Open solution →</span>
+        </a>
+
+        <a class="problem-card hard" href="problem-closest-pair.html">
+          <div class="problem-card-top"><span class="problem-number">6</span><span class="difficulty-pill">Hard</span></div>
+          <h3>Closest Pair of Points</h3>
+          <p>Sort by coordinates, divide the plane, and prove that only a constant number of neighbors matter in the middle strip.</p>
+          <div class="problem-tags"><span class="problem-tag">geometry</span><span class="problem-tag">divide & conquer</span><span class="problem-tag">O(n log n)</span></div>
+          <span class="problem-open">Open solution →</span>
+        </a>
+      </div>
+    </section>
+
+    <div class="problems-source-note">
+      The selection is based on the Medium and Hard problem lists in the GeeksforGeeks Sorting Algorithms collection.
+      Statements here are rewritten for this handbook, and the solution pages link back to the corresponding source problems.
+    </div>
+  </main>
+
+  <footer class="overview-footer"><div>Allan's Handbook of Algorithms</div><div>© 2026 Allan Allemand</div></footer>
+</body>
+</html>

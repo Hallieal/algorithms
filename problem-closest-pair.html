@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Use sorting and divide and conquer to beat the quadratic all-pairs search in the plane.">
+  <meta property="og:title" content="Closest Pair of Points | Allan's Handbook of Algorithms">
+  <meta property="og:type" content="article">
+  <title>Closest Pair of Points | Allan's Handbook of Algorithms</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="problems.css">
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+  <link rel="icon" type="image/png" sizes="64x64" href="favicon.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+</head>
+<body class="lecture-page problem-page">
+  <div class="progress-track" aria-hidden="true"><div class="progress-bar" id="reading-progress"></div></div>
+  <header class="topbar">
+    <a class="brand" href="index.html"><span class="brand-mark brand-mark-logo"><img class="brand-mark-image" src="logo.png" alt=""></span><span class="brand-name">Allan's Handbook of Algorithms</span></a>
+    <nav class="topnav" aria-label="Primary navigation"><a href="sorting-problems.html">Practice problems</a><a href="sorting.html">Sorting overview</a></nav>
+  </header>
+
+  <aside class="sidebar" aria-label="Section navigation">
+    <div class="sidebar-title">Problem 6 · Hard</div>
+    <a href="#problem">Problem</a>
+    <a href="#idea">Key idea</a>
+    <a href="#algorithm">Algorithm</a>
+    <a href="#correctness">Why it works</a>
+    <a href="#complexity">Complexity</a>
+    <a href="#implementation">Python</a>
+  </aside>
+
+  <main class="lecture">
+    <section class="lecture-hero">
+      <div class="chapter-label">Sorting · Practice</div>
+      <h1>Closest Pair of Points</h1>
+      <p class="chapter-topics">Use sorting and divide and conquer to beat the quadratic all-pairs search in the plane.</p>
+      <div class="problem-meta"><span class="hard">Hard</span><span>Sorting practice</span><span>Python</span></div>
+    </section>
+
+    <section id="problem" class="lecture-section">
+      <h2>Problem</h2>
+      <div class="statement-card"><h3>Task</h3><p>Given <code>n ≥ 2</code> distinct points in the plane, find the minimum Euclidean distance between any two points.</p></div>
+      <div class="example-block"><div class="example-head">Geometric picture</div><div class="example-body"><div class="point-plane" aria-label="A set of planar points split by a vertical line"><span class="plot-point" style="left:13%;top:72%"></span><span class="plot-point" style="left:24%;top:31%"></span><span class="plot-point" style="left:39%;top:57%"></span><span class="plot-point closest" style="left:53%;top:45%"></span><span class="plot-point closest" style="left:58%;top:37%"></span><span class="plot-point" style="left:77%;top:68%"></span><span class="plot-point" style="left:87%;top:24%"></span><span class="closest-segment" style="left:53%;top:45%;width:40px;transform:rotate(-31deg)"></span></div><div class="array-caption">After solving the two halves, only points close to the vertical split can create a better cross-half pair.</div></div></div>
+    </section>
+
+    <section id="idea" class="lecture-section">
+      <h2>Key idea</h2>
+      <div class="idea-card"><h3>The observation</h3><p>Sort the points by x-coordinate and divide them into two halves. Let <code>d</code> be the best distance found recursively inside either half. A better cross-half pair must lie inside a vertical strip of width <code>2d</code> around the split line. If the strip is ordered by y-coordinate, a packing argument shows that each point needs to be compared with only the next few points — at most seven are enough.</p></div>
+      <div class="idea-card"><h3>Why only a few neighbors?</h3><p>Inside a d-by-2d neighborhood, the recursive answers guarantee that two points from the same half cannot be closer than d. Dividing the area into small boxes limits how many candidate points can coexist there. This geometric packing fact turns what looks like another quadratic scan into linear work per recursion level.</p></div>
+    </section>
+
+    <section id="algorithm" class="lecture-section">
+      <h2>Algorithm</h2>
+      <div class="algorithm-steps"><article class="algorithm-step"><div class="algorithm-step-num">1</div><div><h3>Presort twice</h3><p>Keep the same points sorted by x-coordinate and by y-coordinate.</p></div></article>
+<article class="algorithm-step"><div class="algorithm-step-num">2</div><div><h3>Divide by x</h3><p>Split the x-sorted list in half and partition the y-sorted list into the same two point sets.</p></div></article>
+<article class="algorithm-step"><div class="algorithm-step-num">3</div><div><h3>Solve both halves</h3><p>Recursively compute the closest pair in each half and let <code>d</code> be the smaller distance.</p></div></article>
+<article class="algorithm-step"><div class="algorithm-step-num">4</div><div><h3>Build the strip</h3><p>From the y-sorted list, keep only points whose x-coordinate lies within distance <code>d</code> of the split line.</p></div></article>
+<article class="algorithm-step"><div class="algorithm-step-num">5</div><div><h3>Check nearby y-neighbors</h3><p>For each strip point, test at most the next seven points in y-order, stopping earlier once the y-gap is already at least d.</p></div></article>
+<article class="algorithm-step"><div class="algorithm-step-num">6</div><div><h3>Return the best pair</h3><p>The minimum of the left, right, and strip candidates is the global answer.</p></div></article></div>
+      <div class="invariant-box"><span>Invariant</span><p>Every recursive call receives exactly the same subset of points in two orders: one sorted by x and one sorted by y. Its returned distance is the true closest-pair distance within that subset.</p></div>
+    </section>
+
+    <section id="correctness" class="lecture-section">
+      <h2>Why it works</h2>
+      <div class="correctness-card"><h3>Correctness argument</h3><p>Any closest pair is either entirely in the left half, entirely in the right half, or crosses the split. The recursive calls correctly handle the first two cases. If a cross pair is closer than d, both endpoints must be within horizontal distance d of the split, so both appear in the strip. Because the strip is sorted by y and the packing bound limits how many points can lie nearby, checking the next seven candidates is sufficient to examine every possible cross pair with distance below d. Therefore the minimum returned by the algorithm is the global closest-pair distance.</p></div>
+    </section>
+
+    <section id="complexity" class="lecture-section">
+      <h2>Complexity</h2>
+      <div class="complexity-grid"><div class="complexity-card"><span>Initial sorting</span><strong>O(n log n)</strong><p>The points are sorted once by x and once by y.</p></div>
+<div class="complexity-card"><span>Recursion</span><strong>O(n log n)</strong><p>Each level does O(n) partitioning and strip work across all subproblems.</p></div>
+<div class="complexity-card"><span>Extra space</span><strong>O(n)</strong><p>The recursive partitions and strip lists require linear auxiliary storage at peak.</p></div></div>
+    </section>
+
+    <section id="implementation" class="lecture-section">
+      <h2>Python implementation</h2>
+      <div class="problem-code">
+        <div class="problem-code-head"><span>Python</span><button class="copy-code" type="button">Copy</button></div>
+        <pre><code>from math import hypot
+
+
+def closest_pair(points):
+    if len(points) &lt; 2:
+        raise ValueError(&quot;at least two points are required&quot;)
+
+    pts = [(x, y, i) for i, (x, y) in enumerate(points)]
+    px = sorted(pts, key=lambda p: (p[0], p[1], p[2]))
+    py = sorted(pts, key=lambda p: (p[1], p[0], p[2]))
+
+    def distance(p, q):
+        return hypot(p[0] - q[0], p[1] - q[1])
+
+    def solve(px, py):
+        n = len(px)
+        if n &lt;= 3:
+            best = float(&quot;inf&quot;)
+            pair = None
+            for i in range(n):
+                for j in range(i + 1, n):
+                    d = distance(px[i], px[j])
+                    if d &lt; best:
+                        best = d
+                        pair = (px[i], px[j])
+            return best, pair
+
+        mid = n // 2
+        left_x = px[:mid]
+        right_x = px[mid:]
+        split_x = px[mid][0]
+
+        left_ids = {p[2] for p in left_x}
+        left_y = []
+        right_y = []
+        for p in py:
+            if p[2] in left_ids:
+                left_y.append(p)
+            else:
+                right_y.append(p)
+
+        dl, pair_l = solve(left_x, left_y)
+        dr, pair_r = solve(right_x, right_y)
+
+        if dl &lt;= dr:
+            best, pair = dl, pair_l
+        else:
+            best, pair = dr, pair_r
+
+        strip = [p for p in py if abs(p[0] - split_x) &lt; best]
+
+        for i in range(len(strip)):
+            for j in range(i + 1, min(i + 8, len(strip))):
+                if strip[j][1] - strip[i][1] &gt;= best:
+                    break
+                d = distance(strip[i], strip[j])
+                if d &lt; best:
+                    best = d
+                    pair = (strip[i], strip[j])
+
+        return best, pair
+
+    best, pair = solve(px, py)
+    clean_pair = tuple((p[0], p[1]) for p in pair)
+    return best, clean_pair
+
+
+points = [(2, 3), (12, 30), (40, 50),
+          (5, 1), (12, 10), (3, 4)]
+print(closest_pair(points))</code></pre>
+      </div>
+      <div class="source-card"><h3>Original problem</h3><p>This exercise is adapted from <a href="https://www.geeksforgeeks.org/dsa/closest-pair-of-points-using-divide-and-conquer-algorithm/" target="_blank" rel="noopener">Minimum Distance between Two Points</a> on GeeksforGeeks. The statement and exposition on this page are rewritten for the handbook.</p></div>
+      <div class="next-part back-problems"><h3>Back to practice</h3><p>Return to the six selected sorting problems.</p><a class="next-part-link" href="sorting-problems.html">← Practice Problems</a></div>
+    </section>
+  </main>
+
+  <footer class="lecture-footer"><div>Allan's Handbook of Algorithms</div><div>© 2026 Allan Allemand</div></footer>
+  <script src="problems.js"></script>
+</body>
+</html>

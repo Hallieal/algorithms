@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Count out-of-order pairs while Merge Sort is already comparing the two sorted halves.">
+  <meta property="og:title" content="Inversion Count | Allan's Handbook of Algorithms">
+  <meta property="og:type" content="article">
+  <title>Inversion Count | Allan's Handbook of Algorithms</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="problems.css">
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+  <link rel="icon" type="image/png" sizes="64x64" href="favicon.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+</head>
+<body class="lecture-page problem-page">
+  <div class="progress-track" aria-hidden="true"><div class="progress-bar" id="reading-progress"></div></div>
+  <header class="topbar">
+    <a class="brand" href="index.html"><span class="brand-mark brand-mark-logo"><img class="brand-mark-image" src="logo.png" alt=""></span><span class="brand-name">Allan's Handbook of Algorithms</span></a>
+    <nav class="topnav" aria-label="Primary navigation"><a href="sorting-problems.html">Practice problems</a><a href="sorting.html">Sorting overview</a></nav>
+  </header>
+
+  <aside class="sidebar" aria-label="Section navigation">
+    <div class="sidebar-title">Problem 3 · Medium</div>
+    <a href="#problem">Problem</a>
+    <a href="#idea">Key idea</a>
+    <a href="#algorithm">Algorithm</a>
+    <a href="#correctness">Why it works</a>
+    <a href="#complexity">Complexity</a>
+    <a href="#implementation">Python</a>
+  </aside>
+
+  <main class="lecture">
+    <section class="lecture-hero">
+      <div class="chapter-label">Sorting · Practice</div>
+      <h1>Inversion Count</h1>
+      <p class="chapter-topics">Count out-of-order pairs while Merge Sort is already comparing the two sorted halves.</p>
+      <div class="problem-meta"><span class="medium">Medium</span><span>Sorting practice</span><span>Python</span></div>
+    </section>
+
+    <section id="problem" class="lecture-section">
+      <h2>Problem</h2>
+      <div class="statement-card"><h3>Task</h3><p>For an array <code>a</code>, an inversion is a pair of indices <code>i &lt; j</code> with <code>a[i] &gt; a[j]</code>. Count the total number of inversions.</p></div>
+      <div class="example-block"><div class="example-head">Example</div><div class="example-body"><div class="array-line"><span class="array-cell">2</span><span class="array-cell">4</span><span class="array-cell">1</span><span class="array-cell">3</span><span class="array-cell">5</span></div><div class="array-caption">Inversions: (2,1), (4,1), (4,3) → answer = 3</div></div></div>
+    </section>
+
+    <section id="idea" class="lecture-section">
+      <h2>Key idea</h2>
+      <div class="idea-card"><h3>The observation</h3><p>Inside each half, recursive calls count all internal inversions. During the merge, suppose the next right-half value is smaller than the next left-half value. Because the left half is sorted, that right value is smaller than every remaining left value. One comparison therefore reveals a whole block of inversions at once.</p></div>
+      <div class="example-block"><div class="example-head">The counting moment</div><div class="example-body"><div class="visual-split"><div><div class="array-line"><span class="array-cell">2</span><span class="array-cell hot">4</span><span class="array-cell hot">7</span></div><div class="array-caption">remaining left half</div></div><div class="visual-arrow">vs</div><div><div class="array-line"><span class="array-cell cool">3</span><span class="array-cell">8</span></div><div class="array-caption">3 is smaller than 4, so it forms 2 inversions: (4,3) and (7,3)</div></div></div></div></div>
+    </section>
+
+    <section id="algorithm" class="lecture-section">
+      <h2>Algorithm</h2>
+      <div class="algorithm-steps"><article class="algorithm-step"><div class="algorithm-step-num">1</div><div><h3>Divide</h3><p>Split the array into left and right halves.</p></div></article>
+<article class="algorithm-step"><div class="algorithm-step-num">2</div><div><h3>Count recursively</h3><p>Count inversions entirely inside the left half and entirely inside the right half.</p></div></article>
+<article class="algorithm-step"><div class="algorithm-step-num">3</div><div><h3>Merge</h3><p>Merge the two sorted halves exactly as in Merge Sort.</p></div></article>
+<article class="algorithm-step"><div class="algorithm-step-num">4</div><div><h3>Count cross inversions</h3><p>Whenever a right-half value is chosen before the current left-half value, add the number of left-half values that remain.</p></div></article>
+<article class="algorithm-step"><div class="algorithm-step-num">5</div><div><h3>Combine</h3><p>Return left inversions + right inversions + cross inversions.</p></div></article></div>
+      <div class="invariant-box"><span>Invariant</span><p>During a merge, the output prefix is sorted, and the inversion counter already includes every cross inversion involving an element that has been copied into that prefix.</p></div>
+    </section>
+
+    <section id="correctness" class="lecture-section">
+      <h2>Why it works</h2>
+      <div class="correctness-card"><h3>Correctness argument</h3><p>Recursive calls count all inversion pairs whose two indices lie in the same half. The only missing pairs cross the midpoint. During merging, if <code>left[i] ≤ right[j]</code>, then <code>left[i]</code> creates no inversion with any remaining right value. If <code>right[j] &lt; left[i]</code>, sortedness of the left half implies <code>right[j]</code> is smaller than every value from <code>left[i]</code> onward, creating exactly <code>mid - i</code> cross inversions. Hence every inversion is counted once and only once.</p></div>
+    </section>
+
+    <section id="complexity" class="lecture-section">
+      <h2>Complexity</h2>
+      <div class="complexity-grid"><div class="complexity-card"><span>Time</span><strong>O(n log n)</strong><p>The recurrence is the same as Merge Sort: two half-size calls plus linear merging.</p></div>
+<div class="complexity-card"><span>Extra space</span><strong>O(n)</strong><p>A temporary array is reused for merge operations.</p></div>
+<div class="complexity-card"><span>Naive comparison</span><strong>O(n²)</strong><p>Checking every pair is unnecessary once sorted halves expose many inversions at once.</p></div></div>
+    </section>
+
+    <section id="implementation" class="lecture-section">
+      <h2>Python implementation</h2>
+      <div class="problem-code">
+        <div class="problem-code-head"><span>Python</span><button class="copy-code" type="button">Copy</button></div>
+        <pre><code>def count_inversions(values):
+    a = list(values)
+    temp = [0] * len(a)
+
+    def sort_and_count(lo, hi):
+        if hi - lo &lt;= 1:
+            return 0
+
+        mid = (lo + hi) // 2
+        inversions = sort_and_count(lo, mid)
+        inversions += sort_and_count(mid, hi)
+
+        i, j, out = lo, mid, lo
+
+        while i &lt; mid and j &lt; hi:
+            if a[i] &lt;= a[j]:
+                temp[out] = a[i]
+                i += 1
+            else:
+                temp[out] = a[j]
+                j += 1
+                inversions += mid - i
+            out += 1
+
+        while i &lt; mid:
+            temp[out] = a[i]
+            i += 1
+            out += 1
+
+        while j &lt; hi:
+            temp[out] = a[j]
+            j += 1
+            out += 1
+
+        a[lo:hi] = temp[lo:hi]
+        return inversions
+
+    return sort_and_count(0, len(a))
+
+
+print(count_inversions([2, 4, 1, 3, 5]))  # 3</code></pre>
+      </div>
+      <div class="source-card"><h3>Original problem</h3><p>This exercise is adapted from <a href="https://www.geeksforgeeks.org/dsa/inversion-count-in-array-using-merge-sort/" target="_blank" rel="noopener">Count Inversions of an Array</a> on GeeksforGeeks. The statement and exposition on this page are rewritten for the handbook.</p></div>
+      <div class="next-part back-problems"><h3>Back to practice</h3><p>Return to the six selected sorting problems.</p><a class="next-part-link" href="sorting-problems.html">← Practice Problems</a></div>
+    </section>
+  </main>
+
+  <footer class="lecture-footer"><div>Allan's Handbook of Algorithms</div><div>© 2026 Allan Allemand</div></footer>
+  <script src="problems.js"></script>
+</body>
+</html>
