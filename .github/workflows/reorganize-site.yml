@@ -1,0 +1,32 @@
+name: Reorganize site structure
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/reorganize-site.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  migrate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+      - name: Reorganize repository
+        run: python .reorganize_site.py
+      - name: Commit migration
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          if git diff --cached --quiet; then
+            echo "No changes needed"
+          else
+            git commit -m "Organize site into chapter directories"
+            git push origin main
+          fi
