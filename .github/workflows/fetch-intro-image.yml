@@ -1,0 +1,44 @@
+name: Fetch Introduction artwork
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/fetch-intro-image.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - name: Inspect shared ChatGPT media page
+        run: |
+          set -euxo pipefail
+          URL='https://chatgpt.com/s/m_6aa6ea35c0348191961dc15fc07a2704'
+          curl -L --fail --silent --show-error \
+            -A 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 Chrome/140 Safari/537.36' \
+            -H 'Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8' \
+            -D /tmp/headers.txt "$URL" -o /tmp/share.html
+          echo '--- headers ---'
+          cat /tmp/headers.txt
+          echo '--- file info ---'
+          file /tmp/share.html
+          wc -c /tmp/share.html
+          echo '--- likely image refs ---'
+          python - <<'PY'
+          import re, html
+          text = open('/tmp/share.html', encoding='utf-8', errors='ignore').read()
+          for pat in [
+              r'<meta[^>]+property=["\']og:image["\'][^>]+content=["\']([^"\']+)',
+              r'<meta[^>]+content=["\']([^"\']+)["\'][^>]+property=["\']og:image["\']',
+              r'https://[^"\'<>\\ ]+(?:png|jpg|jpeg|webp)(?:\?[^"\'<>\\ ]*)?',
+              r'https://[^"\'<>\\ ]*(?:oaiusercontent|oaidalleapiprodscus|openai)[^"\'<>\\ ]*'
+          ]:
+              for m in re.findall(pat, text, flags=re.I):
+                  print(html.unescape(m if isinstance(m, str) else m[0]))
+          PY
