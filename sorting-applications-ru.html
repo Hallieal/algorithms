@@ -9,63 +9,11 @@
 <meta content="article" property="og:type"/>
 <title>Применения сортировки | Гайд по алгоритмам — presented by Аллан</title>
 <link href="styles.css" rel="stylesheet"/>
+<link href="sorting-applications.css" rel="stylesheet"/>
 <link href="favicon-32.png" rel="icon" sizes="32x32" type="image/png"/>
 <link href="favicon.png" rel="icon" sizes="64x64" type="image/png"/>
 <link href="apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180"/>
-<style>
-    .application-grid {
-      display:grid;
-      grid-template-columns:repeat(2, minmax(0,1fr));
-      gap:16px;
-      margin-top:28px;
-    }
 
-    .application-card {
-      min-height:205px;
-      padding:24px;
-      border:1px solid var(--line);
-      border-radius:18px;
-      background:#fff;
-    }
-
-    .application-mark {
-      width:46px;
-      height:46px;
-      margin-bottom:17px;
-      display:grid;
-      place-items:center;
-      border-radius:13px;
-      background:#eef2e7;
-      color:#5e7e2d;
-      font-weight:850;
-      font-size:19px;
-    }
-
-    .application-card:nth-child(2) .application-mark { background:#edf2f8; color:#527cab; }
-    .application-card:nth-child(3) .application-mark { background:#fbf1e6; color:#b66c40; }
-    .application-card:nth-child(4) .application-mark { background:#f3eef8; color:#7960a9; }
-    .application-card:nth-child(5) .application-mark { background:#edf5f0; color:#4e8970; }
-    .application-card:nth-child(6) .application-mark { background:#f8f0ef; color:#a6635b; }
-
-    .application-card h3 { margin:0 0 8px; font-size:20px; }
-    .application-card p { margin:0; color:var(--muted); font-size:14px; line-height:1.65; }
-
-    .application-example {
-      margin:30px 0 0;
-      padding:24px 26px;
-      border:1px solid #ddd8f0;
-      border-left:4px solid var(--purple);
-      border-radius:17px;
-      background:#f8f6fc;
-    }
-
-    .application-example h3 { margin:0 0 10px; }
-    .application-example p { margin:0; color:#5d6670; }
-
-    @media (max-width:760px) {
-      .application-grid { grid-template-columns:1fr; }
-    }
-  </style>
 <link href="sorting-applications.html" hreflang="en" rel="alternate"/><link href="sorting-applications-ru.html" hreflang="ru" rel="alternate"/></head>
 <body class="lecture-page">
 <header class="topbar">
@@ -127,7 +75,12 @@
 <p>
             Баллы, цены, времена и другие численные показатели часто сортируют, чтобы определить места, вывести лучшие или худшие значения либо построить упорядоченный отчёт.
           </p>
-</article>
+
+          <div class="application-practice">
+          <span class="application-practice-label">Практика · EN</span>
+          <a href="problem-top-k-frequent.html">K самых частых элементов →</a>
+          </div>
+        </article>
 <article class="application-card">
 <div class="application-mark">=</div>
 <h3>Поиск повторов</h3>
@@ -141,21 +94,37 @@
 <p>
             Многие алгоритмы с двумя указателями и методы обработки интервалов начинаются с сортировки. Благодаря порядку указатели могут двигаться монотонно, а не перебирать все пары.
           </p>
-</article>
+
+          <div class="application-practice">
+          <span class="application-practice-label">Практика · EN</span>
+          <a href="problem-two-sum-sorted.html">Two Sum →</a>
+          <a href="problem-meeting-rooms.html">Meeting Rooms →</a>
+          </div>
+        </article>
 <article class="application-card">
 <div class="application-mark">∪</div>
 <h3>Объединение упорядоченных данных</h3>
 <p>
             Две отсортированные последовательности можно эффективно слить. Похожими проходами удобно находить пересечения, объединения и совпадения между упорядоченными наборами.
           </p>
-</article>
+
+          <div class="application-practice">
+          <span class="application-practice-label">Практика · EN</span>
+          <a href="problem-merge-without-space.html">Слияние без дополнительной памяти →</a>
+          </div>
+        </article>
 <article class="application-card">
 <div class="application-mark">↥</div>
 <h3>Характеристики порядка</h3>
 <p>
             После сортировки легко увидеть минимум, максимум, медиану, квантили и другие порядковые статистики. Позже мы увидим, когда для этих задач полная сортировка вообще не нужна.
           </p>
-</article>
+
+          <div class="application-practice">
+          <span class="application-practice-label">Практика · EN</span>
+          <a href="problem-k-smallest.html">K наименьших элементов →</a>
+          </div>
+        </article>
 </div>
 <div class="application-example">
 <h3>Сортировка меняет представление задачи</h3>

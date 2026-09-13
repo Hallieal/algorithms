@@ -8,102 +8,13 @@
   <meta property="og:type" content="article">
   <title>Applications of Sorting | Allan's Handbook of Algorithms</title>
   <link rel="stylesheet" href="styles.css">
+<link href="sorting-applications.css" rel="stylesheet"/>
   <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
   <link rel="icon" type="image/png" sizes="64x64" href="favicon.png">
   <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
 
-  <style>
-    .application-grid {
-      display:grid;
-      grid-template-columns:repeat(2, minmax(0,1fr));
-      gap:16px;
-      margin-top:28px;
-    }
-
-    .application-card {
-      min-height:205px;
-      padding:24px;
-      border:1px solid var(--line);
-      border-radius:18px;
-      background:#fff;
-    }
-
-    .application-mark {
-      width:46px;
-      height:46px;
-      margin-bottom:17px;
-      display:grid;
-      place-items:center;
-      border-radius:13px;
-      background:#eef2e7;
-      color:#5e7e2d;
-      font-weight:850;
-      font-size:19px;
-    }
-
-    .application-card:nth-child(2) .application-mark { background:#edf2f8; color:#527cab; }
-    .application-card:nth-child(3) .application-mark { background:#fbf1e6; color:#b66c40; }
-    .application-card:nth-child(4) .application-mark { background:#f3eef8; color:#7960a9; }
-    .application-card:nth-child(5) .application-mark { background:#edf5f0; color:#4e8970; }
-    .application-card:nth-child(6) .application-mark { background:#f8f0ef; color:#a6635b; }
-
-    .application-card h3 { margin:0 0 8px; font-size:20px; }
-    .application-card p { margin:0; color:var(--muted); font-size:14px; line-height:1.65; }
-
-    .application-practice {
-      display:flex;
-      flex-wrap:wrap;
-      gap:8px;
-      margin-top:16px;
-      padding-top:14px;
-      border-top:1px solid var(--line);
-    }
-
-    .application-practice-label {
-      flex-basis:100%;
-      color:#8a9299;
-      font-size:10px;
-      font-weight:800;
-      letter-spacing:.07em;
-      text-transform:uppercase;
-    }
-
-    .application-practice a {
-      display:inline-flex;
-      align-items:center;
-      min-height:30px;
-      padding:6px 10px;
-      border-radius:999px;
-      background:#f3f6ed;
-      color:#58762f;
-      font-size:12px;
-      font-weight:760;
-      line-height:1.35;
-      text-decoration:none;
-      transition:background .15s ease, color .15s ease;
-    }
-
-    .application-practice a:hover {
-      background:#e8f0dc;
-      color:#405b1f;
-    }
-
-    .application-example {
-      margin:30px 0 0;
-      padding:24px 26px;
-      border:1px solid #ddd8f0;
-      border-left:4px solid var(--purple);
-      border-radius:17px;
-      background:#f8f6fc;
-    }
-
-    .application-example h3 { margin:0 0 10px; }
-    .application-example p { margin:0; color:#5d6670; }
-
-    @media (max-width:760px) {
-      .application-grid { grid-template-columns:1fr; }
-    }
-  </style>
+  
+<link href="sorting-applications.html" hreflang="en" rel="alternate"/><link href="sorting-applications-ru.html" hreflang="ru" rel="alternate"/>
 </head>
 
 <body class="lecture-page">
@@ -111,6 +22,7 @@
     <a class="brand" href="index.html"><span class="brand-mark brand-mark-logo"><img class="brand-mark-image" src="logo.png" alt=""></span><span class="brand-name">Allan's Handbook of Algorithms</span></a>
     <nav class="topnav" aria-label="Primary navigation">
       <a href="sorting.html">Sorting overview</a>
+      <div aria-label="Language" class="language-switch"><span class="current">EN</span><span class="language-separator">·</span><a href="sorting-applications-ru.html">RU</a></div>
     </nav>
   </header>
 
@@ -180,6 +92,11 @@
             Scores, prices, times, and other measurements are frequently sorted to determine ranks,
             display the best or worst values, or construct ordered reports.
           </p>
+        
+          <div class="application-practice">
+          <span class="application-practice-label">Practice</span>
+          <a href="problem-top-k-frequent.html">Top K Frequent Elements →</a>
+          </div>
         </article>
 
         <article class="application-card">
