@@ -2431,20 +2431,21 @@ th {
 .home-minimal-main {
   max-width: 1120px;
   margin: 0 auto;
-  padding: 78px 36px 90px;
+  padding: 72px 36px 72px;
 }
 
 .home-minimal-title {
-  margin-bottom: 64px;
+  margin-bottom: 52px;
 }
 
 .home-minimal-title h1 {
   margin: 0;
   color: var(--ink);
-  font-size: clamp(72px, 11vw, 142px);
-  line-height: .86;
-  letter-spacing: -.075em;
+  font-size: clamp(46px, 6vw, 64px);
+  line-height: 0.96;
+  letter-spacing: -0.05em;
   font-weight: 850;
+  max-width: 920px;
 }
 
 .home-topics {
@@ -2476,12 +2477,12 @@ th {
 .home-title-row {
   display: flex;
   align-items: center;
-  gap: 22px;
+  gap: 26px;
 }
 
 .home-title-logo {
-  width: clamp(64px, 7vw, 92px);
-  height: clamp(64px, 7vw, 92px);
+  width: clamp(96px, 12vw, 132px);
+  height: clamp(96px, 12vw, 132px);
   display: block;
   object-fit: contain;
   flex: 0 0 auto;
@@ -2490,7 +2491,7 @@ th {
 .home-minimal-footer {
   max-width: 1120px;
   margin: 0 auto;
-  padding: 8px 36px 42px;
+  padding: 8px 36px 34px;
   color: #7f878d;
   font-size: 13px;
   line-height: 1.5;
