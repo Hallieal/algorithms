@@ -25,3 +25,4 @@ jobs:
           git add sorting-problems.html sorting-problems-ru.html sorting-applications-ru.html
           git commit -m "Link bilingual hard practice pages"
           git push origin main
+# retry after correcting exact source text
