@@ -1,13 +1,27 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-labelledby="title desc">
   <title id="title">Introduction to Algorithms</title>
-  <desc id="desc">Muted growth curves on coordinate axes.</desc>
-  <g fill="none" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M24 22v82h82" stroke="#d9ddd2" stroke-width="8"/>
-    <path d="M31 93c17-2 29-7 41-16 12-9 22-22 31-39" stroke="#68a89e" stroke-width="8"/>
-    <path d="M31 96c16-7 31-18 44-34 10-12 19-26 27-42" stroke="#849f4d" stroke-width="8"/>
-    <path d="M31 99c18-3 36-12 50-28 13-15 20-31 24-49" stroke="#d49b4a" stroke-width="8"/>
-    <circle cx="49" cy="88" r="5" fill="#8573b7" stroke="none"/>
-    <circle cx="72" cy="77" r="5" fill="#8573b7" stroke="none"/>
-    <circle cx="95" cy="45" r="5" fill="#8573b7" stroke="none"/>
+  <desc id="desc">A muted algorithm diagram with a central Big O symbol and connected blocks.</desc>
+  <rect x="13" y="13" width="102" height="102" rx="24" fill="#f7f4ed" stroke="#e0ddd4" stroke-width="3"/>
+
+  <g stroke="#d6d9d0" stroke-width="4" stroke-linecap="round" fill="none">
+    <path d="M42 39H57"/>
+    <path d="M42 64H57"/>
+    <path d="M42 89H57"/>
+    <path d="M87 51V42H101"/>
+    <path d="M87 77V88H101"/>
   </g>
+
+  <rect x="24" y="29" width="20" height="20" rx="6" fill="#9caf6a"/>
+  <rect x="24" y="54" width="20" height="20" rx="6" fill="#75aaa2"/>
+  <rect x="24" y="79" width="20" height="20" rx="6" fill="#d4a15c"/>
+
+  <rect x="56" y="31" width="38" height="66" rx="12" fill="#ecefe6" stroke="#d8ddd1" stroke-width="3"/>
+  <text x="75" y="77" text-anchor="middle" fill="#59636d" font-family="Inter, Arial, sans-serif" font-size="38" font-weight="800">O</text>
+
+  <rect x="94" y="29" width="15" height="25" rx="5" fill="#8b78bc"/>
+  <rect x="94" y="73" width="15" height="26" rx="5" fill="#c97878"/>
+
+  <circle cx="50" cy="39" r="3.5" fill="#d8ddd1"/>
+  <circle cx="50" cy="64" r="3.5" fill="#d8ddd1"/>
+  <circle cx="50" cy="89" r="3.5" fill="#d8ddd1"/>
 </svg>
