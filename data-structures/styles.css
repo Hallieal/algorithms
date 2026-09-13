@@ -1,0 +1,259 @@
+/* Data Structures chapter */
+.ds-page .lecture-hero { padding-bottom: 58px; }
+
+.ds-overview {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  margin-top: 30px;
+}
+.ds-overview-card,
+.ds-card,
+.ds-note,
+.ds-code-card,
+.ds-table-wrap,
+.ds-amortized {
+  border: 1px solid var(--line);
+  background: #fff;
+  border-radius: 18px;
+}
+.ds-overview-card { padding: 20px; }
+.ds-overview-card h3 { margin: 0 0 7px; font-size: 19px; }
+.ds-overview-card p { margin: 0; color: var(--muted); font-size: 14px; }
+
+.ds-two-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin: 26px 0;
+}
+.ds-card { padding: 24px; }
+.ds-card p:last-child { margin-bottom: 0; }
+.ds-card ul { margin: 12px 0 0; padding-left: 20px; color: #55616a; }
+.ds-card li + li { margin-top: 7px; }
+
+.ds-note {
+  margin: 26px 0;
+  padding: 20px 22px;
+  background: #f7f9f3;
+  border-color: #dfe7d1;
+}
+.ds-note strong { color: #4f7126; }
+
+.ds-visual {
+  margin: 28px 0;
+  padding: 24px;
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  background: #f8f7f3;
+}
+.ds-visual-title {
+  margin-bottom: 16px;
+  color: #6a747d;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+.array-visual {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 8px;
+}
+.array-cell {
+  min-height: 68px;
+  display: grid;
+  place-items: center;
+  border: 1px solid #d9ddd1;
+  border-radius: 12px;
+  background: #fff;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+.array-cell:nth-child(2) { background: #eef5df; }
+.array-cell:nth-child(4) { background: #e8f5f1; }
+.array-index {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 8px;
+  margin-top: 7px;
+  color: #929aa0;
+  font-size: 11px;
+  text-align: center;
+}
+
+.resize-steps {
+  display: grid;
+  gap: 12px;
+  margin-top: 16px;
+}
+.resize-step {
+  display: grid;
+  grid-template-columns: 110px 1fr;
+  gap: 15px;
+  align-items: center;
+}
+.resize-label { color: #68727d; font-size: 13px; font-weight: 750; }
+.resize-boxes { display: flex; gap: 6px; flex-wrap: wrap; }
+.resize-box {
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  border: 1px solid #d6dbcf;
+  background: #fff;
+}
+.resize-box.used { background: #dfeec6; border-color: #c4d89e; }
+.resize-box.new { background: #e7f3ef; border-color: #bedfd8; }
+
+.linked-visual {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.node {
+  min-width: 112px;
+  padding: 14px 12px;
+  border: 1px solid #dad7e8;
+  border-radius: 14px;
+  background: #f3efff;
+  text-align: center;
+  font-weight: 800;
+}
+.node small { display: block; margin-top: 4px; color: #7d8290; font-weight: 600; }
+.pointer { color: #8c969e; font-size: 25px; font-weight: 800; }
+
+.linear-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin: 24px 0;
+}
+.linear-card {
+  padding: 22px;
+  border-radius: 18px;
+  border: 1px solid var(--line);
+  background: #fff;
+}
+.linear-card h3 { margin-bottom: 8px; }
+.linear-card p { color: #5d6871; }
+.linear-demo { margin: 18px 0 12px; min-height: 112px; display: flex; align-items: center; justify-content: center; }
+.stack-demo { flex-direction: column-reverse; gap: 5px; }
+.stack-demo span,
+.queue-demo span,
+.deque-demo span {
+  min-width: 54px;
+  padding: 8px 12px;
+  border-radius: 9px;
+  background: #eef5df;
+  border: 1px solid #d9e5c5;
+  text-align: center;
+  font-weight: 750;
+}
+.queue-demo, .deque-demo { gap: 5px; flex-wrap: wrap; }
+.ds-complexity { color: #768089; font-size: 13px; }
+
+.heap-visual {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 28px;
+  align-items: center;
+}
+.heap-tree { display: grid; justify-items: center; gap: 13px; }
+.heap-level { display: flex; gap: 18px; justify-content: center; }
+.heap-node {
+  width: 48px;
+  height: 48px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: #e8f5f1;
+  border: 1px solid #c9e3dc;
+  font-weight: 800;
+}
+.heap-array { display: flex; gap: 6px; flex-wrap: wrap; }
+.heap-array span {
+  width: 46px;
+  height: 46px;
+  display: grid;
+  place-items: center;
+  border-radius: 10px;
+  background: #fff;
+  border: 1px solid var(--line);
+  font-weight: 800;
+}
+
+.ds-table-wrap { overflow-x: auto; margin: 28px 0; }
+.ds-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 760px;
+  font-size: 14px;
+}
+.ds-table th,
+.ds-table td {
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--line);
+  text-align: left;
+  vertical-align: top;
+}
+.ds-table th { background: #f6f5f1; font-size: 12px; text-transform: uppercase; letter-spacing: .05em; }
+.ds-table tr:last-child td { border-bottom: 0; }
+.ds-good { color: #527327; font-weight: 800; }
+.ds-warn { color: #a26921; font-weight: 800; }
+
+.ds-amortized { margin: 28px 0; padding: 26px; background: #fbfcf8; }
+.ds-amortized h3 { margin-bottom: 12px; }
+.ds-sum {
+  margin: 16px 0;
+  padding: 16px 18px;
+  border-radius: 12px;
+  background: #f0f5e6;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 21px;
+  text-align: center;
+}
+
+.ds-code-card { margin: 22px 0; padding: 22px; }
+.ds-code-card pre {
+  margin: 12px 0 0;
+  padding: 16px;
+  overflow-x: auto;
+  border-radius: 12px;
+  background: #1e252b;
+  color: #edf3f6;
+  font-size: 13px;
+  line-height: 1.55;
+}
+.ds-code-card code { color: inherit; }
+
+.ds-checklist {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+  margin-top: 24px;
+}
+.ds-check {
+  padding: 20px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: #fff;
+}
+.ds-check strong { display: block; margin-bottom: 6px; }
+.ds-check p { margin: 0; color: #5d6871; }
+
+@media (max-width: 900px) {
+  .ds-overview,
+  .ds-two-col,
+  .heap-visual,
+  .linear-grid,
+  .ds-checklist { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 640px) {
+  .array-visual,
+  .array-index { grid-template-columns: repeat(3, 1fr); }
+  .resize-step { grid-template-columns: 1fr; }
+  .ds-visual, .ds-card, .ds-amortized { padding: 18px; }
+}
