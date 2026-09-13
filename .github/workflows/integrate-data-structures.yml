@@ -1,0 +1,97 @@
+name: Integrate Data Structures chapter
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/integrate-data-structures.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  integrate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Update chapter sequence and links
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          def patch(path, old, new):
+              p = Path(path)
+              text = p.read_text(encoding='utf-8')
+              if old not in text:
+                  raise SystemExit(f'Expected block not found in {path}')
+              p.write_text(text.replace(old, new, 1), encoding='utf-8')
+
+          # Introduction now leads into Data Structures.
+          patch(
+              'introduction/index.html',
+              '''<div class="next-part">
+        <h3>Next chapter: Sorting</h3>
+        <p>Now that the language of running time, memory, and asymptotic bounds is in place, we can compare concrete sorting algorithms precisely.</p>
+        <a class="next-part-link" href="../sorting/">Sorting →</a>
+      </div>''',
+              '''<div class="next-part">
+        <h3>Next chapter: Data Structures</h3>
+        <p>Now that we can analyze time and memory, the next step is to understand the basic ways algorithms organize, access, and update data.</p>
+        <a class="next-part-link" href="../data-structures/">Data Structures →</a>
+      </div>'''
+          )
+          patch(
+              'introduction/index-ru.html',
+              '''<div class="next-part">
+        <h3>Следующая глава: Сортировки</h3>
+        <p>Теперь, когда введены время работы, память и асимптотические оценки, можно строго сравнивать конкретные алгоритмы сортировки.</p>
+        <a class="next-part-link" href="../sorting/index-ru.html">Сортировки →</a>
+      </div>''',
+              '''<div class="next-part">
+        <h3>Следующая глава: Структуры данных</h3>
+        <p>Теперь, когда мы умеем оценивать время и память, следующий шаг — разобраться в базовых способах хранения, доступа и изменения данных.</p>
+        <a class="next-part-link" href="../data-structures/index-ru.html">Структуры данных →</a>
+      </div>'''
+          )
+
+          # Sorting becomes Chapter 3 everywhere in the sorting chapter.
+          for p in Path('sorting').rglob('*.html'):
+              text = p.read_text(encoding='utf-8')
+              text = text.replace('Chapter 2', 'Chapter 3')
+              text = text.replace('Глава 2', 'Глава 3')
+              p.write_text(text, encoding='utf-8')
+
+          # Sorting overview now points back to both foundation chapters.
+          patch(
+              'sorting/index.html',
+              '''<div class="chapter-prereq-note">Need a refresher on <strong>Θ, O, worst-case time, or auxiliary space</strong>? <a href="../introduction/">Review Introduction to Algorithms →</a></div>''',
+              '''<div class="chapter-prereq-note">Need a refresher? <a href="../introduction/">Asymptotics & complexity →</a> · <a href="../data-structures/">Arrays, stacks, queues & heaps →</a></div>'''
+          )
+          patch(
+              'sorting/index-ru.html',
+              '''<div class="chapter-prereq-note">Нужно освежить <strong>Θ, O, худший случай или дополнительную память</strong>? <a href="../introduction/index-ru.html">Вернуться к введению в алгоритмы →</a></div>''',
+              '''<div class="chapter-prereq-note">Нужно что-то освежить? <a href="../introduction/index-ru.html">Асимптотика и сложность →</a> · <a href="../data-structures/index-ru.html">Массивы, стеки, очереди и кучи →</a></div>'''
+          )
+
+          # Validation.
+          assert 'Next chapter: Data Structures' in Path('introduction/index.html').read_text(encoding='utf-8')
+          assert 'Следующая глава: Структуры данных' in Path('introduction/index-ru.html').read_text(encoding='utf-8')
+          for p in Path('sorting').rglob('*.html'):
+              text = p.read_text(encoding='utf-8')
+              assert 'Chapter 2' not in text, p
+              assert 'Глава 2' not in text, p
+          assert 'Chapter 3' in Path('sorting/index.html').read_text(encoding='utf-8')
+          assert 'Глава 3' in Path('sorting/index-ru.html').read_text(encoding='utf-8')
+          print('Data Structures chapter integrated successfully.')
+          PY
+
+      - name: Commit integration
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "Integrate Data Structures into chapter sequence"
+          git push origin main
