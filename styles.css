@@ -3253,3 +3253,75 @@ th {
     padding: 20px;
   }
 }
+
+
+/* v45: stable language switch + Russian two-line branding */
+.language-switch a,
+.language-switch .current {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 24px;
+  width: 24px;
+  min-width: 24px;
+  max-width: 24px;
+  font-size: 11px;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.language-switch .current {
+  font-weight: 800;
+}
+
+.ru-brand-name {
+  white-space: normal;
+  line-height: 1.02;
+}
+
+.ru-brand-lines {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+}
+
+.ru-brand-presented {
+  color: #7c858c;
+  font-size: .72em;
+  font-weight: 650;
+  letter-spacing: .01em;
+}
+
+.ru-home-title {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 7px;
+}
+
+.ru-home-title > span {
+  display: block;
+}
+
+.ru-home-presented {
+  color: #737c83;
+  font-size: .46em;
+  font-weight: 650;
+  letter-spacing: -.025em;
+  line-height: 1;
+}
+
+@media (max-width: 760px) {
+  .ru-brand-name {
+    max-width: 42vw;
+  }
+
+  .ru-home-title {
+    gap: 5px;
+  }
+
+  .ru-home-presented {
+    font-size: .5em;
+  }
+}
