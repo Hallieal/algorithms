@@ -41,9 +41,9 @@
       <h1>Introduction to Algorithms</h1>
       <p class="chapter-topics">Before comparing algorithms, we need a language for saying what they cost. This chapter introduces the basic model: input size, elementary operations, running time, memory, and asymptotic growth.</p>
       <div class="foundations-overview">
-        <article class="foundation-card"><div class="foundation-card-mark">T(n)</div><h3>Time</h3><p>Count how the amount of work grows with the size of the input, rather than timing one particular computer.</p></article>
-        <article class="foundation-card"><div class="foundation-card-mark">S(n)</div><h3>Space</h3><p>Track how much additional memory an algorithm needs, including temporary arrays and recursion stacks.</p></article>
-        <article class="foundation-card"><div class="foundation-card-mark">Θ</div><h3>Growth</h3><p>Use asymptotic notation to separate the essential growth rate from machine-dependent constants and lower-order terms.</p></article>
+        <article class="foundation-card"><h3>Time</h3><p>Count how the amount of work grows with the size of the input, rather than timing one particular computer.</p></article>
+        <article class="foundation-card"><h3>Space</h3><p>Track how much additional memory an algorithm needs, including temporary arrays and recursion stacks.</p></article>
+        <article class="foundation-card"><h3>Growth</h3><p>Use asymptotic notation to separate the essential growth rate from machine-dependent constants and lower-order terms.</p></article>
       </div>
     </section>
 
@@ -126,15 +126,20 @@
       <h2>Common growth rates</h2>
       <p class="lead">For large inputs, the difference between growth classes dominates constant-factor implementation details. The ordering below is the one to remember.</p>
       <div class="formula-line compact-formula">1 ≺ log n ≺ n ≺ n log n ≺ n² ≺ n³ ≺ 2ⁿ ≺ n!</div>
-      <div class="growth-board">
-        <h3>A rough scale at n = 100</h3>
-        <p>The bars are schematic rather than linear; the point is how quickly the classes separate.</p>
-        <div class="growth-row"><span class="growth-name">O(1)</span><div class="growth-track"><div class="growth-fill" style="--w:8%"></div></div><span class="growth-example">1</span></div>
-        <div class="growth-row"><span class="growth-name">O(log n)</span><div class="growth-track"><div class="growth-fill" style="--w:16%"></div></div><span class="growth-example">≈ 7</span></div>
-        <div class="growth-row"><span class="growth-name">O(n)</span><div class="growth-track"><div class="growth-fill" style="--w:30%"></div></div><span class="growth-example">100</span></div>
-        <div class="growth-row"><span class="growth-name">O(n log n)</span><div class="growth-track"><div class="growth-fill" style="--w:44%"></div></div><span class="growth-example">≈ 700</span></div>
-        <div class="growth-row"><span class="growth-name">O(n²)</span><div class="growth-track"><div class="growth-fill" style="--w:65%"></div></div><span class="growth-example">10,000</span></div>
-        <div class="growth-row"><span class="growth-name">O(2ⁿ)</span><div class="growth-track"><div class="growth-fill" style="--w:100%"></div></div><span class="growth-example">≈ 1.27×10³⁰</span></div>
+      <div class="growth-explorer" data-growth-explorer data-locale="en">
+        <div class="growth-explorer-head">
+          <div><span class="growth-explorer-kicker">Interactive</span><h3>Watch the growth classes separate</h3><p>Move the slider from 1 to 10⁹. Both axes are logarithmic, so slow and fast polynomial classes remain visible at the same time.</p></div>
+          <strong class="growth-current" data-growth-current>n = 1,000</strong>
+        </div>
+        <div class="growth-slider-block">
+          <input class="growth-slider" data-growth-slider type="range" min="0" max="9" step="0.001" value="3" aria-label="Input size n from 1 to one billion">
+          <div class="growth-slider-labels"><span>1</span><span>10</span><span>1K</span><span>1M</span><span>1B</span></div>
+          <div class="growth-presets"><button type="button" data-growth-preset="1">10</button><button type="button" data-growth-preset="3">1K</button><button type="button" data-growth-preset="6">1M</button><button type="button" data-growth-preset="9">1B</button></div>
+        </div>
+        <div class="growth-legend" data-growth-legend></div>
+        <div class="growth-chart-shell"><svg class="growth-chart" data-growth-chart role="img" aria-label="Growth chart for common complexity classes"></svg></div>
+        <p class="growth-scale-note">The vertical scale represents orders of operation counts. The exponential curve <code>2ⁿ</code> is deliberately clipped once it rises above the <code>n³</code> range; otherwise it would immediately compress every polynomial curve into an unreadable strip.</p>
+        <div class="growth-values" data-growth-values></div>
       </div>
       <div class="asymptotic-note"><div class="asymptotic-mark">log</div><div><h4>The base of the logarithm usually does not matter asymptotically</h4><p>Because <span class="math">logₐn = log_b n / log_b a</span>, changing the base multiplies the logarithm by a constant. Therefore all constant logarithm bases belong to the same Θ(log n) class.</p></div></div>
     </section>
@@ -213,5 +218,6 @@
   <footer class="lecture-footer"><div>Allan's Handbook of Algorithms</div><div>© 2026 Allan Allemand</div></footer>
   <script src="../assets/js/lecture-core.js"></script>
   <script src="../assets/js/language-switch.js"></script>
+  <script src="growth.js"></script>
 </body>
 </html>

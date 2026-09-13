@@ -41,9 +41,9 @@
       <h1>Введение в алгоритмы</h1>
       <p class="chapter-topics">Прежде чем сравнивать алгоритмы, нужен язык, на котором можно точно говорить об их стоимости. В этой главе вводятся размер входа, элементарные операции, время работы, память и асимптотический рост.</p>
       <div class="foundations-overview">
-        <article class="foundation-card"><div class="foundation-card-mark">T(n)</div><h3>Время</h3><p>Смотрим, как растёт число операций вместе с размером входа, а не измеряем секунды на одном конкретном компьютере.</p></article>
-        <article class="foundation-card"><div class="foundation-card-mark">S(n)</div><h3>Память</h3><p>Учитываем дополнительную память: временные массивы, структуры данных и стек рекурсивных вызовов.</p></article>
-        <article class="foundation-card"><div class="foundation-card-mark">Θ</div><h3>Рост</h3><p>Асимптотическая нотация отделяет существенную скорость роста от констант и слагаемых меньшего порядка.</p></article>
+        <article class="foundation-card"><h3>Время</h3><p>Смотрим, как растёт число операций вместе с размером входа, а не измеряем секунды на одном конкретном компьютере.</p></article>
+        <article class="foundation-card"><h3>Память</h3><p>Учитываем дополнительную память: временные массивы, структуры данных и стек рекурсивных вызовов.</p></article>
+        <article class="foundation-card"><h3>Рост</h3><p>Асимптотическая нотация отделяет существенную скорость роста от констант и слагаемых меньшего порядка.</p></article>
       </div>
     </section>
 
@@ -126,15 +126,20 @@
       <h2>Типичные скорости роста</h2>
       <p class="lead">На больших входах разница между классами роста начинает доминировать над константами реализации. Этот порядок стоит знать наизусть.</p>
       <div class="formula-line compact-formula">1 ≺ log n ≺ n ≺ n log n ≺ n² ≺ n³ ≺ 2ⁿ ≺ n!</div>
-      <div class="growth-board">
-        <h3>Грубый масштаб при n = 100</h3>
-        <p>Полосы схематичны и не нарисованы в линейном масштабе; важно, насколько быстро классы начинают расходиться.</p>
-        <div class="growth-row"><span class="growth-name">O(1)</span><div class="growth-track"><div class="growth-fill" style="--w:8%"></div></div><span class="growth-example">1</span></div>
-        <div class="growth-row"><span class="growth-name">O(log n)</span><div class="growth-track"><div class="growth-fill" style="--w:16%"></div></div><span class="growth-example">≈ 7</span></div>
-        <div class="growth-row"><span class="growth-name">O(n)</span><div class="growth-track"><div class="growth-fill" style="--w:30%"></div></div><span class="growth-example">100</span></div>
-        <div class="growth-row"><span class="growth-name">O(n log n)</span><div class="growth-track"><div class="growth-fill" style="--w:44%"></div></div><span class="growth-example">≈ 700</span></div>
-        <div class="growth-row"><span class="growth-name">O(n²)</span><div class="growth-track"><div class="growth-fill" style="--w:65%"></div></div><span class="growth-example">10 000</span></div>
-        <div class="growth-row"><span class="growth-name">O(2ⁿ)</span><div class="growth-track"><div class="growth-fill" style="--w:100%"></div></div><span class="growth-example">≈ 1,27×10³⁰</span></div>
+      <div class="growth-explorer" data-growth-explorer data-locale="ru">
+        <div class="growth-explorer-head">
+          <div><span class="growth-explorer-kicker">Интерактив</span><h3>Как расходятся классы сложности</h3><p>Двигайте ползунок от 1 до 10⁹. Обе оси графика логарифмические, поэтому медленные и быстрые полиномиальные классы остаются одновременно видимыми.</p></div>
+          <strong class="growth-current" data-growth-current>n = 1 000</strong>
+        </div>
+        <div class="growth-slider-block">
+          <input class="growth-slider" data-growth-slider type="range" min="0" max="9" step="0.001" value="3" aria-label="Размер входа n от 1 до одного миллиарда">
+          <div class="growth-slider-labels"><span>1</span><span>10</span><span>1K</span><span>1M</span><span>1B</span></div>
+          <div class="growth-presets"><button type="button" data-growth-preset="1">10</button><button type="button" data-growth-preset="3">1K</button><button type="button" data-growth-preset="6">1M</button><button type="button" data-growth-preset="9">1B</button></div>
+        </div>
+        <div class="growth-legend" data-growth-legend></div>
+        <div class="growth-chart-shell"><svg class="growth-chart" data-growth-chart role="img" aria-label="График роста типичных классов сложности"></svg></div>
+        <p class="growth-scale-note">Шкала по вертикали показывает порядок числа операций. Экспонента <code>2ⁿ</code> намеренно обрезается, когда выходит выше диапазона <code>n³</code>: иначе она мгновенно сжала бы все полиномиальные кривые почти в одну линию.</p>
+        <div class="growth-values" data-growth-values></div>
       </div>
       <div class="asymptotic-note"><div class="asymptotic-mark">log</div><div><h4>Основание логарифма обычно неважно для асимптотики</h4><p>Поскольку <span class="math">logₐn = log_b n / log_b a</span>, смена основания лишь умножает логарифм на константу. Поэтому все постоянные основания дают один и тот же класс Θ(log n).</p></div></div>
     </section>
@@ -213,5 +218,6 @@
   <footer class="lecture-footer"><div>Гайд по алгоритмам · presented by Аллан</div><div>© 2026 Allan Allemand</div></footer>
   <script src="../assets/js/lecture-core.js"></script>
   <script src="../assets/js/language-switch.js"></script>
+  <script src="growth.js"></script>
 </body>
 </html>
