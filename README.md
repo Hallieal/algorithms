@@ -1,13 +1,13 @@
-# Algorithms site — logo update v23
+# Algorithms site — logo/fav icon update v24
 
-Changes:
-- added `logo.png` using the selected graph-and-gear emblem;
-- added `favicon.png` and switched all pages to use it in the browser tab;
-- replaced the old letter A in the top-left brand mark with the new emblem on all pages;
-- preserved the flat file structure.
+This archive is the full flat site package with the new black transparent network-and-gear emblem applied in two places:
+- `logo.png` for the general site emblem in the page header;
+- `favicon.png` for the browser tab icon.
 
-Files you need to upload if updating manually:
-- all `*.html` pages
+The file structure remains flat.
+
+Main files to upload:
+- all `*.html` files
 - `styles.css`
 - `logo.png`
 - `favicon.png`
