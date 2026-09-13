@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Введение в анализ алгоритмов: модель вычислений, время работы, память, асимптотическая нотация и типичные скорости роста.">
+  <meta property="og:title" content="Введение в алгоритмы | Гайд по алгоритмам — presented by Аллан">
+  <meta property="og:type" content="article">
+  <title>Введение в алгоритмы | Гайд по алгоритмам — presented by Аллан</title>
+  <link rel="stylesheet" href="../assets/css/styles.css">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="icon" type="image/png" sizes="32x32" href="../assets/images/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="64x64" href="../assets/images/favicon.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="../assets/images/apple-touch-icon.png">
+  <link href="./" hreflang="en" rel="alternate">
+  <link href="index-ru.html" hreflang="ru" rel="alternate">
+</head>
+<body class="lecture-page foundations-page">
+  <div class="progress-track" aria-hidden="true"><div class="progress-bar" id="reading-progress"></div></div>
+  <header class="topbar">
+    <a class="brand" href="../index-ru.html"><span class="brand-mark brand-mark-logo"><img class="brand-mark-image" src="../assets/images/logo.png" alt=""></span><span class="brand-name ru-brand-name"><span class="ru-brand-lines"><span>Гайд по алгоритмам</span><span class="ru-brand-presented">presented by Аллан</span></span></span></a>
+    <nav class="topnav" aria-label="Основная навигация"><div aria-label="Язык" class="language-switch"><a href="./">EN</a><span class="language-separator">·</span><span class="current">RU</span></div></nav>
+  </header>
+
+  <aside class="sidebar" aria-label="Навигация по разделу">
+    <div class="sidebar-title">Глава 1 · Основы</div>
+    <a href="#what">Что мы анализируем</a>
+    <a href="#model">Модель вычислений</a>
+    <a href="#time">Время работы</a>
+    <a href="#asymptotics">Асимптотика</a>
+    <a href="#growth">Скорости роста</a>
+    <a href="#rules">Правила анализа</a>
+    <a href="#space">Память</a>
+    <a href="#examples">Примеры</a>
+    <a href="#pitfalls">Типичные ошибки</a>
+  </aside>
+
+  <main class="lecture">
+    <section class="lecture-hero">
+      <div class="chapter-label">Глава 1</div>
+      <h1>Введение в алгоритмы</h1>
+      <p class="chapter-topics">Прежде чем сравнивать алгоритмы, нужен язык, на котором можно точно говорить об их стоимости. В этой главе вводятся размер входа, элементарные операции, время работы, память и асимптотический рост.</p>
+      <div class="foundations-overview">
+        <article class="foundation-card"><div class="foundation-card-mark">T(n)</div><h3>Время</h3><p>Смотрим, как растёт число операций вместе с размером входа, а не измеряем секунды на одном конкретном компьютере.</p></article>
+        <article class="foundation-card"><div class="foundation-card-mark">S(n)</div><h3>Память</h3><p>Учитываем дополнительную память: временные массивы, структуры данных и стек рекурсивных вызовов.</p></article>
+        <article class="foundation-card"><div class="foundation-card-mark">Θ</div><h3>Рост</h3><p>Асимптотическая нотация отделяет существенную скорость роста от констант и слагаемых меньшего порядка.</p></article>
+      </div>
+    </section>
+
+    <section id="what" class="lecture-section">
+      <h2>Что мы анализируем?</h2>
+      <p class="lead">Алгоритм — это конечная процедура, преобразующая входные данные в результат. Корректность отвечает на вопрос, правильный ли результат получается; сложность — сколько ресурсов требуется при росте размера входа.</p>
+      <div class="two-column-block">
+        <div class="text-panel">
+          <h3>Размер входа</h3>
+          <p>Размер задачи описывается одним или несколькими параметрами. Для массива это обычно длина <span class="math">n</span>. Для графа часто нужны одновременно число вершин <span class="math">n</span> и число рёбер <span class="math">m</span>. Для задач над большими целыми естественным размером может быть число бит в записи числа, а не само числовое значение.</p>
+        </div>
+        <div class="proof-panel">
+          <h3>Функции ресурсов</h3>
+          <p><span class="math">T(n)</span> обозначает объём работы на входах размера <span class="math">n</span>, а <span class="math">S(n)</span> — используемую память. Это математические функции, описывающие поведение алгоритма.</p>
+          <p>Точное число операций может зависеть не только от размера, но и от конкретного входа. Поэтому ниже различаются лучший, средний и худший случаи.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="model" class="lecture-section">
+      <h2>Простая модель вычислений</h2>
+      <p class="lead">Чтобы сравнение не зависело от конкретного процессора, договариваются о приближённой модели машины. В стандартной RAM-модели элементарные операции над машинными словами считаются выполняющимися за константное время.</p>
+      <div class="model-panel">
+        <div class="model-copy">
+          <h3>Типичные операции O(1)</h3>
+          <p>Небольшой набор базовых действий считается одной единицей работы. Это не означает, что реальные инструкции занимают буквально одинаковое число наносекунд: такая модель нужна, чтобы сравнивать скорость роста.</p>
+          <div class="ram-ops"><div class="ram-op">арифметика над машинными словами</div><div class="ram-op">сравнения</div><div class="ram-op">доступ к элементу массива</div><div class="ram-op">присваивание</div><div class="ram-op">доступ по ссылке</div><div class="ram-op">проверка условия</div></div>
+        </div>
+        <div class="model-visual">
+          <h3>Параметр размера зависит от задачи</h3>
+          <p>Одна и та же буква <code>n</code> в разных задачах означает разное.</p>
+          <div class="input-size-demo">
+            <div class="input-size-row"><span>массив</span><code>n = число элементов</code></div>
+            <div class="input-size-row"><span>граф</span><code>n = |V|, m = |E|</code></div>
+            <div class="input-size-row"><span>целое x</span><code>n ≈ log₂ x бит</code></div>
+            <div class="input-size-row"><span>матрица</span><code>n × m элементов</code></div>
+          </div>
+        </div>
+      </div>
+      <div class="asymptotic-note"><div class="asymptotic-mark">!</div><div><h4>Модель вычислений важна</h4><p>Операция, которая является константной для 64-битного числа, не обязана быть константной для целого произвольной длины. Утверждение о сложности имеет смысл только вместе с выбранной моделью и определением размера входа.</p></div></div>
+    </section>
+
+    <section id="time" class="lecture-section">
+      <h2>Время работы: лучший, средний и худший случаи</h2>
+      <p class="lead">Два входа одинакового размера могут заставить один и тот же алгоритм выполнить разное число операций. Поэтому всегда нужно уточнять, какой случай рассматривается.</p>
+      <div class="case-grid">
+        <article class="case-card"><strong>Лучший случай</strong><p>Минимальное число операций среди всех входов размера <span class="math">n</span>. Это самый удачный вход, но он почти никогда не даёт гарантии производительности.</p></article>
+        <article class="case-card"><strong>Средний случай</strong><p>Математическое ожидание числа операций при явно заданном распределении входов. Без распределения выражение «в среднем» формально не определено.</p></article>
+        <article class="case-card"><strong>Худший случай</strong><p>Максимальное число операций среди всех входов размера <span class="math">n</span>. Это гарантия: никакой вход данного размера не заставит алгоритм выполнить больше работы.</p></article>
+      </div>
+      <p>Анализ худшего случая используется особенно часто, потому что даёт надёжную верхнюю гарантию и не требует предположений о распределении данных. Средний случай и анализ рандомизированных алгоритмов не менее важны, если вероятностная модель сформулирована явно.</p>
+    </section>
+
+    <section id="asymptotics" class="lecture-section">
+      <h2>Асимптотическая нотация</h2>
+      <p class="lead">Асимптотика описывает рост функций при достаточно больших размерах входа. Константные множители и слагаемые меньшего порядка отбрасываются, чтобы оставить главную скорость роста.</p>
+      <div class="asymptotic-map">
+        <article class="notation-card"><span class="notation-symbol">O</span><h3>Верхняя граница</h3><p><code>f = O(g)</code> означает: начиная с некоторого момента <code>f</code> не больше константного множителя от <code>g</code>.</p></article>
+        <article class="notation-card"><span class="notation-symbol">Ω</span><h3>Нижняя граница</h3><p><code>f = Ω(g)</code> означает: начиная с некоторого момента <code>f</code> не меньше положительного константного множителя от <code>g</code>.</p></article>
+        <article class="notation-card"><span class="notation-symbol">Θ</span><h3>Точная по порядку граница</h3><p><code>f = Θ(g)</code> означает одновременную верхнюю и нижнюю оценку константными множителями от <code>g</code>.</p></article>
+        <article class="notation-card"><span class="notation-symbol">o</span><h3>Строго меньший порядок</h3><p><code>f = o(g)</code> означает <code>f/g → 0</code>: <code>f</code> асимптотически растёт строго медленнее.</p></article>
+        <article class="notation-card"><span class="notation-symbol">ω</span><h3>Строго больший порядок</h3><p><code>f = ω(g)</code> означает <code>f/g → ∞</code>: <code>f</code> асимптотически растёт строго быстрее.</p></article>
+      </div>
+
+      <div class="formal-definitions">
+        <div class="formal-definition"><b>O</b><p><strong>Формально.</strong> Существуют константы <span class="math">c &gt; 0</span> и <span class="math">n₀</span>, такие что для всех <span class="math">n ≥ n₀</span> выполняется <span class="formula">0 ≤ f(n) ≤ c·g(n)</span></p></div>
+        <div class="formal-definition"><b>Ω</b><p><strong>Формально.</strong> Существуют константы <span class="math">c &gt; 0</span> и <span class="math">n₀</span>, такие что для всех <span class="math">n ≥ n₀</span> выполняется <span class="formula">0 ≤ c·g(n) ≤ f(n)</span></p></div>
+        <div class="formal-definition"><b>Θ</b><p><strong>Формально.</strong> Существуют константы <span class="math">c₁,c₂ &gt; 0</span> и <span class="math">n₀</span>, такие что для всех <span class="math">n ≥ n₀</span> выполняется <span class="formula">0 ≤ c₁g(n) ≤ f(n) ≤ c₂g(n)</span></p></div>
+        <div class="formal-definition"><b>o</b><p><strong>Эквивалентный критерий через предел.</strong> Для положительной <span class="math">g(n)</span>: <span class="formula">f(n) = o(g(n))  ⇔  lim f(n)/g(n) = 0</span></p></div>
+        <div class="formal-definition"><b>ω</b><p><strong>Эквивалентный критерий через предел.</strong> Для положительной <span class="math">g(n)</span>: <span class="formula">f(n) = ω(g(n))  ⇔  lim f(n)/g(n) = ∞</span></p></div>
+      </div>
+
+      <div class="exercise-inline">
+        <h3>Пример</h3>
+        <p>Пусть <span class="math">f(n)=7n³+100n²−20n+6</span>. Тогда <span class="math">f(n)=Θ(n³)</span>. Утверждение <span class="math">f(n)=O(n⁴)</span> тоже верно, но это более грубая и потому менее информативная верхняя оценка.</p>
+      </div>
+    </section>
+
+    <section id="growth" class="lecture-section">
+      <h2>Типичные скорости роста</h2>
+      <p class="lead">На больших входах разница между классами роста начинает доминировать над константами реализации. Этот порядок стоит знать наизусть.</p>
+      <div class="formula-line compact-formula">1 ≺ log n ≺ n ≺ n log n ≺ n² ≺ n³ ≺ 2ⁿ ≺ n!</div>
+      <div class="growth-board">
+        <h3>Грубый масштаб при n = 100</h3>
+        <p>Полосы схематичны и не нарисованы в линейном масштабе; важно, насколько быстро классы начинают расходиться.</p>
+        <div class="growth-row"><span class="growth-name">O(1)</span><div class="growth-track"><div class="growth-fill" style="--w:8%"></div></div><span class="growth-example">1</span></div>
+        <div class="growth-row"><span class="growth-name">O(log n)</span><div class="growth-track"><div class="growth-fill" style="--w:16%"></div></div><span class="growth-example">≈ 7</span></div>
+        <div class="growth-row"><span class="growth-name">O(n)</span><div class="growth-track"><div class="growth-fill" style="--w:30%"></div></div><span class="growth-example">100</span></div>
+        <div class="growth-row"><span class="growth-name">O(n log n)</span><div class="growth-track"><div class="growth-fill" style="--w:44%"></div></div><span class="growth-example">≈ 700</span></div>
+        <div class="growth-row"><span class="growth-name">O(n²)</span><div class="growth-track"><div class="growth-fill" style="--w:65%"></div></div><span class="growth-example">10 000</span></div>
+        <div class="growth-row"><span class="growth-name">O(2ⁿ)</span><div class="growth-track"><div class="growth-fill" style="--w:100%"></div></div><span class="growth-example">≈ 1,27×10³⁰</span></div>
+      </div>
+      <div class="asymptotic-note"><div class="asymptotic-mark">log</div><div><h4>Основание логарифма обычно неважно для асимптотики</h4><p>Поскольку <span class="math">logₐn = log_b n / log_b a</span>, смена основания лишь умножает логарифм на константу. Поэтому все постоянные основания дают один и тот же класс Θ(log n).</p></div></div>
+    </section>
+
+    <section id="rules" class="lecture-section">
+      <h2>Практические правила асимптотического анализа</h2>
+      <p class="lead">Большинство ручных оценок сводится к нескольким простым операциям над функциями роста.</p>
+      <div class="rule-grid">
+        <article class="rule-card"><code>3n² + 20n + 7 → Θ(n²)</code><p>При определении точного порядка роста константные множители и слагаемые меньшего порядка можно отбросить.</p></article>
+        <article class="rule-card"><code>Θ(f) + Θ(g) = Θ(max(f,g))</code><p>Последовательные этапы складываются. При неотрицательных затратах асимптотически доминирует более быстро растущий этап.</p></article>
+        <article class="rule-card"><code>n повторений × Θ(f(n))</code><p>Если каждый проход цикла выполняет внутреннюю работу стоимости <span class="math">f(n)</span>, затраты перемножаются.</p></article>
+        <article class="rule-card"><code>n → n/2 → n/4 → … → 1</code><p>Последовательное деление размера пополам даёт Θ(log n) уровней — ключевой шаблон для двоичного поиска и многих алгоритмов «разделяй и властвуй».</p></article>
+      </div>
+      <div class="exercise-inline"><h3>Выбирайте обозначение точно</h3><p>Если в худшем случае алгоритм имеет именно квадратичный порядок роста, запись <span class="math">Θ(n²)</span> информативнее, чем <span class="math">O(n²)</span>. O — это только верхняя оценка, а не автоматически «точная сложность».</p></div>
+    </section>
+
+    <section id="space" class="lecture-section">
+      <h2>Сложность по памяти</h2>
+      <p class="lead">Асимптотическая нотация одинаково применима и к памяти. Здесь особенно важно различать память самого входа и память, которую алгоритм выделяет дополнительно.</p>
+      <div class="space-split">
+        <article class="space-card"><h3>Полная память</h3><p>Вся память, занятая во время работы, включая представление входных данных. Если массив из <span class="math">n</span> чисел уже дан на входе, он сам занимает Θ(n) памяти.</p></article>
+        <article class="space-card"><h3>Дополнительная память</h3><p>Рабочая память сверх входа: временные массивы, хеш-таблицы, кучи, стек рекурсии и другие вспомогательные структуры. In-place алгоритмы стремятся к O(1) или очень малой дополнительной памяти.</p></article>
+      </div>
+      <div class="two-column-block">
+        <div class="text-panel"><h3>Рекурсия тоже использует память</h3><p>Даже если рекурсивный алгоритм не создаёт явных массивов, его вызовы занимают стек. Глубина рекурсии <span class="math">d</span> обычно означает O(d) стековых кадров.</p></div>
+        <div class="proof-panel"><h3>Обмен времени на память</h3><p>Дополнительная память часто ускоряет алгоритм: хеш-таблица может заменить повторный поиск, а мемоизация — повторные вычисления. Обратно, экономия памяти иногда делает решение сложнее или медленнее.</p></div>
+      </div>
+    </section>
+
+    <section id="examples" class="lecture-section">
+      <h2>Разобранные примеры</h2>
+      <div class="analysis-example">
+        <div class="analysis-code"><pre><code>for i in range(n):
+    total += a[i]</code></pre></div>
+        <div class="analysis-reasoning"><h3>Один линейный проход</h3><p>На каждом из <span class="math">n</span> элементов выполняется константное число операций.</p><span class="complexity-result">Θ(n) времени · Θ(1) доп. памяти</span></div>
+      </div>
+      <div class="analysis-example">
+        <div class="analysis-code"><pre><code>for i in range(n):
+    for j in range(i + 1, n):
+        check(a[i], a[j])</code></pre></div>
+        <div class="analysis-reasoning"><h3>Все неупорядоченные пары</h3><p>Число вызовов равно <span class="math">(n−1)+(n−2)+···+1 = n(n−1)/2</span>. Константа 1/2 и линейное слагаемое исчезают при переходе к асимптотике.</p><span class="complexity-result">Θ(n²) времени</span></div>
+      </div>
+      <div class="analysis-example">
+        <div class="analysis-code"><pre><code>while left &lt;= right:
+    mid = (left + right) // 2
+    # отбрасываем половину диапазона</code></pre></div>
+        <div class="analysis-reasoning"><h3>Последовательное деление пополам</h3><p>После <span class="math">k</span> шагов остаётся примерно <span class="math">n/2ᵏ</span> элементов. Чтобы дойти до размера 1, нужно <span class="math">k≈log₂n</span> шагов.</p><span class="complexity-result">Θ(log n) времени</span></div>
+      </div>
+    </section>
+
+    <section id="pitfalls" class="lecture-section">
+      <h2>Типичные ошибки</h2>
+      <div class="misconception-list">
+        <div class="misconception"><span class="misconception-mark">×</span><p><strong>«O — это точная сложность».</strong> Нет. O задаёт верхнюю границу и может быть грубой. Для точной асимптотической оценки обычно используется Θ.</p></div>
+        <div class="misconception"><span class="misconception-mark">×</span><p><strong>«Худший случай и O — одно и то же».</strong> Это разные понятия. Худший случай определяет функцию по входам, а O затем задаёт асимптотическую верхнюю оценку этой функции.</p></div>
+        <div class="misconception"><span class="misconception-mark">×</span><p><strong>«Константы никогда не важны».</strong> В реальной программе и на небольших входах они важны. Асимптотический анализ сознательно отвечает на другой вопрос: как меняется стоимость при росте задачи.</p></div>
+        <div class="misconception"><span class="misconception-mark">×</span><p><strong>«Важна только скорость».</strong> На практике могут доминировать память, ввод-вывод, коммуникации и работа с кэшем. В этом гайде дополнительная память будет оцениваться вместе со временем везде, где это существенно.</p></div>
+      </div>
+
+      <div class="subsection separated">
+        <h3>Литература</h3>
+        <div class="reference-list">
+          <div class="reference-card"><a href="https://biblio.mccme.ru/node/52889" target="_blank" rel="noopener">М. А. Бабенко, М. В. Левин — «Введение в теорию алгоритмов и структур данных»</a><p>Курс начинается с моделей вычислений, времени и памяти как ресурсов, O-символики и анализа среднего и худшего случаев.</p></div>
+          <div class="reference-card"><a href="https://mitpress.mit.edu/9780262046305/introduction-to-algorithms/" target="_blank" rel="noopener">Cormen, Leiserson, Rivest, Stein — Introduction to Algorithms, 4th ed.</a><p>См. начальные главы по анализу алгоритмов и главу 3 об асимптотической нотации и стандартных функциях.</p></div>
+        </div>
+      </div>
+
+      <div class="next-part">
+        <h3>Следующая глава: Сортировки</h3>
+        <p>Теперь, когда введены время работы, память и асимптотические оценки, можно строго сравнивать конкретные алгоритмы сортировки.</p>
+        <a class="next-part-link" href="../sorting/index-ru.html">Сортировки →</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="lecture-footer"><div>Гайд по алгоритмам · presented by Аллан</div><div>© 2026 Allan Allemand</div></footer>
+  <script src="../assets/js/lecture-core.js"></script>
+  <script src="../assets/js/language-switch.js"></script>
+</body>
+</html>
