@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Core data structures for algorithms: arrays, dynamic arrays, linked lists, stacks, queues, deques, sets, maps, heaps, and trees.">
+  <meta property="og:title" content="Data Structures | Allan's Handbook of Algorithms">
+  <meta property="og:type" content="article">
+  <title>Data Structures | Allan's Handbook of Algorithms</title>
+  <link rel="stylesheet" href="../assets/css/styles.css">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="icon" type="image/png" sizes="32x32" href="../assets/images/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="64x64" href="../assets/images/favicon.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="../assets/images/apple-touch-icon.png">
+  <link href="./" hreflang="en" rel="alternate">
+  <link href="index-ru.html" hreflang="ru" rel="alternate">
+</head>
+<body class="lecture-page ds-page">
+  <div class="progress-track" aria-hidden="true"><div class="progress-bar" id="reading-progress"></div></div>
+  <header class="topbar">
+    <a class="brand" href="../"><span class="brand-mark brand-mark-logo"><img class="brand-mark-image" src="../assets/images/logo.png" alt=""></span><span class="brand-name">Allan's Handbook of Algorithms</span></a>
+    <nav class="topnav" aria-label="Primary navigation"><div aria-label="Language" class="language-switch"><span class="current">EN</span><span class="language-separator">·</span><a href="index-ru.html">RU</a></div></nav>
+  </header>
+
+  <aside class="sidebar" aria-label="Section navigation">
+    <div class="sidebar-title">Chapter 2 · Foundations</div>
+    <a href="#idea">What a data structure is</a>
+    <a href="#arrays">Arrays & dynamic arrays</a>
+    <a href="#linked">Linked lists</a>
+    <a href="#linear">Stacks, queues & deques</a>
+    <a href="#sets-maps">Sets & maps</a>
+    <a href="#heaps">Heaps & priority queues</a>
+    <a href="#trees">Trees</a>
+    <a href="#choose">Choosing a structure</a>
+  </aside>
+
+  <main class="lecture">
+    <section class="lecture-hero">
+      <div class="chapter-label">Chapter 2</div>
+      <h1>Data Structures</h1>
+      <p class="chapter-topics">Algorithms do not work on abstract “data” alone. They rely on concrete ways to store, access, update, and organize it. This chapter introduces the structures that appear repeatedly throughout the rest of the handbook.</p>
+      <div class="ds-overview">
+        <article class="ds-overview-card"><h3>Store</h3><p>Choose how values are represented in memory: contiguous cells, linked nodes, trees, or hash-based collections.</p></article>
+        <article class="ds-overview-card"><h3>Access</h3><p>Different layouts make different operations cheap: indexing, finding the minimum, removing from an end, or looking up a key.</p></article>
+        <article class="ds-overview-card"><h3>Update</h3><p>The right structure often turns an expensive algorithmic step into a constant-time or logarithmic-time operation.</p></article>
+      </div>
+    </section>
+
+    <section id="idea" class="lecture-section">
+      <h2>What is a data structure?</h2>
+      <p class="lead">A data structure is a concrete organization of data together with operations that maintain that organization. The same abstract interface can often be implemented in more than one way.</p>
+      <div class="ds-two-col">
+        <article class="ds-card">
+          <h3>Abstract data type</h3>
+          <p>An abstract data type describes <em>what</em> operations are available, without fixing how they are implemented.</p>
+          <ul><li>Stack: <code>push</code>, <code>pop</code>, <code>top</code>.</li><li>Queue: <code>enqueue</code>, <code>dequeue</code>, <code>front</code>.</li><li>Map: associate keys with values.</li></ul>
+        </article>
+        <article class="ds-card">
+          <h3>Concrete representation</h3>
+          <p>A representation determines <em>how</em> the operations are carried out and therefore their time and memory costs.</p>
+          <ul><li>A stack can use a dynamic array or a linked list.</li><li>A map can use a hash table or a balanced search tree.</li><li>A priority queue is commonly implemented with a heap.</li></ul>
+        </article>
+      </div>
+      <div class="ds-note"><strong>The key habit:</strong> do not ask only “which structure stores these values?” Ask “which operations does my algorithm perform most often, and which representation makes those operations cheap?”</div>
+    </section>
+
+    <section id="arrays" class="lecture-section">
+      <h2>Arrays and dynamic arrays</h2>
+      <p class="lead">Arrays place elements in consecutive logical positions. This gives direct indexing: once the base address is known, the location of element <span class="math">i</span> can be computed immediately.</p>
+      <div class="ds-visual">
+        <div class="ds-visual-title">Direct indexing</div>
+        <div class="array-visual"><div class="array-cell">12</div><div class="array-cell">7</div><div class="array-cell">19</div><div class="array-cell">4</div><div class="array-cell">8</div><div class="array-cell">3</div></div>
+        <div class="array-index"><span>0</span><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span></div>
+      </div>
+      <div class="ds-two-col">
+        <article class="ds-card"><h3>What arrays are good at</h3><p>Indexing is <span class="math">Θ(1)</span>. Iterating through all elements is <span class="math">Θ(n)</span>. Arrays also have good locality because neighboring logical elements are stored close together.</p></article>
+        <article class="ds-card"><h3>What arrays are bad at</h3><p>Inserting or deleting in the middle usually requires shifting a suffix, which takes <span class="math">Θ(n)</span> time in the worst case.</p></article>
+      </div>
+
+      <h3>Dynamic arrays</h3>
+      <p>A fixed array has a fixed capacity. A dynamic array keeps a larger underlying buffer and occasionally replaces it with a larger one. Python's <code>list</code> behaves conceptually like a dynamic array.</p>
+      <div class="ds-visual">
+        <div class="ds-visual-title">Geometric growth of capacity</div>
+        <div class="resize-steps">
+          <div class="resize-step"><div class="resize-label">capacity 2</div><div class="resize-boxes"><span class="resize-box used"></span><span class="resize-box used"></span></div></div>
+          <div class="resize-step"><div class="resize-label">grow to 4</div><div class="resize-boxes"><span class="resize-box used"></span><span class="resize-box used"></span><span class="resize-box new"></span><span class="resize-box new"></span></div></div>
+          <div class="resize-step"><div class="resize-label">grow to 8</div><div class="resize-boxes"><span class="resize-box used"></span><span class="resize-box used"></span><span class="resize-box used"></span><span class="resize-box used"></span><span class="resize-box new"></span><span class="resize-box new"></span><span class="resize-box new"></span><span class="resize-box new"></span></div></div>
+        </div>
+      </div>
+      <div class="ds-amortized">
+        <h3>Why append is amortized Θ(1)</h3>
+        <p>A resize may cost <span class="math">Θ(n)</span> because existing elements must be copied. But if capacity grows geometrically, expensive resizes happen rarely.</p>
+        <div class="ds-sum">1 + 2 + 4 + 8 + ··· + n/2 &lt; n</div>
+        <p>Across <span class="math">n</span> appends, the total number of copied elements is <span class="math">Θ(n)</span>. Therefore the average cost per append over the whole sequence is <span class="math">Θ(1)</span>. This is an <strong>amortized</strong> bound: an individual append can still be expensive.</p>
+      </div>
+    </section>
+
+    <section id="linked" class="lecture-section">
+      <h2>Linked lists</h2>
+      <p class="lead">A linked list stores each value in a separate node together with one or more references to neighboring nodes. The nodes do not need to be contiguous in memory.</p>
+      <div class="ds-visual">
+        <div class="ds-visual-title">Singly linked list</div>
+        <div class="linked-visual"><div class="node">12<small>next</small></div><span class="pointer">→</span><div class="node">7<small>next</small></div><span class="pointer">→</span><div class="node">19<small>next</small></div><span class="pointer">→</span><div class="node">4<small>null</small></div></div>
+      </div>
+      <div class="ds-two-col">
+        <article class="ds-card"><h3>Strength</h3><p>If a pointer to the relevant node is already known, insertion or deletion can often be performed in <span class="math">Θ(1)</span> time by changing a constant number of links.</p></article>
+        <article class="ds-card"><h3>Trade-off</h3><p>There is no constant-time random indexing: reaching the <span class="math">i</span>-th node requires following links from a known starting point, so access is <span class="math">Θ(n)</span> in the worst case.</p></article>
+      </div>
+      <div class="ds-note"><strong>Important nuance:</strong> saying “deletion in a linked list is O(1)” is only correct when the node to delete, and any predecessor information required by the representation, is already available. Searching for that node can itself cost O(n).</div>
+    </section>
+
+    <section id="linear" class="lecture-section">
+      <h2>Stacks, queues, and deques</h2>
+      <p class="lead">These are linear abstract data types defined by which end or ends may be used for insertion and removal.</p>
+      <div class="linear-grid">
+        <article class="linear-card"><h3>Stack · LIFO</h3><p>The last inserted item is removed first.</p><div class="linear-demo stack-demo"><span>C</span><span>B</span><span>A</span></div><div class="ds-complexity"><code>push</code>, <code>pop</code>, <code>top</code>: Θ(1) amortized with a dynamic array.</div></article>
+        <article class="linear-card"><h3>Queue · FIFO</h3><p>The first inserted item is removed first.</p><div class="linear-demo queue-demo"><span>A</span><span>B</span><span>C</span></div><div class="ds-complexity"><code>enqueue</code>, <code>dequeue</code>: Θ(1) with a suitable deque / linked representation.</div></article>
+        <article class="linear-card"><h3>Deque · both ends</h3><p>Insert and remove at either the front or the back.</p><div class="linear-demo deque-demo"><span>←</span><span>A</span><span>B</span><span>C</span><span>→</span></div><div class="ds-complexity">Useful for sliding windows, monotone queues, and BFS-like processes.</div></article>
+      </div>
+      <div class="ds-code-card">
+        <h3>Python choices</h3>
+        <pre><code># stack
+stack = []
+stack.append(x)
+x = stack.pop()
+
+# queue / deque
+from collections import deque
+q = deque()
+q.append(x)      # push right
+x = q.popleft()  # pop left</code></pre>
+      </div>
+      <div class="ds-note"><strong>A common Python pitfall:</strong> <code>list.pop(0)</code> is Θ(n), because every remaining element shifts left. For a queue, use <code>collections.deque</code>.</div>
+    </section>
+
+    <section id="sets-maps" class="lecture-section">
+      <h2>Sets and maps</h2>
+      <p class="lead">A set stores distinct keys. A map associates each key with a value. These are interfaces; the implementation determines the complexity.</p>
+      <div class="ds-two-col">
+        <article class="ds-card"><h3>Hash-based implementation</h3><p>With a well-behaved hash table, lookup, insertion, and deletion are typically expected <span class="math">Θ(1)</span>. This is the model behind Python <code>set</code> and <code>dict</code>.</p></article>
+        <article class="ds-card"><h3>Tree-based implementation</h3><p>A balanced search tree can provide ordered keys and <span class="math">Θ(log n)</span> lookup, insertion, and deletion. The order itself can be algorithmically valuable.</p></article>
+      </div>
+      <div class="ds-note">The later <strong>Hash Tables</strong> chapter studies hashing, collisions, load factor, and implementation details. Here the important distinction is between the set/map interface and the data structure used to realize it.</div>
+    </section>
+
+    <section id="heaps" class="lecture-section">
+      <h2>Heaps and priority queues</h2>
+      <p class="lead">A priority queue supports repeated access to the currently smallest or largest priority. A binary heap is a compact tree-shaped representation that supports this efficiently.</p>
+      <div class="ds-visual heap-visual">
+        <div class="heap-tree">
+          <div class="heap-level"><span class="heap-node">2</span></div>
+          <div class="heap-level"><span class="heap-node">5</span><span class="heap-node">7</span></div>
+          <div class="heap-level"><span class="heap-node">11</span><span class="heap-node">9</span><span class="heap-node">13</span><span class="heap-node">18</span></div>
+        </div>
+        <div><div class="ds-visual-title">The same heap as an array</div><div class="heap-array"><span>2</span><span>5</span><span>7</span><span>11</span><span>9</span><span>13</span><span>18</span></div><p class="ds-complexity">For index <code>i</code>, children are at <code>2i+1</code> and <code>2i+2</code> in a zero-indexed array.</p></div>
+      </div>
+      <div class="ds-two-col">
+        <article class="ds-card"><h3>Min-heap invariant</h3><p>Every parent is no larger than its children. Therefore the minimum is always stored at the root and can be read in <span class="math">Θ(1)</span>.</p></article>
+        <article class="ds-card"><h3>Operations</h3><p>Insertion and extraction restore the heap invariant along one root-to-leaf path, so they take <span class="math">Θ(log n)</span>. Building a heap from an array can be done in <span class="math">Θ(n)</span>.</p></article>
+      </div>
+      <div class="ds-note"><strong>A heap is not a sorted array.</strong> The invariant only orders each parent against its children. It gives fast access to the extreme priority without maintaining a complete global order.</div>
+    </section>
+
+    <section id="trees" class="lecture-section">
+      <h2>Trees</h2>
+      <p class="lead">A tree is a hierarchical structure of nodes connected by parent-child relations. Trees appear in search structures, syntax trees, file systems, recursion, and many graph algorithms.</p>
+      <div class="ds-two-col">
+        <article class="ds-card"><h3>Vocabulary</h3><ul><li><strong>Root:</strong> the node with no parent.</li><li><strong>Depth:</strong> distance from the root.</li><li><strong>Height:</strong> maximum downward distance to a leaf.</li><li><strong>Subtree:</strong> a node together with all of its descendants.</li></ul></article>
+        <article class="ds-card"><h3>Traversal</h3><p>Depth-first traversals explore one branch before returning; breadth-first traversal explores level by level. These traversal patterns will reappear in the Graphs chapter.</p><p>A binary search tree additionally maintains an ordering rule, but its operation costs depend on the tree height. Balanced variants keep the height logarithmic.</p></article>
+      </div>
+    </section>
+
+    <section id="choose" class="lecture-section">
+      <h2>Choosing a data structure</h2>
+      <p class="lead">There is no universally best structure. The right choice follows from the operations the algorithm needs to perform.</p>
+      <div class="ds-table-wrap">
+        <table class="ds-table">
+          <thead><tr><th>Structure</th><th>Best-known use</th><th>Typical cheap operations</th><th>Main trade-off</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Array / dynamic array</strong></td><td>Indexed sequences</td><td><span class="ds-good">index Θ(1)</span>, append amortized Θ(1)</td><td>middle insertion/deletion Θ(n)</td></tr>
+            <tr><td><strong>Linked list</strong></td><td>Local insertion/removal with known nodes</td><td><span class="ds-good">link updates Θ(1)</span></td><td>index/search Θ(n)</td></tr>
+            <tr><td><strong>Stack</strong></td><td>Nested processes, DFS, undo</td><td><span class="ds-good">push/pop Θ(1)</span></td><td>only one end is exposed</td></tr>
+            <tr><td><strong>Queue / deque</strong></td><td>BFS, scheduling, sliding windows</td><td><span class="ds-good">end operations Θ(1)</span></td><td>no arbitrary ordered access</td></tr>
+            <tr><td><strong>Hash set / map</strong></td><td>Membership and key lookup</td><td><span class="ds-good">expected Θ(1)</span></td><td>no intrinsic sorted order</td></tr>
+            <tr><td><strong>Binary heap</strong></td><td>Repeated min/max priority</td><td>peek Θ(1), push/pop <span class="ds-good">Θ(log n)</span></td><td>not fully sorted</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="ds-checklist">
+        <article class="ds-check"><strong>Need random access by position?</strong><p>Start with an array or dynamic array.</p></article>
+        <article class="ds-check"><strong>Need FIFO or LIFO behavior?</strong><p>Use a queue/deque or a stack.</p></article>
+        <article class="ds-check"><strong>Need fast membership by key?</strong><p>Use a set or map; later we will study hash tables in detail.</p></article>
+        <article class="ds-check"><strong>Need the current minimum or maximum repeatedly?</strong><p>A priority queue implemented by a heap is usually the right tool.</p></article>
+      </div>
+
+      <div class="next-part">
+        <h3>Next chapter: Sorting</h3>
+        <p>With the basic storage and access patterns in place, we can study how algorithms reorder collections and how data structures affect their cost.</p>
+        <a class="next-part-link" href="../sorting/">Sorting →</a>
+      </div>
+      <div class="lecture-crosslink"><a href="../introduction/">← Previous chapter: Introduction to Algorithms</a></div>
+    </section>
+  </main>
+
+  <footer class="lecture-footer"><div>Allan's Handbook of Algorithms</div><div>© 2026 Allan Allemand</div></footer>
+  <script src="../assets/js/lecture-core.js"></script>
+  <script src="../assets/js/language-switch.js"></script>
+</body>
+</html>
