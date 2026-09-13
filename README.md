@@ -1,6 +1,14 @@
-# Allan's Handbook of Algorithms — v34
+# Allan's Handbook of Algorithms — v35
 
-Homepage logo quality fix:
-- replaced the homepage title image source with a dedicated high-resolution file;
-- kept the favicon files unchanged for browser tabs;
-- added `homepage-logo.png` for the large title-row logo on the landing page.
+Sorting chapter restructuring:
+- `sorting.html` is now a pure contents page.
+- Removed all introductory material from the overview.
+- Removed the Literature section.
+- Added a new unnumbered `Introduction` part before Elementary Comparison Sorts.
+- Added Section 1: `Introduction to Sorting`.
+- Added Section 2: `Applications of Sorting`.
+- Moved the previous introductory material into `sorting-introduction.html`.
+- Added a complete `sorting-applications.html`.
+- Shifted the existing Sorting section numbers from 1–11 to 3–13.
+- Updated old `Course` links to the current `Topics` homepage anchor.
+- Copyright footers remain.

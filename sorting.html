@@ -3,9 +3,9 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Sorting algorithms: what sorting means, why it is useful, and the algorithms covered in this chapter.">
+  <meta name="description" content="Sorting: chapter contents for Allan's Handbook of Algorithms.">
   <meta property="og:title" content="Sorting | Allan's Handbook of Algorithms">
-  <meta property="og:description" content="The sorting problem and a roadmap of sorting algorithms.">
+  <meta property="og:description" content="Sorting chapter contents: foundations, comparison sorting, non-comparison sorting, and order statistics.">
   <meta property="og:type" content="article">
   <title>Sorting | Allan's Handbook of Algorithms</title>
   <link rel="stylesheet" href="styles.css">
@@ -18,133 +18,55 @@
   <header class="topbar">
     <a class="brand" href="index.html"><span class="brand-mark brand-mark-logo"><img class="brand-mark-image" src="logo.png" alt=""></span><span class="brand-name">Allan's Handbook of Algorithms</span></a>
     <nav class="topnav" aria-label="Primary navigation">
-      <a href="index.html#course">Course</a>
-      <a href="#chapter-map">Sections</a>
+      <a href="index.html#topics">Topics</a>
       <a href="index.html">Home</a>
     </nav>
   </header>
 
-  <main class="chapter-overview">
-    <section class="overview-hero">
+  <main class="chapter-overview sorting-contents-page">
+    <section id="chapter-map" class="overview-section sorting-contents">
       <div class="chapter-label">Chapter 1</div>
       <h1>Sorting</h1>
-      <p>
-        Comparison sorting. Lower bounds. Sorting beyond comparisons. Order statistics.
-      </p>
-    </section>
+      <h2>Contents</h2>
 
-    <section class="overview-section">
-      <h2>What does it mean to sort a sequence?</h2>
-
-      <div class="story-example">
-        <div class="story-copy">
-          <h3>Finding the most played songs</h3>
-          <p>
-            Suppose you have a list of songs together with the number of times each song has been played.
-            You want the most frequently played songs to appear first.
-          </p>
-          <p>
-            One simple procedure is to find the song with the largest play count, place it first,
-            and then repeat the same operation for the remaining songs.
-          </p>
-          <p>
-            We will also study more efficient ways to sort data, especially when the number of elements becomes large.
-          </p>
-        </div>
-
-        <div class="ranking-demo" aria-label="Example of sorting songs by play count">
-          <div class="ranking-row"><span>North</span><b>38</b></div>
-          <div class="ranking-row"><span>Glass</span><b>91</b></div>
-          <div class="ranking-row"><span>River</span><b>54</b></div>
-          <div class="ranking-row"><span>Signal</span><b>73</b></div>
-
-          <div class="ranking-arrow">↓ sort by play count</div>
-
-          <div class="ranking-row sorted-row"><span>Glass</span><b>91</b></div>
-          <div class="ranking-row sorted-row"><span>Signal</span><b>73</b></div>
-          <div class="ranking-row sorted-row"><span>River</span><b>54</b></div>
-          <div class="ranking-row sorted-row"><span>North</span><b>38</b></div>
-        </div>
-      </div>
-
-      <div class="definition-card">
-        <h3>Definition</h3>
-        <p>
-          Sorting is the process of arranging a set of elements or data according to a specified rule
-          or property, for example in ascending order, descending order, alphabetical order, or by date.
-        </p>
-        <p>
-          A sorting algorithm is a step-by-step procedure for placing the elements of an array or list
-          in the required order. Common examples include Bubble Sort, Selection Sort, and Merge Sort.
-        </p>
-      </div>
-
-      <div class="concept-row">
-        <div class="concept-card">
-          <div class="mini-array unsorted">
-            <span>7</span><span>2</span><span>9</span><span>2</span><span>5</span>
-          </div>
-          <h3>Before sorting</h3>
-          <p>The relative positions of neighboring elements carry little global structure.</p>
-        </div>
-
-        <div class="concept-arrow">→</div>
-
-        <div class="concept-card">
-          <div class="mini-array sorted">
-            <span>2</span><span>2</span><span>5</span><span>7</span><span>9</span>
-          </div>
-          <h3>After sorting</h3>
-          <p>Equal elements are grouped, extrema are immediate, and binary search becomes possible.</p>
-        </div>
-      </div>
-
-      <div class="algorithm-criteria">
-        <h3>How we evaluate a sorting algorithm</h3>
-
-        <div class="criteria-grid">
-          <article class="criterion-card">
-            <div class="criterion-icon criterion-correctness" aria-hidden="true">✓</div>
-            <div>
-              <h4>Correctness</h4>
-              <p>Does the algorithm always produce the required ordering for every valid input?</p>
-            </div>
-          </article>
-
-          <article class="criterion-card">
-            <div class="criterion-icon criterion-time" aria-hidden="true">↗</div>
-            <div>
-              <h4>Running time</h4>
-              <p>How does the amount of work grow as the number of elements increases?</p>
-            </div>
-          </article>
-
-          <article class="criterion-card">
-            <div class="criterion-icon criterion-memory" aria-hidden="true">▦</div>
-            <div>
-              <h4>Extra memory</h4>
-              <p>How much additional storage is required beyond the input itself?</p>
-            </div>
-          </article>
-        </div>
-
-        <div class="asymptotic-note">
-          <div class="asymptotic-mark">Θ</div>
+      <div class="sorting-part">
+        <div class="sorting-part-head">
           <div>
-            <h4>Asymptotic complexity is not the whole story</h4>
-            <p>
-              Two algorithms with the same asymptotic running time may still behave differently in practice.
-              Stability, the number of element moves, performance on nearly sorted data, and constant factors
-              can all matter when choosing an algorithm.
-            </p>
+            <span class="sorting-part-kicker">Foundations</span>
+            <h3>Introduction</h3>
           </div>
+          <p>
+            What sorting means, how we evaluate sorting algorithms,
+            and why sorting is a fundamental preprocessing step in algorithm design.
+          </p>
+        </div>
+
+        <div class="chapter-grid">
+          <a class="chapter-card available" href="sorting-introduction.html">
+            <div class="chapter-card-number">1</div>
+            <div>
+              <h3>Introduction to Sorting</h3>
+              <p>
+                The sorting problem, examples, correctness, running time,
+                extra memory, and the criteria used throughout the chapter.
+              </p>
+              <span class="chapter-link">Open section →</span>
+            </div>
+          </a>
+
+          <a class="chapter-card available" href="sorting-applications.html">
+            <div class="chapter-card-number">2</div>
+            <div>
+              <h3>Applications of Sorting</h3>
+              <p>
+                Search, ranking, grouping, duplicate detection,
+                range processing, and other problems simplified by ordering the data.
+              </p>
+              <span class="chapter-link">Open section →</span>
+            </div>
+          </a>
         </div>
       </div>
-
-    </section>
-
-    <section id="chapter-map" class="overview-section">
-      <h2>Chapter structure</h2>
 
       <div class="sorting-part">
         <div class="sorting-part-head">
@@ -160,7 +82,7 @@
 
         <div class="chapter-grid">
           <a class="chapter-card available" href="sorting-selection-insertion.html">
-            <div class="chapter-card-number">1</div>
+            <div class="chapter-card-number">3</div>
             <div>
               <h3>Selection and Insertion Sorts</h3>
               <p>
@@ -172,7 +94,7 @@
           </a>
 
           <a class="chapter-card available" href="sorting-bubble.html">
-            <div class="chapter-card-number">2</div>
+            <div class="chapter-card-number">4</div>
             <div>
               <h3>Bubble Sort</h3>
               <p>Adjacent comparisons, local swaps, inversions, stability, and early stopping.</p>
@@ -196,7 +118,7 @@
 
         <div class="chapter-grid">
           <a class="chapter-card available" href="sorting-merge.html">
-            <div class="chapter-card-number">3</div>
+            <div class="chapter-card-number">5</div>
             <div>
               <h3>Merge Sort</h3>
               <p>
@@ -208,7 +130,7 @@
           </a>
 
           <a class="chapter-card available" href="sorting-quick.html">
-            <div class="chapter-card-number">4</div>
+            <div class="chapter-card-number">6</div>
             <div>
               <h3>Quick Sort</h3>
               <p>
@@ -220,12 +142,10 @@
           </a>
 
           <a class="chapter-card planned" href="sorting-limits.html">
-            <div class="chapter-card-number">5</div>
+            <div class="chapter-card-number">7</div>
             <div>
               <h3>Limits of Comparison Sorting</h3>
-              <p>
-                Decision trees and the Ω(loglinear) lower bound for comparison-based sorting.
-              </p>
+              <p>Decision trees and the Ω(loglinear) lower bound for comparison-based sorting.</p>
               <span class="chapter-link planned-link">Coming soon →</span>
             </div>
           </a>
@@ -246,7 +166,7 @@
 
         <div class="chapter-grid">
           <a class="chapter-card planned" href="sorting-counting.html">
-            <div class="chapter-card-number">6</div>
+            <div class="chapter-card-number">8</div>
             <div>
               <h3>Counting Sort</h3>
               <p>Sorting integer keys by counting their occurrences rather than comparing pairs of elements.</p>
@@ -255,7 +175,7 @@
           </a>
 
           <a class="chapter-card planned" href="sorting-radix.html">
-            <div class="chapter-card-number">7</div>
+            <div class="chapter-card-number">9</div>
             <div>
               <h3>Radix Sort</h3>
               <p>Sorting structured keys one digit or component at a time using stable intermediate passes.</p>
@@ -264,7 +184,7 @@
           </a>
 
           <a class="chapter-card planned" href="sorting-bucket.html">
-            <div class="chapter-card-number">8</div>
+            <div class="chapter-card-number">10</div>
             <div>
               <h3>Bucket Sort</h3>
               <p>Distributing values into buckets and exploiting assumptions about the input distribution.</p>
@@ -288,7 +208,7 @@
 
         <div class="chapter-grid">
           <a class="chapter-card planned" href="sorting-min-max.html">
-            <div class="chapter-card-number">9</div>
+            <div class="chapter-card-number">11</div>
             <div>
               <h3>Minimum and Maximum</h3>
               <p>The simplest order statistics and the exact comparison cost of finding extrema.</p>
@@ -297,7 +217,7 @@
           </a>
 
           <a class="chapter-card planned" href="sorting-quickselect.html">
-            <div class="chapter-card-number">10</div>
+            <div class="chapter-card-number">12</div>
             <div>
               <h3>Quickselect</h3>
               <p>Using partitioning to follow only the side that contains the required rank.</p>
@@ -306,7 +226,7 @@
           </a>
 
           <a class="chapter-card planned" href="sorting-deterministic-select.html">
-            <div class="chapter-card-number">11</div>
+            <div class="chapter-card-number">13</div>
             <div>
               <h3>Deterministic Linear Selection</h3>
               <p>Median of medians and worst-case linear-time selection.</p>
@@ -316,13 +236,9 @@
         </div>
       </div>
     </section>
-
-    <section id="literature" class="overview-section literature-section">
-      <h2>Literature</h2>
-    </section>
   </main>
 
-  <footer>
+  <footer class="overview-footer">
     <div>Allan's Handbook of Algorithms</div>
     <div>© 2026 Allan Allemand</div>
   </footer>

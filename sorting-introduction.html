@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Introduction to sorting: what sorting means and how sorting algorithms are evaluated.">
+  <meta property="og:title" content="Introduction to Sorting | Allan's Handbook of Algorithms">
+  <meta property="og:type" content="article">
+  <title>Introduction to Sorting | Allan's Handbook of Algorithms</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+  <link rel="icon" type="image/png" sizes="64x64" href="favicon.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+</head>
+
+<body class="lecture-page">
+  <header class="topbar">
+    <a class="brand" href="index.html"><span class="brand-mark brand-mark-logo"><img class="brand-mark-image" src="logo.png" alt=""></span><span class="brand-name">Allan's Handbook of Algorithms</span></a>
+    <nav class="topnav" aria-label="Primary navigation">
+      <a href="sorting.html">Sorting overview</a>
+      <a href="index.html#topics">Topics</a>
+      <a href="index.html">Home</a>
+    </nav>
+  </header>
+
+  <aside class="sidebar" aria-label="Section navigation">
+    <div class="sidebar-title">Chapter 1 · Section 1</div>
+    <a href="#meaning">What sorting means</a>
+    <a href="#definition">Definition</a>
+    <a href="#before-after">Before and after</a>
+    <a href="#criteria">How we evaluate algorithms</a>
+  </aside>
+
+  <main class="lecture">
+    <section class="lecture-hero">
+      <div class="chapter-label">Chapter 1 · Section 1</div>
+      <h1>Introduction to Sorting</h1>
+      <p class="chapter-topics">
+        The sorting problem and the criteria used to analyze sorting algorithms.
+      </p>
+    </section>
+
+    <section id="meaning" class="lecture-section">
+      <h2>What does it mean to sort a sequence?</h2>
+
+      <div class="story-example">
+        <div class="story-copy">
+          <h3>Finding the most played songs</h3>
+          <p>
+            Suppose you have a list of songs together with the number of times each song has been played.
+            You want the most frequently played songs to appear first.
+          </p>
+          <p>
+            One simple procedure is to find the song with the largest play count, place it first,
+            and then repeat the same operation for the remaining songs.
+          </p>
+          <p>
+            We will also study more efficient ways to sort data, especially when the number of elements becomes large.
+          </p>
+        </div>
+
+        <div class="ranking-demo" aria-label="Example of sorting songs by play count">
+          <div class="ranking-row"><span>North</span><b>38</b></div>
+          <div class="ranking-row"><span>Glass</span><b>91</b></div>
+          <div class="ranking-row"><span>River</span><b>54</b></div>
+          <div class="ranking-row"><span>Signal</span><b>73</b></div>
+
+          <div class="ranking-arrow">↓ sort by play count</div>
+
+          <div class="ranking-row sorted-row"><span>Glass</span><b>91</b></div>
+          <div class="ranking-row sorted-row"><span>Signal</span><b>73</b></div>
+          <div class="ranking-row sorted-row"><span>River</span><b>54</b></div>
+          <div class="ranking-row sorted-row"><span>North</span><b>38</b></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="definition" class="lecture-section">
+      <h2>Definition</h2>
+
+      <div class="definition-card">
+        <p>
+          Sorting is the process of arranging a set of elements or data according to a specified rule
+          or property, for example in ascending order, descending order, alphabetical order, or by date.
+        </p>
+        <p>
+          A sorting algorithm is a step-by-step procedure for placing the elements of an array or list
+          in the required order. Common examples include Bubble Sort, Selection Sort, and Merge Sort.
+        </p>
+      </div>
+    </section>
+
+    <section id="before-after" class="lecture-section">
+      <h2>Before and after sorting</h2>
+
+      <div class="concept-row">
+        <div class="concept-card">
+          <div class="mini-array unsorted">
+            <span>7</span><span>2</span><span>9</span><span>2</span><span>5</span>
+          </div>
+          <h3>Before sorting</h3>
+          <p>The relative positions of neighboring elements carry little global structure.</p>
+        </div>
+
+        <div class="concept-arrow">→</div>
+
+        <div class="concept-card">
+          <div class="mini-array sorted">
+            <span>2</span><span>2</span><span>5</span><span>7</span><span>9</span>
+          </div>
+          <h3>After sorting</h3>
+          <p>Equal elements are grouped, extrema are immediate, and binary search becomes possible.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="criteria" class="lecture-section">
+      <h2>How we evaluate a sorting algorithm</h2>
+
+      <div class="algorithm-criteria">
+        <div class="criteria-grid">
+          <article class="criterion-card">
+            <div class="criterion-icon criterion-correctness" aria-hidden="true">✓</div>
+            <div>
+              <h4>Correctness</h4>
+              <p>Does the algorithm always produce the required ordering for every valid input?</p>
+            </div>
+          </article>
+
+          <article class="criterion-card">
+            <div class="criterion-icon criterion-time" aria-hidden="true">↗</div>
+            <div>
+              <h4>Running time</h4>
+              <p>How does the amount of work grow as the number of elements increases?</p>
+            </div>
+          </article>
+
+          <article class="criterion-card">
+            <div class="criterion-icon criterion-memory" aria-hidden="true">▦</div>
+            <div>
+              <h4>Extra memory</h4>
+              <p>How much additional storage is required beyond the input itself?</p>
+            </div>
+          </article>
+        </div>
+
+        <div class="asymptotic-note">
+          <div class="asymptotic-mark">Θ</div>
+          <div>
+            <h4>Asymptotic complexity is not the whole story</h4>
+            <p>
+              Two algorithms with the same asymptotic running time may still behave differently in practice.
+              Stability, the number of element moves, performance on nearly sorted data, and constant factors
+              can all matter when choosing an algorithm.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="lecture-footer">
+    <div>Allan's Handbook of Algorithms</div>
+    <div>© 2026 Allan Allemand</div>
+  </footer>
+</body>
+</html>

@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Applications of sorting in search, ranking, grouping, duplicate detection, and range processing.">
+  <meta property="og:title" content="Applications of Sorting | Allan's Handbook of Algorithms">
+  <meta property="og:type" content="article">
+  <title>Applications of Sorting | Allan's Handbook of Algorithms</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+  <link rel="icon" type="image/png" sizes="64x64" href="favicon.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+
+  <style>
+    .application-grid {
+      display:grid;
+      grid-template-columns:repeat(2, minmax(0,1fr));
+      gap:16px;
+      margin-top:28px;
+    }
+
+    .application-card {
+      min-height:205px;
+      padding:24px;
+      border:1px solid var(--line);
+      border-radius:18px;
+      background:#fff;
+    }
+
+    .application-mark {
+      width:46px;
+      height:46px;
+      margin-bottom:17px;
+      display:grid;
+      place-items:center;
+      border-radius:13px;
+      background:#eef2e7;
+      color:#5e7e2d;
+      font-weight:850;
+      font-size:19px;
+    }
+
+    .application-card:nth-child(2) .application-mark { background:#edf2f8; color:#527cab; }
+    .application-card:nth-child(3) .application-mark { background:#fbf1e6; color:#b66c40; }
+    .application-card:nth-child(4) .application-mark { background:#f3eef8; color:#7960a9; }
+    .application-card:nth-child(5) .application-mark { background:#edf5f0; color:#4e8970; }
+    .application-card:nth-child(6) .application-mark { background:#f8f0ef; color:#a6635b; }
+
+    .application-card h3 { margin:0 0 8px; font-size:20px; }
+    .application-card p { margin:0; color:var(--muted); font-size:14px; line-height:1.65; }
+
+    .application-example {
+      margin:30px 0 0;
+      padding:24px 26px;
+      border:1px solid #ddd8f0;
+      border-left:4px solid var(--purple);
+      border-radius:17px;
+      background:#f8f6fc;
+    }
+
+    .application-example h3 { margin:0 0 10px; }
+    .application-example p { margin:0; color:#5d6670; }
+
+    @media (max-width:760px) {
+      .application-grid { grid-template-columns:1fr; }
+    }
+  </style>
+</head>
+
+<body class="lecture-page">
+  <header class="topbar">
+    <a class="brand" href="index.html"><span class="brand-mark brand-mark-logo"><img class="brand-mark-image" src="logo.png" alt=""></span><span class="brand-name">Allan's Handbook of Algorithms</span></a>
+    <nav class="topnav" aria-label="Primary navigation">
+      <a href="sorting.html">Sorting overview</a>
+      <a href="index.html#topics">Topics</a>
+      <a href="index.html">Home</a>
+    </nav>
+  </header>
+
+  <aside class="sidebar" aria-label="Section navigation">
+    <div class="sidebar-title">Chapter 1 · Section 2</div>
+    <a href="#why">Why sorting helps</a>
+    <a href="#applications">Applications</a>
+    <a href="#preprocessing">Sorting as preprocessing</a>
+  </aside>
+
+  <main class="lecture">
+    <section class="lecture-hero">
+      <div class="chapter-label">Chapter 1 · Section 2</div>
+      <h1>Applications of Sorting</h1>
+      <p class="chapter-topics">
+        Sorting is often useful not as the final answer, but as a preprocessing step that gives data structure.
+      </p>
+    </section>
+
+    <section id="why" class="lecture-section">
+      <h2>Why sorting helps</h2>
+
+      <p class="lead">
+        An unsorted sequence can hide global information. After sorting, values that are close
+        become neighbors, equal values become adjacent, extrema move to the ends, and many queries
+        can be answered by scanning or searching the ordered sequence.
+      </p>
+
+      <div class="concept-row">
+        <div class="concept-card">
+          <div class="mini-array unsorted">
+            <span>8</span><span>2</span><span>8</span><span>5</span><span>1</span><span>5</span>
+          </div>
+          <h3>Unordered data</h3>
+          <p>Equal or nearby values may be separated by many unrelated elements.</p>
+        </div>
+
+        <div class="concept-arrow">→</div>
+
+        <div class="concept-card">
+          <div class="mini-array sorted">
+            <span>1</span><span>2</span><span>5</span><span>5</span><span>8</span><span>8</span>
+          </div>
+          <h3>Ordered data</h3>
+          <p>Equal values are adjacent and the relative order of values becomes explicit.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="applications" class="lecture-section">
+      <h2>Common applications</h2>
+
+      <div class="application-grid">
+        <article class="application-card">
+          <div class="application-mark">⌕</div>
+          <h3>Fast search</h3>
+          <p>
+            Once a sequence is sorted, binary search can locate a target in logarithmic time.
+            Sorting can therefore be worthwhile when many searches will be performed on the same data.
+          </p>
+        </article>
+
+        <article class="application-card">
+          <div class="application-mark">#</div>
+          <h3>Ranking</h3>
+          <p>
+            Scores, prices, times, and other measurements are frequently sorted to determine ranks,
+            display the best or worst values, or construct ordered reports.
+          </p>
+        </article>
+
+        <article class="application-card">
+          <div class="application-mark">=</div>
+          <h3>Duplicate detection</h3>
+          <p>
+            After sorting, equal elements appear next to each other.
+            A single scan is enough to detect repeated values and group equal keys.
+          </p>
+        </article>
+
+        <article class="application-card">
+          <div class="application-mark">↔</div>
+          <h3>Pairs and intervals</h3>
+          <p>
+            Many two-pointer and interval-processing methods begin by sorting.
+            The order allows indices to move monotonically instead of checking every pair.
+          </p>
+        </article>
+
+        <article class="application-card">
+          <div class="application-mark">∪</div>
+          <h3>Combining ordered data</h3>
+          <p>
+            Two sorted sequences can be merged efficiently.
+            Similar scans can compute intersections, unions, and matches between ordered collections.
+          </p>
+        </article>
+
+        <article class="application-card">
+          <div class="application-mark">↥</div>
+          <h3>Order-based summaries</h3>
+          <p>
+            Sorting exposes minima, maxima, medians, quantiles, and other order statistics.
+            Later in this chapter we will see when full sorting is unnecessary for these tasks.
+          </p>
+        </article>
+      </div>
+
+      <div class="application-example">
+        <h3>Sorting changes the representation of a problem</h3>
+        <p>
+          The cost of sorting is sometimes repaid by a much simpler algorithm afterwards.
+          This pattern appears repeatedly: first impose order on the data, then exploit that order.
+        </p>
+      </div>
+    </section>
+
+    <section id="preprocessing" class="lecture-section">
+      <h2>Sorting as preprocessing</h2>
+
+      <p class="lead">
+        Sorting is especially useful when the ordered sequence will be reused.
+        A one-time preprocessing cost can make many later operations faster or easier to reason about.
+      </p>
+
+      <div class="definition-card">
+        <p>
+          The important question is therefore not only how expensive sorting is.
+          We also ask what structure sorting creates and whether later operations can exploit that structure.
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="lecture-footer">
+    <div>Allan's Handbook of Algorithms</div>
+    <div>© 2026 Allan Allemand</div>
+  </footer>
+</body>
+</html>
