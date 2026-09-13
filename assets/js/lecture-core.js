@@ -75,14 +75,28 @@
       randomize = null,
       store = "_states",
       nextAction = "next",
+      previousAction = nextAction.replace(/^next/, "previous"),
       resetAction = "reset",
       randomizeAction = "randomize"
     } = options;
 
+    const syncButtons = () => {
+      const previous = root.querySelector(`[data-action="${previousAction}"]`);
+      const next = root.querySelector(`[data-action="${nextAction}"]`);
+      const last = Math.max(0, root[store].length - 1);
+      if (previous) previous.disabled = root._index <= 0;
+      if (next) next.disabled = root._index >= last;
+    };
+
+    const draw = () => {
+      render(root);
+      syncButtons();
+    };
+
     const reset = data => {
       root[store] = build(data);
       root._index = 0;
-      render(root);
+      draw();
     };
 
     reset(initial);
@@ -94,7 +108,10 @@
 
       if (action === nextAction) {
         root._index = Math.min(root._index + 1, root[store].length - 1);
-        render(root);
+        draw();
+      } else if (action === previousAction) {
+        root._index = Math.max(root._index - 1, 0);
+        draw();
       } else if (action === resetAction) {
         reset(initial);
       } else if (randomize && action === randomizeAction) {

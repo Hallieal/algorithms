@@ -149,8 +149,13 @@ print(count_inversions([2, 4, 1, 3, 5]))
         <div class="easy-code-notes"><span class="easy-kicker">Как читать код</span><h3>Ключевая строка — обновление счётчика</h3><div class="easy-code-note"><b><code>count += mid - i</code></b><p>Все элементы с индексами <code>i, i+1, ..., mid-1</code> больше выбранного правого значения, поэтому каждый образует с ним инверсию.</p></div><div class="easy-code-note"><b><code>a[i] &lt;= a[j]</code></b><p>Равные значения не образуют инверсию. При равенстве берём левый элемент и ничего не добавляем.</p></div><div class="easy-code-note"><b>Временный массив</b><p>После каждого слияния текущий отрезок становится отсортированным — именно это требуется следующему уровню рекурсии.</p></div></div>
       </div>
       <p class="easy-source-line">Задача адаптирована из <a href="https://www.geeksforgeeks.org/dsa/inversion-count-in-array-using-merge-sort/" target="_blank" rel="noopener">Count Inversions of an Array using Merge Sort</a> на GeeksforGeeks. Формулировка и объяснение переписаны для этого гайда.</p>
-      <div class="next-part back-problems"><h3>Назад к практике</h3><p>Выберите другую задачу уровня Easy, Medium или Hard.</p><a class="next-part-link" href="index-ru.html">← Практические задачи</a></div>
-    </section>
+
+<nav class="problem-sequence-nav" aria-label="Навигация по задачам">
+  <a class="problem-sequence-link previous" href="k-smallest-ru.html"><span>← Предыдущая задача</span><strong>K наименьших элементов</strong></a>
+  <a class="problem-sequence-index" href="./">Все задачи</a>
+  <a class="problem-sequence-link next" href="top-k-frequent-ru.html"><span>Следующая задача →</span><strong>K самых частых элементов</strong></a>
+</nav>
+</section>
   </main>
 
   <footer class="lecture-footer"><div>Гайд по алгоритмам · presented by Аллан</div><div>© 2026 Allan Allemand</div></footer>
