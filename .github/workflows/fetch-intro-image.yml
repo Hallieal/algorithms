@@ -16,29 +16,91 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: main
-      - name: Inspect shared ChatGPT media page
+
+      - name: Download shared ChatGPT artwork
         run: |
-          set -euxo pipefail
-          URL='https://chatgpt.com/s/m_6aa6ea35c0348191961dc15fc07a2704'
-          curl -L --fail --silent --show-error \
-            -A 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 Chrome/140 Safari/537.36' \
-            -H 'Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8' \
-            -D /tmp/headers.txt "$URL" -o /tmp/share.html
-          echo '--- headers ---'
-          cat /tmp/headers.txt
-          echo '--- file info ---'
-          file /tmp/share.html
-          wc -c /tmp/share.html
-          echo '--- likely image refs ---'
-          python - <<'PY'
+          set -euo pipefail
+          SHARE_URL='https://chatgpt.com/s/m_6aa6ea35c0348191961dc15fc07a2704'
+          UA='Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 Chrome/140 Safari/537.36'
+
+          curl -L --fail --silent --show-error -A "$UA" "$SHARE_URL" -o /tmp/share.html
+
+          IMAGE_URL=$(python - <<'PY'
           import re, html
           text = open('/tmp/share.html', encoding='utf-8', errors='ignore').read()
-          for pat in [
-              r'<meta[^>]+property=["\']og:image["\'][^>]+content=["\']([^"\']+)',
-              r'<meta[^>]+content=["\']([^"\']+)["\'][^>]+property=["\']og:image["\']',
-              r'https://[^"\'<>\\ ]+(?:png|jpg|jpeg|webp)(?:\?[^"\'<>\\ ]*)?',
-              r'https://[^"\'<>\\ ]*(?:oaiusercontent|oaidalleapiprodscus|openai)[^"\'<>\\ ]*'
-          ]:
-              for m in re.findall(pat, text, flags=re.I):
-                  print(html.unescape(m if isinstance(m, str) else m[0]))
+          urls = re.findall(r'https://chatgpt\.com/backend-api/estuary/public_content/enc/[^"\'<>\\ ]+', text)
+          if not urls:
+              raise SystemExit('Could not find the public image URL in the shared ChatGPT page')
+          print(html.unescape(urls[0]))
           PY
+          )
+
+          echo "Fetching shared artwork"
+          curl -L --fail --silent --show-error -A "$UA" "$IMAGE_URL" -o /tmp/introduction-source
+          file /tmp/introduction-source
+
+      - name: Match the existing topic icon proportions
+        run: |
+          python -m pip install --quiet pillow
+          python - <<'PY'
+          from pathlib import Path
+          from PIL import Image, ImageOps
+
+          src_path = Path('/tmp/introduction-source')
+          reference_path = Path('assets/images/topic-prefix-sums.png')
+          out_path = Path('assets/images/topic-introduction.png')
+
+          src = Image.open(src_path).convert('RGBA')
+          ref = Image.open(reference_path)
+          target = ref.size
+          print('source:', src.size, 'reference:', target)
+
+          source_ratio = src.width / src.height
+          target_ratio = target[0] / target[1]
+
+          if abs(source_ratio / target_ratio - 1) <= 0.04:
+              result = src.resize(target, Image.Resampling.LANCZOS)
+          else:
+              fitted = ImageOps.contain(src, target, Image.Resampling.LANCZOS)
+              # Match the generated artwork's own corner/background tone instead of adding a new frame.
+              corner = src.getpixel((0, 0))
+              if corner[3] == 0:
+                  corner = (255, 255, 255, 0)
+              result = Image.new('RGBA', target, corner)
+              x = (target[0] - fitted.width) // 2
+              y = (target[1] - fitted.height) // 2
+              result.alpha_composite(fitted, (x, y))
+
+          result.save(out_path, 'PNG', optimize=True)
+          print('saved:', out_path, Image.open(out_path).size)
+          PY
+
+      - name: Use the artwork on both homepages
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          for name in ('index.html', 'index-ru.html'):
+              path = Path(name)
+              text = path.read_text(encoding='utf-8')
+              text = text.replace('assets/images/topic-introduction.svg?v=3', 'assets/images/topic-introduction.png?v=1')
+              text = text.replace('assets/images/topic-introduction.svg', 'assets/images/topic-introduction.png?v=1')
+              path.write_text(text, encoding='utf-8')
+
+          old = Path('assets/images/topic-introduction.svg')
+          if old.exists():
+              old.unlink()
+          PY
+
+      - name: Validate and commit
+        run: |
+          set -euo pipefail
+          test -f assets/images/topic-introduction.png
+          grep -q 'topic-introduction.png?v=1' index.html
+          grep -q 'topic-introduction.png?v=1' index-ru.html
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "Use shared Introduction artwork on homepage"
+          git push origin main
