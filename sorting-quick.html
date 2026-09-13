@@ -205,7 +205,7 @@
   .partition-demo-array .partition-demo-current {
     background:var(--orange);
     color:#fff;
-    transform:translateY(-5px);
+    transform:none;
   }
 
   .partition-demo-array .partition-demo-processed {
@@ -230,7 +230,7 @@
   /* Correctness */
   .quick-boundary-card {
     display:grid;
-    grid-template-columns:58px 1fr;
+    grid-template-columns:92px 1fr;
     gap:18px;
     margin:30px 0;
     padding:24px 26px;
@@ -241,15 +241,17 @@
   }
 
   .quick-boundary-symbol {
-    width:50px;
+    width:82px;
     height:50px;
     display:grid;
     place-items:center;
     border-radius:14px;
     background:#e4efd4;
     color:#5e8527;
-    font-size:21px;
+    font-size:18px;
     font-weight:850;
+    white-space:nowrap;
+    line-height:1;
   }
 
   .quick-boundary-card h3 { margin:1px 0 7px; }
@@ -471,6 +473,66 @@
       flex-direction:column;
       gap:6px;
     }
+  }
+
+
+
+  .quick-concat-formula {
+    display:flex;
+    align-items:center;
+    gap:8px;
+    flex-wrap:wrap;
+    margin-top:14px;
+    padding:13px 15px;
+    border:1px solid #e1dfda;
+    border-radius:12px;
+    background:#faf9f6;
+  }
+
+  .quick-concat-formula span {
+    padding:7px 10px;
+    border-radius:8px;
+    font-size:12px;
+    font-weight:800;
+    white-space:nowrap;
+  }
+
+  .quick-concat-left { background:#dcecf7; color:#426f91; }
+  .quick-concat-pivot { background:#ece7fa; color:#6656b5; }
+  .quick-concat-right { background:#e4efd5; color:#5b7f2d; }
+  .quick-concat-result { background:#1f2933; color:#fff; }
+  .quick-concat-formula b { color:#9aa2a9; font-size:16px; }
+
+  /* Static recursive trace: all stages are visible at once and have equal width. */
+  .quick-trace-static-intro {
+    margin:0 0 18px;
+    color:#59646d;
+  }
+
+  .quick-trace-stages.static-trace {
+    display:grid;
+    gap:12px;
+    margin:22px 0 0;
+  }
+
+  .quick-trace-stages.static-trace .quick-trace-stage {
+    width:100%;
+    max-width:none;
+    margin-left:0 !important;
+    box-sizing:border-box;
+  }
+
+  .quick-trace-stages.static-trace .quick-trace-stage:not(:last-child)::after {
+    left:27px;
+  }
+
+  .quick-trace-stages.static-trace .quick-trace-stage.is-return {
+    background:#f6f8f2;
+    border-color:#dce5ce;
+  }
+
+  .quick-trace-stages.static-trace .quick-trace-stage.is-base {
+    background:#fbfaf7;
   }
 
   /* Pivot choice */
@@ -880,12 +942,20 @@
           <div>
             <h3>Concatenation</h3>
             <p>
-              Every element of the sorted left part is at most the pivot,
-              and every element of the sorted right part is greater than the pivot.
-              Therefore
-              <span class="math">sorted left + pivot + sorted right</span>
-              is itself sorted.
+              Every element of the sorted left part is at most the pivot, and every element of the sorted right part
+              is greater than the pivot. So the three blocks can be placed next to one another without creating
+              an inversion across their boundaries.
             </p>
+
+            <div class="quick-concat-formula" aria-label="Sorted left plus pivot plus sorted right gives a sorted array">
+              <span class="quick-concat-left">sorted left</span>
+              <b>+</b>
+              <span class="quick-concat-pivot">pivot</span>
+              <b>+</b>
+              <span class="quick-concat-right">sorted right</span>
+              <b>→</b>
+              <span class="quick-concat-result">sorted array</span>
+            </div>
           </div>
         </article>
       </div>
@@ -949,27 +1019,151 @@
         The two groups are still unsorted, so Quick Sort applies the same procedure to each of them.
       </p>
 
-      <div class="quick-trace" id="quick-trace-demo">
-        <div class="visualizer-head">
-          <div>
-            <h3>Follow the recursive calls</h3>
-            <p>
-              Each click adds the next stage below the previous ones.
-              Nothing disappears, so you can follow the complete sequence of recursive calls from top to bottom.
-              The depth label shows how far down the recursion tree each stage occurs.
-            </p>
-          </div>
-          <button type="button" class="primary-step" data-action="next-trace">Next recursive step →</button>
-        </div>
+      <div class="quick-trace">
+        <h3>Follow the recursive calls</h3>
+        <p class="quick-trace-static-intro">
+          The complete trace for <code>[5, 7, 3, 1, 4, 8, 6]</code> is shown below.
+          Every stage has the same width; recursion depth is shown by the badge rather than by narrowing or indenting the card.
+        </p>
 
-        <div class="quick-trace-stages" data-role="trace-stages" aria-live="polite"></div>
+        <div class="quick-trace-stages static-trace">
+          <article class="quick-trace-stage">
+            <div class="quick-trace-stage-header">
+              <span class="quick-trace-stage-number">stage 1</span>
+              <div class="quick-trace-depth">recursion depth 0</div>
+            </div>
+            <p class="quick-trace-stage-type">Partition this subarray</p>
+            <div class="quick-trace-array">
+              <span class="trace-pivot">5</span><span>7</span><span>3</span><span>1</span><span>4</span><span>8</span><span>6</span>
+            </div>
+            <div class="quick-trace-groups">
+              <span class="trace-left">3</span><span class="trace-left">1</span><span class="trace-left">4</span>
+              <span class="trace-pivot">5</span>
+              <span class="trace-right">7</span><span class="trace-right">8</span><span class="trace-right">6</span>
+            </div>
+            <p class="quick-trace-stage-description">Partition [5, 7, 3, 1, 4, 8, 6] around pivot 5.</p>
+          </article>
 
-        <div class="step-caption" data-role="trace-caption">
-          Each new step is added below the previous one, so the full recursive path remains visible.
-        </div>
+          <article class="quick-trace-stage">
+            <div class="quick-trace-stage-header">
+              <span class="quick-trace-stage-number">stage 2</span>
+              <div class="quick-trace-depth">recursion depth 1</div>
+            </div>
+            <p class="quick-trace-stage-type">Partition the left subarray</p>
+            <div class="quick-trace-array">
+              <span class="trace-pivot">3</span><span>1</span><span>4</span>
+            </div>
+            <div class="quick-trace-groups">
+              <span class="trace-left">1</span><span class="trace-pivot">3</span><span class="trace-right">4</span>
+            </div>
+            <p class="quick-trace-stage-description">Partition [3, 1, 4] around pivot 3.</p>
+          </article>
 
-        <div class="secondary-controls">
-          <button type="button" data-action="reset-trace">Reset</button>
+          <article class="quick-trace-stage is-base">
+            <div class="quick-trace-stage-header">
+              <span class="quick-trace-stage-number">stage 3</span>
+              <div class="quick-trace-depth">recursion depth 2</div>
+            </div>
+            <p class="quick-trace-stage-type">Base case</p>
+            <div class="quick-trace-groups"><span class="trace-result">1</span></div>
+            <p class="quick-trace-stage-description">[1] is already sorted.</p>
+          </article>
+
+          <article class="quick-trace-stage is-base">
+            <div class="quick-trace-stage-header">
+              <span class="quick-trace-stage-number">stage 4</span>
+              <div class="quick-trace-depth">recursion depth 2</div>
+            </div>
+            <p class="quick-trace-stage-type">Base case</p>
+            <div class="quick-trace-groups"><span class="trace-result">4</span></div>
+            <p class="quick-trace-stage-description">[4] is already sorted.</p>
+          </article>
+
+          <article class="quick-trace-stage is-return">
+            <div class="quick-trace-stage-header">
+              <span class="quick-trace-stage-number">stage 5</span>
+              <div class="quick-trace-depth">recursion depth 1</div>
+            </div>
+            <p class="quick-trace-stage-type">Return from the left recursive call</p>
+            <div class="quick-trace-groups">
+              <span class="trace-left">1</span><span class="trace-pivot">3</span><span class="trace-right">4</span>
+            </div>
+            <div class="quick-trace-result-label">combined result</div>
+            <div class="quick-trace-groups">
+              <span class="trace-result">1</span><span class="trace-result">3</span><span class="trace-result">4</span>
+            </div>
+            <p class="quick-trace-stage-description">The left side of the original problem is now sorted.</p>
+          </article>
+
+          <article class="quick-trace-stage">
+            <div class="quick-trace-stage-header">
+              <span class="quick-trace-stage-number">stage 6</span>
+              <div class="quick-trace-depth">recursion depth 1</div>
+            </div>
+            <p class="quick-trace-stage-type">Partition the right subarray</p>
+            <div class="quick-trace-array">
+              <span class="trace-pivot">7</span><span>8</span><span>6</span>
+            </div>
+            <div class="quick-trace-groups">
+              <span class="trace-left">6</span><span class="trace-pivot">7</span><span class="trace-right">8</span>
+            </div>
+            <p class="quick-trace-stage-description">Partition [7, 8, 6] around pivot 7.</p>
+          </article>
+
+          <article class="quick-trace-stage is-base">
+            <div class="quick-trace-stage-header">
+              <span class="quick-trace-stage-number">stage 7</span>
+              <div class="quick-trace-depth">recursion depth 2</div>
+            </div>
+            <p class="quick-trace-stage-type">Base case</p>
+            <div class="quick-trace-groups"><span class="trace-result">6</span></div>
+            <p class="quick-trace-stage-description">[6] is already sorted.</p>
+          </article>
+
+          <article class="quick-trace-stage is-base">
+            <div class="quick-trace-stage-header">
+              <span class="quick-trace-stage-number">stage 8</span>
+              <div class="quick-trace-depth">recursion depth 2</div>
+            </div>
+            <p class="quick-trace-stage-type">Base case</p>
+            <div class="quick-trace-groups"><span class="trace-result">8</span></div>
+            <p class="quick-trace-stage-description">[8] is already sorted.</p>
+          </article>
+
+          <article class="quick-trace-stage is-return">
+            <div class="quick-trace-stage-header">
+              <span class="quick-trace-stage-number">stage 9</span>
+              <div class="quick-trace-depth">recursion depth 1</div>
+            </div>
+            <p class="quick-trace-stage-type">Return from the right recursive call</p>
+            <div class="quick-trace-groups">
+              <span class="trace-left">6</span><span class="trace-pivot">7</span><span class="trace-right">8</span>
+            </div>
+            <div class="quick-trace-result-label">combined result</div>
+            <div class="quick-trace-groups">
+              <span class="trace-result">6</span><span class="trace-result">7</span><span class="trace-result">8</span>
+            </div>
+            <p class="quick-trace-stage-description">The right side of the original problem is now sorted.</p>
+          </article>
+
+          <article class="quick-trace-stage is-return">
+            <div class="quick-trace-stage-header">
+              <span class="quick-trace-stage-number">stage 10</span>
+              <div class="quick-trace-depth">recursion depth 0</div>
+            </div>
+            <p class="quick-trace-stage-type">Return from the original call</p>
+            <div class="quick-trace-groups">
+              <span class="trace-left">1</span><span class="trace-left">3</span><span class="trace-left">4</span>
+              <span class="trace-pivot">5</span>
+              <span class="trace-right">6</span><span class="trace-right">7</span><span class="trace-right">8</span>
+            </div>
+            <div class="quick-trace-result-label">final sorted array</div>
+            <div class="quick-trace-groups">
+              <span class="trace-result">1</span><span class="trace-result">3</span><span class="trace-result">4</span>
+              <span class="trace-result">5</span><span class="trace-result">6</span><span class="trace-result">7</span><span class="trace-result">8</span>
+            </div>
+            <p class="quick-trace-stage-description">Quick Sort returns [1, 3, 4, 5, 6, 7, 8].</p>
+          </article>
         </div>
       </div>
     </section>
@@ -1541,219 +1735,6 @@
         resetPartition(partitionDemo, DEFAULT_PARTITION);
       } else if (button.dataset.action === "new-partition") {
         resetPartition(partitionDemo, randomUniqueArray());
-      }
-    });
-  }
-
-  /* -------------------------------------------------------
-     Recursive trace
-     ------------------------------------------------------- */
-
-  const TRACE_INPUT = [5, 7, 3, 1, 4, 8, 6];
-
-  function quickTrace(input) {
-    const events = [];
-
-    function sort(a, depth) {
-      if (a.length < 2) {
-        events.push({
-          type: "base",
-          depth,
-          array: [...a],
-          result: [...a],
-          text: a.length === 0
-            ? "Base case: the empty array is already sorted."
-            : `Base case: [${a[0]}] is already sorted.`
-        });
-        return [...a];
-      }
-
-      const pivot = a[0];
-      const left = a.slice(1).filter(x => x <= pivot);
-      const right = a.slice(1).filter(x => x > pivot);
-
-      events.push({
-        type: "partition",
-        depth,
-        array: [...a],
-        pivot,
-        left: [...left],
-        right: [...right],
-        text: `Partition [${a.join(", ")}] around pivot ${pivot}.`
-      });
-
-      const sortedLeft = sort(left, depth + 1);
-      const sortedRight = sort(right, depth + 1);
-      const result = [...sortedLeft, pivot, ...sortedRight];
-
-      events.push({
-        type: "return",
-        depth,
-        array: [...a],
-        pivot,
-        left: [...sortedLeft],
-        right: [...sortedRight],
-        result: [...result],
-        text: `Return [${result.join(", ")}].`
-      });
-
-      return result;
-    }
-
-    const result = sort([...input], 0);
-    return {events, result};
-  }
-
-  function makeCells(values, className) {
-    const frag = document.createDocumentFragment();
-
-    values.forEach(value => {
-      const span = document.createElement("span");
-      span.textContent = value;
-      if (className) span.classList.add(className);
-      frag.appendChild(span);
-    });
-
-    return frag;
-  }
-
-  function buildTraceStage(event, index, isCurrent) {
-    const stage = document.createElement("article");
-    stage.className = "quick-trace-stage";
-    if (isCurrent) stage.classList.add("is-current");
-    stage.dataset.depth = String(event.depth);
-
-    const header = document.createElement("div");
-    header.className = "quick-trace-stage-header";
-
-    const number = document.createElement("span");
-    number.className = "quick-trace-stage-number";
-    number.textContent = `stage ${index + 1}`;
-
-    const depth = document.createElement("div");
-    depth.className = "quick-trace-depth";
-    depth.textContent = `recursion depth ${event.depth}`;
-
-    header.appendChild(number);
-    header.appendChild(depth);
-    stage.appendChild(header);
-
-    const type = document.createElement("p");
-    type.className = "quick-trace-stage-type";
-
-    if (event.type === "partition") {
-      type.textContent = "Partition this subarray";
-      stage.appendChild(type);
-
-      const arr = document.createElement("div");
-      arr.className = "quick-trace-array";
-
-      event.array.forEach((value, i) => {
-        const cell = document.createElement("span");
-        cell.textContent = value;
-        if (i === 0) cell.classList.add("trace-pivot");
-        arr.appendChild(cell);
-      });
-
-      stage.appendChild(arr);
-
-      const groups = document.createElement("div");
-      groups.className = "quick-trace-groups";
-      groups.appendChild(makeCells(event.left, "trace-left"));
-
-      const pivot = document.createElement("span");
-      pivot.textContent = event.pivot;
-      pivot.classList.add("trace-pivot");
-      groups.appendChild(pivot);
-
-      groups.appendChild(makeCells(event.right, "trace-right"));
-      stage.appendChild(groups);
-    } else if (event.type === "base") {
-      type.textContent = "Base case";
-      stage.appendChild(type);
-
-      const arr = document.createElement("div");
-      arr.className = "quick-trace-groups";
-      arr.appendChild(makeCells(event.result, "trace-result"));
-
-      if (!event.result.length) {
-        const empty = document.createElement("span");
-        empty.textContent = "empty";
-        empty.classList.add("trace-result");
-        arr.appendChild(empty);
-      }
-
-      stage.appendChild(arr);
-    } else {
-      type.textContent = "Return from the recursive calls";
-      stage.appendChild(type);
-
-      const groups = document.createElement("div");
-      groups.className = "quick-trace-groups";
-      groups.appendChild(makeCells(event.left, "trace-left"));
-
-      const pivot = document.createElement("span");
-      pivot.textContent = event.pivot;
-      pivot.classList.add("trace-pivot");
-      groups.appendChild(pivot);
-
-      groups.appendChild(makeCells(event.right, "trace-right"));
-      stage.appendChild(groups);
-
-      const resultLabel = document.createElement("div");
-      resultLabel.className = "quick-trace-result-label";
-      resultLabel.textContent = "combined result";
-      stage.appendChild(resultLabel);
-
-      const result = document.createElement("div");
-      result.className = "quick-trace-groups";
-      result.appendChild(makeCells(event.result, "trace-result"));
-      stage.appendChild(result);
-    }
-
-    const description = document.createElement("p");
-    description.className = "quick-trace-stage-description";
-    description.textContent = event.text;
-    stage.appendChild(description);
-
-    return stage;
-  }
-
-  function renderTrace(demo) {
-    const stages = demo.querySelector('[data-role="trace-stages"]');
-    const caption = demo.querySelector('[data-role="trace-caption"]');
-    stages.replaceChildren();
-
-    for (let i = 0; i <= demo._index; i++) {
-      const event = demo._events[i];
-      stages.appendChild(buildTraceStage(event, i, i === demo._index));
-    }
-
-    const event = demo._events[demo._index];
-    caption.textContent = `${demo._index + 1} of ${demo._events.length} stages shown. ${event.text}`;
-  }
-
-  const traceDemo = document.getElementById("quick-trace-demo");
-
-  if (traceDemo) {
-    const trace = quickTrace(TRACE_INPUT);
-    traceDemo._events = trace.events;
-    traceDemo._index = 0;
-    renderTrace(traceDemo);
-
-    traceDemo.addEventListener("click", event => {
-      const button = event.target.closest("button[data-action]");
-      if (!button) return;
-
-      if (button.dataset.action === "next-trace") {
-        traceDemo._index = Math.min(
-          traceDemo._index + 1,
-          traceDemo._events.length - 1
-        );
-        renderTrace(traceDemo);
-      } else if (button.dataset.action === "reset-trace") {
-        traceDemo._index = 0;
-        renderTrace(traceDemo);
       }
     });
   }
