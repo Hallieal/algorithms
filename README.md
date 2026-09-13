@@ -28,3 +28,9 @@ Bilingual algorithm handbook published with GitHub Pages.
 The same chapter structure can be reused for future topics such as graphs, dynamic programming, and binary search.
 
 Live site: https://hallieal.github.io/algorithms/
+
+
+## Published chapters
+
+- `introduction/` — algorithm analysis foundations: computation model, time, memory, and asymptotic notation.
+- `sorting/` — sorting theory and practice problems.

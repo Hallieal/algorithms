@@ -3497,3 +3497,43 @@ th {
   .previous-step,
   .primary-step { padding-left: 10px; padding-right: 10px; }
 }
+
+
+/* ---------- Introduction chapter integration ---------- */
+.intro-course-icon {
+  flex-direction: column;
+  gap: 1px;
+  background: linear-gradient(180deg, #f3f5ec 0%, #e9eee0 100%);
+  color: #556d37;
+}
+
+.intro-course-icon span {
+  display: block;
+  font: 700 35px/1 Georgia, serif;
+}
+
+.intro-course-icon small {
+  display: block;
+  color: #7a876a;
+  font: 700 9px/1.1 "SFMono-Regular", Consolas, monospace;
+  letter-spacing: .03em;
+}
+
+.chapter-prereq-note {
+  margin: 7px 0 34px;
+  padding: 13px 16px;
+  border: 1px solid #dfe5d4;
+  border-radius: 12px;
+  background: #f7f9f2;
+  color: #657069;
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.chapter-prereq-note strong { color: #4f5d45; }
+.chapter-prereq-note a {
+  color: #55752d;
+  font-weight: 800;
+  text-decoration: none;
+}
+.chapter-prereq-note a:hover { text-decoration: underline; }
