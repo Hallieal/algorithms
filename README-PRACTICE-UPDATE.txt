@@ -10,3 +10,6 @@ Changes:
 - Renumbered existing Medium/Hard solution pages to 4–9.
 
 Unzip these files over the root of the existing handbook site.
+
+
+v3: redesigned all three Easy problem pages in the visual language of the theory chapters; replaced the Practice Problems checkmark with a lightbulb/code icon.

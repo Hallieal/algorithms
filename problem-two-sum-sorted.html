@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Find a target pair in linear time by exploiting sorted order with two pointers.">
+  <meta name="description" content="Find a pair with a target sum in linear time using two pointers on sorted data.">
   <meta property="og:title" content="Two Sum in a Sorted Array | Allan's Handbook of Algorithms">
   <meta property="og:type" content="article">
   <title>Two Sum in a Sorted Array | Allan's Handbook of Algorithms</title>
@@ -13,7 +13,7 @@
   <link rel="icon" type="image/png" sizes="64x64" href="favicon.png">
   <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
 </head>
-<body class="lecture-page problem-page">
+<body class="lecture-page problem-page easy-redesign">
   <div class="progress-track" aria-hidden="true"><div class="progress-bar" id="reading-progress"></div></div>
   <header class="topbar">
     <a class="brand" href="index.html"><span class="brand-mark brand-mark-logo"><img class="brand-mark-image" src="logo.png" alt=""></span><span class="brand-name">Allan's Handbook of Algorithms</span></a>
@@ -21,50 +21,87 @@
   </header>
   <aside class="sidebar" aria-label="Section navigation">
     <div class="sidebar-title">Problem 2 · Easy</div>
-    <a href="#problem">Problem</a><a href="#idea">Key idea</a><a href="#algorithm">Algorithm</a><a href="#correctness">Why it works</a><a href="#complexity">Complexity</a><a href="#implementation">Python</a>
+    <a href="#problem">Problem</a><a href="#idea">Core idea</a><a href="#algorithm">Algorithm</a><a href="#correctness">Correctness & complexity</a><a href="#implementation">Implementation</a>
   </aside>
   <main class="lecture">
     <section class="lecture-hero">
-      <div class="chapter-label">Sorting · Practice</div>
-      <span class="problem-title-icon easy" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h7M4 17h7M20 12h-8"/><path d="m8 4 3 3-3 3M16 9l-4 3 4 3"/></svg></span>
+      <div class="problem-hero-kicker"><span class="problem-title-icon easy" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h7M4 17h7M20 12h-8"/><path d="m8 4 3 3-3 3M16 9l-4 3 4 3"/></svg></span><span>Sorting · Practice · Easy</span></div>
       <h1>Two Sum in a Sorted Array</h1>
-      <p class="chapter-topics">Find a target pair in linear time by exploiting sorted order with two pointers.</p>
+      <p class="chapter-topics">Use sorted order to replace a quadratic pair search with one monotone scan.</p>
       <div class="problem-meta"><span class="easy">Easy</span><span>Sorting practice</span><span>Python</span></div>
     </section>
     <section id="problem" class="lecture-section">
       <h2>Problem</h2>
-      <div class="statement-card"><h3>Task</h3><p>Given a sorted array <code>a</code> and a target value, find two distinct elements whose sum equals the target. Return their 1-based indices in increasing order, or <code>[-1, -1]</code> if no such pair exists.</p></div>
-      <div class="example-block"><div class="example-head">Example</div><div class="example-body"><div class="array-line"><span class="array-cell left">2</span><span class="array-cell">7</span><span class="array-cell">11</span><span class="array-cell right">15</span></div><div class="array-caption">Target = 9. The first sum 2 + 15 is too large, so the right pointer moves left.</div></div></div>
-    </section>
-    <section id="idea" class="lecture-section">
-      <h2>Key idea</h2>
-      <div class="idea-card"><h3>The sum moves monotonically</h3><p>Place one pointer at the smallest value and one at the largest. If their sum is too small, the left value cannot work with any smaller right partner, so move the left pointer right. If the sum is too large, the right value cannot work with any larger left partner, so move the right pointer left.</p></div>
-      <div class="example-block"><div class="example-head">Pointer rule</div><div class="example-body"><div class="array-line"><span class="array-cell left">L</span><span class="array-cell">move right if sum is small</span><span class="array-cell">sorted values</span><span class="array-cell">move left if sum is large</span><span class="array-cell right">R</span></div><div class="array-caption">Sorted order tells us which entire family of pairs can be discarded.</div></div></div>
-    </section>
-    <section id="algorithm" class="lecture-section">
-      <h2>Algorithm</h2>
-      <div class="algorithm-steps"><article class="algorithm-step"><div class="algorithm-step-num">1</div><div><h3>Initialize</h3><p>Set <code>left = 0</code> and <code>right = n - 1</code>.</p></div></article>
-<article class="algorithm-step"><div class="algorithm-step-num">2</div><div><h3>Compare the sum</h3><p>Compute <code>a[left] + a[right]</code>.</p></div></article>
-<article class="algorithm-step"><div class="algorithm-step-num">3</div><div><h3>Move one boundary</h3><p>If the sum is too small, increment <code>left</code>; if it is too large, decrement <code>right</code>.</p></div></article>
-<article class="algorithm-step"><div class="algorithm-step-num">4</div><div><h3>Stop</h3><p>Return the pair when the target is reached. If the pointers meet, no pair exists.</p></div></article></div>
-      <div class="invariant-box"><span>Invariant</span><p>If a valid pair still exists, at least one valid pair remains within the current interval <code>[left, right]</code>. The boundary we discard cannot belong to a solution.</p></div>
-    </section>
-    <section id="correctness" class="lecture-section"><h2>Why it works</h2><div class="correctness-card"><h3>Correctness argument</h3><p>When the current sum is below the target, pairing <code>a[left]</code> with any element no larger than <code>a[right]</code> cannot rescue that left endpoint, so it is safe to discard. The symmetric argument holds when the sum is too large. Therefore the scan discards only impossible endpoints until it either finds a solution or proves none exists.</p></div></section>
-    <section id="complexity" class="lecture-section">
-      <h2>Complexity</h2>
-      <div class="complexity-grid">
-        <div class="complexity-card"><span>Time</span><strong>O(n)</strong><p>Each pointer moves in one direction and traverses the array at most once.</p></div>
-        <div class="complexity-card"><span>Extra space</span><strong>O(1)</strong><p>Only the two pointer indices are stored.</p></div>
-        <div class="complexity-card"><span>Technique</span><strong>Two pointers</strong><p>Sorted order turns a quadratic pair search into a monotone scan.</p></div>
+      <p class="lead easy-lead">A naive search tests every pair and needs quadratic time. Sorted order gives us enough information to discard many pairs at once.</p>
+      <div class="easy-brief">
+        <div class="easy-brief-copy">
+          <span class="easy-kicker">Task</span>
+          <h3>Find a pair with a prescribed sum</h3>
+          <p>Given a non-decreasing array <code>a</code> and a target value, find two distinct elements whose sum equals the target. Return their 1-based indices, or <code>[-1, -1]</code> if no pair exists.</p>
+          <div class="problem-equation">a[i] + a[j] = target, &nbsp; i &lt; j</div>
+        </div>
+        <div class="easy-demo">
+          <div class="easy-demo-label">Example · target = 18</div>
+          <div class="pointer-labels"><span>left</span><span>right</span></div>
+          <div class="easy-array pointer-board"><span class="easy-cell pointer-left">2</span><span class="easy-cell">5</span><span class="easy-cell">7</span><span class="easy-cell">11</span><span class="easy-cell pointer-right">15</span></div>
+          <div class="sum-badge">2 + 15 = 17 &lt; 18</div>
+          <div class="easy-demo-caption">The sum is too small, so the left pointer must move right. Keeping 2 can never help: every other partner is ≤ 15.</div>
+        </div>
       </div>
     </section>
+
+    <section id="idea" class="lecture-section">
+      <h2>Core idea</h2>
+      <p class="lead easy-lead">Use the smallest and largest remaining values. Their sum tells us which endpoint is impossible and can be removed from consideration permanently.</p>
+      <div class="easy-insight">
+        <div class="easy-insight-card">
+          <span class="easy-kicker">Monotonicity</span>
+          <h3>One comparison eliminates an entire family of pairs</h3>
+          <p>If <code>a[left] + a[right]</code> is too small, then <code>a[left]</code> is too small even with the largest available partner. If the sum is too large, then <code>a[right]</code> is too large even with the smallest available partner.</p>
+          <div class="elimination-row"><div class="elimination-card"><b>sum &lt; target</b><span>discard left</span></div><div class="elimination-card"><b>sum = target</b><span>solution found</span></div><div class="elimination-card"><b>sum &gt; target</b><span>discard right</span></div></div>
+        </div>
+        <div class="easy-rule-stack">
+          <div class="easy-rule"><strong>too small</strong><p>Move <code>left</code> right to increase the sum.</p></div>
+          <div class="easy-rule"><strong>exact</strong><p>Return the current pair immediately.</p></div>
+          <div class="easy-rule"><strong>too large</strong><p>Move <code>right</code> left to decrease the sum.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="algorithm" class="lecture-section">
+      <h2>Algorithm</h2>
+      <div class="easy-step-flow">
+        <article class="easy-step-card"><div class="easy-step-number">1</div><h3>Place two pointers</h3><p>Start with <code>left = 0</code> and <code>right = n - 1</code>.</p></article>
+        <article class="easy-step-card"><div class="easy-step-number">2</div><h3>Inspect the sum</h3><p>Compute <code>a[left] + a[right]</code>.</p></article>
+        <article class="easy-step-card"><div class="easy-step-number">3</div><h3>Discard one endpoint</h3><p>Move the left pointer if the sum is small, otherwise move the right pointer if it is large.</p></article>
+        <article class="easy-step-card"><div class="easy-step-number">4</div><h3>Stop</h3><p>Return when the sum matches. If the pointers meet, no valid pair remains.</p></article>
+      </div>
+      <div class="easy-invariant"><div class="easy-invariant-mark">I</div><div><h3>Loop invariant</h3><p>If a solution exists among the pairs not yet ruled out, at least one solution lies entirely inside the current interval <code>[left, right]</code>.</p></div></div>
+    </section>
+
+    <section id="correctness" class="lecture-section">
+      <h2>Correctness & complexity</h2>
+      <div class="easy-proof-grid">
+        <div class="easy-proof-main"><div class="proof-symbol">↔</div><h3>Why moving a pointer is safe</h3><p>The sorted order makes the sum monotone: increasing the left endpoint can only increase the sum, while decreasing the right endpoint can only decrease it.</p></div>
+        <div class="easy-proof-details">
+          <div class="easy-proof-row"><span>1</span><div><h4>Sum too small</h4><p>If <code>a[left] + a[right] &lt; target</code>, then for every <code>j ≤ right</code>, <code>a[left] + a[j] ≤ a[left] + a[right] &lt; target</code>. So <code>left</code> cannot belong to a solution.</p></div></div>
+          <div class="easy-proof-row"><span>2</span><div><h4>Sum too large</h4><p>If <code>a[left] + a[right] &gt; target</code>, then for every <code>i ≥ left</code>, <code>a[i] + a[right] ≥ a[left] + a[right] &gt; target</code>. So <code>right</code> cannot belong to a solution.</p></div></div>
+          <div class="easy-proof-row"><span>3</span><div><h4>Termination</h4><p>Each step shrinks the interval. We either find an exact sum or eliminate all possible pairs.</p></div></div>
+        </div>
+      </div>
+      <div class="easy-complexity-strip"><div class="easy-complexity-item"><span>Time</span><strong>O(n)</strong><p>Each pointer moves at most n positions.</p></div><div class="easy-complexity-item"><span>Extra space</span><strong>O(1)</strong><p>Only two indices and the current sum are stored.</p></div><div class="easy-complexity-item"><span>Key property</span><strong>Sorted order</strong><p>Without monotonicity, the endpoint eliminations are invalid.</p></div></div>
+    </section>
+
     <section id="implementation" class="lecture-section">
-      <h2>Python implementation</h2>
-      <div class="problem-code"><div class="problem-code-head"><span>Python</span><button class="copy-code" type="button">Copy</button></div><pre><code>def two_sum_sorted(a, target):
+      <h2>Implementation</h2>
+            <p class="lead easy-lead">The code is a direct transcription of the three-way decision: equal, too small, or too large.</p>
+      <div class="easy-code-layout">
+        <div class="problem-code"><div class="problem-code-head"><span>Python</span><button class="copy-code" type="button">Copy</button></div><pre><code>def two_sum_sorted(a, target):
     left, right = 0, len(a) - 1
 
     while left &lt; right:
         current = a[left] + a[right]
+
         if current == target:
             return [left + 1, right + 1]
         if current &lt; target:
@@ -72,12 +109,11 @@
         else:
             right -= 1
 
-    return [-1, -1]
-
-
-print(two_sum_sorted([2, 7, 11, 15], 9))</code></pre></div>
-      <div class="source-card"><h3>Original problem</h3><p>This exercise is adapted from <a href="https://www.geeksforgeeks.org/dsa/pair-with-given-sum-in-sorted-array-two-sum-ii/" target="_blank" rel="noopener">Two Sum — Pair sum in sorted array</a> on GeeksforGeeks. The statement and exposition on this page are rewritten for the handbook.</p></div>
-      <div class="next-part back-problems"><h3>Back to practice</h3><p>Return to the nine sorting practice problems.</p><a class="next-part-link" href="sorting-problems.html">← Practice Problems</a></div>
+    return [-1, -1]</code></pre></div>
+        <div class="easy-code-notes"><span class="easy-kicker">Reading the code</span><h3>The pointers never move backward</h3><div class="easy-code-note"><b><code>left += 1</code></b><p>Used only when the current smallest value is provably too small to participate in any solution.</p></div><div class="easy-code-note"><b><code>right -= 1</code></b><p>Used only when the current largest value is provably too large.</p></div><div class="easy-code-note"><b>1-based indices</b><p>The algorithm works internally with Python's 0-based indices and adds one only in the returned answer.</p></div></div>
+      </div>
+      <p class="easy-source-line">Adapted from <a href="https://www.geeksforgeeks.org/dsa/pair-with-given-sum-in-sorted-array-two-sum-ii/" target="_blank" rel="noopener">Two Sum — Pair sum in sorted array</a> on GeeksforGeeks. The statement and exposition are rewritten for this handbook.</p>
+      <div class="next-part back-problems"><h3>Back to practice</h3><p>Choose another problem from the Easy, Medium, or Hard sets.</p><a class="next-part-link" href="sorting-problems.html">← Practice Problems</a></div>
     </section>
   </main>
   <footer class="lecture-footer"><div>Allan's Handbook of Algorithms</div><div>© 2026 Allan Allemand</div></footer>
