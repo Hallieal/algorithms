@@ -1,12 +1,14 @@
-# Algorithms site — flat structure
+# Algorithms site — Merge Sort v16
 
-Merge Sort visual refinement:
-- plain explanatory subsections are now designed cards;
-- merge running time and maximum comparisons are separate metric cards;
-- both implementation parts have numbered heading cards;
-- both complexity explanations are boxed;
-- the final time/memory trade-off is a dark callout;
-- Merge-specific refinements are embedded directly inside `sorting-merge.html`
-  to avoid GitHub Pages cache mismatches with `styles.css`.
+Only the Complexity section of `sorting-merge.html` was changed.
 
-All files remain directly in the repository root.
+Changes:
+- T(n) and the recurrence were removed completely;
+- log₂ n is introduced directly as the number of merge levels;
+- n = 8 is shown as three merge levels: 1 → 2 → 4 → 8;
+- repeated halving gives k = log₂ n;
+- a separate block explains why every merge level costs Θ(n);
+- the conclusion is Θ(log n) levels × Θ(n) work per level = Θ(n log n).
+
+Everything before Complexity in `sorting-merge.html` is byte-for-byte unchanged.
+New styling for the Complexity illustration is appended to `styles.css`.

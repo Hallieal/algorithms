@@ -2205,3 +2205,66 @@ th {
     padding-left: 76px;
   }
 }
+
+
+/* v16: Merge Sort complexity — merge-level explanation */
+.merge-level-example {
+  display: grid;
+  gap: 8px;
+  margin: 18px 0;
+  padding: 18px;
+  border-radius: 13px;
+  background: #faf9fe;
+}
+
+.merge-level-example-row {
+  display: grid;
+  grid-template-columns: 105px 1fr;
+  gap: 12px;
+  align-items: center;
+}
+
+.merge-level-name {
+  color: #7b858d;
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+}
+
+.merge-level-pieces {
+  display: flex;
+  gap: 6px;
+}
+
+.merge-level-pieces i {
+  min-width: 0;
+  height: 32px;
+  flex: 1;
+  display: grid;
+  place-items: center;
+  border-radius: 7px;
+  background: #e9e4f8;
+  color: #6656b5;
+  font-style: normal;
+  font: 700 12px Georgia, "Times New Roman", serif;
+}
+
+.merge-level-example-arrow {
+  padding-left: 117px;
+  color: #938ba9;
+  font-size: 10px;
+  font-weight: 750;
+}
+
+@media (max-width: 760px) {
+  .merge-level-example-row {
+    grid-template-columns: 1fr;
+    gap: 5px;
+  }
+
+  .merge-level-example-arrow {
+    padding-left: 0;
+    text-align: center;
+  }
+}
