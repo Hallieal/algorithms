@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Базовые структуры данных для алгоритмов: массивы, динамические массивы, связные списки, стеки, очереди, деки, множества, словари, кучи и деревья.">
+  <meta property="og:title" content="Структуры данных | Гайд по алгоритмам — presented by Аллан">
+  <meta property="og:type" content="article">
+  <title>Структуры данных | Гайд по алгоритмам — presented by Аллан</title>
+  <link rel="stylesheet" href="../assets/css/styles.css">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="icon" type="image/png" sizes="32x32" href="../assets/images/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="64x64" href="../assets/images/favicon.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="../assets/images/apple-touch-icon.png">
+  <link href="./" hreflang="en" rel="alternate">
+  <link href="index-ru.html" hreflang="ru" rel="alternate">
+</head>
+<body class="lecture-page ds-page">
+  <div class="progress-track" aria-hidden="true"><div class="progress-bar" id="reading-progress"></div></div>
+  <header class="topbar">
+    <a class="brand" href="../index-ru.html"><span class="brand-mark brand-mark-logo"><img class="brand-mark-image" src="../assets/images/logo.png" alt=""></span><span class="brand-name ru-brand-name"><span class="ru-brand-lines"><span>Гайд по алгоритмам</span><span class="ru-brand-presented">presented by Аллан</span></span></span></a>
+    <nav class="topnav" aria-label="Основная навигация"><div aria-label="Язык" class="language-switch"><a href="./">EN</a><span class="language-separator">·</span><span class="current">RU</span></div></nav>
+  </header>
+
+  <aside class="sidebar" aria-label="Навигация по разделу">
+    <div class="sidebar-title">Глава 2 · Основы</div>
+    <a href="#idea">Что такое структура данных</a>
+    <a href="#arrays">Массивы</a>
+    <a href="#linked">Связные списки</a>
+    <a href="#linear">Стеки, очереди и деки</a>
+    <a href="#sets-maps">Множества и словари</a>
+    <a href="#heaps">Кучи и приоритетные очереди</a>
+    <a href="#trees">Деревья</a>
+    <a href="#choose">Как выбирать структуру</a>
+  </aside>
+
+  <main class="lecture">
+    <section class="lecture-hero">
+      <div class="chapter-label">Глава 2</div>
+      <h1>Структуры данных</h1>
+      <p class="chapter-topics">Алгоритмы работают не с абстрактными «данными вообще», а с конкретными способами их хранения, доступа и изменения. В этой главе собраны структуры, которые постоянно будут использоваться дальше.</p>
+      <div class="ds-overview">
+        <article class="ds-overview-card"><h3>Хранение</h3><p>Выбираем представление в памяти: последовательные ячейки, связанные узлы, деревья или хеш-структуры.</p></article>
+        <article class="ds-overview-card"><h3>Доступ</h3><p>Разные представления делают дешёвыми разные операции: доступ по индексу, извлечение минимума, удаление с края или поиск по ключу.</p></article>
+        <article class="ds-overview-card"><h3>Изменение</h3><p>Правильная структура данных часто превращает дорогой шаг алгоритма в операцию за константное или логарифмическое время.</p></article>
+      </div>
+    </section>
+
+    <section id="idea" class="lecture-section">
+      <h2>Что такое структура данных?</h2>
+      <p class="lead">Структура данных — это конкретный способ организации данных вместе с операциями, которые поддерживают эту организацию. Один и тот же абстрактный интерфейс можно реализовать разными способами.</p>
+      <div class="ds-two-col">
+        <article class="ds-card">
+          <h3>Абстрактный тип данных</h3>
+          <p>Абстрактный тип данных описывает, <em>какие</em> операции доступны, но не фиксирует их внутреннюю реализацию.</p>
+          <ul><li>Стек: <code>push</code>, <code>pop</code>, <code>top</code>.</li><li>Очередь: <code>enqueue</code>, <code>dequeue</code>, <code>front</code>.</li><li>Словарь: хранить соответствия ключ → значение.</li></ul>
+        </article>
+        <article class="ds-card">
+          <h3>Конкретное представление</h3>
+          <p>Представление определяет, <em>как</em> выполняются операции, а значит — их время и расход памяти.</p>
+          <ul><li>Стек можно реализовать динамическим массивом или связным списком.</li><li>Словарь — хеш-таблицей или сбалансированным деревом поиска.</li><li>Приоритетную очередь обычно реализуют кучей.</li></ul>
+        </article>
+      </div>
+      <div class="ds-note"><strong>Главная привычка:</strong> спрашивайте не только «где хранить эти значения?», а «какие операции мой алгоритм выполняет чаще всего и какая структура делает именно их дешёвыми?»</div>
+    </section>
+
+    <section id="arrays" class="lecture-section">
+      <h2>Массивы и динамические массивы</h2>
+      <p class="lead">Массив размещает элементы в последовательных логических позициях. Благодаря этому адрес элемента с индексом <span class="math">i</span> вычисляется напрямую.</p>
+      <div class="ds-visual">
+        <div class="ds-visual-title">Прямой доступ по индексу</div>
+        <div class="array-visual"><div class="array-cell">12</div><div class="array-cell">7</div><div class="array-cell">19</div><div class="array-cell">4</div><div class="array-cell">8</div><div class="array-cell">3</div></div>
+        <div class="array-index"><span>0</span><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span></div>
+      </div>
+      <div class="ds-two-col">
+        <article class="ds-card"><h3>Сильная сторона массива</h3><p>Доступ по индексу занимает <span class="math">Θ(1)</span>. Полный проход — <span class="math">Θ(n)</span>. Кроме того, соседние элементы обычно хорошо используют локальность памяти.</p></article>
+        <article class="ds-card"><h3>Слабая сторона массива</h3><p>Вставка или удаление в середине обычно требует сдвинуть хвост массива, поэтому в худшем случае занимает <span class="math">Θ(n)</span>.</p></article>
+      </div>
+
+      <h3>Динамические массивы</h3>
+      <p>У обычного массива фиксированная ёмкость. Динамический массив держит запас свободных ячеек и иногда заменяет внутренний буфер на более крупный. Python <code>list</code> концептуально работает именно так.</p>
+      <div class="ds-visual">
+        <div class="ds-visual-title">Геометрический рост ёмкости</div>
+        <div class="resize-steps">
+          <div class="resize-step"><div class="resize-label">ёмкость 2</div><div class="resize-boxes"><span class="resize-box used"></span><span class="resize-box used"></span></div></div>
+          <div class="resize-step"><div class="resize-label">рост до 4</div><div class="resize-boxes"><span class="resize-box used"></span><span class="resize-box used"></span><span class="resize-box new"></span><span class="resize-box new"></span></div></div>
+          <div class="resize-step"><div class="resize-label">рост до 8</div><div class="resize-boxes"><span class="resize-box used"></span><span class="resize-box used"></span><span class="resize-box used"></span><span class="resize-box used"></span><span class="resize-box new"></span><span class="resize-box new"></span><span class="resize-box new"></span><span class="resize-box new"></span></div></div>
+        </div>
+      </div>
+      <div class="ds-amortized">
+        <h3>Почему append амортизированно работает за Θ(1)</h3>
+        <p>Перевыделение памяти может стоить <span class="math">Θ(n)</span>, потому что старые элементы нужно скопировать. Но при геометрическом росте ёмкости дорогие операции происходят редко.</p>
+        <div class="ds-sum">1 + 2 + 4 + 8 + ··· + n/2 &lt; n</div>
+        <p>За <span class="math">n</span> последовательных добавлений суммарно копируется <span class="math">Θ(n)</span> элементов. Значит, средняя стоимость одного добавления по всей последовательности равна <span class="math">Θ(1)</span>. Это <strong>амортизированная</strong> оценка: отдельный конкретный <code>append</code> всё ещё может оказаться дорогим.</p>
+      </div>
+    </section>
+
+    <section id="linked" class="lecture-section">
+      <h2>Связные списки</h2>
+      <p class="lead">Связный список хранит каждое значение в отдельном узле вместе с одной или несколькими ссылками на соседние узлы. Узлы не обязаны лежать рядом в памяти.</p>
+      <div class="ds-visual">
+        <div class="ds-visual-title">Односвязный список</div>
+        <div class="linked-visual"><div class="node">12<small>next</small></div><span class="pointer">→</span><div class="node">7<small>next</small></div><span class="pointer">→</span><div class="node">19<small>next</small></div><span class="pointer">→</span><div class="node">4<small>null</small></div></div>
+      </div>
+      <div class="ds-two-col">
+        <article class="ds-card"><h3>Преимущество</h3><p>Если ссылка на нужный узел уже известна, вставку или удаление часто можно выполнить за <span class="math">Θ(1)</span>, изменив лишь константное число связей.</p></article>
+        <article class="ds-card"><h3>Цена</h3><p>Прямого доступа по произвольному индексу нет: чтобы дойти до <span class="math">i</span>-го узла, нужно последовательно переходить по ссылкам, поэтому в худшем случае требуется <span class="math">Θ(n)</span>.</p></article>
+      </div>
+      <div class="ds-note"><strong>Важная оговорка:</strong> фраза «удаление из связного списка работает за O(1)» верна только тогда, когда нужный узел и необходимые ссылки на соседей уже известны. Сам поиск узла может занимать O(n).</div>
+    </section>
+
+    <section id="linear" class="lecture-section">
+      <h2>Стеки, очереди и деки</h2>
+      <p class="lead">Эти линейные абстрактные типы данных различаются тем, с каких концов разрешены вставка и удаление.</p>
+      <div class="linear-grid">
+        <article class="linear-card"><h3>Стек · LIFO</h3><p>Последний добавленный элемент извлекается первым.</p><div class="linear-demo stack-demo"><span>C</span><span>B</span><span>A</span></div><div class="ds-complexity"><code>push</code>, <code>pop</code>, <code>top</code>: амортизированно Θ(1) на динамическом массиве.</div></article>
+        <article class="linear-card"><h3>Очередь · FIFO</h3><p>Первый добавленный элемент извлекается первым.</p><div class="linear-demo queue-demo"><span>A</span><span>B</span><span>C</span></div><div class="ds-complexity"><code>enqueue</code>, <code>dequeue</code>: Θ(1) при подходящей реализации через deque или связную структуру.</div></article>
+        <article class="linear-card"><h3>Дек · оба конца</h3><p>Вставка и удаление разрешены и спереди, и сзади.</p><div class="linear-demo deque-demo"><span>←</span><span>A</span><span>B</span><span>C</span><span>→</span></div><div class="ds-complexity">Полезен для скользящего окна, монотонных очередей и BFS-подобных процессов.</div></article>
+      </div>
+      <div class="ds-code-card">
+        <h3>Что использовать в Python</h3>
+        <pre><code># стек
+stack = []
+stack.append(x)
+x = stack.pop()
+
+# очередь / дек
+from collections import deque
+q = deque()
+q.append(x)      # добавить справа
+x = q.popleft()  # удалить слева</code></pre>
+      </div>
+      <div class="ds-note"><strong>Типичная ошибка в Python:</strong> <code>list.pop(0)</code> работает за Θ(n), потому что оставшиеся элементы сдвигаются. Для очереди используйте <code>collections.deque</code>.</div>
+    </section>
+
+    <section id="sets-maps" class="lecture-section">
+      <h2>Множества и словари</h2>
+      <p class="lead">Множество хранит уникальные ключи. Словарь сопоставляет каждому ключу значение. Это интерфейсы; конкретная реализация определяет сложность операций.</p>
+      <div class="ds-two-col">
+        <article class="ds-card"><h3>Хеш-реализация</h3><p>При хорошо работающей хеш-таблице поиск, вставка и удаление обычно имеют ожидаемую сложность <span class="math">Θ(1)</span>. На этой модели основаны Python <code>set</code> и <code>dict</code>.</p></article>
+        <article class="ds-card"><h3>Древовидная реализация</h3><p>Сбалансированное дерево поиска может поддерживать ключи в порядке и выполнять поиск, вставку и удаление за <span class="math">Θ(log n)</span>. Иногда сам порядок ключей принципиально важен.</p></article>
+      </div>
+      <div class="ds-note">Отдельная глава <strong>Хеш-таблицы</strong> позже разберёт хеширование, коллизии и коэффициент заполнения. Здесь важно различать интерфейс множества/словаря и структуру данных, которая этот интерфейс реализует.</div>
+    </section>
+
+    <section id="heaps" class="lecture-section">
+      <h2>Кучи и приоритетные очереди</h2>
+      <p class="lead">Приоритетная очередь позволяет многократно получать элемент с наименьшим или наибольшим приоритетом. Бинарная куча — компактная древовидная структура, которая поддерживает это эффективно.</p>
+      <div class="ds-visual heap-visual">
+        <div class="heap-tree">
+          <div class="heap-level"><span class="heap-node">2</span></div>
+          <div class="heap-level"><span class="heap-node">5</span><span class="heap-node">7</span></div>
+          <div class="heap-level"><span class="heap-node">11</span><span class="heap-node">9</span><span class="heap-node">13</span><span class="heap-node">18</span></div>
+        </div>
+        <div><div class="ds-visual-title">Та же куча в виде массива</div><div class="heap-array"><span>2</span><span>5</span><span>7</span><span>11</span><span>9</span><span>13</span><span>18</span></div><p class="ds-complexity">Для индекса <code>i</code> дети находятся в <code>2i+1</code> и <code>2i+2</code> при нумерации с нуля.</p></div>
+      </div>
+      <div class="ds-two-col">
+        <article class="ds-card"><h3>Инвариант min-heap</h3><p>Каждый родитель не больше своих детей. Поэтому минимум всегда находится в корне и читается за <span class="math">Θ(1)</span>.</p></article>
+        <article class="ds-card"><h3>Операции</h3><p>Вставка и извлечение восстанавливают инвариант вдоль одного пути от корня к листу, поэтому занимают <span class="math">Θ(log n)</span>. Построить кучу из массива можно за <span class="math">Θ(n)</span>.</p></article>
+      </div>
+      <div class="ds-note"><strong>Куча — не отсортированный массив.</strong> Инвариант сравнивает родителя только с детьми. Он даёт быстрый доступ к экстремальному приоритету, не поддерживая полный порядок всех элементов.</div>
+    </section>
+
+    <section id="trees" class="lecture-section">
+      <h2>Деревья</h2>
+      <p class="lead">Дерево — иерархическая структура узлов, соединённых отношениями родитель–ребёнок. Деревья встречаются в структурах поиска, синтаксических деревьях, файловых системах, рекурсии и графовых алгоритмах.</p>
+      <div class="ds-two-col">
+        <article class="ds-card"><h3>Термины</h3><ul><li><strong>Корень:</strong> узел без родителя.</li><li><strong>Глубина:</strong> расстояние от корня.</li><li><strong>Высота:</strong> максимальное расстояние вниз до листа.</li><li><strong>Поддерево:</strong> узел вместе со всеми потомками.</li></ul></article>
+        <article class="ds-card"><h3>Обходы</h3><p>Обход в глубину сначала уходит по одной ветви и затем возвращается; обход в ширину идёт по уровням. Эти схемы снова появятся в главе о графах.</p><p>Бинарное дерево поиска дополнительно поддерживает порядок ключей, но стоимость операций зависит от высоты. Сбалансированные варианты удерживают высоту логарифмической.</p></article>
+      </div>
+    </section>
+
+    <section id="choose" class="lecture-section">
+      <h2>Как выбирать структуру данных</h2>
+      <p class="lead">Универсально лучшей структуры не существует. Выбор определяется тем, какие операции нужны алгоритму чаще всего.</p>
+      <div class="ds-table-wrap">
+        <table class="ds-table">
+          <thead><tr><th>Структура</th><th>Когда полезна</th><th>Типичные дешёвые операции</th><th>Главная цена</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Массив / динамический массив</strong></td><td>Последовательности с индексами</td><td><span class="ds-good">индекс Θ(1)</span>, append амортизированно Θ(1)</td><td>вставка/удаление в середине Θ(n)</td></tr>
+            <tr><td><strong>Связный список</strong></td><td>Локальные вставки и удаления при известных узлах</td><td><span class="ds-good">изменение ссылок Θ(1)</span></td><td>индекс/поиск Θ(n)</td></tr>
+            <tr><td><strong>Стек</strong></td><td>Вложенные процессы, DFS, undo</td><td><span class="ds-good">push/pop Θ(1)</span></td><td>доступ только с одного конца</td></tr>
+            <tr><td><strong>Очередь / дек</strong></td><td>BFS, планирование, скользящее окно</td><td><span class="ds-good">операции на концах Θ(1)</span></td><td>нет произвольного упорядоченного доступа</td></tr>
+            <tr><td><strong>Хеш-множество / словарь</strong></td><td>Проверка принадлежности и поиск по ключу</td><td><span class="ds-good">ожидаемо Θ(1)</span></td><td>нет встроенного сортированного порядка</td></tr>
+            <tr><td><strong>Бинарная куча</strong></td><td>Повторяющийся минимум/максимум</td><td>peek Θ(1), push/pop <span class="ds-good">Θ(log n)</span></td><td>не поддерживает полный порядок</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="ds-checklist">
+        <article class="ds-check"><strong>Нужен доступ по индексу?</strong><p>Начните с массива или динамического массива.</p></article>
+        <article class="ds-check"><strong>Нужно FIFO или LIFO?</strong><p>Используйте очередь/дек или стек.</p></article>
+        <article class="ds-check"><strong>Нужна быстрая проверка ключа?</strong><p>Используйте множество или словарь; устройство хеш-таблиц разберём отдельно.</p></article>
+        <article class="ds-check"><strong>Нужно многократно брать текущий минимум или максимум?</strong><p>Обычно подходит приоритетная очередь на куче.</p></article>
+      </div>
+
+      <div class="next-part">
+        <h3>Следующая глава: Сортировки</h3>
+        <p>Теперь, когда базовые способы хранения и доступа к данным понятны, можно изучать алгоритмы, которые меняют порядок элементов, и оценивать их стоимость.</p>
+        <a class="next-part-link" href="../sorting/index-ru.html">Сортировки →</a>
+      </div>
+      <div class="lecture-crosslink"><a href="../introduction/index-ru.html">← Предыдущая глава: Введение в алгоритмы</a></div>
+    </section>
+  </main>
+
+  <footer class="lecture-footer"><div>Гайд по алгоритмам · presented by Аллан</div><div>© 2026 Allan Allemand</div></footer>
+  <script src="../assets/js/lecture-core.js"></script>
+  <script src="../assets/js/language-switch.js"></script>
+</body>
+</html>
