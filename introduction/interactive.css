@@ -1,0 +1,101 @@
+/* Prominent controls for the growth-rate explorer */
+.growth-slider-block {
+  margin: 24px 0 18px;
+  padding: 18px 18px 15px;
+  border: 1px solid #dfe3d9;
+  border-radius: 15px;
+  background: rgba(255,255,255,.92);
+  box-shadow: 0 8px 24px rgba(40,48,42,.045);
+}
+
+.growth-slider-instruction {
+  margin-bottom: 10px;
+  color: #56616a;
+  font-size: 12px;
+  font-weight: 780;
+}
+
+.growth-slider {
+  width: 100%;
+  height: 34px;
+  margin: 0;
+  padding: 0;
+  appearance: none;
+  -webkit-appearance: none;
+  background: transparent;
+  cursor: ew-resize;
+  touch-action: pan-y;
+}
+
+.growth-slider::-webkit-slider-runnable-track {
+  height: 10px;
+  border: 1px solid #d9ddd2;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #78aaa2 0%, #95aa66 35%, #d1a057 67%, #907fc0 100%);
+  box-shadow: inset 0 1px 2px rgba(45,52,46,.08);
+}
+
+.growth-slider::-webkit-slider-thumb {
+  width: 28px;
+  height: 28px;
+  margin-top: -10px;
+  appearance: none;
+  -webkit-appearance: none;
+  border: 4px solid #fff;
+  border-radius: 50%;
+  background: #687f3e;
+  box-shadow: 0 1px 0 rgba(0,0,0,.08), 0 3px 12px rgba(63,79,43,.28);
+}
+
+.growth-slider::-moz-range-track {
+  height: 10px;
+  border: 1px solid #d9ddd2;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #78aaa2 0%, #95aa66 35%, #d1a057 67%, #907fc0 100%);
+  box-shadow: inset 0 1px 2px rgba(45,52,46,.08);
+}
+
+.growth-slider::-moz-range-thumb {
+  width: 22px;
+  height: 22px;
+  border: 4px solid #fff;
+  border-radius: 50%;
+  background: #687f3e;
+  box-shadow: 0 1px 0 rgba(0,0,0,.08), 0 3px 12px rgba(63,79,43,.28);
+}
+
+.growth-current {
+  padding: 10px 14px;
+  border-color: #cad8b5;
+  background: #fdfefb;
+  color: #4e682d;
+  font-size: 15px;
+  box-shadow: 0 4px 14px rgba(67,82,50,.06);
+}
+
+.growth-slider-labels {
+  margin-top: 6px;
+  font-size: 10.5px;
+  font-weight: 720;
+}
+
+.growth-presets {
+  margin-top: 13px;
+}
+
+.growth-presets button {
+  min-width: 44px;
+  padding: 7px 11px;
+  border-color: #d9ddd2;
+  background: #f9faf6;
+}
+
+.growth-chart-shell {
+  box-shadow: 0 10px 30px rgba(38,45,40,.035);
+}
+
+@media (max-width: 560px) {
+  .growth-slider-block { padding: 15px 14px 13px; }
+  .growth-slider { height: 38px; }
+  .growth-slider::-webkit-slider-thumb { width: 30px; height: 30px; margin-top: -11px; }
+}
