@@ -3202,3 +3202,54 @@ th {
   .home-language-switch { top: 16px; right: 16px; }
   .language-switch { margin-left: 3px; }
 }
+
+
+/* v44: advanced topics divider on Sorting overview */
+.advanced-topics-divider {
+  display: grid;
+  grid-template-columns: 170px minmax(0, 1fr);
+  gap: 28px;
+  align-items: start;
+  margin: 58px 0 0;
+  padding: 24px 26px;
+  border: 1px solid #ded8ec;
+  border-left: 4px solid var(--purple);
+  border-radius: 18px;
+  background:
+    radial-gradient(circle at 95% 10%, rgba(113, 88, 169, .07), transparent 32%),
+    #faf8fd;
+}
+
+.advanced-topics-label {
+  color: #735ea8;
+  font-size: 11px;
+  font-weight: 850;
+  letter-spacing: .085em;
+  text-transform: uppercase;
+}
+
+.advanced-topics-divider h3 {
+  margin: 0 0 7px;
+  font-size: 20px;
+  letter-spacing: -.025em;
+}
+
+.advanced-topics-divider p {
+  margin: 0;
+  color: #69727a;
+  font-size: 13.5px;
+  line-height: 1.6;
+}
+
+.advanced-topics-divider + .sorting-part {
+  margin-top: 28px;
+}
+
+@media (max-width: 760px) {
+  .advanced-topics-divider {
+    grid-template-columns: 1fr;
+    gap: 8px;
+    margin-top: 42px;
+    padding: 20px;
+  }
+}
