@@ -29,8 +29,7 @@
       <div class="chapter-label">Chapter 1</div>
       <h1>Sorting</h1>
       <p>
-        The sorting problem. Selection and Insertion Sorts. Bubble Sort. Merge Sort. Quick Sort.
-        Counting and Radix Sorts.
+        Comparison sorting. Lower bounds. Sorting beyond comparisons. Order statistics.
       </p>
     </section>
 
@@ -147,54 +146,174 @@
     <section id="chapter-map" class="overview-section">
       <h2>Chapter structure</h2>
 
-      <div class="chapter-grid">
-        <a class="chapter-card available" href="sorting-selection-insertion.html">
-          <div class="chapter-card-number">1.1</div>
+      <div class="sorting-part">
+        <div class="sorting-part-head">
           <div>
-            <h3>Selection and Insertion Sorts</h3>
-            <p>
-              Two elementary comparison sorts. We use them to introduce sorted prefixes,
-              correctness arguments, stability, and running-time analysis.
-            </p>
-            <span class="chapter-link">Open section →</span>
+            <span class="sorting-part-kicker">Comparison sorting</span>
+            <h3>Elementary Comparison Sorts</h3>
           </div>
-        </a>
+          <p>
+            Simple algorithms whose running time is quadratic in the worst case.
+            They are useful for understanding invariants, stability, adaptivity, and element movement.
+          </p>
+        </div>
 
-        <a class="chapter-card available" href="sorting-bubble.html">
-          <div class="chapter-card-number">1.2</div>
-          <div>
-            <h3>Bubble Sort</h3>
-            <p>Adjacent comparisons, local swaps, inversions, stability, and early stopping.</p>
-            <span class="chapter-link">Open section →</span>
-          </div>
-        </a>
+        <div class="chapter-grid">
+          <a class="chapter-card available" href="sorting-selection-insertion.html">
+            <div class="chapter-card-number">1</div>
+            <div>
+              <h3>Selection and Insertion Sorts</h3>
+              <p>
+                Selection of the next minimum, sorted prefixes, correctness, stability,
+                and quadratic running time.
+              </p>
+              <span class="chapter-link">Open section →</span>
+            </div>
+          </a>
 
-        <a class="chapter-card available" href="sorting-merge.html">
-          <div class="chapter-card-number">1.3</div>
-          <div>
-            <h3>Merge Sort</h3>
-            <p>Divide and conquer, recursive decomposition, merging two sorted sequences, and Θ(n log n) running time.</p>
-            <span class="chapter-link">Open section →</span>
-          </div>
-        </a>
+          <a class="chapter-card available" href="sorting-bubble.html">
+            <div class="chapter-card-number">2</div>
+            <div>
+              <h3>Bubble Sort</h3>
+              <p>Adjacent comparisons, local swaps, inversions, stability, and early stopping.</p>
+              <span class="chapter-link">Open section →</span>
+            </div>
+          </a>
+        </div>
+      </div>
 
-        <a class="chapter-card available" href="sorting-quick.html">
-          <div class="chapter-card-number">1.4</div>
+      <div class="sorting-part">
+        <div class="sorting-part-head">
           <div>
-            <h3>Quick Sort</h3>
-            <p>Partitioning around a pivot, recursive subproblems, pivot choice, and average versus worst-case behavior.</p>
-            <span class="chapter-link">Open section →</span>
+            <span class="sorting-part-kicker">Comparison sorting</span>
+            <h3>Efficient Comparison Sorts</h3>
           </div>
-        </a>
+          <p>
+            Divide-and-conquer sorting, followed by the fundamental lower bound
+            that explains why comparison sorting cannot beat n log n asymptotically in the worst case.
+          </p>
+        </div>
 
-        <a class="chapter-card available" href="sorting-counting-radix.html">
-          <div class="chapter-card-number">1.5</div>
+        <div class="chapter-grid">
+          <a class="chapter-card available" href="sorting-merge.html">
+            <div class="chapter-card-number">3</div>
+            <div>
+              <h3>Merge Sort</h3>
+              <p>
+                Divide and conquer, merging sorted sequences, correctness,
+                and Θ(n log n) running time.
+              </p>
+              <span class="chapter-link">Open section →</span>
+            </div>
+          </a>
+
+          <a class="chapter-card available" href="sorting-quick.html">
+            <div class="chapter-card-number">4</div>
+            <div>
+              <h3>Quick Sort</h3>
+              <p>
+                Partitioning around a pivot, recursive subproblems, pivot choice,
+                and average versus worst-case behavior.
+              </p>
+              <span class="chapter-link">Open section →</span>
+            </div>
+          </a>
+
+          <a class="chapter-card planned" href="sorting-limits.html">
+            <div class="chapter-card-number">5</div>
+            <div>
+              <h3>Limits of Comparison Sorting</h3>
+              <p>
+                Decision trees and the Ω(n log n) lower bound for comparison-based sorting.
+              </p>
+              <span class="chapter-link planned-link">Coming soon →</span>
+            </div>
+          </a>
+        </div>
+      </div>
+
+      <div class="sorting-part">
+        <div class="sorting-part-head">
           <div>
-            <h3>Counting and Radix Sorts</h3>
-            <p>Sorting without pairwise comparisons when the structure of the keys can be exploited.</p>
-            <span class="chapter-link">Open section →</span>
+            <span class="sorting-part-kicker">Using structure in the keys</span>
+            <h3>Sorting Beyond Comparisons</h3>
           </div>
-        </a>
+          <p>
+            The n log n lower bound applies to comparison sorting.
+            Additional information about the keys makes other asymptotic bounds possible.
+          </p>
+        </div>
+
+        <div class="chapter-grid">
+          <a class="chapter-card planned" href="sorting-counting.html">
+            <div class="chapter-card-number">6</div>
+            <div>
+              <h3>Counting Sort</h3>
+              <p>Sorting integer keys by counting their occurrences rather than comparing pairs of elements.</p>
+              <span class="chapter-link planned-link">Coming soon →</span>
+            </div>
+          </a>
+
+          <a class="chapter-card planned" href="sorting-radix.html">
+            <div class="chapter-card-number">7</div>
+            <div>
+              <h3>Radix Sort</h3>
+              <p>Sorting structured keys one digit or component at a time using stable intermediate passes.</p>
+              <span class="chapter-link planned-link">Coming soon →</span>
+            </div>
+          </a>
+
+          <a class="chapter-card planned" href="sorting-bucket.html">
+            <div class="chapter-card-number">8</div>
+            <div>
+              <h3>Bucket Sort</h3>
+              <p>Distributing values into buckets and exploiting assumptions about the input distribution.</p>
+              <span class="chapter-link planned-link">Coming soon →</span>
+            </div>
+          </a>
+        </div>
+      </div>
+
+      <div class="sorting-part">
+        <div class="sorting-part-head">
+          <div>
+            <span class="sorting-part-kicker">Selection problems</span>
+            <h3>Order Statistics</h3>
+          </div>
+          <p>
+            Sorting reveals the complete order. If only one rank is needed,
+            we can often avoid sorting the entire input.
+          </p>
+        </div>
+
+        <div class="chapter-grid">
+          <a class="chapter-card planned" href="sorting-min-max.html">
+            <div class="chapter-card-number">9</div>
+            <div>
+              <h3>Minimum and Maximum</h3>
+              <p>The simplest order statistics and the exact comparison cost of finding extrema.</p>
+              <span class="chapter-link planned-link">Coming soon →</span>
+            </div>
+          </a>
+
+          <a class="chapter-card planned" href="sorting-quickselect.html">
+            <div class="chapter-card-number">10</div>
+            <div>
+              <h3>Quickselect</h3>
+              <p>Using partitioning to follow only the side that contains the required rank.</p>
+              <span class="chapter-link planned-link">Coming soon →</span>
+            </div>
+          </a>
+
+          <a class="chapter-card planned" href="sorting-deterministic-select.html">
+            <div class="chapter-card-number">11</div>
+            <div>
+              <h3>Deterministic Linear Selection</h3>
+              <p>Median of medians and worst-case linear-time selection.</p>
+              <span class="chapter-link planned-link">Coming soon →</span>
+            </div>
+          </a>
+        </div>
       </div>
     </section>
 
