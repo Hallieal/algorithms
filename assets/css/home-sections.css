@@ -1,0 +1,18 @@
+/* Homepage group spacing */
+#core-topics,
+#further-study {
+  padding-top: 128px;
+}
+
+#foundations h2,
+#core-topics h2,
+#further-study h2 {
+  margin-bottom: 30px;
+}
+
+@media (max-width: 760px) {
+  #core-topics,
+  #further-study {
+    padding-top: 92px;
+  }
+}
