@@ -81,13 +81,13 @@
         <div class="easy-rule-stack">
           <div class="easy-rule"><strong>sort by x</strong><p>Gives a balanced geometric split for recursion.</p></div>
           <div class="easy-rule"><strong>sort by y</strong><p>Lets us scan strip candidates in vertical order without sorting again.</p></div>
-          <div class="easy-rule"><strong>next 7</strong><p>A packing argument makes the strip scan linear rather than quadratic.</p></div>
+          <div class="easy-rule"><strong>next 15</strong><p>A packing argument makes the strip scan linear rather than quadratic.</p></div>
         </div>
       </div>
 
       <div class="hard-visual-card" style="margin-top:20px">
-        <div class="hard-visual-label">Why at most seven following points?</div>
-        <p style="margin:0;color:#5d6871;font-size:13px;line-height:1.6">Fix a strip point <code>p</code>. A point <code>q</code> can beat the current distance <code>d</code> only if it lies less than <code>d</code> above <code>p</code>. So all relevant following candidates lie in a rectangle of width <code>2d</code> and height <code>d</code>. Split that rectangle at the recursion boundary and then divide each half into four <code>d/2 × d/2</code> cells. Inside one half, two points cannot occupy the same cell: their distance would be less than <code>d</code>, contradicting the recursive answer for that half. Thus there are at most eight points in the rectangle including <code>p</code>, so at most seven following candidates need to be checked.</p>
+        <div class="hard-visual-label">Why at most fifteen following points?</div>
+        <p style="margin:0;color:#5d6871;font-size:13px;line-height:1.6">Fix a strip point <code>p</code>. A point <code>q</code> can beat the current distance <code>d</code> only if it lies less than <code>d</code> above <code>p</code>. So all relevant following candidates lie in a rectangle of width <code>2d</code> and height <code>d</code>. Divide that rectangle into eight <code>d/2 × d/2</code> cells. Two points from the same recursive half cannot occupy one cell: the cell diameter is <code>d/√2 &lt; d</code>, contradicting the recursive answer for that half. A cell can therefore contain at most two points — one from each half. Across eight cells there are at most sixteen points including <code>p</code>, so at most fifteen following candidates need to be checked. The classical analysis can sharpen this constant to seven with a tighter packing argument, but fifteen is already sufficient for the same O(n log n) running time.</p>
         <div class="packing-grid" aria-hidden="true">
           <div class="packing-cell"><span class="packing-dot a"></span></div><div class="packing-cell"></div><div class="packing-cell"><span class="packing-dot b"></span></div><div class="packing-cell"></div>
           <div class="packing-cell"></div><div class="packing-cell"><span class="packing-dot a"></span></div><div class="packing-cell"></div><div class="packing-cell"><span class="packing-dot b"></span></div>
@@ -101,7 +101,7 @@
         <article class="easy-step-card"><div class="easy-step-number">1</div><h3>Presort twice</h3><p>Keep the same points ordered by x-coordinate and by y-coordinate.</p></article>
         <article class="easy-step-card"><div class="easy-step-number">2</div><h3>Split by x</h3><p>Divide the x-order in half and partition the y-order into the same two point sets.</p></article>
         <article class="easy-step-card"><div class="easy-step-number">3</div><h3>Recurse</h3><p>Find the best pair in each half and let <code>d</code> be the smaller distance.</p></article>
-        <article class="easy-step-card"><div class="easy-step-number">4</div><h3>Scan the strip</h3><p>Keep strip points in y-order; for each one, test at most the next seven points.</p></article>
+        <article class="easy-step-card"><div class="easy-step-number">4</div><h3>Scan the strip</h3><p>Keep strip points in y-order; for each one, test at most the next fifteen points.</p></article>
       </div>
       <div class="easy-invariant"><div class="easy-invariant-mark">I</div><div><h3>Recursive invariant</h3><p>Every call receives exactly the same subset of points in two orders — x-sorted and y-sorted — and returns the true closest pair inside that subset.</p></div></div>
     </section>
@@ -113,7 +113,7 @@
         <div class="easy-proof-details">
           <div class="easy-proof-row"><span>1</span><div><h4>Same-half pairs</h4><p>The recursive calls return the exact closest distances in the left and right halves by induction.</p></div></div>
           <div class="easy-proof-row"><span>2</span><div><h4>Cross-half pairs</h4><p>Any cross pair closer than <code>d</code> must have both endpoints inside the strip, so it appears in the y-sorted strip list.</p></div></div>
-          <div class="easy-proof-row"><span>3</span><div><h4>The strip scan is complete</h4><p>The packing lemma proves that, for each strip point, every possible partner closer than <code>d</code> is among the next seven points in y-order. Therefore no improving cross pair is skipped.</p></div></div>
+          <div class="easy-proof-row"><span>3</span><div><h4>The strip scan is complete</h4><p>The packing lemma proves that, for each strip point, every possible partner closer than <code>d</code> is among the next fifteen points in y-order. Therefore no improving cross pair is skipped.</p></div></div>
         </div>
       </div>
       <div class="easy-complexity-strip"><div class="easy-complexity-item"><span>Initial sorting</span><strong>O(n log n)</strong><p>One x-sort and one y-sort.</p></div><div class="easy-complexity-item"><span>Recursion</span><strong>O(n log n)</strong><p>Each level performs O(n) total partition and strip work.</p></div><div class="easy-complexity-item"><span>Extra space</span><strong>O(n)</strong><p>The y-partitions, membership sets, and strip lists use linear peak storage.</p></div></div>
@@ -179,7 +179,7 @@ def closest_pair(points):
         ]
 
         for i in range(len(strip)):
-            for j in range(i + 1, min(i + 8, len(strip))):
+            for j in range(i + 1, min(i + 16, len(strip))):
                 dy = strip[j][1] - strip[i][1]
                 if dy * dy &gt;= best2:
                     break
@@ -201,7 +201,7 @@ points = [
     (5, 1), (12, 10), (3, 4),
 ]
 print(closest_pair(points))</code></pre></div>
-        <div class="easy-code-notes"><span class="easy-kicker">Reading the code</span><h3>Preserve both orders</h3><div class="easy-code-note"><b><code>left_ids</code></b><p>Partitions the y-sorted list into exactly the same point sets as the x-sorted split without re-sorting.</p></div><div class="easy-code-note"><b><code>strip</code></b><p>Filters the already y-sorted list, so strip points automatically remain in y-order.</p></div><div class="easy-code-note"><b><code>min(i + 8, ...)</code></b><p>Checks at most seven following points, exactly as guaranteed by the packing lemma.</p></div></div>
+        <div class="easy-code-notes"><span class="easy-kicker">Reading the code</span><h3>Preserve both orders</h3><div class="easy-code-note"><b><code>left_ids</code></b><p>Partitions the y-sorted list into exactly the same point sets as the x-sorted split without re-sorting.</p></div><div class="easy-code-note"><b><code>strip</code></b><p>Filters the already y-sorted list, so strip points automatically remain in y-order.</p></div><div class="easy-code-note"><b><code>min(i + 16, ...)</code></b><p>Checks at most fifteen following points, exactly as guaranteed by the packing lemma used on this page.</p></div></div>
       </div>
       <p class="easy-source-line">Adapted from <a href="https://www.geeksforgeeks.org/dsa/closest-pair-of-points-using-divide-and-conquer-algorithm/" target="_blank" rel="noopener">Closest Pair of Points using Divide and Conquer</a> on GeeksforGeeks. The proof, implementation details, and exposition are rewritten for this handbook.</p>
       <div class="next-part back-problems"><h3>Back to practice</h3><p>Choose another problem from the Easy, Medium, or Hard sets.</p><a class="next-part-link" href="sorting-problems.html">← Practice Problems</a></div>

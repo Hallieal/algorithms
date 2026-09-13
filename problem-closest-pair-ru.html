@@ -81,13 +81,13 @@
         <div class="easy-rule-stack">
           <div class="easy-rule"><strong>sort by x</strong><p>Даёт сбалансированное геометрическое разбиение.</p></div>
           <div class="easy-rule"><strong>sort by y</strong><p>Позволяет просматривать кандидатов в полосе снизу вверх без новой сортировки.</p></div>
-          <div class="easy-rule"><strong>следующие 7</strong><p>Packing-аргумент делает проверку полосы линейной.</p></div>
+          <div class="easy-rule"><strong>следующие 15</strong><p>Packing-аргумент делает проверку полосы линейной.</p></div>
         </div>
       </div>
 
       <div class="hard-visual-card" style="margin-top:20px">
-        <div class="hard-visual-label">Почему достаточно семи следующих точек?</div>
-        <p style="margin:0;color:#5d6871;font-size:13px;line-height:1.6">Зафиксируем точку <code>p</code> в полосе. Точка <code>q</code> может улучшить текущее расстояние <code>d</code> только если находится менее чем на <code>d</code> выше <code>p</code>. Все релевантные следующие кандидаты лежат в прямоугольнике ширины <code>2d</code> и высоты <code>d</code>. Разделим его линией рекурсии, а каждую половину — на четыре квадрата <code>d/2 × d/2</code>. В одном таком квадрате внутри одной рекурсивной половины не могут находиться две точки: их расстояние было бы меньше <code>d</code>, что противоречит уже найденному расстоянию для этой половины. Поэтому в прямоугольнике помещается не более восьми точек вместе с <code>p</code>, то есть после <code>p</code> нужно проверить не более семи кандидатов.</p>
+        <div class="hard-visual-label">Почему достаточно пятнадцати следующих точек?</div>
+        <p style="margin:0;color:#5d6871;font-size:13px;line-height:1.6">Зафиксируем точку <code>p</code> в полосе. Точка <code>q</code> может улучшить текущее расстояние <code>d</code> только если находится менее чем на <code>d</code> выше <code>p</code>. Все релевантные следующие кандидаты лежат в прямоугольнике ширины <code>2d</code> и высоты <code>d</code>. Разделим этот прямоугольник на восемь квадратов <code>d/2 × d/2</code>. Две точки из одной и той же рекурсивной половины не могут попасть в один квадрат: диаметр такого квадрата равен <code>d/√2 &lt; d</code>, что противоречит уже найденному расстоянию внутри этой половины. Поэтому в одном квадрате может быть не более двух точек — по одной из каждой половины. Всего в восьми квадратах находится не более шестнадцати точек вместе с <code>p</code>, то есть после <code>p</code> достаточно проверить не более пятнадцати кандидатов. Классический более тонкий packing-аргумент уменьшает эту константу до семи, но для той же сложности O(n log n) достаточно пятнадцати.</p>
         <div class="packing-grid" aria-hidden="true">
           <div class="packing-cell"><span class="packing-dot a"></span></div><div class="packing-cell"></div><div class="packing-cell"><span class="packing-dot b"></span></div><div class="packing-cell"></div>
           <div class="packing-cell"></div><div class="packing-cell"><span class="packing-dot a"></span></div><div class="packing-cell"></div><div class="packing-cell"><span class="packing-dot b"></span></div>
@@ -101,7 +101,7 @@
         <article class="easy-step-card"><div class="easy-step-number">1</div><h3>Отсортировать дважды</h3><p>Храним те же точки в порядке по x и в порядке по y.</p></article>
         <article class="easy-step-card"><div class="easy-step-number">2</div><h3>Разделить по x</h3><p>Делим x-порядок пополам и разбиваем y-порядок на те же два множества точек.</p></article>
         <article class="easy-step-card"><div class="easy-step-number">3</div><h3>Рекурсивно решить половины</h3><p>Берём меньшее из двух полученных расстояний как текущее <code>d</code>.</p></article>
-        <article class="easy-step-card"><div class="easy-step-number">4</div><h3>Проверить полосу</h3><p>Оставляем точки полосы в y-порядке и для каждой проверяем максимум семь следующих.</p></article>
+        <article class="easy-step-card"><div class="easy-step-number">4</div><h3>Проверить полосу</h3><p>Оставляем точки полосы в y-порядке и для каждой проверяем максимум пятнадцать следующих.</p></article>
       </div>
       <div class="easy-invariant"><div class="easy-invariant-mark">I</div><div><h3>Рекурсивный инвариант</h3><p>Каждый вызов получает одно и то же множество точек в двух представлениях — отсортированном по x и по y — и возвращает настоящую ближайшую пару внутри этого множества.</p></div></div>
     </section>
@@ -113,7 +113,7 @@
         <div class="easy-proof-details">
           <div class="easy-proof-row"><span>1</span><div><h4>Пары внутри половин</h4><p>По индукции рекурсивные вызовы находят точные минимальные расстояния слева и справа.</p></div></div>
           <div class="easy-proof-row"><span>2</span><div><h4>Пары через границу</h4><p>Если такая пара ближе <code>d</code>, обе её точки обязательно попадают в центральную полосу.</p></div></div>
-          <div class="easy-proof-row"><span>3</span><div><h4>Полоса проверяется полностью</h4><p>Packing-лемма гарантирует, что любой возможный партнёр ближе <code>d</code> находится среди следующих семи точек в y-порядке. Поэтому ни одна улучшающая пара не пропускается.</p></div></div>
+          <div class="easy-proof-row"><span>3</span><div><h4>Полоса проверяется полностью</h4><p>Packing-лемма гарантирует, что любой возможный партнёр ближе <code>d</code> находится среди следующих пятнадцати точек в y-порядке. Поэтому ни одна улучшающая пара не пропускается.</p></div></div>
         </div>
       </div>
       <div class="easy-complexity-strip"><div class="easy-complexity-item"><span>Начальная сортировка</span><strong>O(n log n)</strong><p>Один раз сортируем по x и по y.</p></div><div class="easy-complexity-item"><span>Рекурсия</span><strong>O(n log n)</strong><p>На каждом уровне суммарно выполняется O(n) работы.</p></div><div class="easy-complexity-item"><span>Память</span><strong>O(n)</strong><p>Разбиения y-порядка, множества идентификаторов и полосы дают линейный пик памяти.</p></div></div>
@@ -179,7 +179,7 @@ def closest_pair(points):
         ]
 
         for i in range(len(strip)):
-            for j in range(i + 1, min(i + 8, len(strip))):
+            for j in range(i + 1, min(i + 16, len(strip))):
                 dy = strip[j][1] - strip[i][1]
                 if dy * dy &gt;= best2:
                     break
@@ -201,7 +201,7 @@ points = [
     (5, 1), (12, 10), (3, 4),
 ]
 print(closest_pair(points))</code></pre></div>
-        <div class="easy-code-notes"><span class="easy-kicker">Как читать код</span><h3>Сохраняем оба порядка</h3><div class="easy-code-note"><b><code>left_ids</code></b><p>Разделяет y-отсортированный список на те же множества точек, что и x-разбиение, без повторной сортировки.</p></div><div class="easy-code-note"><b><code>strip</code></b><p>Фильтруется из уже y-отсортированного списка, поэтому автоматически остаётся отсортированным по y.</p></div><div class="easy-code-note"><b><code>min(i + 8, ...)</code></b><p>Проверяет не более семи следующих точек — ровно столько разрешает packing-лемма.</p></div></div>
+        <div class="easy-code-notes"><span class="easy-kicker">Как читать код</span><h3>Сохраняем оба порядка</h3><div class="easy-code-note"><b><code>left_ids</code></b><p>Разделяет y-отсортированный список на те же множества точек, что и x-разбиение, без повторной сортировки.</p></div><div class="easy-code-note"><b><code>strip</code></b><p>Фильтруется из уже y-отсортированного списка, поэтому автоматически остаётся отсортированным по y.</p></div><div class="easy-code-note"><b><code>min(i + 16, ...)</code></b><p>Проверяет не более пятнадцати следующих точек — именно такую простую и полностью общую границу доказывает packing-лемма на этой странице.</p></div></div>
       </div>
       <p class="easy-source-line">Задача адаптирована из <a href="https://www.geeksforgeeks.org/dsa/closest-pair-of-points-using-divide-and-conquer-algorithm/" target="_blank" rel="noopener">Closest Pair of Points using Divide and Conquer</a> на GeeksforGeeks. Доказательство, детали реализации и изложение переписаны для этого гайда.</p>
       <div class="next-part back-problems"><h3>Назад к практике</h3><p>Выберите другую задачу уровня Easy, Medium или Hard.</p><a class="next-part-link" href="sorting-problems-ru.html">← Практические задачи</a></div>
