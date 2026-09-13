@@ -1,13 +1,16 @@
-# Algorithms site — logo/fav icon update v24
+# Algorithms site — favicon update v25
 
-This archive is the full flat site package with the new black transparent network-and-gear emblem applied in two places:
-- `logo.png` for the general site emblem in the page header;
-- `favicon.png` for the browser tab icon.
+This update makes the browser-tab icon visually larger.
 
-The file structure remains flat.
+What changed:
+- the emblem for the browser tab was tightly cropped;
+- a new `favicon.png` was generated with much smaller transparent margins;
+- added `favicon-32.png` for browser tabs;
+- added `apple-touch-icon.png` for mobile/home-screen style usage;
+- all HTML pages now include explicit favicon links.
 
-Main files to upload:
+If you update manually, replace:
 - all `*.html` files
-- `styles.css`
-- `logo.png`
 - `favicon.png`
+- `favicon-32.png`
+- `apple-touch-icon.png`
