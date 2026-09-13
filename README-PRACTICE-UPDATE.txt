@@ -1,15 +1,13 @@
-Sorting practice update — version 2
+AHA Sorting — Practice Problems update
+======================================
 
-Changes:
-- Renamed visible section/page wording to Practice Problems.
-- Replaced the numeric practice badge with an icon.
-- Added a distinct icon to every problem card and problem page.
-- Expanded the collection from 6 to 9 problems: 3 Easy, 3 Medium, 3 Hard.
-- Added Easy problems: Sort in Wave Form, Two Sum in a Sorted Array, Meeting Rooms.
-- Simplified the descriptions on the Sorting page and Practice Problems page.
-- Renumbered existing Medium/Hard solution pages to 4–9.
+This package contains the current English Practice Problems section:
+- 3 Easy problems
+- 3 Medium problems
+- 3 Hard problems
+- redesigned Easy problem pages
+- shared problems.css / problems.js
+- Sorting overview with the Practice Problems entry
 
-Unzip these files over the root of the existing handbook site.
-
-
-v3: redesigned all three Easy problem pages in the visual language of the theory chapters; replaced the Practice Problems checkmark with a lightbulb/code icon.
+It also includes apply_site_fixes.py and APPLY_FIXES.bat for the cross-page fixes
+listed in README-SITE-FIXES.txt.
