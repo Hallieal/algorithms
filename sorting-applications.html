@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Applications of sorting: search, duplicate detection, ranking, matching, interval processing, and algorithmic preprocessing.">
+  <meta name="description" content="Applications of sorting in search, ranking, grouping, duplicate detection, and range processing.">
   <meta property="og:title" content="Applications of Sorting | Allan's Handbook of Algorithms">
   <meta property="og:type" content="article">
   <title>Applications of Sorting | Allan's Handbook of Algorithms</title>
@@ -13,344 +13,57 @@
   <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
 
   <style>
-    /* Applications of Sorting — page-specific layout */
-
-    .applications-lead {
-      max-width: 860px;
-    }
-
-    .structure-card {
-      margin-top: 34px;
-      padding: 28px;
-      border: 1px solid var(--line);
-      border-radius: 22px;
-      background:
-        radial-gradient(circle at 91% 10%, rgba(112, 88, 168, .075), transparent 31%),
-        #fff;
-      box-shadow: 0 12px 34px rgba(31, 38, 45, .035);
-    }
-
-    .structure-card-head {
-      display: grid;
-      grid-template-columns: minmax(240px, .75fr) minmax(320px, 1.25fr);
-      gap: 28px;
-      align-items: end;
-      margin-bottom: 24px;
-    }
-
-    .structure-card-head h3 {
-      margin: 4px 0 0;
-      font-size: 25px;
-      letter-spacing: -.025em;
-    }
-
-    .structure-card-head p {
-      margin: 0;
-      color: var(--muted);
-      font-size: 13.5px;
-      line-height: 1.6;
-    }
-
-    .structure-kicker {
-      color: var(--green);
-      font-size: 10px;
-      font-weight: 830;
-      letter-spacing: .09em;
-      text-transform: uppercase;
-    }
-
-    .structure-demo {
-      display: grid;
-      grid-template-columns: 1fr 68px 1fr;
-      gap: 18px;
-      align-items: center;
-    }
-
-    .structure-stage {
-      padding: 17px;
-      border: 1px solid #e6e3dc;
-      border-radius: 17px;
-      background: #faf9f6;
-    }
-
-    .structure-stage.sorted-stage {
-      border-color: #dce5ca;
-      background: #f7faef;
-    }
-
-    .structure-stage-label {
-      margin-bottom: 12px;
-      color: #7d868d;
-      font-size: 10px;
-      font-weight: 820;
-      letter-spacing: .08em;
-      text-transform: uppercase;
-    }
-
-    .value-row {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
-
-    .value-cell {
-      min-width: 42px;
-      height: 42px;
-      padding: 0 10px;
-      display: grid;
-      place-items: center;
-      border-radius: 10px;
-      background: #ece9e2;
-      color: #56616a;
-      font-weight: 830;
-      font-variant-numeric: tabular-nums;
-    }
-
-    .sorted-stage .value-cell {
-      background: #e7efd9;
-      color: #57772d;
-    }
-
-    .duplicate-cell {
-      box-shadow: inset 0 0 0 2px #bf7c61;
-      background: #f7e9e2 !important;
-      color: #95543c !important;
-    }
-
-    .structure-arrow {
-      color: #969da3;
-      text-align: center;
-      font-size: 29px;
-    }
-
-    .structure-observations {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 12px;
-      margin-top: 20px;
-    }
-
-    .structure-observation {
-      padding: 16px 17px;
-      border: 1px solid var(--line);
-      border-radius: 13px;
-      background: #fff;
-    }
-
-    .structure-observation b {
-      display: block;
-      margin-bottom: 5px;
-      font-size: 13px;
-    }
-
-    .structure-observation span {
-      color: #6e7880;
-      font-size: 12px;
-      line-height: 1.5;
-    }
-
     .application-grid {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 16px;
-      margin-top: 30px;
+      display:grid;
+      grid-template-columns:repeat(2, minmax(0,1fr));
+      gap:16px;
+      margin-top:28px;
     }
 
     .application-card {
-      min-height: 230px;
-      padding: 24px;
-      border: 1px solid var(--line);
-      border-radius: 18px;
-      background: #fff;
-    }
-
-    .application-card-head {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      margin-bottom: 15px;
+      min-height:205px;
+      padding:24px;
+      border:1px solid var(--line);
+      border-radius:18px;
+      background:#fff;
     }
 
     .application-mark {
-      width: 46px;
-      height: 46px;
-      flex: 0 0 auto;
-      display: grid;
-      place-items: center;
-      border-radius: 13px;
-      font-size: 18px;
-      font-weight: 850;
+      width:46px;
+      height:46px;
+      margin-bottom:17px;
+      display:grid;
+      place-items:center;
+      border-radius:13px;
+      background:#eef2e7;
+      color:#5e7e2d;
+      font-weight:850;
+      font-size:19px;
     }
 
-    .application-card:nth-child(1) .application-mark { background:#eaf0f8; color:#567aa5; }
-    .application-card:nth-child(2) .application-mark { background:#f7eadf; color:#a76536; }
-    .application-card:nth-child(3) .application-mark { background:#e9f2e2; color:#5b7c31; }
-    .application-card:nth-child(4) .application-mark { background:#f1eaf7; color:#7359a2; }
-    .application-card:nth-child(5) .application-mark { background:#e8f2ef; color:#4d8171; }
-    .application-card:nth-child(6) .application-mark { background:#f8eceb; color:#9d5f5a; }
+    .application-card:nth-child(2) .application-mark { background:#edf2f8; color:#527cab; }
+    .application-card:nth-child(3) .application-mark { background:#fbf1e6; color:#b66c40; }
+    .application-card:nth-child(4) .application-mark { background:#f3eef8; color:#7960a9; }
+    .application-card:nth-child(5) .application-mark { background:#edf5f0; color:#4e8970; }
+    .application-card:nth-child(6) .application-mark { background:#f8f0ef; color:#a6635b; }
 
-    .application-card h3 {
-      margin: 0;
-      font-size: 20px;
+    .application-card h3 { margin:0 0 8px; font-size:20px; }
+    .application-card p { margin:0; color:var(--muted); font-size:14px; line-height:1.65; }
+
+    .application-example {
+      margin:30px 0 0;
+      padding:24px 26px;
+      border:1px solid #ddd8f0;
+      border-left:4px solid var(--purple);
+      border-radius:17px;
+      background:#f8f6fc;
     }
 
-    .application-card > p {
-      margin: 0;
-      color: #68727a;
-      font-size: 13.5px;
-      line-height: 1.65;
-    }
+    .application-example h3 { margin:0 0 10px; }
+    .application-example p { margin:0; color:#5d6670; }
 
-    .application-mini {
-      margin-top: 18px;
-      padding: 13px 14px;
-      border-radius: 12px;
-      background: #f8f7f3;
-    }
-
-    .application-mini span,
-    .application-mini b {
-      display: block;
-    }
-
-    .application-mini span {
-      margin-bottom: 4px;
-      color: #8a9298;
-      font-size: 9.5px;
-      font-weight: 820;
-      letter-spacing: .07em;
-      text-transform: uppercase;
-    }
-
-    .application-mini b {
-      color: #4e5962;
-      font-size: 12px;
-      line-height: 1.5;
-    }
-
-    .preprocessing-story {
-      display: grid;
-      grid-template-columns: 1fr 54px 1fr 54px 1fr;
-      gap: 13px;
-      align-items: stretch;
-      margin-top: 30px;
-    }
-
-    .preprocessing-step {
-      padding: 22px;
-      border: 1px solid var(--line);
-      border-radius: 17px;
-      background: #fff;
-    }
-
-    .preprocessing-step-number {
-      width: 32px;
-      height: 32px;
-      margin-bottom: 15px;
-      display: grid;
-      place-items: center;
-      border-radius: 10px;
-      background: var(--ink);
-      color: #fff;
-      font-size: 12px;
-      font-weight: 850;
-    }
-
-    .preprocessing-step h3 {
-      margin: 0 0 7px;
-      font-size: 17px;
-    }
-
-    .preprocessing-step p {
-      margin: 0;
-      color: #6d777f;
-      font-size: 12.5px;
-      line-height: 1.6;
-    }
-
-    .preprocessing-arrow {
-      display: grid;
-      place-items: center;
-      color: #9aa1a6;
-      font-size: 26px;
-    }
-
-    .cost-benefit-card {
-      display: grid;
-      grid-template-columns: 52px 1fr;
-      gap: 17px;
-      margin-top: 24px;
-      padding: 22px 24px;
-      border: 1px solid #ddd9ec;
-      border-left: 4px solid var(--purple);
-      border-radius: 15px;
-      background: #faf8fd;
-    }
-
-    .cost-benefit-mark {
-      width: 46px;
-      height: 46px;
-      display: grid;
-      place-items: center;
-      border-radius: 13px;
-      background: #ece7f7;
-      color: #6d58a4;
-      font-size: 21px;
-      font-weight: 850;
-    }
-
-    .cost-benefit-card h3 {
-      margin: 1px 0 7px;
-      font-size: 16px;
-    }
-
-    .cost-benefit-card p {
-      margin: 0;
-      color: #68727a;
-      font-size: 13.5px;
-      line-height: 1.6;
-    }
-
-    @media (max-width: 900px) {
-      .structure-card-head {
-        grid-template-columns: 1fr;
-        gap: 8px;
-      }
-
-      .structure-demo {
-        grid-template-columns: 1fr;
-      }
-
-      .structure-arrow {
-        transform: rotate(90deg);
-      }
-
-      .structure-observations {
-        grid-template-columns: 1fr;
-      }
-
-      .preprocessing-story {
-        grid-template-columns: 1fr;
-      }
-
-      .preprocessing-arrow {
-        transform: rotate(90deg);
-        min-height: 34px;
-      }
-    }
-
-    @media (max-width: 760px) {
-      .application-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .structure-card {
-        padding: 18px;
-      }
-
-      .cost-benefit-card {
-        grid-template-columns: 1fr;
-      }
+    @media (max-width:760px) {
+      .application-grid { grid-template-columns:1fr; }
     }
   </style>
 </head>
@@ -364,80 +77,47 @@
   </header>
 
   <aside class="sidebar" aria-label="Section navigation">
-    <div class="sidebar-title">Sorting · Applications</div>
-    <a href="#structure">Why sorting is useful</a>
+    <div class="sidebar-title">Chapter 1 · Section 2</div>
+    <a href="#why">Why sorting helps</a>
     <a href="#applications">Applications</a>
     <a href="#preprocessing">Sorting as preprocessing</a>
   </aside>
 
   <main class="lecture">
     <section class="lecture-hero">
-      <div class="chapter-label">Sorting · Applications</div>
+      <div class="chapter-label">Chapter 1 · Section 2</div>
       <h1>Applications of Sorting</h1>
+      <p class="chapter-topics">
+        Sorting is often useful not as the final answer, but as a preprocessing step that gives data structure.
+      </p>
     </section>
 
-    <section id="structure" class="lecture-section">
-      <h2>Why sorting is useful</h2>
+    <section id="why" class="lecture-section">
+      <h2>Why sorting helps</h2>
 
-      <p class="lead applications-lead">
-        Sorting is often not the final goal. Its main value is that it changes an arbitrary sequence
-        into a structured one. Once the order is known, many relationships that were hidden in the input
-        become local and easy to exploit.
+      <p class="lead">
+        An unsorted sequence can hide global information. After sorting, values that are close
+        become neighbors, equal values become adjacent, extrema move to the ends, and many queries
+        can be answered by scanning or searching the ordered sequence.
       </p>
 
-      <div class="structure-card">
-        <div class="structure-card-head">
-          <div>
-            <span class="structure-kicker">One simple example</span>
-            <h3>Duplicates become neighbors</h3>
+      <div class="concept-row">
+        <div class="concept-card">
+          <div class="mini-array unsorted">
+            <span>8</span><span>2</span><span>8</span><span>5</span><span>1</span><span>5</span>
           </div>
-          <p>
-            In an unsorted sequence, equal values may be far apart. After sorting, every occurrence
-            of the same value appears in one consecutive block.
-          </p>
+          <h3>Unordered data</h3>
+          <p>Equal or nearby values may be separated by many unrelated elements.</p>
         </div>
 
-        <div class="structure-demo">
-          <div class="structure-stage">
-            <div class="structure-stage-label">Before sorting</div>
-            <div class="value-row">
-              <span class="value-cell">8</span>
-              <span class="value-cell">2</span>
-              <span class="value-cell duplicate-cell">5</span>
-              <span class="value-cell">1</span>
-              <span class="value-cell duplicate-cell">8</span>
-              <span class="value-cell duplicate-cell">5</span>
-            </div>
-          </div>
+        <div class="concept-arrow">→</div>
 
-          <div class="structure-arrow" aria-hidden="true">→</div>
-
-          <div class="structure-stage sorted-stage">
-            <div class="structure-stage-label">After sorting</div>
-            <div class="value-row">
-              <span class="value-cell">1</span>
-              <span class="value-cell">2</span>
-              <span class="value-cell duplicate-cell">5</span>
-              <span class="value-cell duplicate-cell">5</span>
-              <span class="value-cell duplicate-cell">8</span>
-              <span class="value-cell duplicate-cell">8</span>
-            </div>
+        <div class="concept-card">
+          <div class="mini-array sorted">
+            <span>1</span><span>2</span><span>5</span><span>5</span><span>8</span><span>8</span>
           </div>
-        </div>
-
-        <div class="structure-observations">
-          <div class="structure-observation">
-            <b>Equal values are adjacent</b>
-            <span>A single left-to-right scan can find duplicates or form groups.</span>
-          </div>
-          <div class="structure-observation">
-            <b>Extrema move to the ends</b>
-            <span>The smallest and largest values become immediately visible.</span>
-          </div>
-          <div class="structure-observation">
-            <b>Movement can be monotone</b>
-            <span>Many algorithms can move pointers only forward once the sequence is ordered.</span>
-          </div>
+          <h3>Ordered data</h3>
+          <p>Equal values are adjacent and the relative order of values becomes explicit.</p>
         </div>
       </div>
     </section>
@@ -445,100 +125,68 @@
     <section id="applications" class="lecture-section">
       <h2>Common applications</h2>
 
-      <p class="lead">
-        The same transformation — from arbitrary order to known order — appears in many different problems.
-      </p>
-
       <div class="application-grid">
         <article class="application-card">
-          <div class="application-card-head">
-            <div class="application-mark" aria-hidden="true">⌕</div>
-            <h3>Fast search</h3>
-          </div>
+          <div class="application-mark">⌕</div>
+          <h3>Fast search</h3>
           <p>
-            A sorted sequence supports binary search. Instead of scanning every element,
-            we can repeatedly discard half of the remaining search range.
+            Once a sequence is sorted, binary search can locate a target in logarithmic time.
+            Sorting can therefore be worthwhile when many searches will be performed on the same data.
           </p>
-          <div class="application-mini">
-            <span>Typical use</span>
-            <b>Sort once, then answer many membership or position queries.</b>
-          </div>
         </article>
 
         <article class="application-card">
-          <div class="application-card-head">
-            <div class="application-mark" aria-hidden="true">1</div>
-            <h3>Ranking</h3>
-          </div>
+          <div class="application-mark">#</div>
+          <h3>Ranking</h3>
           <p>
-            Scores, prices, times, and other measurements can be sorted to assign ranks
-            or display the best and worst values in a natural order.
+            Scores, prices, times, and other measurements are frequently sorted to determine ranks,
+            display the best or worst values, or construct ordered reports.
           </p>
-          <div class="application-mini">
-            <span>Example</span>
-            <b>Leaderboard: highest score first.</b>
-          </div>
         </article>
 
         <article class="application-card">
-          <div class="application-card-head">
-            <div class="application-mark" aria-hidden="true">=</div>
-            <h3>Duplicate detection and grouping</h3>
-          </div>
+          <div class="application-mark">=</div>
+          <h3>Duplicate detection</h3>
           <p>
-            Equal keys become adjacent. This turns duplicate detection, frequency blocks,
-            and grouping by key into a simple scan.
+            After sorting, equal elements appear next to each other.
+            A single scan is enough to detect repeated values and group equal keys.
           </p>
-          <div class="application-mini">
-            <span>Example</span>
-            <b>After sorting: 2, 2, 2, 5, 5, 9 — each value occupies one block.</b>
-          </div>
         </article>
 
         <article class="application-card">
-          <div class="application-card-head">
-            <div class="application-mark" aria-hidden="true">↔</div>
-            <h3>Pairs and two pointers</h3>
-          </div>
+          <div class="application-mark">↔</div>
+          <h3>Pairs and intervals</h3>
           <p>
-            Sorting often allows two indices to move monotonically through the data.
-            This can replace a quadratic search over all pairs with a much simpler scan.
+            Many two-pointer and interval-processing methods begin by sorting.
+            The order allows indices to move monotonically instead of checking every pair.
           </p>
-          <div class="application-mini">
-            <span>Example</span>
-            <b>Find two numbers whose sum equals a target.</b>
-          </div>
         </article>
 
         <article class="application-card">
-          <div class="application-card-head">
-            <div class="application-mark" aria-hidden="true">∪</div>
-            <h3>Matching and merging</h3>
-          </div>
+          <div class="application-mark">∪</div>
+          <h3>Combining ordered data</h3>
           <p>
-            Two ordered sequences can be traversed together. This supports efficient merging,
-            intersection, union, and matching operations.
+            Two sorted sequences can be merged efficiently.
+            Similar scans can compute intersections, unions, and matches between ordered collections.
           </p>
-          <div class="application-mini">
-            <span>Example</span>
-            <b>Find values that occur in both sorted lists.</b>
-          </div>
         </article>
 
         <article class="application-card">
-          <div class="application-card-head">
-            <div class="application-mark" aria-hidden="true">|</div>
-            <h3>Intervals and scheduling</h3>
-          </div>
+          <div class="application-mark">↥</div>
+          <h3>Order-based summaries</h3>
           <p>
-            Many interval algorithms begin by sorting events by start time, end time,
-            or another boundary. The resulting order makes conflicts and overlaps easier to process.
+            Sorting exposes minima, maxima, medians, quantiles, and other order statistics.
+            Later in this chapter we will see when full sorting is unnecessary for these tasks.
           </p>
-          <div class="application-mini">
-            <span>Example</span>
-            <b>Process meetings in increasing order of finishing time.</b>
-          </div>
         </article>
+      </div>
+
+      <div class="application-example">
+        <h3>Sorting changes the representation of a problem</h3>
+        <p>
+          The cost of sorting is sometimes repaid by a much simpler algorithm afterwards.
+          This pattern appears repeatedly: first impose order on the data, then exploit that order.
+        </p>
       </div>
     </section>
 
@@ -546,45 +194,31 @@
       <h2>Sorting as preprocessing</h2>
 
       <p class="lead">
-        A useful way to think about sorting is as a one-time investment:
-        pay the cost of creating order, then exploit that order in the rest of the algorithm.
+        Sorting is especially useful when the ordered sequence will be reused.
+        A one-time preprocessing cost can make many later operations faster or easier to reason about.
       </p>
 
-      <div class="preprocessing-story">
-        <article class="preprocessing-step">
-          <div class="preprocessing-step-number">1</div>
-          <h3>Start with arbitrary data</h3>
-          <p>The useful relationships may be scattered throughout the input.</p>
-        </article>
-
-        <div class="preprocessing-arrow" aria-hidden="true">→</div>
-
-        <article class="preprocessing-step">
-          <div class="preprocessing-step-number">2</div>
-          <h3>Sort by the relevant key</h3>
-          <p>The sequence gains a global order that was not present before.</p>
-        </article>
-
-        <div class="preprocessing-arrow" aria-hidden="true">→</div>
-
-        <article class="preprocessing-step">
-          <div class="preprocessing-step-number">3</div>
-          <h3>Use the new structure</h3>
-          <p>Search, scan, match, group, or process intervals in a simpler way.</p>
-        </article>
+      <div class="definition-card">
+        <p>
+          The important question is therefore not only how expensive sorting is.
+          We also ask what structure sorting creates and whether later operations can exploit that structure.
+        </p>
       </div>
 
-      <div class="cost-benefit-card">
-        <div class="cost-benefit-mark" aria-hidden="true">↗</div>
-        <div>
-          <h3>When is sorting worth doing?</h3>
-          <p>
-            Sorting is especially useful when the ordered data will be reused,
-            when it replaces a more expensive repeated search, or when it makes the remaining algorithm
-            substantially simpler. The right question is not only “How expensive is sorting?” but also
-            “What does the resulting order let us do?”
-          </p>
-        </div>
+      <div class="next-part">
+        <h3>Next section: Selection and Insertion Sorts</h3>
+        <p>
+          Begin the study of concrete sorting algorithms with two elementary comparison sorts.
+        </p>
+        <a class="next-part-link" href="sorting-selection-insertion.html">Selection and Insertion Sorts →</a>
+      </div>
+
+      <div class="next-part">
+        <h3>Previous section</h3>
+        <p>
+          Return to Introduction to Sorting.
+        </p>
+        <a class="next-part-link" href="sorting-introduction.html">← Introduction to Sorting</a>
       </div>
     </section>
   </main>
