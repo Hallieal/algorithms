@@ -18,8 +18,6 @@
     <a class="brand" href="index.html"><span class="brand-mark brand-mark-logo"><img class="brand-mark-image" src="logo.png" alt=""></span><span class="brand-name">Allan's Handbook of Algorithms</span></a>
     <nav class="topnav" aria-label="Primary navigation">
       <a href="sorting.html">Sorting overview</a>
-      <a href="index.html#topics">Topics</a>
-      <a href="index.html">Home</a>
     </nav>
   </header>
 
@@ -28,16 +26,13 @@
     <a href="#idea">The basic idea</a>
     <a href="#ingredients">Element, key, order</a>
     <a href="#definition">What sorted means</a>
-    <a href="#criteria">How algorithms differ</a>
+    <a href="#criteria">Evaluation criteria</a>
   </aside>
 
   <main class="lecture">
     <section class="lecture-hero sorting-intro-hero">
       <div class="chapter-label">Sorting · Introduction</div>
       <h1>Introduction to Sorting</h1>
-      <p class="chapter-topics">
-        Sorting means keeping the same data and changing only its order according to a chosen rule.
-      </p>
     </section>
 
     <section id="idea" class="lecture-section">
@@ -45,8 +40,9 @@
 
       <p class="lead sorting-intro-lead">
         A list can contain exactly the information we need and still be difficult to use because its elements
-        are in an arbitrary order. Sorting imposes structure: we choose a rule, compare elements by that rule,
-        and rearrange them so the required order becomes explicit.
+        are in an arbitrary order. Sorting imposes structure: we choose a rule, compare elements by the relevant
+        characteristic, and rearrange them so the required order becomes explicit. Most often, the rule is simply
+        increasing or decreasing order of a numerical value.
       </p>
 
       <div class="music-sort-example">
@@ -165,6 +161,9 @@
       <p class="lead">
         A sorting problem becomes precise once three things are clear: what the elements are,
         which part of each element determines its position, and in which direction the order should go.
+        The standard case is an array of elements, each carrying a numerical key, that we want to arrange
+        in increasing or decreasing order of that key. For example, we may sort products by price from lowest
+        to highest, while moving each complete product record together with its price.
       </p>
 
       <div class="sorting-anatomy">
@@ -271,7 +270,7 @@
     </section>
 
     <section id="criteria" class="lecture-section">
-      <h2>Different algorithms, same task</h2>
+      <h2>Evaluating Sorting Algorithms</h2>
 
       <p class="lead">
         Many algorithms can produce exactly the same sorted output. The interesting question is how they get there.

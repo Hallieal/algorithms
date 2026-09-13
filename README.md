@@ -1,12 +1,8 @@
-# Allan's Handbook of Algorithms — v38
+# Allan's Handbook of Algorithms — v39
 
-Introduction to Sorting rewritten from scratch.
-
-Main changes:
-- replaced the old generic song example with a recognizable playlist example using Elvis Presley, Queen, The Beatles, and ABBA;
-- made the central idea explicit: sorting preserves the data and changes only its order;
-- introduced the three parts of a sorting problem: element, key, and order;
-- replaced the vague definition with two precise correctness requirements:
-  order property and preservation property;
-- retained the three chapter-wide evaluation criteria: correctness, running time, and extra memory;
-- redesigned the page with new visual cards and examples while keeping the existing site style.
+Changes:
+- removed the subtitle under `Introduction to Sorting`;
+- expanded the basic idea to state that sorting is most commonly by increasing or decreasing numerical value;
+- expanded `Element, key, order` with the standard array + numerical key case and a concrete price example;
+- renamed the final section to `Evaluating Sorting Algorithms`;
+- simplified the top navigation on every Sorting page: only `Sorting overview` remains, since the site title already links to the homepage.
