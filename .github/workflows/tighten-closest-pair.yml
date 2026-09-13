@@ -25,3 +25,4 @@ jobs:
           git add problem-closest-pair.html problem-closest-pair-ru.html
           git commit -m "Tighten Closest Pair packing proof"
           git push origin main
+# retry with exact source replacements
