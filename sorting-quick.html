@@ -366,6 +366,113 @@
 
   .quick-history-row strong { color:#868e95; }
 
+
+  /* Vertical recursive trace: every revealed stage remains visible. */
+  .quick-trace-stages {
+    display:grid;
+    gap:12px;
+    margin:24px 0 18px;
+  }
+
+  .quick-trace-stage {
+    position:relative;
+    padding:18px 20px;
+    border:1px solid var(--line);
+    border-radius:15px;
+    background:#faf9f6;
+    box-shadow:0 4px 14px rgba(31,38,45,.025);
+  }
+
+  .quick-trace-stage:not(:last-child)::after {
+    content:"↓";
+    position:absolute;
+    left:27px;
+    bottom:-20px;
+    z-index:2;
+    width:22px;
+    height:22px;
+    display:grid;
+    place-items:center;
+    border-radius:50%;
+    background:#fbfaf7;
+    color:#9aa2a9;
+    font-size:14px;
+    font-weight:800;
+  }
+
+  .quick-trace-stage.is-current {
+    border-color:#cfc7ea;
+    background:#f8f6fd;
+    box-shadow:0 8px 22px rgba(102,86,181,.07);
+  }
+
+  .quick-trace-stage-header {
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:12px;
+    margin-bottom:12px;
+  }
+
+  .quick-trace-stage-number {
+    color:#8a9299;
+    font-size:10px;
+    font-weight:850;
+    letter-spacing:.06em;
+    text-transform:uppercase;
+  }
+
+  .quick-trace-stage .quick-trace-depth {
+    margin:0;
+  }
+
+  .quick-trace-stage-type {
+    margin:0 0 10px;
+    color:#59646d;
+    font-size:13px;
+    font-weight:750;
+  }
+
+  .quick-trace-stage-description {
+    margin:12px 0 0;
+    color:#657079;
+    font-size:12px;
+  }
+
+  .quick-trace-stage .quick-trace-array,
+  .quick-trace-stage .quick-trace-groups {
+    margin-top:8px;
+  }
+
+  .quick-trace-result-label {
+    margin:13px 0 6px;
+    color:#7a838b;
+    font-size:10px;
+    font-weight:850;
+    letter-spacing:.06em;
+    text-transform:uppercase;
+  }
+
+  @media (min-width:761px) {
+    .quick-trace-stage[data-depth="1"] { margin-left:24px; }
+    .quick-trace-stage[data-depth="2"] { margin-left:48px; }
+    .quick-trace-stage[data-depth="3"] { margin-left:72px; }
+    .quick-trace-stage[data-depth="4"] { margin-left:96px; }
+    .quick-trace-stage[data-depth="5"] { margin-left:120px; }
+  }
+
+  @media (max-width:760px) {
+    .quick-trace-stage {
+      padding:16px;
+    }
+
+    .quick-trace-stage-header {
+      align-items:flex-start;
+      flex-direction:column;
+      gap:6px;
+    }
+  }
+
   /* Pivot choice */
   .pivot-choice-grid {
     display:grid;
@@ -847,19 +954,18 @@
           <div>
             <h3>Follow the recursive calls</h3>
             <p>
-              Each step shows one partition or one completed recursive call.
-              The depth label indicates how far down the recursion tree we are.
+              Each click adds the next stage below the previous ones.
+              Nothing disappears, so you can follow the complete sequence of recursive calls from top to bottom.
+              The depth label shows how far down the recursion tree each stage occurs.
             </p>
           </div>
           <button type="button" class="primary-step" data-action="next-trace">Next recursive step →</button>
         </div>
 
-        <div class="quick-trace-current" data-role="trace-current"></div>
+        <div class="quick-trace-stages" data-role="trace-stages" aria-live="polite"></div>
 
-        <div class="quick-trace-history" data-role="trace-history"></div>
-
-        <div class="step-caption" data-role="trace-caption" aria-live="polite">
-          Start with the entire array.
+        <div class="step-caption" data-role="trace-caption">
+          Each new step is added below the previous one, so the full recursive path remains visible.
         </div>
 
         <div class="secondary-controls">
@@ -1511,23 +1617,33 @@
     return frag;
   }
 
-  function renderTrace(demo) {
-    const event = demo._events[demo._index];
-    const current = demo.querySelector('[data-role="trace-current"]');
-    const history = demo.querySelector('[data-role="trace-history"]');
-    const caption = demo.querySelector('[data-role="trace-caption"]');
+  function buildTraceStage(event, index, isCurrent) {
+    const stage = document.createElement("article");
+    stage.className = "quick-trace-stage";
+    if (isCurrent) stage.classList.add("is-current");
+    stage.dataset.depth = String(event.depth);
 
-    current.replaceChildren();
+    const header = document.createElement("div");
+    header.className = "quick-trace-stage-header";
+
+    const number = document.createElement("span");
+    number.className = "quick-trace-stage-number";
+    number.textContent = `stage ${index + 1}`;
 
     const depth = document.createElement("div");
     depth.className = "quick-trace-depth";
     depth.textContent = `recursion depth ${event.depth}`;
-    current.appendChild(depth);
+
+    header.appendChild(number);
+    header.appendChild(depth);
+    stage.appendChild(header);
+
+    const type = document.createElement("p");
+    type.className = "quick-trace-stage-type";
 
     if (event.type === "partition") {
-      const label = document.createElement("p");
-      label.textContent = "Current recursive call";
-      current.appendChild(label);
+      type.textContent = "Partition this subarray";
+      stage.appendChild(type);
 
       const arr = document.createElement("div");
       arr.className = "quick-trace-array";
@@ -1539,11 +1655,10 @@
         arr.appendChild(cell);
       });
 
-      current.appendChild(arr);
+      stage.appendChild(arr);
 
       const groups = document.createElement("div");
       groups.className = "quick-trace-groups";
-      groups.style.marginTop = "14px";
       groups.appendChild(makeCells(event.left, "trace-left"));
 
       const pivot = document.createElement("span");
@@ -1552,11 +1667,10 @@
       groups.appendChild(pivot);
 
       groups.appendChild(makeCells(event.right, "trace-right"));
-      current.appendChild(groups);
+      stage.appendChild(groups);
     } else if (event.type === "base") {
-      const label = document.createElement("p");
-      label.textContent = "Base case";
-      current.appendChild(label);
+      type.textContent = "Base case";
+      stage.appendChild(type);
 
       const arr = document.createElement("div");
       arr.className = "quick-trace-groups";
@@ -1569,11 +1683,10 @@
         arr.appendChild(empty);
       }
 
-      current.appendChild(arr);
+      stage.appendChild(arr);
     } else {
-      const label = document.createElement("p");
-      label.textContent = "Recursive calls finished";
-      current.appendChild(label);
+      type.textContent = "Return from the recursive calls";
+      stage.appendChild(type);
 
       const groups = document.createElement("div");
       groups.className = "quick-trace-groups";
@@ -1585,39 +1698,39 @@
       groups.appendChild(pivot);
 
       groups.appendChild(makeCells(event.right, "trace-right"));
-      current.appendChild(groups);
+      stage.appendChild(groups);
 
-      const resultLabel = document.createElement("p");
-      resultLabel.style.marginTop = "14px";
-      resultLabel.textContent = "Result";
-      current.appendChild(resultLabel);
+      const resultLabel = document.createElement("div");
+      resultLabel.className = "quick-trace-result-label";
+      resultLabel.textContent = "combined result";
+      stage.appendChild(resultLabel);
 
       const result = document.createElement("div");
       result.className = "quick-trace-groups";
       result.appendChild(makeCells(event.result, "trace-result"));
-      current.appendChild(result);
+      stage.appendChild(result);
     }
 
-    history.replaceChildren();
+    const description = document.createElement("p");
+    description.className = "quick-trace-stage-description";
+    description.textContent = event.text;
+    stage.appendChild(description);
 
-    const from = Math.max(0, demo._index - 4);
-    for (let i = from; i <= demo._index; i++) {
-      const e = demo._events[i];
-      const row = document.createElement("div");
-      row.className = "quick-history-row";
+    return stage;
+  }
 
-      const number = document.createElement("strong");
-      number.textContent = `#${i + 1}`;
+  function renderTrace(demo) {
+    const stages = demo.querySelector('[data-role="trace-stages"]');
+    const caption = demo.querySelector('[data-role="trace-caption"]');
+    stages.replaceChildren();
 
-      const description = document.createElement("span");
-      description.textContent = e.text;
-
-      row.appendChild(number);
-      row.appendChild(description);
-      history.appendChild(row);
+    for (let i = 0; i <= demo._index; i++) {
+      const event = demo._events[i];
+      stages.appendChild(buildTraceStage(event, i, i === demo._index));
     }
 
-    caption.textContent = event.text;
+    const event = demo._events[demo._index];
+    caption.textContent = `${demo._index + 1} of ${demo._events.length} stages shown. ${event.text}`;
   }
 
   const traceDemo = document.getElementById("quick-trace-demo");
