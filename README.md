@@ -1,14 +1,14 @@
-# Algorithms site — Merge Sort v16
-
-Only the Complexity section of `sorting-merge.html` was changed.
+# Algorithms site — branding update v19
 
 Changes:
-- T(n) and the recurrence were removed completely;
-- log₂ n is introduced directly as the number of merge levels;
-- n = 8 is shown as three merge levels: 1 → 2 → 4 → 8;
-- repeated halving gives k = log₂ n;
-- a separate block explains why every merge level costs Θ(n);
-- the conclusion is Θ(log n) levels × Θ(n) work per level = Θ(n log n).
+- added a new favicon based on the provided icon image: `favicon.png`;
+- updated all page headers to use the site name `Allan's Handbook of Algorithms`;
+- updated the homepage title and hero heading;
+- updated content page `<title>` tags to the format `Page title | Allan's Handbook of Algorithms`;
+- updated footer branding;
+- restored a shared `styles.css` into the flat site folder and added small brand-name styling.
 
-Everything before Complexity in `sorting-merge.html` is byte-for-byte unchanged.
-New styling for the Complexity illustration is appended to `styles.css`.
+Files to upload if you want only the minimal branding update:
+- `favicon.png`
+- `styles.css`
+- every `*.html` page

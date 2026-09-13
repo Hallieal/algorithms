@@ -2268,3 +2268,25 @@ th {
     text-align: center;
   }
 }
+
+
+/* v19 brand update */
+.brand-name {
+  white-space: nowrap;
+  font-size: 15px;
+}
+
+@media (max-width: 980px) {
+  .brand-name {
+    max-width: 36vw;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+
+@media (max-width: 760px) {
+  .brand-name {
+    font-size: 13px;
+    max-width: 32vw;
+  }
+}
