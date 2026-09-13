@@ -2470,3 +2470,45 @@ th {
     font-size: 28px;
   }
 }
+
+
+/* v32: homepage logo + copyright */
+.home-title-row {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+}
+
+.home-title-logo {
+  width: clamp(64px, 7vw, 92px);
+  height: clamp(64px, 7vw, 92px);
+  display: block;
+  object-fit: contain;
+  flex: 0 0 auto;
+}
+
+.home-minimal-footer {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 8px 36px 42px;
+  color: #7f878d;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+@media (max-width: 720px) {
+  .home-title-row {
+    align-items: flex-start;
+    gap: 14px;
+  }
+
+  .home-title-logo {
+    width: 52px;
+    height: 52px;
+    margin-top: 4px;
+  }
+
+  .home-minimal-footer {
+    padding: 4px 20px 34px;
+  }
+}
