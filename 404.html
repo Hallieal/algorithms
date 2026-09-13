@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Page moved | Allan's Handbook of Algorithms</title>
+  <script>
+    (() => {
+      const path = window.location.pathname.replace(/\/+$/, "");
+      const slash = path.lastIndexOf("/");
+      const base = path.slice(0, slash + 1);
+      const file = path.slice(slash + 1);
+      let target = null;
+
+      if (file === "sorting.html") {
+        target = "sorting/";
+      } else if (file === "sorting-ru.html") {
+        target = "sorting/index-ru.html";
+      } else if (file === "sorting-problems.html") {
+        target = "sorting/problems/";
+      } else if (file === "sorting-problems-ru.html") {
+        target = "sorting/problems/index-ru.html";
+      } else if (/^problem-.+\.html$/.test(file)) {
+        target = "sorting/problems/" + file.slice("problem-".length);
+      } else if (/^sorting-.+\.html$/.test(file)) {
+        target = "sorting/" + file.slice("sorting-".length);
+      }
+
+      if (target) {
+        window.location.replace(base + target + window.location.search + window.location.hash);
+      }
+    })();
+  </script>
+  <style>
+    body { margin: 0; min-height: 100vh; display: grid; place-items: center; background: #fbfaf7; color: #17202a; font-family: Inter, system-ui, sans-serif; }
+    main { max-width: 560px; padding: 40px 28px; text-align: center; }
+    h1 { margin: 0 0 12px; font-size: 42px; letter-spacing: -.04em; }
+    p { margin: 0; color: #68727d; line-height: 1.65; }
+    a { color: #527327; font-weight: 700; }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Page not found</h1>
+    <p>The page may have moved during the handbook reorganization. <a href="./">Return to the handbook</a>.</p>
+  </main>
+</body>
+</html>
