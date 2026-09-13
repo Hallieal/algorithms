@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-labelledby="title desc">
+  <title id="title">Introduction to Algorithms</title>
+  <desc id="desc">Muted growth curves on coordinate axes.</desc>
+  <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M24 22v82h82" stroke="#d9ddd2" stroke-width="8"/>
+    <path d="M31 93c17-2 29-7 41-16 12-9 22-22 31-39" stroke="#68a89e" stroke-width="8"/>
+    <path d="M31 96c16-7 31-18 44-34 10-12 19-26 27-42" stroke="#849f4d" stroke-width="8"/>
+    <path d="M31 99c18-3 36-12 50-28 13-15 20-31 24-49" stroke="#d49b4a" stroke-width="8"/>
+    <circle cx="49" cy="88" r="5" fill="#8573b7" stroke="none"/>
+    <circle cx="72" cy="77" r="5" fill="#8573b7" stroke="none"/>
+    <circle cx="95" cy="45" r="5" fill="#8573b7" stroke="none"/>
+  </g>
+</svg>
