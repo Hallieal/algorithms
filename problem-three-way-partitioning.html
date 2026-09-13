@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Partition an array around a value range in one pass and constant extra space.">
+  <meta name="description" content="Three-way partition an array around a value range in one linear pass and constant extra space.">
   <meta property="og:title" content="Three-Way Partitioning | Allan's Handbook of Algorithms">
   <meta property="og:type" content="article">
   <title>Three-Way Partitioning | Allan's Handbook of Algorithms</title>
@@ -12,72 +12,97 @@
   <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
   <link rel="icon" type="image/png" sizes="64x64" href="favicon.png">
   <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+  <link href="problem-three-way-partitioning.html" hreflang="en" rel="alternate">
+  <link href="problem-three-way-partitioning-ru.html" hreflang="ru" rel="alternate">
 </head>
-<body class="lecture-page problem-page">
+<body class="lecture-page problem-page easy-redesign medium-redesign">
   <div class="progress-track" aria-hidden="true"><div class="progress-bar" id="reading-progress"></div></div>
   <header class="topbar">
     <a class="brand" href="index.html"><span class="brand-mark brand-mark-logo"><img class="brand-mark-image" src="logo.png" alt=""></span><span class="brand-name">Allan's Handbook of Algorithms</span></a>
-    <nav class="topnav" aria-label="Primary navigation"><a href="sorting-problems.html">Practice problems</a><a href="sorting.html">Sorting overview</a></nav>
+    <nav class="topnav" aria-label="Primary navigation"><a href="sorting-problems.html">Practice problems</a><a href="sorting.html">Sorting overview</a><div aria-label="Language" class="language-switch"><span class="current">EN</span><span class="language-separator">·</span><a href="problem-three-way-partitioning-ru.html">RU</a></div></nav>
   </header>
 
   <aside class="sidebar" aria-label="Section navigation">
     <div class="sidebar-title">Problem 4 · Medium</div>
-    <a href="#problem">Problem</a>
-    <a href="#idea">Key idea</a>
-    <a href="#algorithm">Algorithm</a>
-    <a href="#correctness">Why it works</a>
-    <a href="#complexity">Complexity</a>
-    <a href="#implementation">Python</a>
+    <a href="#problem">Problem</a><a href="#idea">Core idea</a><a href="#algorithm">Algorithm</a><a href="#correctness">Correctness & complexity</a><a href="#implementation">Implementation</a>
   </aside>
 
   <main class="lecture">
     <section class="lecture-hero">
-      <div class="chapter-label">Sorting · Practice</div>
-      <span class="problem-title-icon medium" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h5v14H4zM10 8h4v11h-4zM15 3h5v16h-5z"/></svg></span>
+      <div class="problem-hero-kicker"><span class="problem-title-icon medium" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 5h5v14H4zM10 8h4v11h-4zM15 3h5v16h-5z"/></svg></span><span>Sorting · Practice · Medium</span></div>
       <h1>Three-Way Partitioning</h1>
-      <p class="chapter-topics">Partition an array around a value range in one pass and constant extra space.</p>
-      <div class="problem-meta"><span class="medium">Medium</span><span>Sorting practice</span><span>Python</span></div>
+      <p class="chapter-topics">Classify every element into one of three value ranges while scanning the array only once.</p>
+      <div class="problem-meta"><span class="medium">Medium</span><span>Partitioning</span><span>Python</span></div>
     </section>
 
     <section id="problem" class="lecture-section">
       <h2>Problem</h2>
-      <div class="statement-card"><h3>Task</h3><p>Given an array <code>a</code> and two values <code>low ≤ high</code>, rearrange the array so that every value smaller than <code>low</code> comes first, every value in <code>[low, high]</code> comes next, and every value greater than <code>high</code> comes last. The order inside each group does not matter.</p></div>
-      <div class="example-block"><div class="example-head">Example</div><div class="example-body"><div class="array-line"><span class="array-cell">1</span><span class="array-cell">14</span><span class="array-cell">5</span><span class="array-cell">20</span><span class="array-cell">4</span><span class="array-cell">54</span><span class="array-cell">3</span><span class="array-cell">32</span></div><div class="array-caption">Partition around [14, 20]</div><div style="height:14px"></div><div class="array-line"><span class="array-cell left">1</span><span class="array-cell left">5</span><span class="array-cell left">4</span><span class="array-cell left">3</span><span class="array-cell middle">20</span><span class="array-cell middle">14</span><span class="array-cell right">32</span><span class="array-cell right">54</span></div></div></div>
+      <p class="lead easy-lead">We do not need the array to be fully sorted. We only need every value to end up in the correct one of three groups.</p>
+      <div class="easy-brief">
+        <div class="easy-brief-copy">
+          <span class="easy-kicker">Task</span>
+          <h3>Split the array around a range</h3>
+          <p>Given an array <code>a</code> and two values <code>low ≤ high</code>, rearrange the array so that all values below <code>low</code> come first, then all values in <code>[low, high]</code>, then all values above <code>high</code>. The order inside each group is irrelevant.</p>
+          <div class="problem-equation">&lt; low &nbsp;&nbsp; | &nbsp;&nbsp; low ≤ x ≤ high &nbsp;&nbsp; | &nbsp;&nbsp; &gt; high</div>
+        </div>
+        <div class="easy-demo">
+          <div class="easy-demo-label">Example · range [14, 20]</div>
+          <div class="easy-array"><span class="easy-cell">1</span><span class="easy-cell">14</span><span class="easy-cell">5</span><span class="easy-cell">20</span><span class="easy-cell">4</span><span class="easy-cell">54</span><span class="easy-cell">3</span><span class="easy-cell">32</span></div>
+          <div class="easy-demo-arrow">one valid partition ↓</div>
+          <div class="array-line"><span class="array-cell left">1</span><span class="array-cell left">5</span><span class="array-cell left">4</span><span class="array-cell left">3</span><span class="array-cell middle">20</span><span class="array-cell middle">14</span><span class="array-cell right">32</span><span class="array-cell right">54</span></div>
+          <div class="easy-demo-caption">The exact order inside a color is not important; only the three regions matter.</div>
+        </div>
+      </div>
     </section>
 
     <section id="idea" class="lecture-section">
-      <h2>Key idea</h2>
-      <div class="idea-card"><h3>The observation</h3><p>Maintain three regions at all times: a finished left region containing values below the range, a finished middle region containing values inside the range, and a finished right region containing values above the range. Only the interval between the scan pointer and the right boundary remains unknown.</p></div>
-      <div class="example-block"><div class="example-head">Four regions during the scan</div><div class="example-body"><div class="array-line"><span class="array-cell left">&lt; low</span><span class="array-cell left">&lt; low</span><span class="array-cell middle">inside</span><span class="array-cell hot">?</span><span class="array-cell hot">?</span><span class="array-cell right">&gt; high</span></div><div class="array-caption">The unknown region shrinks from both ends.</div></div></div>
+      <h2>Core idea</h2>
+      <p class="lead easy-lead">Keep the part already classified at both ends and let the unknown interval shrink until nothing remains.</p>
+      <div class="easy-insight">
+        <div class="easy-insight-card">
+          <span class="easy-kicker">The four-region view</span>
+          <h3>Three finished regions, one unfinished region</h3>
+          <p>At any moment, positions before <code>left</code> are known to be small, positions from <code>left</code> to <code>i-1</code> are known to be in range, and positions after <code>right</code> are known to be large. Only <code>a[i:right+1]</code> is still unknown.</p>
+          <div class="example-block" style="margin:16px 0 0"><div class="example-body"><div class="array-line"><span class="array-cell left">small</span><span class="array-cell left">small</span><span class="array-cell middle">inside</span><span class="array-cell hot">a[i]</span><span class="array-cell hot">?</span><span class="array-cell hot">?</span><span class="array-cell right">large</span></div><div class="array-caption">left region | middle region | unknown region | right region</div></div></div>
+        </div>
+        <div class="easy-rule-stack">
+          <div class="easy-rule"><strong>&lt; low</strong><p>Swap the current value with <code>a[left]</code>. Both <code>left</code> and <code>i</code> move right.</p></div>
+          <div class="easy-rule"><strong>inside</strong><p>The value is already in the correct middle region. Only <code>i</code> moves right.</p></div>
+          <div class="easy-rule"><strong>&gt; high</strong><p>Swap with <code>a[right]</code> and move <code>right</code> left. Do not advance <code>i</code> yet.</p></div>
+        </div>
+      </div>
+      <div class="invariant-box"><span>Why does the large case keep i fixed?</span><p>The value brought in from the right boundary has never been inspected. Advancing <code>i</code> immediately could skip it. The algorithm first classifies that new value, then moves on.</p></div>
     </section>
 
     <section id="algorithm" class="lecture-section">
       <h2>Algorithm</h2>
-      <div class="algorithm-steps"><article class="algorithm-step"><div class="algorithm-step-num">1</div><div><h3>Initialize the boundaries</h3><p>Set <code>left = 0</code>, <code>i = 0</code>, and <code>right = n - 1</code>.</p></div></article>
-<article class="algorithm-step"><div class="algorithm-step-num">2</div><div><h3>Small value</h3><p>If <code>a[i] &lt; low</code>, swap it with <code>a[left]</code>. Both <code>left</code> and <code>i</code> advance.</p></div></article>
-<article class="algorithm-step"><div class="algorithm-step-num">3</div><div><h3>Large value</h3><p>If <code>a[i] &gt; high</code>, swap it with <code>a[right]</code> and move <code>right</code> left. Do not advance <code>i</code>: the value swapped in has not been classified yet.</p></div></article>
-<article class="algorithm-step"><div class="algorithm-step-num">4</div><div><h3>Middle value</h3><p>Otherwise the current value already belongs to the middle group, so only <code>i</code> advances.</p></div></article>
-<article class="algorithm-step"><div class="algorithm-step-num">5</div><div><h3>Stop</h3><p>When <code>i &gt; right</code>, the unknown region is empty and the three-way partition is complete.</p></div></article></div>
-      <div class="invariant-box"><span>Invariant</span><p>Before every iteration, <code>a[:left]</code> contains only values below <code>low</code>; <code>a[left:i]</code> contains only values in <code>[low, high]</code>; and <code>a[right+1:]</code> contains only values above <code>high</code>.</p></div>
+      <div class="easy-step-flow">
+        <article class="easy-step-card"><div class="easy-step-number">1</div><h3>Set three pointers</h3><p>Initialize <code>left = 0</code>, <code>i = 0</code>, <code>right = n - 1</code>.</p></article>
+        <article class="easy-step-card"><div class="easy-step-number">2</div><h3>Classify a[i]</h3><p>Compare the current value with <code>low</code> and <code>high</code>.</p></article>
+        <article class="easy-step-card"><div class="easy-step-number">3</div><h3>Grow one finished region</h3><p>Move the value into the left, middle, or right region using at most one swap.</p></article>
+        <article class="easy-step-card"><div class="easy-step-number">4</div><h3>Stop when i &gt; right</h3><p>Then the unknown interval is empty and every element has been classified.</p></article>
+      </div>
+      <div class="easy-invariant"><div class="easy-invariant-mark">I</div><div><h3>Loop invariant</h3><p>Before every iteration, <code>a[:left]</code> contains only values below <code>low</code>, <code>a[left:i]</code> contains only values in the range, and <code>a[right+1:]</code> contains only values above <code>high</code>.</p></div></div>
     </section>
 
     <section id="correctness" class="lecture-section">
-      <h2>Why it works</h2>
-      <div class="correctness-card"><h3>Correctness argument</h3><p>Each case preserves the invariant. A small value is moved into the left region, an in-range value extends the middle region, and a large value is moved into the right region. Every iteration removes at least one position from the unknown interval. When that interval becomes empty, the invariant describes the entire array, so the required partition has been produced.</p></div>
-    </section>
-
-    <section id="complexity" class="lecture-section">
-      <h2>Complexity</h2>
-      <div class="complexity-grid"><div class="complexity-card"><span>Time</span><strong>O(n)</strong><p>Every position is classified once; swaps do not create extra scans.</p></div>
-<div class="complexity-card"><span>Extra space</span><strong>O(1)</strong><p>Only three indices and temporary swap storage are used.</p></div>
-<div class="complexity-card"><span>Stability</span><strong>No</strong><p>Swaps may change the relative order of values inside a group.</p></div></div>
+      <h2>Correctness & complexity</h2>
+      <div class="easy-proof-grid">
+        <div class="easy-proof-main"><div class="proof-symbol">✓</div><h3>Why the invariant is enough</h3><p>Each branch places the current value into the only region where it can belong and never damages the regions that were already finished.</p></div>
+        <div class="easy-proof-details">
+          <div class="easy-proof-row"><span>1</span><div><h4>Initialization</h4><p>At the start all three finished regions are empty, so the invariant is trivially true.</p></div></div>
+          <div class="easy-proof-row"><span>2</span><div><h4>Maintenance</h4><p>A small value extends the left region, an in-range value extends the middle region, and a large value extends the right region. The swapped-in unknown value is inspected before <code>i</code> advances.</p></div></div>
+          <div class="easy-proof-row"><span>3</span><div><h4>Termination</h4><p>Every iteration shrinks the unknown interval by one position. When <code>i &gt; right</code>, no unknown values remain, so the entire array has the required three-part form.</p></div></div>
+        </div>
+      </div>
+      <div class="easy-complexity-strip"><div class="easy-complexity-item"><span>Time</span><strong>O(n)</strong><p>Each position leaves the unknown interval once.</p></div><div class="easy-complexity-item"><span>Extra space</span><strong>O(1)</strong><p>Only three indices and swap storage are needed.</p></div><div class="easy-complexity-item"><span>Stable?</span><strong>No</strong><p>Swaps can change the relative order inside a group.</p></div></div>
     </section>
 
     <section id="implementation" class="lecture-section">
-      <h2>Python implementation</h2>
-      <div class="problem-code">
-        <div class="problem-code-head"><span>Python</span><button class="copy-code" type="button">Copy</button></div>
-        <pre><code>def three_way_partition(a, low, high):
+      <h2>Implementation</h2>
+      <p class="lead easy-lead">The code is almost a direct transcription of the three cases above.</p>
+      <div class="easy-code-layout">
+        <div class="problem-code"><div class="problem-code-head"><span>Python</span><button class="copy-code" type="button">Copy</button></div><pre><code>def three_way_partition(a, low, high):
     left = 0
     i = 0
     right = len(a) - 1
@@ -87,24 +112,28 @@
             a[left], a[i] = a[i], a[left]
             left += 1
             i += 1
+
         elif a[i] &gt; high:
             a[i], a[right] = a[right], a[i]
             right -= 1
+
         else:
             i += 1
 
     return a
 
 
-a = [1, 14, 5, 20, 4, 54, 3, 32]
-print(three_way_partition(a, 14, 20))</code></pre>
+values = [1, 14, 5, 20, 4, 54, 3, 32]
+print(three_way_partition(values, 14, 20))</code></pre></div>
+        <div class="easy-code-notes"><span class="easy-kicker">Reading the code</span><h3>The asymmetric pointer update matters</h3><div class="easy-code-note"><b>Small or middle value</b><p>The current position has been completely classified, so <code>i</code> may advance.</p></div><div class="easy-code-note"><b>Large value</b><p>Only <code>right</code> moves. The new value now sitting at <code>i</code> must still be examined.</p></div><div class="easy-code-note"><b>In-place</b><p>No auxiliary array is built; the three regions emerge inside the original array.</p></div></div>
       </div>
-      <div class="source-card"><h3>Original problem</h3><p>This exercise is adapted from <a href="https://www.geeksforgeeks.org/dsa/three-way-partitioning-of-an-array-around-a-given-range/" target="_blank" rel="noopener">Three way partitioning of an array around a given range</a> on GeeksforGeeks. The statement and exposition on this page are rewritten for the handbook.</p></div>
-      <div class="next-part back-problems"><h3>Back to practice</h3><p>Return to the nine sorting practice problems.</p><a class="next-part-link" href="sorting-problems.html">← Practice Problems</a></div>
+      <p class="easy-source-line">Adapted from <a href="https://www.geeksforgeeks.org/dsa/three-way-partitioning-of-an-array-around-a-given-range/" target="_blank" rel="noopener">Three way partitioning of an array around a given range</a> on GeeksforGeeks. The statement and exposition are rewritten for this handbook.</p>
+      <div class="next-part back-problems"><h3>Back to practice</h3><p>Choose another problem from the Easy, Medium, or Hard sets.</p><a class="next-part-link" href="sorting-problems.html">← Practice Problems</a></div>
     </section>
   </main>
 
   <footer class="lecture-footer"><div>Allan's Handbook of Algorithms</div><div>© 2026 Allan Allemand</div></footer>
   <script src="problems.js"></script>
+  <script src="language-switch.js"></script>
 </body>
 </html>
