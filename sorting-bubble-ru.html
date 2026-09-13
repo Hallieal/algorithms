@@ -381,6 +381,7 @@
 <div>Гайд по алгоритмам · presented by Аллан</div>
 <div>© 2026 Allan Allemand</div>
 </footer>
+<script src="lecture-core.js"></script>
 <script>
 (() => {
   "use strict";
@@ -512,75 +513,16 @@
   }
 
   const viz = document.querySelector('.visualizer[data-algorithm="bubble"]');
-
   if (viz) {
-    reset(viz, DEFAULT);
-
-    viz.addEventListener("click", event => {
-      const button = event.target.closest("button[data-action]");
-      if (!button) return;
-
-      if (button.dataset.action === "next") {
-        viz._index = Math.min(viz._index + 1, viz._steps.length - 1);
-        render(viz);
-      } else if (button.dataset.action === "reset") {
-        reset(viz, DEFAULT);
-      } else if (button.dataset.action === "randomize") {
-        reset(viz, randomArray());
-      }
+    LectureCore.mountStepper(viz, {
+      initial: DEFAULT,
+      build: bubbleSteps,
+      render,
+      randomize: randomArray,
+      store: "_steps"
     });
   }
 
-  document.addEventListener("click", event => {
-    const button = event.target.closest("button[data-reveal]");
-    if (!button) return;
-
-    const target = document.getElementById(button.dataset.reveal);
-    if (!target) return;
-
-    target.hidden = !target.hidden;
-    button.setAttribute("aria-expanded", String(!target.hidden));
-    button.textContent = target.hidden ? "Показать ответ" : "Скрыть ответ";
-  });
-
-  const sidebarLinks = [...document.querySelectorAll(".sidebar a")];
-  const sections = sidebarLinks
-    .map(link => document.querySelector(link.getAttribute("href")))
-    .filter(Boolean);
-
-  if ("IntersectionObserver" in window && sections.length) {
-    const observer = new IntersectionObserver(entries => {
-      const visible = entries
-        .filter(entry => entry.isIntersecting)
-        .sort((a,b) => b.intersectionRatio - a.intersectionRatio)[0];
-
-      if (!visible) return;
-
-      sidebarLinks.forEach(link => link.classList.remove("active"));
-      const current = sidebarLinks.find(
-        link => link.getAttribute("href") === `#${visible.target.id}`
-      );
-      if (current) current.classList.add("active");
-    }, {
-      rootMargin: "-20% 0px -65% 0px",
-      threshold: [0, .1, .3, .6]
-    });
-
-    sections.forEach(section => observer.observe(section));
-  }
-
-  function updateProgress() {
-    const progress = document.getElementById("reading-progress");
-    if (!progress) return;
-
-    const height = document.documentElement.scrollHeight - window.innerHeight;
-    const ratio = height > 0 ? window.scrollY / height : 0;
-    progress.style.width = `${Math.max(0, Math.min(1, ratio)) * 100}%`;
-  }
-
-  updateProgress();
-  window.addEventListener("scroll", updateProgress, {passive: true});
-  window.addEventListener("resize", updateProgress);
 })();
 </script>
 <script src="language-switch.js"></script>

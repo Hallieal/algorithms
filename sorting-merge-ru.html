@@ -793,6 +793,7 @@
 <div>Гайд по алгоритмам · presented by Аллан</div>
 <div>© 2026 Allan Allemand</div>
 </footer>
+<script src="lecture-core.js"></script>
 <script>
 (() => {
   "use strict";
@@ -919,28 +920,14 @@
   }
 
   const mergeDemo = document.getElementById("merge-operation-demo");
-
   if (mergeDemo) {
-    mergeDemo._states = mergeOperationStates(LEFT, RIGHT);
-    mergeDemo._index = 0;
-    renderMergeOperation(mergeDemo);
-
-    mergeDemo.addEventListener("click", event => {
-      const button = event.target.closest("button[data-action]");
-      if (!button) return;
-
-      if (button.dataset.action === "next-merge") {
-        mergeDemo._index = Math.min(
-          mergeDemo._index + 1,
-          mergeDemo._states.length - 1
-        );
-        renderMergeOperation(mergeDemo);
-      }
-
-      if (button.dataset.action === "reset-merge") {
-        mergeDemo._index = 0;
-        renderMergeOperation(mergeDemo);
-      }
+    LectureCore.mountStepper(mergeDemo, {
+      initial: { left: LEFT, right: RIGHT },
+      build: data => mergeOperationStates(data.left, data.right),
+      render: renderMergeOperation,
+      store: "_states",
+      nextAction: "next-merge",
+      resetAction: "reset-merge"
     });
   }
 
@@ -1062,89 +1049,22 @@
     renderMergeSort(viz);
   }
 
-  const mergeSortViz = document.querySelector(
-    '.visualizer[data-algorithm="merge-sort"]'
-  );
-
+  const mergeSortViz = document.querySelector('.visualizer[data-algorithm="merge-sort"]');
   if (mergeSortViz) {
-    resetMergeSort(mergeSortViz, DEFAULT_SORT);
-
-    mergeSortViz.addEventListener("click", event => {
-      const button = event.target.closest("button[data-action]");
-      if (!button) return;
-
-      if (button.dataset.action === "next-sort") {
-        mergeSortViz._index = Math.min(
-          mergeSortViz._index + 1,
-          mergeSortViz._states.length - 1
-        );
-        renderMergeSort(mergeSortViz);
-      } else if (button.dataset.action === "reset-sort") {
-        resetMergeSort(mergeSortViz, DEFAULT_SORT);
-      } else if (button.dataset.action === "randomize-sort") {
-        resetMergeSort(mergeSortViz, randomArray());
-      }
+    LectureCore.mountStepper(mergeSortViz, {
+      initial: DEFAULT_SORT,
+      build: mergeSortStates,
+      render: renderMergeSort,
+      randomize: randomArray,
+      store: "_states",
+      nextAction: "next-sort",
+      resetAction: "reset-sort",
+      randomizeAction: "randomize-sort"
     });
   }
 
   /* ---------------- Revealable answers ---------------- */
 
-  document.addEventListener("click", event => {
-    const button = event.target.closest("button[data-reveal]");
-    if (!button) return;
-
-    const target = document.getElementById(button.dataset.reveal);
-    if (!target) return;
-
-    target.hidden = !target.hidden;
-    button.setAttribute("aria-expanded", String(!target.hidden));
-    button.textContent = target.hidden ? "Показать ответ" : "Скрыть ответ";
-  });
-
-  /* ---------------- Sidebar ---------------- */
-
-  const sidebarLinks = [...document.querySelectorAll(".sidebar a")];
-  const sections = sidebarLinks
-    .map(link => document.querySelector(link.getAttribute("href")))
-    .filter(Boolean);
-
-  if ("IntersectionObserver" in window && sections.length) {
-    const observer = new IntersectionObserver(entries => {
-      const visible = entries
-        .filter(entry => entry.isIntersecting)
-        .sort((a,b) => b.intersectionRatio - a.intersectionRatio)[0];
-
-      if (!visible) return;
-
-      sidebarLinks.forEach(link => link.classList.remove("active"));
-
-      const current = sidebarLinks.find(
-        link => link.getAttribute("href") === `#${visible.target.id}`
-      );
-
-      if (current) current.classList.add("active");
-    }, {
-      rootMargin: "-20% 0px -65% 0px",
-      threshold: [0, .1, .3, .6]
-    });
-
-    sections.forEach(section => observer.observe(section));
-  }
-
-  /* ---------------- Reading progress ---------------- */
-
-  function updateProgress() {
-    const progress = document.getElementById("reading-progress");
-    if (!progress) return;
-
-    const height = document.documentElement.scrollHeight - window.innerHeight;
-    const ratio = height > 0 ? window.scrollY / height : 0;
-    progress.style.width = `${Math.max(0, Math.min(1, ratio)) * 100}%`;
-  }
-
-  updateProgress();
-  window.addEventListener("scroll", updateProgress, {passive: true});
-  window.addEventListener("resize", updateProgress);
 })();
 </script>
 <script src="language-switch.js"></script>

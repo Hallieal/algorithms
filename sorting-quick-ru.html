@@ -747,11 +747,11 @@
 </article>
 </div>
 <div class="next-part">
-<h3>Следующий раздел: сортировка подсчётом</h3>
+<h3>Перейти к практике</h3>
 <p>
-          Теперь выйдем за пределы модели сравнений и используем дополнительную структуру ключей.
+          На этом опубликованная основная часть главы о сортировках пока заканчивается. Закрепите идеи главы на задачах возрастающей сложности.
         </p>
-<a class="next-part-link" href="sorting-counting-ru.html">Сортировка подсчётом →</a>
+<a class="next-part-link" href="sorting-problems-ru.html">Практические задачи →</a>
 </div>
 <div class="next-part">
 <h3>Предыдущий раздел</h3>
@@ -766,6 +766,7 @@
 <div>Гайд по алгоритмам · presented by Аллан</div>
 <div>© 2026 Allan Allemand</div>
 </footer>
+<script src="lecture-core.js"></script>
 <script>
 (() => {
   "use strict";
@@ -900,25 +901,16 @@
   }
 
   const partitionDemo = document.getElementById("quick-partition-demo");
-
   if (partitionDemo) {
-    resetPartition(partitionDemo, DEFAULT_PARTITION);
-
-    partitionDemo.addEventListener("click", event => {
-      const button = event.target.closest("button[data-action]");
-      if (!button) return;
-
-      if (button.dataset.action === "next-partition") {
-        partitionDemo._index = Math.min(
-          partitionDemo._index + 1,
-          partitionDemo._states.length - 1
-        );
-        renderPartition(partitionDemo);
-      } else if (button.dataset.action === "reset-partition") {
-        resetPartition(partitionDemo, DEFAULT_PARTITION);
-      } else if (button.dataset.action === "new-partition") {
-        resetPartition(partitionDemo, randomUniqueArray());
-      }
+    LectureCore.mountStepper(partitionDemo, {
+      initial: DEFAULT_PARTITION,
+      build: partitionStates,
+      render: renderPartition,
+      randomize: randomUniqueArray,
+      store: "_states",
+      nextAction: "next-partition",
+      resetAction: "reset-partition",
+      randomizeAction: "new-partition"
     });
   }
 
@@ -926,60 +918,6 @@
      Revealable answers
      ------------------------------------------------------- */
 
-  document.addEventListener("click", event => {
-    const button = event.target.closest("button[data-reveal]");
-    if (!button) return;
-
-    const target = document.getElementById(button.dataset.reveal);
-    if (!target) return;
-
-    target.hidden = !target.hidden;
-    button.setAttribute("aria-expanded", String(!target.hidden));
-    button.textContent = target.hidden ? "Показать ответ" : "Скрыть ответ";
-  });
-
-  /* -------------------------------------------------------
-     Sidebar + progress
-     ------------------------------------------------------- */
-
-  const sidebarLinks = [...document.querySelectorAll(".sidebar a")];
-  const sections = sidebarLinks
-    .map(link => document.querySelector(link.getAttribute("href")))
-    .filter(Boolean);
-
-  if ("IntersectionObserver" in window && sections.length) {
-    const observer = new IntersectionObserver(entries => {
-      const visible = entries
-        .filter(entry => entry.isIntersecting)
-        .sort((a,b) => b.intersectionRatio - a.intersectionRatio)[0];
-
-      if (!visible) return;
-
-      sidebarLinks.forEach(link => link.classList.remove("active"));
-      const current = sidebarLinks.find(
-        link => link.getAttribute("href") === `#${visible.target.id}`
-      );
-      if (current) current.classList.add("active");
-    }, {
-      rootMargin: "-20% 0px -65% 0px",
-      threshold: [0,.1,.3,.6]
-    });
-
-    sections.forEach(section => observer.observe(section));
-  }
-
-  function updateProgress() {
-    const progress = document.getElementById("reading-progress");
-    if (!progress) return;
-
-    const height = document.documentElement.scrollHeight - window.innerHeight;
-    const ratio = height > 0 ? window.scrollY / height : 0;
-    progress.style.width = `${Math.max(0, Math.min(1, ratio)) * 100}%`;
-  }
-
-  updateProgress();
-  window.addEventListener("scroll", updateProgress, {passive:true});
-  window.addEventListener("resize", updateProgress);
 })();
 </script>
 <script src="language-switch.js"></script>
