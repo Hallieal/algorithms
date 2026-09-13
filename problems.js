@@ -1,6 +1,8 @@
 (() => {
   "use strict";
 
+  const isRussian = document.documentElement.lang.toLowerCase().startsWith("ru");
+
   const progress = document.getElementById("reading-progress");
   if (progress) {
     const updateProgress = () => {
@@ -40,9 +42,9 @@
       const original = button.textContent;
       try {
         await navigator.clipboard.writeText(block.textContent);
-        button.textContent = "Copied";
+        button.textContent = isRussian ? "Скопировано" : "Copied";
       } catch (_) {
-        button.textContent = "Select code";
+        button.textContent = isRussian ? "Выделите код" : "Select code";
       }
       window.setTimeout(() => { button.textContent = original; }, 1300);
     });
