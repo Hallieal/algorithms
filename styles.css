@@ -2421,3 +2421,52 @@ th {
   .course-card { grid-template-columns: 76px 1fr; }
   .course-icon { width: 68px; height: 68px; padding: 8px; }
 }
+
+
+/* v30: minimal landing page */
+.home-minimal {
+  background: #fcfbf8;
+}
+
+.home-minimal-main {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 78px 36px 90px;
+}
+
+.home-minimal-title {
+  margin-bottom: 64px;
+}
+
+.home-minimal-title h1 {
+  margin: 0;
+  color: var(--ink);
+  font-size: clamp(72px, 11vw, 142px);
+  line-height: .86;
+  letter-spacing: -.075em;
+  font-weight: 850;
+}
+
+.home-topics {
+  padding: 0;
+}
+
+.home-topics > h2 {
+  margin: 0 0 26px;
+  font-size: 32px;
+  letter-spacing: -.035em;
+}
+
+@media (max-width: 720px) {
+  .home-minimal-main {
+    padding: 52px 20px 70px;
+  }
+
+  .home-minimal-title {
+    margin-bottom: 44px;
+  }
+
+  .home-topics > h2 {
+    font-size: 28px;
+  }
+}
