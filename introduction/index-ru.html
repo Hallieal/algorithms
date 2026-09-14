@@ -62,11 +62,11 @@
       <dl class="definition-list input-list">
         <div><dt>Массив или строка</dt><dd><span class="math">n</span> обычно означает число элементов или символов.</dd></div>
         <div><dt>Граф</dt><dd>Часто нужны два параметра: <span class="math">n=|V|</span> вершин и <span class="math">m=|E|</span> рёбер.</dd></div>
-        <div><dt>Матрица</dt><dd>Естественный размер может задаваться как <span class="math">n \times m</span>, а не одним числом.</dd></div>
+        <div><dt>Матрица</dt><dd>Естественный размер может задаваться как <span class="math">n × m</span>, а не одним числом.</dd></div>
         <div><dt>Целое число</dt><dd>Для арифметических алгоритмов размером входа часто является число битов в записи числа.</dd></div>
       </dl>
 
-      <aside class="margin-note"><strong>Пример.</strong> Линейность по самому числу <span class="math">x</span> и линейность по длине его двоичной записи — совсем разные оценки: длина записи составляет примерно <span class="math">\log_2 x</span>.</aside>
+      <aside class="margin-note"><strong>Пример.</strong> Линейность по самому числу <span class="math">x</span> и линейность по длине его двоичной записи — совсем разные оценки: длина записи составляет примерно <span class="math">log₂ x</span>.</aside>
     </section>
 
     <section id="counting" class="lecture-section">
@@ -89,8 +89,8 @@ for x in a:
         <tbody>
           <tr><td>Прочитать известную позицию</td><td>одно действие</td><td>Θ(1)</td></tr>
           <tr><td>Просмотреть весь массив</td><td><span class="math">n</span> посещений</td><td>Θ(n)</td></tr>
-          <tr><td>Рассмотреть все пары</td><td>примерно <span class="math">n^2/2</span> пар</td><td>Θ(n²)</td></tr>
-          <tr><td>Каждый раз отбрасывать половину</td><td>примерно <span class="math">\log_2 n</span> шагов</td><td>Θ(log n)</td></tr>
+          <tr><td>Рассмотреть все пары</td><td>примерно <span class="math">n²/2</span> пар</td><td>Θ(n²)</td></tr>
+          <tr><td>Каждый раз отбрасывать половину</td><td>примерно <span class="math">log₂ n</span> шагов</td><td>Θ(log n)</td></tr>
         </tbody>
       </table>
     </section>
@@ -129,8 +129,8 @@ for x in a:
       </dl>
 
       <details class="formal-box"><summary>Формальные определения</summary><div>
-        <p><strong>O.</strong> <span class="math">T(n)=O(g(n))</span>, если существуют константы <span class="math">c&gt;0</span> и <span class="math">n_0</span>, для которых <span class="math">0\le T(n)\le c g(n)</span> при всех <span class="math">n\ge n_0</span>.</p>
-        <p><strong>Ω.</strong> <span class="math">T(n)=Ω(g(n))</span>, если начиная с некоторого <span class="math">n_0</span> выполняется <span class="math">0\le c g(n)\le T(n)</span>.</p>
+        <p><strong>O.</strong> <span class="math">T(n)=O(g(n))</span>, если существуют константы <span class="math">c&gt;0</span> и <span class="math">n₀</span>, для которых <span class="math">0 ≤ T(n) ≤ c g(n)</span> при всех <span class="math">n ≥ n₀</span>.</p>
+        <p><strong>Ω.</strong> <span class="math">T(n)=Ω(g(n))</span>, если начиная с некоторого <span class="math">n₀</span> выполняется <span class="math">0 ≤ c g(n) ≤ T(n)</span>.</p>
         <p><strong>Θ.</strong> Верхняя и нижняя границы выполняются одновременно, возможно с разными константами.</p>
       </div></details>
     </section>
@@ -180,7 +180,7 @@ for x in a:
         check(a[i], a[j])</code></pre><p>Пар ровно <span class="math">n(n-1)/2</span>, поэтому время работы равно <strong>Θ(n²)</strong>.</p></div></article>
         <article><span class="example-no">3</span><div><h3>Повторное деление пополам</h3><pre><code>while left &lt;= right:
     mid = (left + right) // 2
-    # отбросить половину</code></pre><p>После <span class="math">k</span> шагов остаётся примерно <span class="math">n/2^k</span> элементов. До одного элемента доходим за <strong>Θ(log n)</strong> шагов.</p></div></article>
+    # отбросить половину</code></pre><p>После <span class="math">k</span> шагов остаётся примерно <span class="math">n/2ᵏ</span> элементов. До одного элемента доходим за <strong>Θ(log n)</strong> шагов.</p></div></article>
       </div>
 
       <aside class="margin-note"><strong>Полезная привычка.</strong> Читая код, сначала определите размер входа, затем найдите повторяющуюся работу и только после этого упрощайте получившуюся формулу.</aside>
