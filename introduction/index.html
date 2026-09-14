@@ -3,12 +3,12 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="A visual introduction to algorithm analysis: input size, counting operations, asymptotic notation, growth rates, and space complexity.">
+  <meta name="description" content="A visual introduction to algorithm analysis: input size, operation counting, asymptotic notation, growth rates, and space complexity.">
   <meta property="og:title" content="Introduction to Algorithms | Allan's Handbook of Algorithms">
   <meta property="og:type" content="article">
   <title>Introduction to Algorithms | Allan's Handbook of Algorithms</title>
   <link rel="stylesheet" href="../assets/css/styles.css">
-  <link rel="stylesheet" href="styles.css?v=2">
+  <link rel="stylesheet" href="styles.css?v=3">
   <link rel="icon" type="image/png" sizes="32x32" href="../assets/images/favicon-32.png">
   <link rel="icon" type="image/png" sizes="64x64" href="../assets/images/favicon.png">
   <link rel="apple-touch-icon" sizes="180x180" href="../assets/images/apple-touch-icon.png">
@@ -22,17 +22,17 @@
     <nav class="topnav" aria-label="Primary navigation"><div aria-label="Language" class="language-switch"><span class="current">EN</span><span class="language-separator">·</span><a href="index-ru.html">RU</a></div></nav>
   </header>
 
-  <aside class="sidebar" aria-label="Section navigation">
+  <aside class="sidebar" aria-label="Chapter navigation">
     <div class="sidebar-title">Chapter 1 · Foundations</div>
-    <a href="#idea">Algorithm and cost</a>
+    <a href="#idea">Algorithms and cost</a>
     <a href="#input">Input size</a>
     <a href="#counting">Counting work</a>
     <a href="#cases">Best / average / worst</a>
-    <a href="#asymptotics">Asymptotic notation</a>
+    <a href="#asymptotics">Asymptotics</a>
     <a href="#growth">Growth rates</a>
-    <a href="#space">Space complexity</a>
-    <a href="#examples">Worked examples</a>
-    <a href="#checklist">Analysis checklist</a>
+    <a href="#space">Memory</a>
+    <a href="#examples">Examples</a>
+    <a href="#checklist">How to analyze</a>
   </aside>
 
   <main class="lecture">
@@ -41,21 +41,17 @@
         <div class="hero-copy">
           <div class="chapter-label">Chapter 1 · Foundations</div>
           <h1>Introduction to Algorithms</h1>
-          <p class="chapter-topics">An algorithm is not just code that works. We also want to know how its work and memory grow when the input gets larger. This chapter builds that intuition first, then introduces the notation used to describe it precisely.</p>
-          <div class="hero-takeaways" aria-label="Chapter takeaways">
+          <p class="chapter-topics">An algorithm is more than code that produces the right answer. We also need to know how its running time and memory use change as the input gets larger. We will build the intuition first and introduce precise notation only after that.</p>
+          <div class="hero-takeaways" aria-label="Core notation">
             <span><b>n</b> input size</span>
-            <span><b>T(n)</b> running time</span>
+            <span><b>T(n)</b> amount of work</span>
             <span><b>S(n)</b> extra memory</span>
           </div>
         </div>
-        <div class="algorithm-machine" aria-label="Illustration of an algorithm transforming input into output">
+        <div class="algorithm-machine" aria-label="An algorithm transforms input into output">
           <div class="machine-label">input</div>
           <div class="machine-array input-array"><span>8</span><span>3</span><span>5</span><span>1</span><span>9</span></div>
-          <div class="machine-core">
-            <span class="gear gear-a">⚙</span>
-            <strong>algorithm</strong>
-            <span class="gear gear-b">⚙</span>
-          </div>
+          <div class="machine-core"><span class="gear gear-a">⚙</span><strong>algorithm</strong><span class="gear gear-b">⚙</span></div>
           <div class="machine-arrow">↓</div>
           <div class="machine-label">output</div>
           <div class="machine-array output-array"><span>1</span><span>3</span><span>5</span><span>8</span><span>9</span></div>
@@ -63,44 +59,41 @@
       </div>
       <div class="intro-summary-grid">
         <article><span class="summary-icon green">↗</span><h3>How much work?</h3><p>Count elementary operations as the input grows.</p></article>
-        <article><span class="summary-icon orange">□</span><h3>How much memory?</h3><p>Track the extra storage needed during execution.</p></article>
-        <article><span class="summary-icon purple">∞</span><h3>How does it scale?</h3><p>Focus on the growth pattern, not one machine or one test.</p></article>
+        <article><span class="summary-icon orange">□</span><h3>How much memory?</h3><p>Track extra storage needed during execution.</p></article>
+        <article><span class="summary-icon purple">∞</span><h3>How does it scale?</h3><p>Focus on the growth pattern, not one machine or one run.</p></article>
       </div>
     </section>
 
     <section id="idea" class="lecture-section">
       <div class="section-kicker">The central idea</div>
       <h2>Measure growth, not seconds</h2>
-      <p class="lead">Wall-clock time is useful for benchmarking a program, but it depends on the computer, language, compiler, and current load. Algorithm analysis asks a more transferable question: how does the amount of work change when the input becomes larger?</p>
-
+      <p class="lead">Wall-clock time is useful for benchmarking one implementation, but it depends on the computer, language, compiler, and current system load. Algorithm analysis asks a more portable question: how does the amount of work change when the input gets larger?</p>
       <div class="scale-story">
         <div class="scale-story-copy">
-          <h3>Suppose we need to find a name in a list</h3>
-          <p>If we scan from the beginning, a list twice as long can require about twice as many checks. The exact nanoseconds may change from laptop to laptop; the pattern “work grows proportionally to the list length” does not.</p>
-          <div class="plain-formula"><span>list size</span><b>n</b><span class="formula-arrow">→</span><span>checks</span><b>about n</b></div>
+          <h3>Suppose we search for a name in a list</h3>
+          <p>If we scan from the beginning, a list that is twice as long may require roughly twice as many checks. Nanoseconds differ across machines; the rule “work grows in proportion to list length” does not.</p>
+          <div class="plain-formula"><span>list length</span><b>n</b><span class="formula-arrow">→</span><span>checks</span><b>about n</b></div>
         </div>
         <div class="search-illustration" aria-label="Linear search illustration">
-          <div class="search-caption">Looking for <b>7</b></div>
+          <div class="search-caption">Searching for <b>7</b></div>
           <div class="search-row"><span class="checked">4</span><span class="checked">9</span><span class="checked">2</span><span class="checked">5</span><span class="found">7</span><span>1</span><span>8</span></div>
           <div class="search-steps"><i></i><i></i><i></i><i></i><i class="done"></i></div>
-          <div class="search-result">5 checks for this input</div>
+          <div class="search-result">5 checks on this input</div>
         </div>
       </div>
-
       <div class="concept-strip">
-        <div><span>1</span><h3>Correctness</h3><p>Does the algorithm always produce the right answer?</p></div>
+        <div><span>1</span><h3>Correctness</h3><p>Does the algorithm always return the right answer?</p></div>
         <div class="concept-strip-arrow">→</div>
-        <div><span>2</span><h3>Time</h3><p>How many elementary operations can it perform?</p></div>
+        <div><span>2</span><h3>Time</h3><p>How many elementary operations does it perform?</p></div>
         <div class="concept-strip-arrow">→</div>
-        <div><span>3</span><h3>Space</h3><p>How much additional memory can it use?</p></div>
+        <div><span>3</span><h3>Memory</h3><p>How much additional storage does it need?</p></div>
       </div>
     </section>
 
     <section id="input" class="lecture-section">
       <div class="section-kicker">Step 1</div>
       <h2>Choose the input size</h2>
-      <p class="lead">Before counting anything, decide what “larger input” means. We usually call the relevant size parameter <span class="math">n</span>, but its meaning depends on the problem.</p>
-
+      <p class="lead">Before counting anything, decide what “a larger input” means. We usually call the relevant parameter <span class="math">n</span>, but its meaning depends on the problem.</p>
       <div class="size-visual">
         <div class="size-example">
           <div class="size-heading"><span>small input</span><b>n = 6</b></div>
@@ -112,158 +105,92 @@
           <div class="size-cells twelve"><i>4</i><i>1</i><i>8</i><i>3</i><i>9</i><i>2</i><i>7</i><i>6</i><i>5</i><i>0</i><i>3</i><i>8</i></div>
         </div>
       </div>
-
       <div class="input-types-grid">
         <article><div class="type-icon array-icon"><i></i><i></i><i></i><i></i></div><h3>Array or string</h3><p><b>n</b> = number of elements or characters.</p></article>
         <article><div class="type-icon graph-icon"><i></i><i></i><i></i><em></em><em></em><em></em></div><h3>Graph</h3><p>Usually two parameters: <b>n = |V|</b> vertices and <b>m = |E|</b> edges.</p></article>
-        <article><div class="type-icon matrix-icon"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><h3>Matrix</h3><p>Rows and columns matter: for example, <b>n × m</b>.</p></article>
-        <article><div class="type-icon bits-icon">101101</div><h3>Integer</h3><p>The input size can be its number of bits, roughly <b>log₂ x</b>, not the value <b>x</b> itself.</p></article>
+        <article><div class="type-icon matrix-icon"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><h3>Matrix</h3><p>Rows and columns both matter, for example <b>n × m</b>.</p></article>
+        <article><div class="type-icon bits-icon">101101</div><h3>Integer</h3><p>The input size can be the number of bits, about <b>log₂ x</b>, rather than the numeric value <b>x</b>.</p></article>
       </div>
-
-      <div class="note-card"><span class="note-mark">!</span><div><h3>The size parameter is part of the model</h3><p>Saying “this algorithm is O(n)” is incomplete until we know what <span class="math">n</span> measures.</p></div></div>
+      <div class="note-card"><span class="note-mark">!</span><div><h3>Input size is part of the model</h3><p>The sentence “this algorithm runs in O(n)” is incomplete until we say what <span class="math">n</span> measures.</p></div></div>
     </section>
 
     <section id="counting" class="lecture-section">
       <div class="section-kicker">Step 2</div>
       <h2>Count the work</h2>
-      <p class="lead">We do not need to count every CPU instruction. In the usual RAM model, basic operations on machine-sized values—comparison, assignment, arithmetic, array access—are treated as constant-time building blocks.</p>
-
+      <p class="lead">We do not need to count individual CPU instructions. In the standard RAM-style model, basic operations on machine-sized values — comparisons, assignments, arithmetic, and array access — are treated as constant-cost operations.</p>
       <div class="counting-demo">
         <div class="count-code"><pre><code>total = 0
 for x in a:
     total += x</code></pre></div>
         <div class="count-visual">
-          <h3>One pass through the array</h3>
+          <h3>One pass through an array</h3>
           <div class="operation-array"><span>5<small>+1</small></span><span>2<small>+1</small></span><span>8<small>+1</small></span><span>4<small>+1</small></span><span>1<small>+1</small></span><span>7<small>+1</small></span></div>
           <div class="operation-equation"><b>1 + 1 + ··· + 1</b><span>n times</span><strong>= Θ(n)</strong></div>
         </div>
       </div>
-
       <div class="count-patterns">
-        <article>
-          <div class="pattern-visual single"><span></span></div>
-          <div><h3>Constant work</h3><p>Read one array element.</p><code>a[5] → Θ(1)</code></div>
-        </article>
-        <article>
-          <div class="pattern-visual line"><span></span><span></span><span></span><span></span><span></span></div>
-          <div><h3>One full pass</h3><p>Touch every element once.</p><code>n items → Θ(n)</code></div>
-        </article>
-        <article>
-          <div class="pattern-visual grid"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
-          <div><h3>Every pair</h3><p>Compare each item with many others.</p><code>≈ n²/2 → Θ(n²)</code></div>
-        </article>
-        <article>
-          <div class="pattern-visual halve"><span></span><span></span><span></span><span></span></div>
-          <div><h3>Repeated halving</h3><p>Discard half of the remaining input each step.</p><code>n → n/2 → … → Θ(log n)</code></div>
-        </article>
+        <article><div class="pattern-visual single"><span></span></div><div><h3>Constant work</h3><p>Read one array element.</p><code>a[5] → Θ(1)</code></div></article>
+        <article><div class="pattern-visual line"><span></span><span></span><span></span><span></span><span></span></div><div><h3>One full pass</h3><p>Visit every element once.</p><code>n elements → Θ(n)</code></div></article>
+        <article><div class="pattern-visual grid"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div><div><h3>All pairs</h3><p>Compare each element with many others.</p><code>≈ n²/2 → Θ(n²)</code></div></article>
+        <article><div class="pattern-visual halve"><span></span><span></span><span></span><span></span></div><div><h3>Repeated halving</h3><p>Discard half of the remaining input each step.</p><code>n → n/2 → … → Θ(log n)</code></div></article>
       </div>
     </section>
 
     <section id="cases" class="lecture-section">
       <div class="section-kicker">Same n, different inputs</div>
       <h2>Best, average, and worst case</h2>
-      <p class="lead">Two inputs can have the same size and still make an algorithm do different amounts of work. Linear search is the simplest example.</p>
-
+      <p class="lead">Two inputs of the same size can make the same algorithm perform different amounts of work. Linear search gives the simplest example.</p>
       <div class="case-visuals">
-        <article class="case-visual best">
-          <div class="case-label"><span>Best case</span><b>1 check</b></div>
-          <div class="case-array"><i class="hit">7</i><i>3</i><i>9</i><i>1</i><i>5</i><i>8</i></div>
-          <p>The target is the first element.</p>
-        </article>
-        <article class="case-visual average">
-          <div class="case-label"><span>Typical position</span><b>about n/2 checks</b></div>
-          <div class="case-array"><i class="seen">3</i><i class="seen">9</i><i class="seen">1</i><i class="hit">7</i><i>5</i><i>8</i></div>
-          <p>An average-case statement requires a probability model for the inputs.</p>
-        </article>
-        <article class="case-visual worst">
-          <div class="case-label"><span>Worst case</span><b>n checks</b></div>
-          <div class="case-array"><i class="seen">3</i><i class="seen">9</i><i class="seen">1</i><i class="seen">5</i><i class="seen">8</i><i class="hit">7</i></div>
-          <p>The target is last—or absent, so every element is checked.</p>
-        </article>
+        <article class="case-visual best"><div class="case-label"><span>Best case</span><b>1 check</b></div><div class="case-array"><i class="hit">7</i><i>3</i><i>9</i><i>1</i><i>5</i><i>8</i></div><p>The target is the first element.</p></article>
+        <article class="case-visual average"><div class="case-label"><span>Typical position</span><b>about n/2 checks</b></div><div class="case-array"><i class="seen">3</i><i class="seen">9</i><i class="seen">1</i><i class="hit">7</i><i>5</i><i>8</i></div><p>An average-case statement requires an explicit probability model for inputs.</p></article>
+        <article class="case-visual worst"><div class="case-label"><span>Worst case</span><b>n checks</b></div><div class="case-array"><i class="seen">3</i><i class="seen">9</i><i class="seen">1</i><i class="seen">5</i><i class="seen">8</i><i class="hit">7</i></div><p>The target is last — or absent, so every element must be checked.</p></article>
       </div>
-
       <div class="definition-row">
-        <div><strong>Best case</strong><p>Minimum work among inputs of size <span class="math">n</span>.</p></div>
-        <div><strong>Average case</strong><p>Expected work under a stated input distribution.</p></div>
-        <div><strong>Worst case</strong><p>Maximum work among inputs of size <span class="math">n</span>.</p></div>
+        <div><strong>Best case</strong><p>The minimum work among inputs of size <span class="math">n</span>.</p></div>
+        <div><strong>Average case</strong><p>The expected work under a specified input distribution.</p></div>
+        <div><strong>Worst case</strong><p>The maximum work among inputs of size <span class="math">n</span>.</p></div>
       </div>
     </section>
 
     <section id="asymptotics" class="lecture-section">
       <div class="section-kicker">Step 3</div>
       <h2>Keep the growth pattern</h2>
-      <p class="lead">Exact operation counts are often messy. Asymptotic notation keeps the part that controls growth for large <span class="math">n</span> and discards machine-dependent constants and lower-order terms.</p>
-
+      <p class="lead">Exact operation counts are often messy. Asymptotic notation keeps the part that determines growth for large <span class="math">n</span> and ignores constant factors and lower-order terms.</p>
       <div class="asymptotic-story">
-        <div class="operation-breakdown">
-          <h3>Suppose an algorithm uses</h3>
-          <div class="big-expression">T(n) = 3n + 2</div>
-          <div class="breakdown-bars">
-            <div class="breakdown-main"><span style="--parts: 92%"></span><b>3 operations per element → 3n</b></div>
-            <div class="breakdown-small"><span></span><b>2 setup operations</b></div>
-          </div>
-        </div>
+        <div class="operation-breakdown"><h3>Suppose an algorithm performs</h3><div class="big-expression">T(n) = 3n + 2</div><div class="breakdown-bars"><div class="breakdown-main"><span style="--parts:92%"></span><b>3 operations per element → 3n</b></div><div class="breakdown-small"><span></span><b>2 setup operations</b></div></div></div>
         <div class="asymptotic-arrow">→</div>
-        <div class="asymptotic-result">
-          <span class="theta-badge">Θ(n)</span>
-          <h3>Linear growth</h3>
-          <p>If <span class="math">n</span> doubles, the dominant work is roughly doubled. The “3” changes the speed; the “+2” matters for small inputs; neither changes the long-run growth class.</p>
-        </div>
+        <div class="asymptotic-result"><span class="theta-badge">Θ(n)</span><h3>Linear growth</h3><p>If <span class="math">n</span> doubles, the dominant amount of work also roughly doubles. The factor 3 affects actual speed and +2 matters on small inputs, but neither changes the growth class.</p></div>
       </div>
-
       <div class="simplify-grid">
-        <article><code>7n + 20</code><span>→</span><strong>Θ(n)</strong><p>Ignore the constant multiplier and fixed setup cost.</p></article>
+        <article><code>7n + 20</code><span>→</span><strong>Θ(n)</strong><p>Drop the constant multiplier and fixed additive term.</p></article>
         <article><code>4n² + 8n + 3</code><span>→</span><strong>Θ(n²)</strong><p>The quadratic term eventually dominates the linear term.</p></article>
         <article><code>n log n + 40n</code><span>→</span><strong>Θ(n log n)</strong><p><span class="math">n log n</span> grows faster than <span class="math">n</span>.</p></article>
       </div>
-
-      <h3 class="subheading">Three symbols you will use most</h3>
+      <h3 class="subheading">The three main symbols</h3>
       <div class="notation-intuition">
-        <article class="notation-card tight"><span class="notation-symbol">Θ</span><div><h3>Tight growth rate</h3><p><code>T(n) = Θ(n)</code> says linear growth describes the algorithm from both above and below, up to constant factors.</p><div class="bound-picture"><span class="lower"></span><span class="target"></span><span class="upper"></span></div></div></article>
-        <article class="notation-card upper"><span class="notation-symbol">O</span><div><h3>Upper bound</h3><p><code>T(n) = O(n²)</code> can be true for a linear algorithm, but it is loose. Big O answers “it grows no faster than this bound.”</p></div></article>
-        <article class="notation-card lower"><span class="notation-symbol">Ω</span><div><h3>Lower bound</h3><p><code>T(n) = Ω(n)</code> says the work eventually grows at least proportionally to <span class="math">n</span>.</p></div></article>
+        <article class="notation-card tight"><span class="notation-symbol">Θ</span><div><h3>Tight growth class</h3><p><code>T(n) = Θ(n)</code> means the running time is bounded above and below by linear functions, up to constant factors.</p></div></article>
+        <article class="notation-card upper"><span class="notation-symbol">O</span><div><h3>Upper bound</h3><p><code>T(n) = O(n²)</code> can be true even for a linear algorithm, but it is a loose statement. Big O says the growth will not exceed that order asymptotically.</p></div></article>
+        <article class="notation-card lower"><span class="notation-symbol">Ω</span><div><h3>Lower bound</h3><p><code>T(n) = Ω(n)</code> means that for large <span class="math">n</span>, the amount of work grows at least proportionally to <span class="math">n</span>.</p></div></article>
       </div>
-
-      <div class="precision-example">
-        <div class="precision-good"><span>most informative</span><strong>T(n) = Θ(n)</strong></div>
-        <div class="precision-true"><span>true but loose</span><strong>T(n) = O(n²)</strong></div>
-        <p>For a linear scan, both statements can be mathematically true. The first tells us much more.</p>
-      </div>
-
-      <details class="formal-box">
-        <summary>Formal definitions</summary>
-        <div class="formal-body">
-          <p><b>Big O:</b> <span class="math">T(n)=O(g(n))</span> if there are constants <span class="math">c&gt;0</span> and <span class="math">n₀</span> such that <span class="math">0≤T(n)≤c·g(n)</span> for every <span class="math">n≥n₀</span>.</p>
-          <p><b>Big Ω:</b> <span class="math">T(n)=Ω(g(n))</span> if there are constants <span class="math">c&gt;0</span> and <span class="math">n₀</span> such that <span class="math">0≤c·g(n)≤T(n)</span> for every <span class="math">n≥n₀</span>.</p>
-          <p><b>Big Θ:</b> <span class="math">T(n)=Θ(g(n))</span> when both an asymptotic upper and lower bound hold.</p>
-        </div>
-      </details>
+      <div class="precision-example"><div class="precision-good"><span>most informative</span><strong>T(n) = Θ(n)</strong></div><div class="precision-true"><span>true but loose</span><strong>T(n) = O(n²)</strong></div><p>For a linear scan, both statements can be mathematically true, but the first one tells us much more about the algorithm.</p></div>
+      <details class="formal-box"><summary>Formal definitions</summary><div class="formal-body"><p><b>Big O:</b> <span class="math">T(n)=O(g(n))</span> if there are constants <span class="math">c&gt;0</span> and <span class="math">n₀</span> such that <span class="math">0≤T(n)≤c·g(n)</span> for every <span class="math">n≥n₀</span>.</p><p><b>Big Ω:</b> <span class="math">T(n)=Ω(g(n))</span> if there are constants <span class="math">c&gt;0</span> and <span class="math">n₀</span> such that <span class="math">0≤c·g(n)≤T(n)</span> for every <span class="math">n≥n₀</span>.</p><p><b>Big Θ:</b> <span class="math">T(n)=Θ(g(n))</span> when both asymptotic upper and lower bounds hold.</p></div></details>
     </section>
 
     <section id="growth" class="lecture-section">
       <div class="section-kicker">The hierarchy to remember</div>
       <h2>Common growth rates</h2>
-      <p class="lead">The difference between growth classes becomes dramatic as <span class="math">n</span> increases. First learn the order; then connect each class to a familiar algorithmic pattern.</p>
-
+      <p class="lead">The gap between growth classes becomes enormous as <span class="math">n</span> increases. First remember the order; then connect each class to a characteristic algorithmic pattern.</p>
       <div class="growth-ladder">
-        <article><span class="growth-rank">1</span><code>Θ(1)</code><div><h3>Constant</h3><p>Array access by index</p></div></article>
+        <article><span class="growth-rank">1</span><code>Θ(1)</code><div><h3>Constant</h3><p>Access one array element</p></div></article>
         <article><span class="growth-rank">2</span><code>Θ(log n)</code><div><h3>Logarithmic</h3><p>Binary search</p></div></article>
-        <article><span class="growth-rank">3</span><code>Θ(n)</code><div><h3>Linear</h3><p>Scan every element</p></div></article>
-        <article><span class="growth-rank">4</span><code>Θ(n log n)</code><div><h3>Linearithmic</h3><p>Efficient comparison sorting</p></div></article>
-        <article><span class="growth-rank">5</span><code>Θ(n²)</code><div><h3>Quadratic</h3><p>Inspect every pair</p></div></article>
-        <article><span class="growth-rank">6</span><code>Θ(2ⁿ)</code><div><h3>Exponential</h3><p>Try every subset</p></div></article>
+        <article><span class="growth-rank">3</span><code>Θ(n)</code><div><h3>Linear</h3><p>Scan the whole array</p></div></article>
+        <article><span class="growth-rank">4</span><code>Θ(n log n)</code><div><h3>n log n</h3><p>Efficient comparison sorting</p></div></article>
+        <article><span class="growth-rank">5</span><code>Θ(n²)</code><div><h3>Quadratic</h3><p>Consider all pairs</p></div></article>
+        <article><span class="growth-rank">6</span><code>Θ(2ⁿ)</code><div><h3>Exponential</h3><p>Enumerate all subsets</p></div></article>
       </div>
-
       <div class="growth-simulator" data-growth-simulator data-locale="en">
-        <div class="simulator-head">
-          <div><span class="simulator-kicker">Interactive</span><h3>Increase n one element at a time</h3><p>The slider is linear: moving it by one step changes <span class="math">n</span> by exactly 1. The bars compare operation counts with <span class="math">n³</span> at the same input size, so no logarithmic axis is hiding the difference.</p></div>
-          <strong data-growth-current>n = 20</strong>
-        </div>
-        <div class="linear-slider-wrap">
-          <input data-growth-slider type="range" min="1" max="120" step="1" value="20" aria-label="Input size n from 1 to 120">
-          <div class="linear-slider-labels"><span>1</span><span>30</span><span>60</span><span>90</span><span>120</span></div>
-          <div class="growth-presets"><button type="button" data-growth-preset="10">n=10</button><button type="button" data-growth-preset="25">n=25</button><button type="button" data-growth-preset="50">n=50</button><button type="button" data-growth-preset="100">n=100</button></div>
-        </div>
+        <div class="simulator-head"><div><span class="simulator-kicker">Interactive</span><h3>Increase n one element at a time</h3><p>The slider is linear: one step changes <span class="math">n</span> by exactly 1. The bars use one common linear scale up to <span class="math">n³</span> for the current input, while exact operation counts stay visible on the right.</p></div><strong data-growth-current>n = 20</strong></div>
+        <div class="linear-slider-wrap"><input data-growth-slider type="range" min="1" max="120" step="1" value="20" aria-label="Input size n from 1 to 120"><div class="linear-slider-labels"><span>1</span><span>30</span><span>60</span><span>90</span><span>120</span></div><div class="growth-presets"><button type="button" data-growth-preset="10">n=10</button><button type="button" data-growth-preset="25">n=25</button><button type="button" data-growth-preset="50">n=50</button><button type="button" data-growth-preset="100">n=100</button></div></div>
         <div class="growth-bars" data-growth-bars>
           <div class="sim-row" data-kind="constant"><code>1</code><div class="sim-track"><span></span></div><strong data-count>1</strong></div>
           <div class="sim-row" data-kind="log"><code>log₂ n</code><div class="sim-track"><span></span></div><strong data-count>—</strong></div>
@@ -272,106 +199,66 @@ for x in a:
           <div class="sim-row" data-kind="square"><code>n²</code><div class="sim-track"><span></span></div><strong data-count>—</strong></div>
           <div class="sim-row" data-kind="cube"><code>n³</code><div class="sim-track"><span></span></div><strong data-count>—</strong></div>
         </div>
-        <div class="simulator-caption"><span>shorter</span><b>relative number of operations at this n</b><span>longer</span></div>
-        <div class="exponential-warning">
-          <div class="exp-icon">2ⁿ</div>
-          <div><h3>Exponential growth needs its own scale</h3><p>At <span data-exp-n>n = 20</span>, trying every subset means <strong data-exp-count>1,048,576</strong> possibilities. We keep it out of the bars because it would squash the polynomial classes into a tiny line.</p></div>
-        </div>
+        <div class="simulator-caption"><span>fewer</span><b>relative operations at this n</b><span>more</span></div>
+        <div class="exponential-warning"><div class="exp-icon">2ⁿ</div><div><h3>Exponential growth needs its own scale</h3><p>At <span data-exp-n>n = 20</span>, enumerating every subset means <strong data-exp-count>1,048,576</strong> possibilities. We keep it out of the bars because otherwise every polynomial class would be compressed almost to a line.</p></div></div>
       </div>
-
-      <div class="growth-rule"><span>slowest</span><strong>1 ≺ log n ≺ n ≺ n log n ≺ n² ≺ n³ ≺ 2ⁿ ≺ n!</strong><span>fastest</span></div>
+      <div class="growth-rule"><span>slower</span><strong>1 ≺ log n ≺ n ≺ n log n ≺ n² ≺ n³ ≺ 2ⁿ ≺ n!</strong><span>faster</span></div>
     </section>
 
     <section id="space" class="lecture-section">
       <div class="section-kicker">The second resource</div>
       <h2>Space complexity</h2>
-      <p class="lead">Time is not the only cost. Algorithms may also allocate temporary arrays, hash tables, queues, heaps, or recursion frames. We usually distinguish the input itself from extra working memory.</p>
-
+      <p class="lead">Time is not the only cost. Algorithms may create temporary arrays, hash tables, queues, heaps, or recursion frames. We usually separate the input itself from additional working memory.</p>
       <div class="memory-illustration">
-        <div class="memory-input">
-          <span class="memory-label">input array · Θ(n)</span>
-          <div class="memory-blocks"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
-        </div>
+        <div class="memory-input"><span class="memory-label">input array · Θ(n)</span><div class="memory-blocks"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div>
         <div class="memory-plus">+</div>
-        <div class="memory-extra small">
-          <span class="memory-label">a few variables · Θ(1)</span>
-          <div class="memory-blocks"><i></i><i></i></div>
-        </div>
+        <div class="memory-extra small"><span class="memory-label">a few variables · Θ(1)</span><div class="memory-blocks"><i></i><i></i></div></div>
         <div class="memory-versus">or</div>
-        <div class="memory-extra large">
-          <span class="memory-label">temporary array · Θ(n)</span>
-          <div class="memory-blocks"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
-        </div>
+        <div class="memory-extra large"><span class="memory-label">temporary array · Θ(n)</span><div class="memory-blocks"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div>
       </div>
-
       <div class="space-cards">
-        <article><h3>Auxiliary space</h3><p>Memory allocated in addition to the input. An in-place algorithm tries to keep this very small, often Θ(1).</p></article>
-        <article><h3>Recursion counts too</h3><p>A recursion depth of <span class="math">d</span> usually means Θ(d) stack frames even if the code creates no explicit array.</p></article>
-        <article><h3>Time–space trade-off</h3><p>Extra memory can save time: a hash table or memoization cache may avoid repeated work.</p></article>
+        <article><h3>Auxiliary space</h3><p>Memory used beyond the input. An in-place algorithm tries to keep this small, often Θ(1).</p></article>
+        <article><h3>Recursion counts too</h3><p>A recursion depth of <span class="math">d</span> usually means Θ(d) stack frames even when no explicit arrays are created.</p></article>
+        <article><h3>Time–space trade-off</h3><p>Extra memory can save time: a hash table or memoization can prevent repeated work.</p></article>
       </div>
     </section>
 
     <section id="examples" class="lecture-section">
       <div class="section-kicker">Put it together</div>
       <h2>Worked examples</h2>
-
-      <div class="worked-example">
-        <div class="worked-code"><div class="example-number">01</div><pre><code>for x in a:
-    total += x</code></pre></div>
-        <div class="worked-explanation"><div class="mini-pass"><i></i><i></i><i></i><i></i><i></i><i></i></div><h3>One linear scan</h3><p>Each of the <span class="math">n</span> elements causes a constant amount of work.</p><div class="result-pills"><span>time Θ(n)</span><span>space Θ(1)</span></div></div>
-      </div>
-
-      <div class="worked-example">
-        <div class="worked-code"><div class="example-number">02</div><pre><code>for i in range(n):
+      <div class="worked-example"><div class="worked-code"><div class="example-number">01</div><pre><code>for x in a:
+    total += x</code></pre></div><div class="worked-explanation"><div class="mini-pass"><i></i><i></i><i></i><i></i><i></i><i></i></div><h3>One linear pass</h3><p>A constant amount of work is performed for each of the <span class="math">n</span> elements.</p><div class="result-pills"><span>time Θ(n)</span><span>space Θ(1)</span></div></div></div>
+      <div class="worked-example"><div class="worked-code"><div class="example-number">02</div><pre><code>for i in range(n):
     for j in range(i + 1, n):
-        check(a[i], a[j])</code></pre></div>
-        <div class="worked-explanation"><div class="pair-triangle"><span>5</span><span>4</span><span>3</span><span>2</span><span>1</span></div><h3>All unordered pairs</h3><p>The number of checks is <span class="math">(n−1)+(n−2)+···+1 = n(n−1)/2</span>. The quadratic term dominates.</p><div class="result-pills"><span>time Θ(n²)</span><span>space Θ(1)</span></div></div>
-      </div>
-
-      <div class="worked-example">
-        <div class="worked-code"><div class="example-number">03</div><pre><code>while left &lt;= right:
+        check(a[i], a[j])</code></pre></div><div class="worked-explanation"><div class="pair-triangle"><span>5</span><span>4</span><span>3</span><span>2</span><span>1</span></div><h3>All unordered pairs</h3><p>The number of checks is <span class="math">(n−1)+(n−2)+···+1 = n(n−1)/2</span>. The quadratic term dominates.</p><div class="result-pills"><span>time Θ(n²)</span><span>space Θ(1)</span></div></div></div>
+      <div class="worked-example"><div class="worked-code"><div class="example-number">03</div><pre><code>while left &lt;= right:
     mid = (left + right) // 2
-    # discard half</code></pre></div>
-        <div class="worked-explanation"><div class="halving-stack"><span style="--w:100%">n</span><span style="--w:50%">n/2</span><span style="--w:25%">n/4</span><span style="--w:12.5%">…</span></div><h3>Repeated halving</h3><p>After <span class="math">k</span> steps, about <span class="math">n/2ᵏ</span> items remain. Reaching 1 takes about <span class="math">log₂ n</span> steps.</p><div class="result-pills"><span>time Θ(log n)</span><span>space Θ(1)</span></div></div>
-      </div>
+    # discard half</code></pre></div><div class="worked-explanation"><div class="halving-stack"><span style="--w:100%">n</span><span style="--w:50%">n/2</span><span style="--w:25%">n/4</span><span style="--w:12.5%">…</span></div><h3>Repeated halving</h3><p>After <span class="math">k</span> steps, about <span class="math">n/2ᵏ</span> elements remain. Reaching 1 takes about <span class="math">log₂ n</span> steps.</p><div class="result-pills"><span>time Θ(log n)</span><span>space Θ(1)</span></div></div></div>
     </section>
 
     <section id="checklist" class="lecture-section">
       <div class="section-kicker">A repeatable method</div>
       <h2>How to analyze a new algorithm</h2>
       <div class="analysis-checklist">
-        <article><span>1</span><div><h3>Define the input size</h3><p>What exactly is <span class="math">n</span>? Do you need a second parameter such as <span class="math">m</span>?</p></div></article>
-        <article><span>2</span><div><h3>Identify repeated work</h3><p>Look for loops, nested loops, recursive calls, and repeated halving or branching.</p></div></article>
-        <article><span>3</span><div><h3>Choose the case</h3><p>Are you proving worst-case, average-case, or best-case behavior?</p></div></article>
-        <article><span>4</span><div><h3>Simplify the growth</h3><p>Keep the dominant term and state a tight Θ bound when you know one.</p></div></article>
-        <article><span>5</span><div><h3>Check extra memory</h3><p>Count temporary structures and recursion depth, not just explicit arrays.</p></div></article>
+        <article><span>1</span><div><h3>Define the input size</h3><p>What exactly does <span class="math">n</span> measure? Do you need a second parameter such as <span class="math">m</span>?</p></div></article>
+        <article><span>2</span><div><h3>Find repeated work</h3><p>Look for loops, nested loops, recursive calls, repeated halving, and branching.</p></div></article>
+        <article><span>3</span><div><h3>Choose the case</h3><p>Are you analyzing the worst, average, or best case?</p></div></article>
+        <article><span>4</span><div><h3>Simplify the growth</h3><p>Keep the dominant term and state a tight Θ bound when you know it.</p></div></article>
+        <article><span>5</span><div><h3>Check memory</h3><p>Count temporary data structures and recursion depth, not only explicit arrays.</p></div></article>
       </div>
-
       <div class="pitfall-grid">
-        <article><span>×</span><div><h3>“O means exact complexity.”</h3><p>No. O is an upper bound and can be loose. Θ is the standard way to state a tight asymptotic growth rate.</p></div></article>
-        <article><span>×</span><div><h3>“Worst case means Big O.”</h3><p>No. Worst case specifies which running-time function we study; O, Ω, and Θ describe asymptotic bounds on that function.</p></div></article>
-        <article><span>×</span><div><h3>“Constants never matter.”</h3><p>They matter in real implementations. Asymptotic analysis intentionally answers a different question: how performance scales.</p></div></article>
+        <article><span>×</span><div><h3>“O is the exact complexity.”</h3><p>No. O is an upper bound and may be loose. Θ is usually used for a tight asymptotic class.</p></div></article>
+        <article><span>×</span><div><h3>“Worst case and Big O are the same.”</h3><p>No. Worst case defines a running-time function over inputs; O, Ω, and Θ describe asymptotic bounds on that function.</p></div></article>
+        <article><span>×</span><div><h3>“Constants never matter.”</h3><p>They matter in real implementations. Asymptotic analysis deliberately answers a different question: how performance scales.</p></div></article>
       </div>
-
-      <div class="subsection separated">
-        <h3>Further reading</h3>
-        <div class="reference-list">
-          <div class="reference-card"><a href="https://mitpress.mit.edu/9780262046305/introduction-to-algorithms/" target="_blank" rel="noopener">Cormen, Leiserson, Rivest, Stein — Introduction to Algorithms, 4th ed.</a><p>Opening chapters on algorithm analysis and Chapter 3 on asymptotic notation and common functions.</p></div>
-          <div class="reference-card"><a href="https://biblio.mccme.ru/node/52889" target="_blank" rel="noopener">M. A. Babenko, M. V. Levin — Introduction to Algorithms and Data Structures</a><p>A rigorous introduction to computational models, time and memory, asymptotic notation, and case analysis.</p></div>
-        </div>
-      </div>
-
-      <div class="next-part">
-        <h3>Next chapter: Data Structures</h3>
-        <p>Now that we know how to talk about time and memory, the next step is to understand the basic ways algorithms organize and access data.</p>
-        <a class="next-part-link" href="../data-structures/">Data Structures →</a>
-      </div>
+      <div class="subsection separated"><h3>Further reading</h3><div class="reference-list"><div class="reference-card"><a href="https://mitpress.mit.edu/9780262046305/introduction-to-algorithms/" target="_blank" rel="noopener">Cormen, Leiserson, Rivest, Stein — Introduction to Algorithms, 4th ed.</a><p>See the opening chapters on algorithm analysis and Chapter 3 on asymptotic notation and standard functions.</p></div><div class="reference-card"><a href="https://biblio.mccme.ru/node/52889" target="_blank" rel="noopener">M. A. Babenko, M. V. Levin — Introduction to Algorithms and Data Structures</a><p>A rigorous introduction to computational models, time and memory, O-notation, and case analysis.</p></div></div></div>
+      <div class="next-part"><h3>Next chapter: Data Structures</h3><p>Now that we can talk about time and memory, the next step is to study the basic ways algorithms organize and access data.</p><a class="next-part-link" href="../data-structures/">Data Structures →</a></div>
     </section>
   </main>
 
   <footer class="lecture-footer"><div>Allan's Handbook of Algorithms</div><div>© 2026 Allan Allemand</div></footer>
   <script src="../assets/js/lecture-core.js"></script>
   <script src="../assets/js/language-switch.js"></script>
-  <script src="growth.js?v=4"></script>
+  <script src="growth.js?v=5"></script>
 </body>
 </html>
