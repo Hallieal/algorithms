@@ -3,12 +3,12 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Наглядное введение в анализ алгоритмов: размер входа, подсчёт операций, асимптотика, скорости роста и сложность по памяти.">
+  <meta name="description" content="Введение в анализ алгоритмов: размер входа, время работы, асимптотика, скорости роста и сложность по памяти.">
   <meta property="og:title" content="Введение в алгоритмы | Allan's Handbook of Algorithms">
   <meta property="og:type" content="article">
   <title>Введение в алгоритмы | Allan's Handbook of Algorithms</title>
   <link rel="stylesheet" href="../assets/css/styles.css">
-  <link rel="stylesheet" href="styles.css?v=2">
+  <link rel="stylesheet" href="styles.css?v=4">
   <link rel="icon" type="image/png" sizes="32x32" href="../assets/images/favicon-32.png">
   <link rel="icon" type="image/png" sizes="64x64" href="../assets/images/favicon.png">
   <link rel="apple-touch-icon" sizes="180x180" href="../assets/images/apple-touch-icon.png">
@@ -24,174 +24,126 @@
 
   <aside class="sidebar" aria-label="Навигация по главе">
     <div class="sidebar-title">Глава 1 · Основы</div>
-    <a href="#idea">Алгоритм и стоимость</a>
+    <a href="#measure">Что мы измеряем</a>
     <a href="#input">Размер входа</a>
     <a href="#counting">Подсчёт работы</a>
-    <a href="#cases">Лучший / средний / худший</a>
+    <a href="#cases">Лучший, средний, худший</a>
     <a href="#asymptotics">Асимптотика</a>
     <a href="#growth">Скорости роста</a>
-    <a href="#space">Память</a>
-    <a href="#examples">Примеры</a>
-    <a href="#checklist">Как анализировать алгоритм</a>
+    <a href="#space">Сложность по памяти</a>
+    <a href="#examples">Разобранные примеры</a>
   </aside>
 
   <main class="lecture">
     <section class="lecture-hero intro-hero">
-      <div class="hero-grid">
-        <div class="hero-copy">
-          <div class="chapter-label">Глава 1 · Основы</div>
-          <h1>Введение в алгоритмы</h1>
-          <p class="chapter-topics">Алгоритм — это не просто код, который выдаёт правильный ответ. Важно понимать, как растут его время работы и потребление памяти, когда вход становится больше. Сначала построим интуицию, а затем введём точные обозначения.</p>
-          <div class="hero-takeaways" aria-label="Основные обозначения">
-            <span><b>n</b> размер входа</span>
-            <span><b>T(n)</b> время работы</span>
-            <span><b>S(n)</b> дополнительная память</span>
-          </div>
-        </div>
-        <div class="algorithm-machine" aria-label="Алгоритм преобразует входные данные в выходные">
-          <div class="machine-label">вход</div>
-          <div class="machine-array input-array"><span>8</span><span>3</span><span>5</span><span>1</span><span>9</span></div>
-          <div class="machine-core"><span class="gear gear-a">⚙</span><strong>алгоритм</strong><span class="gear gear-b">⚙</span></div>
-          <div class="machine-arrow">↓</div>
-          <div class="machine-label">выход</div>
-          <div class="machine-array output-array"><span>1</span><span>3</span><span>5</span><span>8</span><span>9</span></div>
-        </div>
-      </div>
-      <div class="intro-summary-grid">
-        <article><span class="summary-icon green">↗</span><h3>Сколько работы?</h3><p>Считаем элементарные операции при росте входа.</p></article>
-        <article><span class="summary-icon orange">□</span><h3>Сколько памяти?</h3><p>Следим за дополнительной памятью во время выполнения.</p></article>
-        <article><span class="summary-icon purple">∞</span><h3>Как это масштабируется?</h3><p>Нас интересует характер роста, а не один компьютер и один запуск.</p></article>
-      </div>
+      <div class="chapter-label">Глава 1 · Основы</div>
+      <h1>Введение в алгоритмы</h1>
+      <p class="chapter-topics">Прежде чем изучать конкретные алгоритмы, нужно научиться говорить об их стоимости. Главный вопрос простой: если вход стал больше, насколько больше работы и памяти понадобится алгоритму?</p>
+      <p class="hero-note">В этой главе <span class="math">n</span> обычно обозначает размер входа, <span class="math">T(n)</span> — объём работы, а <span class="math">S(n)</span> — дополнительную память.</p>
     </section>
 
-    <section id="idea" class="lecture-section">
-      <div class="section-kicker">Главная идея</div>
-      <h2>Измеряем рост, а не секунды</h2>
-      <p class="lead">Время на часах полезно для бенчмарка конкретной программы, но оно зависит от компьютера, языка, компилятора и текущей нагрузки. Анализ алгоритмов задаёт более универсальный вопрос: как меняется объём работы при увеличении входа?</p>
-      <div class="scale-story">
-        <div class="scale-story-copy">
-          <h3>Пусть нужно найти имя в списке</h3>
-          <p>Если идти с начала списка, то в два раза более длинный список может потребовать примерно в два раза больше проверок. Наносекунды на разных компьютерах будут отличаться, а правило «работа растёт пропорционально длине списка» останется.</p>
-          <div class="plain-formula"><span>длина списка</span><b>n</b><span class="formula-arrow">→</span><span>проверки</span><b>примерно n</b></div>
-        </div>
-        <div class="search-illustration" aria-label="Иллюстрация линейного поиска">
-          <div class="search-caption">Ищем <b>7</b></div>
-          <div class="search-row"><span class="checked">4</span><span class="checked">9</span><span class="checked">2</span><span class="checked">5</span><span class="found">7</span><span>1</span><span>8</span></div>
-          <div class="search-steps"><i></i><i></i><i></i><i></i><i class="done"></i></div>
-          <div class="search-result">5 проверок на этом входе</div>
-        </div>
-      </div>
-      <div class="concept-strip">
-        <div><span>1</span><h3>Корректность</h3><p>Всегда ли алгоритм выдаёт правильный ответ?</p></div>
-        <div class="concept-strip-arrow">→</div>
-        <div><span>2</span><h3>Время</h3><p>Сколько элементарных операций он выполняет?</p></div>
-        <div class="concept-strip-arrow">→</div>
-        <div><span>3</span><h3>Память</h3><p>Сколько дополнительной памяти ему нужно?</p></div>
-      </div>
+    <section id="measure" class="lecture-section">
+      <h2>Что именно мы измеряем?</h2>
+      <p class="lead">Замерять время программы секундомером полезно, но такой результат смешивает сам алгоритм с компьютером, языком, компилятором и деталями реализации. Анализ сложности старается отделить одно от другого.</p>
+
+      <figure class="lesson-figure search-figure">
+        <figcaption>Линейный поиск: ищем 7 слева направо</figcaption>
+        <div class="search-row"><span class="seen">4</span><span class="seen">9</span><span class="seen">2</span><span class="seen">5</span><span class="hit">7</span><span>1</span><span>8</span></div>
+        <p>На этом входе понадобилось пять проверок. Если список станет вдвое длиннее, в худшем случае понадобится примерно вдвое больше проверок.</p>
+      </figure>
+
+      <p>Именно это нас и интересует: не занимает ли одна проверка три или пять наносекунд, а как число проверок меняется вместе с размером задачи.</p>
     </section>
 
     <section id="input" class="lecture-section">
-      <div class="section-kicker">Шаг 1</div>
-      <h2>Выбираем размер входа</h2>
-      <p class="lead">Перед подсчётами нужно решить, что значит «вход стал больше». Обычно соответствующий параметр обозначают <span class="math">n</span>, но его смысл зависит от задачи.</p>
-      <div class="size-visual">
-        <div class="size-example">
-          <div class="size-heading"><span>маленький вход</span><b>n = 6</b></div>
-          <div class="size-cells six"><i>4</i><i>1</i><i>8</i><i>3</i><i>9</i><i>2</i></div>
-        </div>
-        <div class="size-growth-arrow"><span>вход растёт</span><b>→</b></div>
-        <div class="size-example">
-          <div class="size-heading"><span>больший вход</span><b>n = 12</b></div>
-          <div class="size-cells twelve"><i>4</i><i>1</i><i>8</i><i>3</i><i>9</i><i>2</i><i>7</i><i>6</i><i>5</i><i>0</i><i>3</i><i>8</i></div>
-        </div>
-      </div>
-      <div class="input-types-grid">
-        <article><div class="type-icon array-icon"><i></i><i></i><i></i><i></i></div><h3>Массив или строка</h3><p><b>n</b> = число элементов или символов.</p></article>
-        <article><div class="type-icon graph-icon"><i></i><i></i><i></i><em></em><em></em><em></em></div><h3>Граф</h3><p>Обычно два параметра: <b>n = |V|</b> вершин и <b>m = |E|</b> рёбер.</p></article>
-        <article><div class="type-icon matrix-icon"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><h3>Матрица</h3><p>Важны строки и столбцы: например, <b>n × m</b>.</p></article>
-        <article><div class="type-icon bits-icon">101101</div><h3>Целое число</h3><p>Размером входа может быть число битов, примерно <b>log₂ x</b>, а не само значение <b>x</b>.</p></article>
-      </div>
-      <div class="note-card"><span class="note-mark">!</span><div><h3>Размер входа — часть модели</h3><p>Фраза «алгоритм работает за O(n)» неполна, пока не сказано, что именно измеряет <span class="math">n</span>.</p></div></div>
+      <h2>Сначала определите размер входа</h2>
+      <p class="lead">У буквы <span class="math">n</span> нет единственного смысла. Она становится полезной только после того, как мы сказали, что именно считаем.</p>
+
+      <dl class="definition-list input-list">
+        <div><dt>Массив или строка</dt><dd><span class="math">n</span> обычно означает число элементов или символов.</dd></div>
+        <div><dt>Граф</dt><dd>Часто нужны два параметра: <span class="math">n=|V|</span> вершин и <span class="math">m=|E|</span> рёбер.</dd></div>
+        <div><dt>Матрица</dt><dd>Естественный размер может задаваться как <span class="math">n \times m</span>, а не одним числом.</dd></div>
+        <div><dt>Целое число</dt><dd>Для арифметических алгоритмов размером входа часто является число битов в записи числа.</dd></div>
+      </dl>
+
+      <aside class="margin-note"><strong>Пример.</strong> Линейность по самому числу <span class="math">x</span> и линейность по длине его двоичной записи — совсем разные оценки: длина записи составляет примерно <span class="math">\log_2 x</span>.</aside>
     </section>
 
     <section id="counting" class="lecture-section">
-      <div class="section-kicker">Шаг 2</div>
-      <h2>Считаем работу</h2>
-      <p class="lead">Не нужно считать каждую инструкцию процессора. В стандартной RAM-модели базовые операции над машинными числами — сравнение, присваивание, арифметика, обращение к массиву — считаются операциями постоянной стоимости.</p>
-      <div class="counting-demo">
-        <div class="count-code"><pre><code>total = 0
+      <h2>Считаем полезные единицы работы</h2>
+      <p class="lead">Обычно используют простую RAM-модель: арифметика над машинными числами, сравнение, присваивание и обращение к элементу массива считаются операциями постоянной стоимости.</p>
+
+      <div class="worked-row">
+        <pre class="code-block"><code>total = 0
 for x in a:
-    total += x</code></pre></div>
-        <div class="count-visual">
+    total += x</code></pre>
+        <div class="worked-copy">
           <h3>Один проход по массиву</h3>
-          <div class="operation-array"><span>5<small>+1</small></span><span>2<small>+1</small></span><span>8<small>+1</small></span><span>4<small>+1</small></span><span>1<small>+1</small></span><span>7<small>+1</small></span></div>
-          <div class="operation-equation"><b>1 + 1 + ··· + 1</b><span>n раз</span><strong>= Θ(n)</strong></div>
+          <p>Для каждого из <span class="math">n</span> элементов выполняется постоянное число действий. Поэтому общий объём работы пропорционален <span class="math">n</span>.</p>
+          <p class="result-line">Время: <strong>Θ(n)</strong> · дополнительная память: <strong>Θ(1)</strong></p>
         </div>
       </div>
-      <div class="count-patterns">
-        <article><div class="pattern-visual single"><span></span></div><div><h3>Постоянная работа</h3><p>Прочитать один элемент массива.</p><code>a[5] → Θ(1)</code></div></article>
-        <article><div class="pattern-visual line"><span></span><span></span><span></span><span></span><span></span></div><div><h3>Один полный проход</h3><p>Посетить каждый элемент один раз.</p><code>n элементов → Θ(n)</code></div></article>
-        <article><div class="pattern-visual grid"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div><div><h3>Все пары</h3><p>Сравнить каждый элемент со многими другими.</p><code>≈ n²/2 → Θ(n²)</code></div></article>
-        <article><div class="pattern-visual halve"><span></span><span></span><span></span><span></span></div><div><h3>Деление пополам</h3><p>На каждом шаге отбросить половину оставшегося входа.</p><code>n → n/2 → … → Θ(log n)</code></div></article>
-      </div>
+
+      <table class="plain-table pattern-table">
+        <thead><tr><th>Шаблон</th><th>Сколько действий</th><th>Рост</th></tr></thead>
+        <tbody>
+          <tr><td>Прочитать известную позицию</td><td>одно действие</td><td>Θ(1)</td></tr>
+          <tr><td>Просмотреть весь массив</td><td><span class="math">n</span> посещений</td><td>Θ(n)</td></tr>
+          <tr><td>Рассмотреть все пары</td><td>примерно <span class="math">n^2/2</span> пар</td><td>Θ(n²)</td></tr>
+          <tr><td>Каждый раз отбрасывать половину</td><td>примерно <span class="math">\log_2 n</span> шагов</td><td>Θ(log n)</td></tr>
+        </tbody>
+      </table>
     </section>
 
     <section id="cases" class="lecture-section">
-      <div class="section-kicker">Один n, разные входы</div>
-      <h2>Лучший, средний и худший случаи</h2>
-      <p class="lead">Два входа одинакового размера могут заставить один и тот же алгоритм выполнить разное число операций. Самый простой пример — линейный поиск.</p>
-      <div class="case-visuals">
-        <article class="case-visual best"><div class="case-label"><span>Лучший случай</span><b>1 проверка</b></div><div class="case-array"><i class="hit">7</i><i>3</i><i>9</i><i>1</i><i>5</i><i>8</i></div><p>Искомый элемент стоит первым.</p></article>
-        <article class="case-visual average"><div class="case-label"><span>Типичная позиция</span><b>около n/2 проверок</b></div><div class="case-array"><i class="seen">3</i><i class="seen">9</i><i class="seen">1</i><i class="hit">7</i><i>5</i><i>8</i></div><p>Для среднего случая нужно явно задать вероятностную модель входов.</p></article>
-        <article class="case-visual worst"><div class="case-label"><span>Худший случай</span><b>n проверок</b></div><div class="case-array"><i class="seen">3</i><i class="seen">9</i><i class="seen">1</i><i class="seen">5</i><i class="seen">8</i><i class="hit">7</i></div><p>Элемент стоит последним — или отсутствует, и приходится проверить всё.</p></article>
-      </div>
-      <div class="definition-row">
-        <div><strong>Лучший случай</strong><p>Минимальная работа среди входов размера <span class="math">n</span>.</p></div>
-        <div><strong>Средний случай</strong><p>Математическое ожидание работы при заданном распределении входов.</p></div>
-        <div><strong>Худший случай</strong><p>Максимальная работа среди входов размера <span class="math">n</span>.</p></div>
-      </div>
+      <h2>Лучший, средний и худший случай</h2>
+      <p class="lead">Входы одного и того же размера могут требовать разного количества работы. На линейном поиске это видно сразу.</p>
+
+      <table class="plain-table case-table">
+        <thead><tr><th>Случай</th><th>Где находится элемент?</th><th>Проверок</th></tr></thead>
+        <tbody>
+          <tr><td>Лучший</td><td>на первой позиции</td><td>1</td></tr>
+          <tr><td>Средний</td><td>зависит от выбранной вероятностной модели</td><td>в простейшей модели около <span class="math">n/2</span></td></tr>
+          <tr><td>Худший</td><td>в конце или отсутствует</td><td><span class="math">n</span></td></tr>
+        </tbody>
+      </table>
+
+      <p>Худший случай удобен тем, что даёт гарантию без предположений о распределении входов. Средний случай иногда информативнее, но без явной вероятностной модели он просто не определён.</p>
     </section>
 
     <section id="asymptotics" class="lecture-section">
-      <div class="section-kicker">Шаг 3</div>
-      <h2>Оставляем характер роста</h2>
-      <p class="lead">Точное число операций часто громоздко. Асимптотические обозначения оставляют ту часть, которая определяет рост при больших <span class="math">n</span>, и отбрасывают константы и члены меньшего порядка.</p>
-      <div class="asymptotic-story">
-        <div class="operation-breakdown"><h3>Пусть алгоритм выполняет</h3><div class="big-expression">T(n) = 3n + 2</div><div class="breakdown-bars"><div class="breakdown-main"><span style="--parts: 92%"></span><b>3 операции на элемент → 3n</b></div><div class="breakdown-small"><span></span><b>2 подготовительные операции</b></div></div></div>
-        <div class="asymptotic-arrow">→</div>
-        <div class="asymptotic-result"><span class="theta-badge">Θ(n)</span><h3>Линейный рост</h3><p>Если <span class="math">n</span> удвоится, доминирующая часть работы тоже примерно удвоится. Коэффициент 3 влияет на скорость, а +2 заметно на малых входах, но класс роста от этого не меняется.</p></div>
+      <h2>Асимптотические обозначения</h2>
+      <p class="lead">Точное число операций часто выглядит громоздко. Асимптотика оставляет ту часть формулы, которая определяет рост при больших <span class="math">n</span>.</p>
+
+      <div class="equation-example">
+        <div class="equation-main">T(n) = 3n + 2</div>
+        <div class="equation-arrow">→</div>
+        <div class="equation-main">T(n) = Θ(n)</div>
       </div>
-      <div class="simplify-grid">
-        <article><code>7n + 20</code><span>→</span><strong>Θ(n)</strong><p>Убираем постоянный множитель и фиксированную добавку.</p></article>
-        <article><code>4n² + 8n + 3</code><span>→</span><strong>Θ(n²)</strong><p>Квадратичный член со временем доминирует над линейным.</p></article>
-        <article><code>n log n + 40n</code><span>→</span><strong>Θ(n log n)</strong><p><span class="math">n log n</span> растёт быстрее, чем <span class="math">n</span>.</p></article>
-      </div>
-      <h3 class="subheading">Три главных обозначения</h3>
-      <div class="notation-intuition">
-        <article class="notation-card tight"><span class="notation-symbol">Θ</span><div><h3>Точный класс роста</h3><p><code>T(n) = Θ(n)</code> означает, что линейная функция ограничивает время работы и сверху, и снизу с точностью до постоянных множителей.</p></div></article>
-        <article class="notation-card upper"><span class="notation-symbol">O</span><div><h3>Верхняя граница</h3><p><code>T(n) = O(n²)</code> может быть верным даже для линейного алгоритма, но это грубая оценка. Big O говорит: «быстрее этой границы рост не станет».</p></div></article>
-        <article class="notation-card lower"><span class="notation-symbol">Ω</span><div><h3>Нижняя граница</h3><p><code>T(n) = Ω(n)</code> означает, что при больших <span class="math">n</span> работа растёт как минимум пропорционально <span class="math">n</span>.</p></div></article>
-      </div>
-      <div class="precision-example"><div class="precision-good"><span>наиболее информативно</span><strong>T(n) = Θ(n)</strong></div><div class="precision-true"><span>верно, но грубо</span><strong>T(n) = O(n²)</strong></div><p>Для линейного прохода оба утверждения могут быть математически верными, но первое описывает алгоритм намного точнее.</p></div>
-      <details class="formal-box"><summary>Формальные определения</summary><div class="formal-body"><p><b>Big O:</b> <span class="math">T(n)=O(g(n))</span>, если существуют константы <span class="math">c&gt;0</span> и <span class="math">n₀</span>, для которых <span class="math">0≤T(n)≤c·g(n)</span> при всех <span class="math">n≥n₀</span>.</p><p><b>Big Ω:</b> <span class="math">T(n)=Ω(g(n))</span>, если существуют константы <span class="math">c&gt;0</span> и <span class="math">n₀</span>, для которых <span class="math">0≤c·g(n)≤T(n)</span> при всех <span class="math">n≥n₀</span>.</p><p><b>Big Θ:</b> <span class="math">T(n)=Θ(g(n))</span>, когда одновременно выполняются асимптотические верхняя и нижняя границы.</p></div></details>
+      <p>Коэффициент 3 всё ещё влияет на реальную скорость, а +2 заметно на малых входах. Но ни то, ни другое не меняет главного свойства: при удвоении <span class="math">n</span> доминирующая часть работы тоже примерно удваивается.</p>
+
+      <dl class="definition-list notation-list">
+        <div><dt>Θ(g(n))</dt><dd>Точный класс роста: при достаточно больших <span class="math">n</span> функция зажата между двумя постоянными множителями от <span class="math">g(n)</span>.</dd></div>
+        <div><dt>O(g(n))</dt><dd>Асимптотическая верхняя граница. Она может быть грубой: алгоритм с Θ(n) одновременно является и O(n²).</dd></div>
+        <div><dt>Ω(g(n))</dt><dd>Асимптотическая нижняя граница.</dd></div>
+      </dl>
+
+      <details class="formal-box"><summary>Формальные определения</summary><div>
+        <p><strong>O.</strong> <span class="math">T(n)=O(g(n))</span>, если существуют константы <span class="math">c&gt;0</span> и <span class="math">n_0</span>, для которых <span class="math">0\le T(n)\le c g(n)</span> при всех <span class="math">n\ge n_0</span>.</p>
+        <p><strong>Ω.</strong> <span class="math">T(n)=Ω(g(n))</span>, если начиная с некоторого <span class="math">n_0</span> выполняется <span class="math">0\le c g(n)\le T(n)</span>.</p>
+        <p><strong>Θ.</strong> Верхняя и нижняя границы выполняются одновременно, возможно с разными константами.</p>
+      </div></details>
     </section>
 
     <section id="growth" class="lecture-section">
-      <div class="section-kicker">Иерархия, которую нужно помнить</div>
       <h2>Основные скорости роста</h2>
-      <p class="lead">Разница между классами роста становится огромной при увеличении <span class="math">n</span>. Сначала запомните порядок, затем связывайте каждый класс с характерным алгоритмическим шаблоном.</p>
-      <div class="growth-ladder">
-        <article><span class="growth-rank">1</span><code>Θ(1)</code><div><h3>Константа</h3><p>Доступ к элементу массива</p></div></article>
-        <article><span class="growth-rank">2</span><code>Θ(log n)</code><div><h3>Логарифм</h3><p>Бинарный поиск</p></div></article>
-        <article><span class="growth-rank">3</span><code>Θ(n)</code><div><h3>Линейный рост</h3><p>Просмотреть весь массив</p></div></article>
-        <article><span class="growth-rank">4</span><code>Θ(n log n)</code><div><h3>n log n</h3><p>Эффективная сортировка сравнениями</p></div></article>
-        <article><span class="growth-rank">5</span><code>Θ(n²)</code><div><h3>Квадрат</h3><p>Рассмотреть все пары</p></div></article>
-        <article><span class="growth-rank">6</span><code>Θ(2ⁿ)</code><div><h3>Экспонента</h3><p>Перебрать все подмножества</p></div></article>
-      </div>
+      <p class="lead">Этот порядок стоит запомнить: он будет постоянно возникать дальше.</p>
+      <p class="growth-order">1 &lt; log n &lt; n &lt; n log n &lt; n² &lt; n³ &lt; 2ⁿ &lt; n!</p>
+
       <div class="growth-simulator" data-growth-simulator data-locale="ru">
-        <div class="simulator-head"><div><span class="simulator-kicker">Интерактив</span><h3>Увеличивайте n по одному элементу</h3><p>Ползунок линейный: один шаг изменяет <span class="math">n</span> ровно на 1. Полосы сравнивают число операций с <span class="math">n³</span> при том же размере входа — никакой логарифмической оси.</p></div><strong data-growth-current>n = 20</strong></div>
-        <div class="linear-slider-wrap"><input data-growth-slider type="range" min="1" max="120" step="1" value="20" aria-label="Размер входа n от 1 до 120"><div class="linear-slider-labels"><span>1</span><span>30</span><span>60</span><span>90</span><span>120</span></div><div class="growth-presets"><button type="button" data-growth-preset="10">n=10</button><button type="button" data-growth-preset="25">n=25</button><button type="button" data-growth-preset="50">n=50</button><button type="button" data-growth-preset="100">n=100</button></div></div>
-        <div class="growth-bars" data-growth-bars>
+        <div class="simulator-head"><div><h3>Посмотрите, что происходит при росте n</h3><p>Ползунок линейный: один шаг меняет <span class="math">n</span> ровно на единицу.</p></div><strong data-growth-current>n = 20</strong></div>
+        <div class="linear-slider-wrap"><input data-growth-slider type="range" min="1" max="120" step="1" value="20" aria-label="Размер входа n от 1 до 120"><div class="linear-slider-labels"><span>1</span><span>30</span><span>60</span><span>90</span><span>120</span></div></div>
+        <div class="growth-bars">
           <div class="sim-row" data-kind="constant"><code>1</code><div class="sim-track"><span></span></div><strong data-count>1</strong></div>
           <div class="sim-row" data-kind="log"><code>log₂ n</code><div class="sim-track"><span></span></div><strong data-count>—</strong></div>
           <div class="sim-row" data-kind="linear"><code>n</code><div class="sim-track"><span></span></div><strong data-count>—</strong></div>
@@ -199,66 +151,47 @@ for x in a:
           <div class="sim-row" data-kind="square"><code>n²</code><div class="sim-track"><span></span></div><strong data-count>—</strong></div>
           <div class="sim-row" data-kind="cube"><code>n³</code><div class="sim-track"><span></span></div><strong data-count>—</strong></div>
         </div>
-        <div class="simulator-caption"><span>меньше</span><b>относительное число операций при этом n</b><span>больше</span></div>
-        <div class="exponential-warning"><div class="exp-icon">2ⁿ</div><div><h3>Экспоненциальному росту нужен отдельный масштаб</h3><p>При <span data-exp-n>n = 20</span> перебор всех подмножеств означает <strong data-exp-count>1 048 576</strong> вариантов. Мы не добавляем эту величину в полосы, иначе все полиномиальные классы сожмутся почти в линию.</p></div></div>
+        <p class="sim-note">Полосы нормированы отдельно для каждого класса на диапазоне 1…120; справа показано настоящее число операций.</p>
+        <div class="exp-line"><strong>2ⁿ</strong><span>При <span data-exp-n>n = 20</span> перебор всех подмножеств означает <b data-exp-count>1 048 576</b> вариантов.</span></div>
       </div>
-      <div class="growth-rule"><span>медленнее</span><strong>1 ≺ log n ≺ n ≺ n log n ≺ n² ≺ n³ ≺ 2ⁿ ≺ n!</strong><span>быстрее</span></div>
     </section>
 
     <section id="space" class="lecture-section">
-      <div class="section-kicker">Второй ресурс</div>
       <h2>Сложность по памяти</h2>
-      <p class="lead">Время — не единственная стоимость. Алгоритмы могут создавать временные массивы, хеш-таблицы, очереди, кучи или кадры рекурсии. Обычно входные данные отделяют от дополнительной рабочей памяти.</p>
-      <div class="memory-illustration">
-        <div class="memory-input"><span class="memory-label">входной массив · Θ(n)</span><div class="memory-blocks"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div>
-        <div class="memory-plus">+</div>
-        <div class="memory-extra small"><span class="memory-label">несколько переменных · Θ(1)</span><div class="memory-blocks"><i></i><i></i></div></div>
-        <div class="memory-versus">или</div>
-        <div class="memory-extra large"><span class="memory-label">временный массив · Θ(n)</span><div class="memory-blocks"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div>
-      </div>
-      <div class="space-cards">
-        <article><h3>Дополнительная память</h3><p>Память сверх входных данных. In-place алгоритм старается держать её маленькой, часто Θ(1).</p></article>
-        <article><h3>Рекурсия тоже считается</h3><p>Глубина рекурсии <span class="math">d</span> обычно означает Θ(d) кадров стека, даже если явных массивов в коде нет.</p></article>
-        <article><h3>Компромисс время–память</h3><p>Дополнительная память может экономить время: хеш-таблица или мемоизация помогают не повторять вычисления.</p></article>
-      </div>
+      <p class="lead">Время — не единственный ресурс. Важно и то, сколько памяти алгоритм выделяет во время работы.</p>
+
+      <figure class="lesson-figure memory-figure">
+        <figcaption>Входные данные и дополнительную память обычно считают отдельно</figcaption>
+        <div class="memory-line"><span>входной массив</span><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+        <div class="memory-line small"><span>рабочие переменные</span><i></i><i></i></div>
+      </figure>
+
+      <p>Если алгоритм проходит по уже существующему массиву и хранит лишь несколько счётчиков, его дополнительная память равна Θ(1), хотя сам вход занимает Θ(n). Рекурсия тоже расходует память: глубина рекурсии <span class="math">d</span> обычно даёт Θ(d) кадров стека.</p>
     </section>
 
     <section id="examples" class="lecture-section">
-      <div class="section-kicker">Соберём всё вместе</div>
-      <h2>Разобранные примеры</h2>
-      <div class="worked-example"><div class="worked-code"><div class="example-number">01</div><pre><code>for x in a:
-    total += x</code></pre></div><div class="worked-explanation"><div class="mini-pass"><i></i><i></i><i></i><i></i><i></i><i></i></div><h3>Один линейный проход</h3><p>Для каждого из <span class="math">n</span> элементов выполняется постоянное число операций.</p><div class="result-pills"><span>время Θ(n)</span><span>память Θ(1)</span></div></div></div>
-      <div class="worked-example"><div class="worked-code"><div class="example-number">02</div><pre><code>for i in range(n):
-    for j in range(i + 1, n):
-        check(a[i], a[j])</code></pre></div><div class="worked-explanation"><div class="pair-triangle"><span>5</span><span>4</span><span>3</span><span>2</span><span>1</span></div><h3>Все неупорядоченные пары</h3><p>Число проверок равно <span class="math">(n−1)+(n−2)+···+1 = n(n−1)/2</span>. Доминирует квадратичный член.</p><div class="result-pills"><span>время Θ(n²)</span><span>память Θ(1)</span></div></div></div>
-      <div class="worked-example"><div class="worked-code"><div class="example-number">03</div><pre><code>while left &lt;= right:
-    mid = (left + right) // 2
-    # discard half</code></pre></div><div class="worked-explanation"><div class="halving-stack"><span style="--w:100%">n</span><span style="--w:50%">n/2</span><span style="--w:25%">n/4</span><span style="--w:12.5%">…</span></div><h3>Повторное деление пополам</h3><p>После <span class="math">k</span> шагов остаётся примерно <span class="math">n/2ᵏ</span> элементов. Чтобы дойти до 1, нужно около <span class="math">log₂ n</span> шагов.</p><div class="result-pills"><span>время Θ(log n)</span><span>память Θ(1)</span></div></div></div>
-    </section>
+      <h2>Три примера, которые полезно узнавать сразу</h2>
 
-    <section id="checklist" class="lecture-section">
-      <div class="section-kicker">Повторяемый алгоритм анализа</div>
-      <h2>Как анализировать новый алгоритм</h2>
-      <div class="analysis-checklist">
-        <article><span>1</span><div><h3>Определите размер входа</h3><p>Что именно обозначает <span class="math">n</span>? Нужен ли второй параметр, например <span class="math">m</span>?</p></div></article>
-        <article><span>2</span><div><h3>Найдите повторяющуюся работу</h3><p>Ищите циклы, вложенные циклы, рекурсивные вызовы, деление пополам и ветвление.</p></div></article>
-        <article><span>3</span><div><h3>Выберите случай</h3><p>Вы анализируете худший, средний или лучший случай?</p></div></article>
-        <article><span>4</span><div><h3>Упростите рост</h3><p>Оставьте доминирующий член и укажите точную Θ-оценку, если она известна.</p></div></article>
-        <article><span>5</span><div><h3>Проверьте память</h3><p>Считайте временные структуры и глубину рекурсии, а не только явные массивы.</p></div></article>
+      <div class="example-list">
+        <article><span class="example-no">1</span><div><h3>Один проход</h3><pre><code>for x in a:
+    total += x</code></pre><p>Каждый элемент посещается один раз: <strong>Θ(n)</strong> времени и <strong>Θ(1)</strong> дополнительной памяти.</p></div></article>
+        <article><span class="example-no">2</span><div><h3>Все неупорядоченные пары</h3><pre><code>for i in range(n):
+    for j in range(i + 1, n):
+        check(a[i], a[j])</code></pre><p>Пар ровно <span class="math">n(n-1)/2</span>, поэтому время работы равно <strong>Θ(n²)</strong>.</p></div></article>
+        <article><span class="example-no">3</span><div><h3>Повторное деление пополам</h3><pre><code>while left &lt;= right:
+    mid = (left + right) // 2
+    # отбросить половину</code></pre><p>После <span class="math">k</span> шагов остаётся примерно <span class="math">n/2^k</span> элементов. До одного элемента доходим за <strong>Θ(log n)</strong> шагов.</p></div></article>
       </div>
-      <div class="pitfall-grid">
-        <article><span>×</span><div><h3>«O — это точная сложность».</h3><p>Нет. O — верхняя граница, она может быть грубой. Для точного асимптотического класса обычно используют Θ.</p></div></article>
-        <article><span>×</span><div><h3>«Худший случай и Big O — одно и то же».</h3><p>Нет. Худший случай определяет функцию времени по входам, а O, Ω и Θ описывают асимптотические границы этой функции.</p></div></article>
-        <article><span>×</span><div><h3>«Константы никогда не важны».</h3><p>В реальной реализации важны. Асимптотика специально отвечает на другой вопрос: как программа масштабируется.</p></div></article>
-      </div>
-      <div class="subsection separated"><h3>Что почитать</h3><div class="reference-list"><div class="reference-card"><a href="https://mitpress.mit.edu/9780262046305/introduction-to-algorithms/" target="_blank" rel="noopener">Cormen, Leiserson, Rivest, Stein — Introduction to Algorithms, 4th ed.</a><p>Начальные главы об анализе алгоритмов и глава 3 об асимптотических обозначениях и стандартных функциях.</p></div><div class="reference-card"><a href="https://biblio.mccme.ru/node/52889" target="_blank" rel="noopener">М. А. Бабенко, М. В. Левин — Введение в теорию алгоритмов и структур данных</a><p>Строгое введение в модели вычислений, время и память, O-нотацию и анализ случаев.</p></div></div></div>
-      <div class="next-part"><h3>Следующая глава: Структуры данных</h3><p>Теперь, когда мы умеем говорить о времени и памяти, можно перейти к базовым способам организации и доступа к данным.</p><a class="next-part-link" href="../data-structures/index-ru.html">Структуры данных →</a></div>
+
+      <aside class="margin-note"><strong>Полезная привычка.</strong> Читая код, сначала определите размер входа, затем найдите повторяющуюся работу и только после этого упрощайте получившуюся формулу.</aside>
+
+      <div class="next-part"><h3>Следующая глава: Структуры данных</h3><p>Теперь можно задать более практический вопрос: как организовать данные так, чтобы нужные алгоритму операции выполнялись быстро?</p><a class="next-part-link" href="../data-structures/index-ru.html">Структуры данных →</a></div>
     </section>
   </main>
 
   <footer class="lecture-footer"><div>Allan's Handbook of Algorithms</div><div>© 2026 Allan Allemand</div></footer>
   <script src="../assets/js/lecture-core.js"></script>
   <script src="../assets/js/language-switch.js"></script>
-  <script src="growth.js?v=4"></script>
+  <script src="growth.js?v=5"></script>
 </body>
 </html>
