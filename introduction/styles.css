@@ -441,5 +441,54 @@
   .sim-row > strong { text-align: left; }
   .search-row { grid-template-columns: repeat(7, 44px); overflow-x: auto; }
   .equation-example { flex-wrap: wrap; }
-  .memory-line { grid-template-columns: 110px repeat(8, 28px); overflow-x: auto; }
+
+  .plain-table {
+    table-layout: fixed;
+    width: 100%;
+    font-size: 12px;
+  }
+
+  .plain-table th,
+  .plain-table td {
+    padding: 10px 7px;
+    white-space: normal !important;
+    overflow-wrap: anywhere;
+  }
+
+  .case-table th:first-child,
+  .case-table td:first-child { width: 19%; }
+
+  .case-table th:nth-child(2),
+  .case-table td:nth-child(2) { width: 35%; }
+
+  .case-table th:nth-child(3),
+  .case-table td:nth-child(3) { width: 46%; }
+
+  .growth-order {
+    white-space: normal;
+    text-align: left;
+    font-size: 16px;
+    line-height: 1.6;
+  }
+
+  .growth-simulator,
+  .linear-slider-wrap {
+    min-width: 0;
+    max-width: 100%;
+    overflow: hidden;
+  }
+
+  .linear-slider-wrap input {
+    max-width: 100%;
+  }
+
+  .memory-line {
+    grid-template-columns: 88px repeat(8, minmax(0, 1fr));
+    max-width: 100%;
+    overflow: hidden;
+  }
+
+  .memory-line.small {
+    grid-template-columns: 88px repeat(2, minmax(0, 1fr));
+  }
 }
