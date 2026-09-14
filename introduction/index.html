@@ -62,11 +62,11 @@
       <dl class="definition-list input-list">
         <div><dt>Array or string</dt><dd><span class="math">n</span> is usually the number of elements or characters.</dd></div>
         <div><dt>Graph</dt><dd>We often need two parameters: <span class="math">n=|V|</span> vertices and <span class="math">m=|E|</span> edges.</dd></div>
-        <div><dt>Matrix</dt><dd>The natural description may be <span class="math">n \times m</span>, not a single number.</dd></div>
+        <div><dt>Matrix</dt><dd>The natural description may be <span class="math">n × m</span>, not a single number.</dd></div>
         <div><dt>Integer</dt><dd>For arithmetic algorithms, the relevant size is often the number of bits used to write the integer.</dd></div>
       </dl>
 
-      <aside class="margin-note"><strong>Example.</strong> Saying that an algorithm is linear in the numeric value <span class="math">x</span> is very different from saying that it is linear in the number of bits of <span class="math">x</span>, which is about <span class="math">\log_2 x</span>.</aside>
+      <aside class="margin-note"><strong>Example.</strong> Saying that an algorithm is linear in the numeric value <span class="math">x</span> is very different from saying that it is linear in the number of bits of <span class="math">x</span>, which is about <span class="math">log₂ x</span>.</aside>
     </section>
 
     <section id="counting" class="lecture-section">
@@ -89,8 +89,8 @@ for x in a:
         <tbody>
           <tr><td>Read one known position</td><td>one operation</td><td>Θ(1)</td></tr>
           <tr><td>Scan every element</td><td><span class="math">n</span> visits</td><td>Θ(n)</td></tr>
-          <tr><td>Inspect every pair</td><td>about <span class="math">n^2/2</span> pairs</td><td>Θ(n²)</td></tr>
-          <tr><td>Discard half each step</td><td>about <span class="math">\log_2 n</span> steps</td><td>Θ(log n)</td></tr>
+          <tr><td>Inspect every pair</td><td>about <span class="math">n²/2</span> pairs</td><td>Θ(n²)</td></tr>
+          <tr><td>Discard half each step</td><td>about <span class="math">log₂ n</span> steps</td><td>Θ(log n)</td></tr>
         </tbody>
       </table>
     </section>
@@ -129,8 +129,8 @@ for x in a:
       </dl>
 
       <details class="formal-box"><summary>Formal definitions</summary><div>
-        <p><strong>O.</strong> <span class="math">T(n)=O(g(n))</span> if there are constants <span class="math">c&gt;0</span> and <span class="math">n_0</span> such that <span class="math">0\le T(n)\le c g(n)</span> for every <span class="math">n\ge n_0</span>.</p>
-        <p><strong>Ω.</strong> <span class="math">T(n)=Ω(g(n))</span> if <span class="math">0\le c g(n)\le T(n)</span> eventually.</p>
+        <p><strong>O.</strong> <span class="math">T(n)=O(g(n))</span> if there are constants <span class="math">c&gt;0</span> and <span class="math">n₀</span> such that <span class="math">0 ≤ T(n) ≤ c g(n)</span> for every <span class="math">n ≥ n₀</span>.</p>
+        <p><strong>Ω.</strong> <span class="math">T(n)=Ω(g(n))</span> if <span class="math">0 ≤ c g(n) ≤ T(n)</span> eventually.</p>
         <p><strong>Θ.</strong> Both bounds hold at the same time, possibly with different constants.</p>
       </div></details>
     </section>
@@ -180,7 +180,7 @@ for x in a:
         check(a[i], a[j])</code></pre><p>There are <span class="math">n(n-1)/2</span> pairs, so the running time is <strong>Θ(n²)</strong>.</p></div></article>
         <article><span class="example-no">3</span><div><h3>Repeated halving</h3><pre><code>while left &lt;= right:
     mid = (left + right) // 2
-    # discard half</code></pre><p>After <span class="math">k</span> steps the remaining range has size about <span class="math">n/2^k</span>. Reaching one element takes <strong>Θ(log n)</strong> steps.</p></div></article>
+    # discard half</code></pre><p>After <span class="math">k</span> steps the remaining range has size about <span class="math">n/2ᵏ</span>. Reaching one element takes <strong>Θ(log n)</strong> steps.</p></div></article>
       </div>
 
       <aside class="margin-note"><strong>A useful habit.</strong> When reading code, first identify the size parameter, then the repeated work, and only then simplify the resulting expression.</aside>
