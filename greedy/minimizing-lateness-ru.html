@@ -8,7 +8,7 @@
 <body class="lecture-page"><div aria-hidden="true" class="progress-track"><div class="progress-bar" id="reading-progress"></div></div>
 <header class="topbar"><a class="brand" href="../index-ru.html"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name ru-brand-name"><span class="ru-brand-lines"><span>Гайд по алгоритмам</span><span class="ru-brand-presented">presented by Аллан</span></span></span></a>
 <nav aria-label="Основная навигация" class="topnav"><a href="index-ru.html">Жадные алгоритмы</a><div aria-label="Язык" class="language-switch"><a href="minimizing-lateness.html">EN</a><span class="language-separator">·</span><span class="current">RU</span></div></nav></header>
-<aside aria-label="Навигация по разделу" class="sidebar"><div class="sidebar-title">Глава 9 · Раздел 6</div><a href="#problem">Постановка</a><a href="#example">Пример</a><a href="#algorithm">Алгоритм EDF</a><a href="#proof">Корректность</a><a href="#implementation">Реализация</a><a href="#boundaries">Границы модели</a><a href="#exercises">Задачи</a></aside>
+<aside aria-label="Навигация по разделу" class="sidebar"><div class="sidebar-title">Глава 9 · Раздел 6</div><a href="#problem">Постановка</a><a href="#example">Пример</a><a href="#model">Сначала модель</a><a href="#algorithm">Алгоритм EDF</a><a href="#proof">Корректность</a><a href="#implementation">Реализация</a><a href="#boundaries">Границы модели</a><a href="#exercises">Задачи</a></aside>
 <main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Глава 9 · Раздел 6</div><h1>Минимизация максимального опоздания</h1><p class="chapter-topics">На одной машине худшее опоздание минимизируется простым правилом: сначала выполняем задачу с самым ранним дедлайном.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-lateness.svg"/></div></section>
 <section class="lecture-section" id="problem">
 <h2>Сначала — самый срочный дедлайн</h2>
@@ -38,6 +38,21 @@
 <div class="lateness-job ontime"><span>Задача D</span><b>p=2 · d=12</b><small>конец 11</small></div>
 </div>
 <div class="lateness-formula">L<sub>max</sub> = max(−1, −1, 0, −1) = 0</div>
+</section>
+
+<!-- book-synthesis-lateness -->
+<section class="lecture-section" id="model">
+<h2>Scheduling notation делает предположения явными</h2>
+<p class="lead">Задачи расписаний особенно чувствительны к маленьким изменениям модели. Полезная привычка — сначала назвать machine environment, дополнительные constraints и objective, и только потом выбирать порядок.</p>
+<div class="model-card">
+<div class="model-notation">1 || L<sub>max</sub></div>
+<p><strong>1</strong> означает одну машину; пустое среднее поле — все задачи доступны в момент 0 и дополнительных ограничений нет; <strong>L<sub>max</sub></strong> — минимизируем максимальное опоздание. Именно для этой модели сортировка по неубыванию deadline оптимальна.</p>
+</div>
+<div class="variant-grid">
+<article class="variant-card"><h3>Поменяли objective</h3><p>Shortest-processing-time first отлично работает для некоторых целей про среднее ожидание, но это не наша теорема. Для задач <span class="math">(p,d)=(1,100)</span> и <span class="math">(2,2)</span> SPT ставит 1-unit job первой и получает <span class="math">L_max=1</span>; EDF начинает с deadline 2 и получает <span class="math">L_max=0</span>.</p></article>
+<article class="variant-card"><h3>Поменяли availability</h3><p>Release times меняют notation на <span class="math">1|r_j|L_max</span> и саму вычислительную задачу. Правило, доказанное для <span class="math">1||L_max</span>, нельзя просто перенести.</p></article>
+</div>
+<div class="one-line"><strong>Сначала модель, потом правило.</strong> В scheduling те же jobs могут требовать совершенно разных алгоритмов после изменения preemption, release times, числа машин или objective.</div>
 </section>
 
 <section class="lecture-section" id="algorithm">
