@@ -9,10 +9,10 @@
 <header class="topbar"><a class="brand" href="../"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name">Allan's Handbook of Algorithms</span></a>
 <nav aria-label="Primary navigation" class="topnav"><a href="./">Greedy overview</a><div aria-label="Language" class="language-switch"><span class="current">EN</span><span class="language-separator">·</span><a href="mst-ru.html">RU</a></div></nav></header>
 <aside aria-label="Section navigation" class="sidebar"><div class="sidebar-title">Chapter 9 · Section 9</div><a href="#problem">Problem</a><a href="#model-story">Model the story first</a><a href="#network-vs-route">Network vs route</a><a href="#cut">Cut property</a><a href="#first-bad">First-bad-edge proof</a><a href="#kruskal">Kruskal</a><a href="#prim">Prim</a><a href="#boruvka">Borůvka</a><a href="#data-structure">Same proof, different implementation</a><a href="#dsu">Kruskal + Union-Find</a><a href="#implementation">Implementations</a><a href="#complexity">Complexity</a><a href="#applications">Applications and variants</a><a href="#properties">Useful facts</a><a href="#exercises">Exercises</a></aside>
-<main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Chapter 9 · Section 9</div><h1>Minimum Spanning Trees</h1><p class="chapter-topics">Connect every vertex with minimum total edge weight. Kruskal and Prim look different, but both are powered by the same cut property.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-mst.svg"/></div></section>
+<main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Chapter 9 · Section 9</div><h1>Minimum Spanning Trees</h1><p class="chapter-topics">Minimum spanning tree algorithms connect all vertices with minimum total edge weight. Kruskal and Prim use different data structures but are justified by the same cut property.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-mst.svg"/></div></section>
 <section class="lecture-section" id="problem">
-<h2>Connect everything as cheaply as possible</h2>
-<p class="lead">We need a connected set of edges that reaches every vertex and contains no cycle. Among all such trees, choose the one with minimum total weight.</p><div class="concept-strip">
+<h2>Problem statement</h2>
+<p class="lead">Given a connected weighted undirected graph, find a spanning tree whose total edge weight is minimum.</p><div class="concept-strip">
 <article class="concept-cell rule"><span>Core fact</span><b>The lightest safe edge across a cut can be taken</b><p>This single statement drives both Kruskal and Prim.</p></article>
 <article class="concept-cell proof"><span>Two views</span><b>Kruskal grows a forest; Prim grows one tree</b><p>Different mechanics, same cut argument.</p></article>
 <article class="concept-cell cost"><span>Cost</span><b>O(E log E) or O(E log V)</b><p>DSU for Kruskal, a heap for Prim.</p></article>
@@ -23,8 +23,8 @@
 
 <!-- grokking-pass-mst -->
 <section class="lecture-section" id="model-story">
-<h2>Before choosing an algorithm, turn the story into a graph</h2>
-<p class="lead">A concrete story makes the objective visible. Suppose several offices must all be connected by new fiber links, and each possible link has a construction cost.</p>
+<h2>Graph model</h2>
+<p class="lead">Vertices represent sites that must be connected, edges represent available direct links, and edge weights represent construction costs.</p>
 <div class="grokking-contrast">
 <article class="grokking-card good"><span>Vertices</span><h3>Things that must be connected</h3><p>Each office becomes a vertex.</p></article>
 <article class="grokking-card warn"><span>Edges</span><h3>Possible direct links</h3><p>An edge means a link can be built; its weight is the construction cost.</p></article>
@@ -35,8 +35,8 @@
 
 <!-- grokking-round-mst -->
 <section class="lecture-section" id="network-vs-route">
-<h2>Connecting a network is not the same as finding cheap routes</h2>
-<p class="lead">Shortest-path stories naturally make us think about one traveler moving from a source. MST asks a different question: if we are building the infrastructure itself, which edges should exist at all?</p>
+<h2>Minimum spanning tree versus shortest paths</h2>
+<p class="lead">An MST minimizes the total cost of the selected network. A shortest-path tree minimizes source-to-vertex path costs. These are different objectives even on the same weighted graph.</p>
 <div class="objective-swap">
 <article><h3>Dijkstra: cheapest routes from one source</h3><p>With edges AB=2, AC=2, BC=1 and source A, the shortest-path tree may use AB and AC. Each destination gets a cheapest route from A; the selected edge total is 4.</p></article>
 <div class="objective-arrow">≠</div>
@@ -46,8 +46,8 @@
 </section>
 
 <section class="lecture-section" id="cut">
-<h2>One fact powers both algorithms: the cut property</h2>
-<p class="lead">A cut simply separates the vertices into two nonempty sides, <span class="math">S</span> and <span class="math">V\S</span>. The useful question is: which edge is the cheapest way to cross from one side to the other?</p>
+<h2>Cut property</h2>
+<p class="lead">For any cut of the vertices, a minimum-weight edge crossing that cut is safe for some minimum spanning tree. Kruskal and Prim both rely on this fact.</p>
 <div class="cut-diagram">
 <div class="cut-side"><h3>Side S</h3><p>Some vertices and the partial tree already fixed on this side.</p></div>
 <div class="cut-bridge">lightest edge<br/>across the cut</div>
@@ -59,8 +59,8 @@
 
 <!-- book-synthesis-mst -->
 <section class="lecture-section" id="first-bad">
-<h2>A powerful proof habit: assume the first greedy mistake</h2>
-<p class="lead">For incremental greedy algorithms, it is often easier to reason about the <em>first</em> choice that could possibly destroy optimality. Before that moment, the partial greedy solution still fits inside some optimum.</p>
+<h2>Proof by the first conflicting edge</h2>
+<p class="lead">Assume the current greedy forest is contained in some MST and consider the first selected edge not in that tree. Adding it creates a cycle, from which an edge of no smaller weight can be exchanged out.</p>
 <div class="proof-template">
 <article><b>Before the mistake</b><p>Assume the current greedy forest <span class="math">F</span> is contained in some MST <span class="math">T</span>.</p></article>
 <article><b>Greedy picks e</b><p>The next edge <span class="math">e</span> is lightest across the relevant cut, but suppose <span class="math">e∉T</span>.</p></article>
@@ -71,8 +71,8 @@
 </section>
 
 <section class="lecture-section" id="kruskal">
-<h2>Kruskal: grow a forest</h2>
-<p class="lead">Sort all edges by weight. Walk through them once. Keep an edge if it joins two different components; reject it if its endpoints are already connected.</p>
+<h2>Kruskal's algorithm</h2>
+<p class="lead">Process edges in nondecreasing weight order. Add an edge if and only if it joins two different connected components.</p>
 <div class="visualizer kruskal-demo">
 <div class="visualizer-head"><div><h3>Run Kruskal step by step</h3><p>The edge list is sorted by weight. Green edges enter the forest; faded edges are rejected because they close a cycle.</p></div><div class="step-nav-controls"><button class="previous-step" data-action="previous" type="button">← Previous</button><button class="primary-step" data-action="next" type="button">Next →</button></div></div>
 <div class="edge-list" data-role="edges"></div>
@@ -84,8 +84,8 @@
 </section>
 
 <section class="lecture-section" id="prim">
-<h2>Prim: grow one tree</h2>
-<p class="lead">Start from any vertex. Keep one connected tree and repeatedly add the cheapest edge leaving that tree. The new endpoint joins the tree; the frontier updates.</p>
+<h2>Prim's algorithm</h2>
+<p class="lead">Start from any vertex and repeatedly add the minimum-weight edge from the current tree to a vertex outside the tree.</p>
 <div class="algo-compare-grid">
 <article class="algo-compare-card kruskal"><h3>Kruskal</h3><p>Greedy object: globally cheapest edge that joins two different components.</p><div class="method-state-row"><span class="method-state active">forest</span><span class="method-state">sort edges</span><span class="method-state">DSU</span></div></article>
 <article class="algo-compare-card prim"><h3>Prim</h3><p>Greedy object: cheapest edge crossing from the current tree to an outside vertex.</p><div class="method-state-row"><span class="method-state active">one tree</span><span class="method-state">heap</span><span class="method-state">frontier</span></div></article>
@@ -94,8 +94,8 @@
 </section>
 
 <section class="lecture-section" id="boruvka">
-<h2>Borůvka: every component moves at once</h2>
-<p class="lead">Kruskal chooses one safe edge at a time; Prim grows one component. Borůvka lets every current component choose its cheapest outgoing edge in the same round.</p>
+<h2>Borůvka's algorithm</h2>
+<p class="lead">In each round, every current component selects a cheapest outgoing edge. Adding these safe edges merges components until one spanning tree remains.</p>
 <div class="algorithm-triptych">
 <article><h3>1. One choice per component</h3><p>For each connected component of the current forest, find its minimum-weight outgoing edge.</p></article>
 <article><h3>2. Add all safe edges</h3><p>Each chosen edge is lightest across the cut “this component versus the rest”, so the cut property makes it safe.</p></article>
@@ -106,8 +106,8 @@
 
 <!-- common-sense-round-mst -->
 <section class="lecture-section" id="data-structure">
-<h2>The proof chooses safe edges; the data structure decides the speed</h2>
-<p class="lead">Kruskal and Prim are both greedy, but their repeated operations are different. Once you identify the operation, the right data structure becomes much easier to choose.</p>
+<h2>Data structures for MST algorithms</h2>
+<p class="lead">Kruskal repeatedly tests whether two endpoints are already connected; Prim repeatedly finds the cheapest frontier edge. These operations lead naturally to Union-Find and priority queues.</p>
 <div class="table-wrap"><table><thead><tr><th>Algorithm</th><th>Repeated operation</th><th>Natural structure</th><th>Typical cost</th></tr></thead><tbody>
 <tr><td>Kruskal</td><td>Next lightest edge + “would this create a cycle?”</td><td>Sorted edge list + DSU</td><td><span class="math">O(E log E)</span></td></tr>
 <tr><td>Prim, simple</td><td>Find cheapest vertex/edge crossing the frontier</td><td>Arrays / linear scan</td><td><span class="math">O(V²)</span></td></tr>
@@ -122,8 +122,8 @@
 
 <!-- coding-patterns-round-mst -->
 <section class="lecture-section" id="dsu">
-<h2>Kruskal’s interview companion: Union-Find</h2>
-<p class="lead">The greedy rule says which edge to consider next. The remaining implementation question is connectivity: are the two endpoints already in the same component?</p>
+<h2>Union-Find in Kruskal's algorithm</h2>
+<p class="lead">Union-Find maintains the current connected components and answers whether an edge would create a cycle.</p>
 <div class="recognition-grid">
 <article class="recognition-card"><span class="signal">find(x)</span><h3>Which component contains x?</h3><p>Each component has a representative. If <code>find(u) == find(v)</code>, adding edge <span class="math">(u,v)</span> would create a cycle and Kruskal skips it.</p></article>
 <article class="recognition-card"><span class="signal">union(x,y)</span><h3>Merge two components</h3><p>If the representatives differ, the edge is safe with respect to acyclicity. Accept it, then union the two sets so future cycle tests see the new component.</p></article>
@@ -141,7 +141,7 @@
 </section>
 
 <section class="lecture-section" id="implementation">
-<h2>Same proof, different data structures</h2>
+<h2>Kruskal and Prim implementations</h2>
 <div class="dual-code">
 <div class="dual-code-block"><h3>Kruskal + DSU</h3><pre><code>def kruskal(n, edges):
     parent = list(range(n))
@@ -196,7 +196,7 @@ def prim(graph, start=0):
 </section>
 
 <section class="lecture-section" id="complexity">
-<h2>Complexity and when to use which</h2>
+<h2>Complexity</h2>
 <div class="table-wrap"><table class="graph-code-table"><thead><tr><th>Algorithm</th><th>Main structure</th><th>Typical complexity</th><th>Often convenient when</th></tr></thead><tbody>
 <tr><td>Kruskal</td><td>Sort edges + DSU</td><td>O(E log E)</td><td>You already have an edge list; graph may be sparse</td></tr>
 <tr><td>Prim with simple scan</td><td>Arrays / adjacency matrix</td><td>O(V²)</td><td>The graph is dense; a heap may not buy much</td></tr>
@@ -207,7 +207,7 @@ def prim(graph, start=0):
 </section>
 
 <section class="lecture-section" id="applications">
-<h2>What else the MST structure gives you</h2>
+<h2>Applications of minimum spanning trees</h2>
 <div class="variant-grid">
 <article class="variant-card"><h3>Clustering</h3><p>Build an MST of points or objects, then remove the largest edges. What remains are connected clusters separated by expensive links—a simple way to turn connectivity into a hierarchy.</p></article>
 <article class="variant-card"><h3>Maximum spanning tree</h3><p>Run the same greedy logic with weights in the opposite order. Equivalently, negate weights and compute a minimum spanning tree.</p></article>
@@ -218,7 +218,7 @@ def prim(graph, start=0):
 </section>
 
 <section class="lecture-section" id="properties">
-<h2>Four facts worth remembering</h2>
+<h2>Useful properties</h2>
 <div class="theory-note"><h3>MST is the clean matroid example</h3><p>The edge sets that contain no cycle form the <em>graphic matroid</em>. A spanning tree is a basis of this matroid. Kruskal is therefore an instance of the general matroid greedy theorem: order elements by weight and keep an element whenever independence is preserved. The cut-property proof is the graph-specific form of that exchange theorem.</p></div>
 <div class="decision-grid">
 <article class="decision-card greedy-signal"><h3>Distinct weights imply uniqueness</h3><p>If every edge weight is different, the graph has a unique MST.</p></article>
