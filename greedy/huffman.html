@@ -26,6 +26,7 @@
 <div class="huffman-symbol"><b>F</b><span>5</span></div>
 </div>
 <div class="greedy-definition"><span>Goal</span><p>Construct a binary prefix code minimizing the weighted code length <span class="math">∑ fᵢ · ℓᵢ</span>, where <span class="math">fᵢ</span> is a symbol frequency and <span class="math">ℓᵢ</span> is its codeword length.</p></div>
+<div class="formula-line">cost(T) = ∑ fᵢℓᵢ</div>
 </section>
 
 <!-- grokking-pass-huffman -->
@@ -126,6 +127,7 @@
 <section class="lecture-section" id="entropy">
 <h2>Relation to entropy</h2>
 <p class="lead">If p_i are normalized symbol probabilities, Shannon entropy H is a lower bound on average prefix-code length. Huffman coding achieves an average length L satisfying H ≤ L < H + 1.</p>
+<div class="formula-line">H = −∑ pᵢ log₂ pᵢ &nbsp;&nbsp; and &nbsp;&nbsp; H ≤ L &lt; H + 1</div>
 <div class="entropy-strip">
 <div class="entropy-cell"><span>Entropy H</span><b>≈ 2.220 bits/symbol</b><small>For probabilities 0.45, 0.13, 0.12, 0.16, 0.09, 0.05.</small></div>
 <div class="entropy-cell"><span>Huffman average L</span><b>2.24 bits/symbol</b><small>224 bits across 100 symbol occurrences.</small></div>
