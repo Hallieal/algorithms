@@ -8,7 +8,7 @@
 <body class="lecture-page"><div aria-hidden="true" class="progress-track"><div class="progress-bar" id="reading-progress"></div></div>
 <header class="topbar"><a class="brand" href="../index-ru.html"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name ru-brand-name"><span class="ru-brand-lines"><span>Гайд по алгоритмам</span><span class="ru-brand-presented">presented by Аллан</span></span></span></a>
 <nav aria-label="Основная навигация" class="topnav"><a href="index-ru.html">Жадные алгоритмы</a><div aria-label="Язык" class="language-switch"><a href="huffman.html">EN</a><span class="language-separator">·</span><span class="current">RU</span></div></nav></header>
-<aside aria-label="Навигация по разделу" class="sidebar"><div class="sidebar-title">Глава 9 · Раздел 8</div><a href="#problem">Постановка</a><a href="#bits-first">Зачем variable-length codes?</a><a href="#prefix">Префиксные коды</a><a href="#decode">Декодирование по дереву</a><a href="#algorithm">Алгоритм</a><a href="#tree">Дерево и коды</a><a href="#merge">Optimal merge pattern</a><a href="#entropy">Энтропия</a><a href="#proof">Корректность</a><a href="#heap-pattern">Heap recognition pattern</a><a href="#heap-optimization">Почему heap всё меняет</a><a href="#implementation">Реализация</a><a href="#limits">Что оптимизируется</a><a href="#exercises">Задачи</a></aside>
+<aside aria-label="Навигация по разделу" class="sidebar"><div class="sidebar-title">Глава 9 · Раздел 8</div><a href="#problem">Постановка</a><a href="#bits-first">Зачем variable-length codes?</a><a href="#prefix">Префиксные коды</a><a href="#decode">Декодирование по дереву</a><a href="#algorithm">Алгоритм</a><a href="#tree">Дерево и коды</a><a href="#merge">Optimal merge pattern</a><a href="#entropy">Энтропия</a><a href="#proof">Корректность</a><a href="#heap-pattern">Heap recognition pattern</a><a href="#heap-optimization">Почему heap всё меняет</a><a href="#implementation">Реализация</a><a href="#static-adaptive">Static code и adaptive compression</a><a href="#limits">Что оптимизируется</a><a href="#exercises">Задачи</a></aside>
 <main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Глава 9 · Раздел 8</div><h1>Кодирование Хаффмана</h1><p class="chapter-topics">Частые символы должны иметь короткие коды. Хаффман добивается этого, каждый раз объединяя два узла с минимальными частотами.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-huffman.svg"/></div></section>
 <section class="lecture-section" id="problem">
 <h2>Частые символы должны кодироваться дёшево</h2>
@@ -197,6 +197,22 @@
 <div class="code-note-item wide-note"><span>11–17</span><p>Удаляем два дерева с минимальными частотами, делаем их детьми нового узла и возвращаем сумму в heap.</p></div>
 </div></div>
 <div class="complexity-strip"><div><span>Построение heap</span><b>O(n)</b><small>начальные узлы</small></div><div><span>Объединений</span><b>n − 1</b><small>по одному на внутренний узел</small></div><div><span>Одно объединение</span><b>O(log n)</b><small>операции heap</small></div><div><span>Итого</span><b>O(n log n)</b><small>построение дерева</small></div></div>
+</section>
+
+<!-- skiena-round-huffman -->
+<section class="lecture-section" id="static-adaptive">
+<h2>Huffman использует static model источника</h2>
+<p class="lead">Tree оптимален для заданных symbol frequencies, но реальная compression system ещё должна решить, как эти frequencies получить, как передать decoder и достаточно ли вообще symbol-by-symbol statistics.</p>
+<div class="recognition-grid">
+<article class="recognition-card"><span class="signal">First pass</span><h3>Сначала узнать frequency table</h3><p>Static Huffman encoder обычно сначала проходит input и считает symbols, а уже потом строит code tree.</p></article>
+<article class="recognition-card"><span class="signal">Metadata</span><h3>Decoder должен знать code</h3><p>Coding table — или достаточная информация для её восстановления — должна идти вместе с compressed payload. На коротком file overhead может съесть значительную часть выигрыша.</p></article>
+<article class="recognition-card"><span class="signal">Model limit</span><h3>Single-symbol frequencies не видят context</h3><p>Повторяющийся pattern может хорошо сжиматься даже при малоинформативных individual frequencies. Dictionary/adaptive methods умеют использовать длинные повторяющиеся substrings и локальные изменения distribution.</p></article>
+</div>
+<div class="two-column-block">
+<div class="text-panel"><h3>Static Huffman</h3><p>Анализируем document, строим один frequency-based code и затем кодируем с фиксированной table.</p></div>
+<div class="proof-panel"><h3>Adaptive / dictionary methods</h3><p>Меняем coding model по мере чтения stream, чтобы repeated phrases и local changes влияли на дальнейшее encoding.</p></div>
+</div>
+<div class="one-line"><strong>Разделяйте theorem и system.</strong> Huffman решает optimal prefix-code problem для заданной frequency model; выбор самой compression model — отдельное design decision.</div>
 </section>
 
 <section class="lecture-section" id="limits">
