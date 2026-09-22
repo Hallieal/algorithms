@@ -1,5 +1,5 @@
 <!DOCTYPE html><html lang="ru"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1" name="viewport"/>
-<meta content="Как построить оптимальный двоичный префиксный код, каждый раз объединяя два узла с минимальными частотами." name="description"/><meta content="Кодирование Хаффмана | Гайд по алгоритмам — presented by Аллан" property="og:title"/><meta content="Как построить оптимальный двоичный префиксный код, каждый раз объединяя два узла с минимальными частотами." property="og:description"/><meta content="article" property="og:type"/>
+<meta content="Частые символы должны иметь короткие коды. Хаффман добивается этого, каждый раз объединяя два узла с минимальными частотами." name="description"/><meta content="Кодирование Хаффмана | Гайд по алгоритмам — presented by Аллан" property="og:title"/><meta content="Частые символы должны иметь короткие коды. Хаффман добивается этого, каждый раз объединяя два узла с минимальными частотами." property="og:description"/><meta content="article" property="og:type"/>
 <title>Кодирование Хаффмана | Гайд по алгоритмам — presented by Аллан</title>
 <link href="../assets/css/styles.css" rel="stylesheet"/><link href="assets/greedy.css" rel="stylesheet"/>
 <link href="../assets/images/favicon-32.png" rel="icon" sizes="32x32" type="image/png"/><link href="../assets/images/favicon.png" rel="icon" sizes="64x64" type="image/png"/><link href="../assets/images/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180"/>
@@ -8,10 +8,14 @@
 <header class="topbar"><a class="brand" href="../index-ru.html"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name ru-brand-name"><span class="ru-brand-lines"><span>Гайд по алгоритмам</span><span class="ru-brand-presented">presented by Аллан</span></span></span></a>
 <nav aria-label="Основная навигация" class="topnav"><a href="index-ru.html">Жадные алгоритмы</a><div aria-label="Язык" class="language-switch"><a href="huffman.html">EN</a><span class="language-separator">·</span><span class="current">RU</span></div></nav></header>
 <aside aria-label="Навигация по разделу" class="sidebar"><div class="sidebar-title">Глава 9 · Раздел 8</div><a href="#problem">Постановка</a><a href="#prefix">Префиксные коды</a><a href="#algorithm">Алгоритм</a><a href="#tree">Дерево и коды</a><a href="#proof">Корректность</a><a href="#implementation">Реализация</a><a href="#limits">Что оптимизируется</a><a href="#exercises">Задачи</a></aside>
-<main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Глава 9 · Раздел 8</div><h1>Кодирование Хаффмана</h1><p class="chapter-topics">Как построить оптимальный двоичный префиксный код, каждый раз объединяя два узла с минимальными частотами.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-huffman.svg"/></div></section>
+<main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Глава 9 · Раздел 8</div><h1>Кодирование Хаффмана</h1><p class="chapter-topics">Частые символы должны иметь короткие коды. Хаффман добивается этого, каждый раз объединяя два узла с минимальными частотами.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-huffman.svg"/></div></section>
 <section class="lecture-section" id="problem">
-<h2>От частот к двоичным кодам</h2>
-<p class="lead">Пусть сообщение состоит из символов с разными частотами. Код фиксированной длины тратит одинаковое число бит на каждый символ. Если некоторые символы встречаются намного чаще, выгодно дать им более короткие кодовые слова.</p>
+<h2>Частые символы должны кодироваться дёшево</h2>
+<p class="lead">Если все символы кодируются одинаковым числом битов, частые и редкие символы стоят одинаково. Хаффман делает иначе: частые символы располагаются ближе к корню, редкие могут уйти глубже.</p><div class="concept-strip">
+<article class="concept-cell rule"><span>Правило</span><b>Объединяем два узла с минимальными частотами</b><p>Повторяем, пока не останется одно дерево.</p></article>
+<article class="concept-cell proof"><span>Почему работает</span><b>Редкие символы можно сделать самыми глубокими соседями</b><p>После этого пара сжимается в одну меньшую задачу Хаффмана.</p></article>
+<article class="concept-cell cost"><span>Сложность</span><b>O(n log n)</b><p>Все объединения эффективно делает min-heap.</p></article>
+</div>
 <div class="huffman-frequency-grid">
 <div class="huffman-symbol"><b>A</b><span>45</span></div>
 <div class="huffman-symbol"><b>B</b><span>13</span></div>
@@ -24,8 +28,8 @@
 </section>
 
 <section class="lecture-section" id="prefix">
-<h2>Зачем нужны префиксные коды?</h2>
-<p class="lead">Код называется префиксным, если ни одно кодовое слово не является префиксом другого. Тогда поток битов можно декодировать слева направо без разделителей.</p>
+<h2>Префиксный код не требует разделителей</h2>
+<p class="lead">Если ни одно полное кодовое слово не является началом другого, декодер всегда понимает, где закончился символ. Именно это автоматически даёт двоичное префиксное дерево.</p>
 <div class="prefix-example">
 <article class="prefix-card bad"><h3>Не префиксный</h3>
 <div class="prefix-code-row"><span>A</span><code>0</code></div>
@@ -41,8 +45,8 @@
 </section>
 
 <section class="lecture-section" id="algorithm">
-<h2>Жадное правило Хаффмана</h2>
-<p class="lead">Алгоритм снова и снова объединяет два узла с минимальными частотами. Их сумма становится весом нового внутреннего узла, который возвращается в min-heap.</p>
+<h2>Объединяем два самых дешёвых поддерева</h2>
+<p class="lead">Берём две минимальные частоты, делаем их соседями, заменяем их суммой и повторяем. Каждое объединение означает, что эти два узла окажутся на один уровень глубже нового родителя.</p>
 <div class="step-flow">
 <article class="step-item"><div class="step-number">1</div><div><h3>Создаём лист для каждого символа</h3><p>Вес листа равен частоте символа.</p></div></article>
 <article class="step-item"><div class="step-number">2</div><div><h3>Извлекаем два минимума</h3><p>Они станут соседними листьями на наибольшей глубине текущего дерева.</p></div></article>
@@ -59,7 +63,7 @@
 </section>
 
 <section class="lecture-section" id="tree">
-<h2>Получившееся дерево и коды</h2>
+<h2>Считываем коды от корня к листьям</h2>
 <p class="lead">Каждому левому ребру присвоим 0, каждому правому — 1. Код символа — последовательность битов на пути от корня до его листа. Левые и правые поддеревья можно менять местами: длины кодов и оптимальность от этого не меняются.</p>
 <div class="huffman-tree-simple">
 <div class="huffman-level"><div class="tree-node root">100</div></div>
@@ -83,8 +87,8 @@
 </section>
 
 <section class="lecture-section" id="proof">
-<h2>Почему безопасно объединять два минимума</h2>
-<p class="lead">Доказательство Хаффмана состоит из двух идей: обменного аргумента, который помещает два минимальных символа рядом, и сведения задачи к меньшей после их объединения.</p>
+<h2>Почему два минимума можно сделать соседями</h2>
+<p class="lead">В доказательстве всего два хода. Сначала две минимальные частоты можно без ухудшения поместить в пару самых глубоких соседних листьев. Затем эту пару сжимаем в один псевдосимвол и решаем меньшую задачу.</p>
 <div class="huffman-proof-steps">
 <article class="huffman-proof-card"><h3>1. Глубокие листья должны быть дешёвыми</h3><p>Если символ с большей частотой находится глубже символа с меньшей частотой, обмен их меток не увеличивает стоимость. Поэтому маленькие частоты можно отправить на максимальную глубину.</p></article>
 <article class="huffman-proof-card"><h3>2. Два минимума можно сделать соседями</h3><p>Берём два самых глубоких соседних листа. Обменом меток можно добиться, чтобы именно две глобально минимальные частоты занимали эти позиции, не ухудшая стоимость.</p></article>
@@ -94,7 +98,7 @@
 </section>
 
 <section class="lecture-section" id="implementation">
-<h2>Реализация на Python</h2>
+<h2>Весь алгоритм — это min-heap</h2>
 <p class="lead">Min-heap делает шаг «взять два минимума и вставить их сумму» эффективным. Счётчик нужен, чтобы Python не пытался сравнивать сами деревья при равных частотах.</p>
 <div class="code-explainer">
 <div class="annotated-code">
@@ -125,7 +129,7 @@
 </section>
 
 <section class="lecture-section" id="limits">
-<h2>Что именно оптимизирует Хаффман</h2>
+<h2>Оптимальность внутри конкретной модели</h2>
 <div class="decision-grid">
 <article class="decision-card greedy-signal"><h3>Оптимум среди двоичных префиксных кодов</h3><p>При заданных частотах символов Хаффман минимизирует ожидаемую или суммарную длину кода именно в этой модели.</p></article>
 <article class="decision-card dp-signal"><h3>Но это не «абсолютно лучшее сжатие»</h3><p>Более сложные методы могут использовать блоки символов, контекст или вероятностную структуру, которой нет в простой модели независимых символов.</p></article>
