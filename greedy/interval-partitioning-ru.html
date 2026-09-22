@@ -1,5 +1,5 @@
 <!DOCTYPE html><html lang="ru"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1" name="viewport"/>
-<meta content="Как распределить все интервалы по минимальному числу аудиторий, используя min-heap по времени освобождения." name="description"/><meta content="Разбиение интервалов по ресурсам | Гайд по алгоритмам — presented by Аллан" property="og:title"/><meta content="Как распределить все интервалы по минимальному числу аудиторий, используя min-heap по времени освобождения." property="og:description"/><meta content="article" property="og:type"/>
+<meta content="Нужно разместить все интервалы в минимальном числе аудиторий. Переиспользуем ту, которая освобождается раньше всех." name="description"/><meta content="Разбиение интервалов по ресурсам | Гайд по алгоритмам — presented by Аллан" property="og:title"/><meta content="Нужно разместить все интервалы в минимальном числе аудиторий. Переиспользуем ту, которая освобождается раньше всех." property="og:description"/><meta content="article" property="og:type"/>
 <title>Разбиение интервалов по ресурсам | Гайд по алгоритмам — presented by Аллан</title>
 <link href="../assets/css/styles.css" rel="stylesheet"/><link href="assets/greedy.css" rel="stylesheet"/>
 <link href="../assets/images/favicon-32.png" rel="icon" sizes="32x32" type="image/png"/><link href="../assets/images/favicon.png" rel="icon" sizes="64x64" type="image/png"/><link href="../assets/images/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180"/>
@@ -8,17 +8,21 @@
 <header class="topbar"><a class="brand" href="../index-ru.html"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name ru-brand-name"><span class="ru-brand-lines"><span>Гайд по алгоритмам</span><span class="ru-brand-presented">presented by Аллан</span></span></span></a>
 <nav aria-label="Основная навигация" class="topnav"><a href="index-ru.html">Жадные алгоритмы</a><div aria-label="Язык" class="language-switch"><a href="interval-partitioning.html">EN</a><span class="language-separator">·</span><span class="current">RU</span></div></nav></header>
 <aside aria-label="Навигация по разделу" class="sidebar"><div class="sidebar-title">Глава 9 · Раздел 5</div><a href="#problem">Постановка</a><a href="#depth">Depth</a><a href="#algorithm">Алгоритм</a><a href="#proof">Корректность</a><a href="#implementation">Реализация</a><a href="#comparison">Сравнение</a><a href="#exercises">Задачи</a></aside>
-<main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Глава 9 · Раздел 5</div><h1>Разбиение интервалов по ресурсам</h1><p class="chapter-topics">Как распределить все интервалы по минимальному числу аудиторий, используя min-heap по времени освобождения.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-interval-partitioning.svg"/></div></section>
+<main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Глава 9 · Раздел 5</div><h1>Разбиение интервалов по ресурсам</h1><p class="chapter-topics">Нужно разместить все интервалы в минимальном числе аудиторий. Переиспользуем ту, которая освобождается раньше всех.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-interval-partitioning.svg"/></div></section>
 <section class="lecture-section" id="problem">
-<h2>Постановка задачи</h2>
-<p class="lead">Теперь интервалы нельзя выбрасывать. Каждую лекцию, встречу или задачу на машине нужно назначить на ресурс, причём пересекающиеся интервалы не могут использовать один и тот же ресурс.</p>
+<h2>Использовать как можно меньше аудиторий</h2>
+<p class="lead">Выбрасывать интервалы нельзя. Можно только решать, в какую аудиторию поставить каждый из них. Пересекающиеся интервалы требуют разных аудиторий, поэтому задача сводится к максимально раннему переиспользованию ресурсов.</p><div class="concept-strip">
+<article class="concept-cell rule"><span>Правило</span><b>Идём по началу и переиспользуем самую раннюю свободную аудиторию</b><p>Min-heap хранит время освобождения аудиторий.</p></article>
+<article class="concept-cell proof"><span>Почему работает</span><b>Новая аудитория открывается только когда заняты все старые</b><p>В этот момент столько же аудиторий требует само число пересечений.</p></article>
+<article class="concept-cell cost"><span>Сложность</span><b>O(n log n)</b><p>Одна сортировка и одна операция heap на интервал.</p></article>
+</div>
 <div class="greedy-definition"><span>Разбиение интервалов</span><p>Нужно назначить каждый интервал в аудиторию так, чтобы пересекающиеся интервалы находились в разных аудиториях, и минимизировать общее число аудиторий.</p></div>
 <div class="greedy-caution"><strong>Не путайте с Interval Scheduling.</strong> Там мы максимизировали число оставленных интервалов. Здесь все интервалы обязательны, а минимизируется число параллельных ресурсов.</div>
 </section>
 
 <section class="lecture-section" id="depth">
-<h2>Неизбежная нижняя граница: depth</h2>
-<p class="lead">Если в некоторый момент одновременно активны <span class="math">d</span> интервалов, они обязаны занимать <span class="math">d</span> разных аудиторий. Поэтому никакой алгоритм не сможет использовать меньше, чем максимальное число одновременно пересекающихся интервалов.</p>
+<h2>Сначала найдём нижнюю границу: глубину (depth)</h2>
+<p class="lead">Если в один момент пересекаются <span class="math">d</span> интервалов, нужны <span class="math">d</span> разных аудиторий. Максимальное число одновременных интервалов называется глубиной (depth), и меньше этого числа использовать невозможно.</p>
 <div class="depth-illustration">
 <div class="depth-card"><h3>Depth</h3><div class="depth-number">3</div><p>В нашем примере A, B и C пересекаются около момента 2. Значит, нужны как минимум 3 аудитории.</p></div>
 <div class="depth-card"><h3>Что достаточно доказать</h3><p>Если жадный алгоритм никогда не использует больше аудиторий, чем depth, он оптимален: он достигает нижней границы, обязательной для любого расписания.</p></div>
@@ -26,8 +30,8 @@
 </section>
 
 <section class="lecture-section" id="algorithm">
-<h2>Жадное правило</h2>
-<p class="lead">Обрабатываем интервалы по возрастанию времени начала. Для каждого нового интервала пытаемся переиспользовать уже свободную аудиторию. Лучше всего смотреть на аудиторию, текущая встреча в которой заканчивается раньше всех.</p>
+<h2>Переиспользуем аудиторию, которая освобождается первой</h2>
+<p class="lead">Сортируем по времени начала. Для нового интервала смотрим на минимальное время освобождения. Если эта аудитория уже свободна, используем её; если даже она занята, заняты все.</p>
 <div class="step-flow">
 <article class="step-item"><div class="step-number">1</div><div><h3>Сортируем по началу</h3><p>Когда рассматриваем интервал, все более ранние по началу уже распределены.</p></div></article>
 <article class="step-item"><div class="step-number">2</div><div><h3>Берём самое раннее освобождение</h3><p>Min-heap позволяет мгновенно найти аудиторию, которая освободится первой.</p></div></article>
@@ -43,7 +47,7 @@
 </section>
 
 <section class="lecture-section" id="proof">
-<h2>Почему алгоритм оптимален</h2>
+<h2>Почему новая аудитория действительно неизбежна</h2>
 <p class="lead">Ключевой момент — когда алгоритм вынужден открыть новую аудиторию для интервала <span class="math">j</span>, начинающегося в <span class="math">sⱼ</span>.</p>
 <div class="proof-checklist">
 <div class="proof-check"><span>1</span><p>Аудитория с самым ранним временем освобождения всё ещё занята после <span class="math">sⱼ</span>.</p></div>
@@ -83,7 +87,7 @@
 </section>
 
 <section class="lecture-section" id="comparison">
-<h2>Scheduling и Partitioning</h2>
+<h2>Не путайте две задачи на интервалы</h2>
 <div class="table-wrap"><table><thead><tr><th>Вопрос</th><th>Interval Scheduling</th><th>Interval Partitioning</th></tr></thead><tbody>
 <tr><td>Можно выбрасывать интервалы?</td><td>Да</td><td>Нет</td></tr>
 <tr><td>Цель</td><td>Максимизировать число выбранных</td><td>Минимизировать число аудиторий</td></tr>
