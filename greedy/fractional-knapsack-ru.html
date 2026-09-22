@@ -8,7 +8,7 @@
 <body class="lecture-page"><div aria-hidden="true" class="progress-track"><div class="progress-bar" id="reading-progress"></div></div>
 <header class="topbar"><a class="brand" href="../index-ru.html"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name ru-brand-name"><span class="ru-brand-lines"><span>Гайд по алгоритмам</span><span class="ru-brand-presented">presented by Аллан</span></span></span></a>
 <nav aria-label="Основная навигация" class="topnav"><a href="index-ru.html">Жадные алгоритмы</a><div aria-label="Язык" class="language-switch"><a href="fractional-knapsack.html">EN</a><span class="language-separator">·</span><span class="current">RU</span></div></nav></header>
-<aside aria-label="Навигация по разделу" class="sidebar"><div class="sidebar-title">Глава 9 · Раздел 7</div><a href="#problem">Постановка</a><a href="#density">Плотность ценности</a><a href="#algorithm">Алгоритм</a><a href="#proof">Корректность</a><a href="#boundary">Граница с 0/1</a><a href="#implementation">Реализация</a><a href="#exercises">Задачи</a></aside>
+<aside aria-label="Навигация по разделу" class="sidebar"><div class="sidebar-title">Глава 9 · Раздел 7</div><a href="#problem">Постановка</a><a href="#density">Плотность ценности</a><a href="#algorithm">Алгоритм</a><a href="#proof">Корректность</a><a href="#lp-view">Почему только одна дробь?</a><a href="#boundary">Граница с 0/1</a><a href="#implementation-choice">Sort или heap?</a><a href="#implementation">Реализация</a><a href="#exercises">Задачи</a></aside>
 <main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Глава 9 · Раздел 7</div><h1>Дробная задача о рюкзаке</h1><p class="chapter-topics">Если предметы делимы, каждую единицу вместимости выгодно отдавать предмету с максимальной ценностью на единицу веса.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-fractional-knapsack.svg"/></div></section>
 <section class="lecture-section" id="problem">
 <h2>Тратим вместимость там, где она приносит больше всего</h2>
@@ -74,6 +74,18 @@
 <div class="proof-goal"><h3>Свойство жадного выбора</h3><p>Существует оптимальное решение, которое берёт максимально возможную долю текущего предмета с наибольшей плотностью. После этого то же рассуждение применяется к оставшейся вместимости.</p></div>
 </section>
 
+<!-- book-synthesis-fk -->
+<section class="lecture-section" id="lp-view">
+<h2>Почему greedy-решение имеет такую простую форму</h2>
+<p class="lead">Fractional Knapsack — линейная оптимизация с одним ограничением по вместимости. Геометрия задачи объясняет структуру, которую показывает greedy: после сортировки по density можно целиком взять некоторый prefix, затем не более одного частичного предмета.</p>
+<div class="clean-steps">
+<div class="clean-step"><span>1</span><p>Единица capacity, потраченная на density <span class="math">ρ₁</span>, ценнее или равна той же единице на меньшей density <span class="math">ρ₂</span>.</p></div>
+<div class="clean-step"><span>2</span><p>Если low-density item уже используется, а high-density item ещё не заполнен, переносим небольшую порцию веса вверх. Value не уменьшается.</p></div>
+<div class="clean-step"><span>3</span><p>После всех обменов получаем полностью заполненный density-sorted prefix, возможно один fractional boundary item, затем нули. При ties можно выбрать эквивалентный optimum такой формы.</p></div>
+</div>
+<div class="rule-formula">marginal value одной дополнительной единицы capacity = value / weight</div>
+</section>
+
 <section class="lecture-section" id="boundary">
 <h2>В рюкзаке 0/1 это доказательство ломается</h2>
 <p class="lead">Всё доказательство держится на возможности перенести произвольную порцию веса. Для неделимых предметов такой обмен может быть просто недопустим.</p>
@@ -83,6 +95,16 @@
 </div>
 <div class="greedy-caution"><strong>Вывод.</strong> Небольшое изменение модели может полностью уничтожить жадное свойство. Нельзя переносить доказательство с одной версии задачи на другую, не проверив ключевое предположение.</div>
 <div class="bridge-note"><h3>Но дробный greedy всё ещё полезен для 0/1 Knapsack</h3><p>Оптимум дробной задачи — <strong>верхняя граница</strong> для 0/1-оптимума: разрешение дробей может только улучшить ответ. Такая граница используется в branch-and-bound. Для точного 0/1 Knapsack стандартный DP по вместимости псевдополиномиален. Простое density-greedy само по себе не имеет постоянной гарантии приближения; для approximation нужен дополнительный приём, например сравнение с лучшим одиночным предметом.</p></div>
+</section>
+
+<section class="lecture-section" id="implementation-choice">
+<h2>Полная сортировка или priority queue?</h2>
+<p class="lead">Математическое правило одинаково — каждый раз брать оставшийся item максимальной density, — но структура данных зависит от того, сколько предметов реально придётся извлечь.</p>
+<div class="table-wrap"><table><thead><tr><th>Реализация</th><th>Стоимость</th><th>Когда удобна</th></tr></thead><tbody>
+<tr><td>Отсортировать все items по density</td><td>O(n log n)</td><td>Самый простой код; всё равно просматриваем почти все items.</td></tr>
+<tr><td>Построить max-heap по density</td><td>O(n + c log n)</td><td>Если capacity заполнится после извлечения только <span class="math">c</span> лучших items и <span class="math">c ≪ n</span>.</td></tr>
+</tbody></table></div>
+<div class="source-note"><h3>Не оптимизируйте структуру данных раньше доказательства</h3><p>Proof относится к density order, а не к сортировке как таковой. После доказательства greedy-order sort и priority queue становятся взаимозаменяемыми implementation choices.</p></div>
 </section>
 
 <section class="lecture-section" id="implementation">
