@@ -26,7 +26,7 @@
 <section class="overview-section sorting-contents greedy-contents" id="chapter-map">
 <div class="chapter-label">Chapter 9</div>
 <h1>Greedy Algorithms</h1>
-<p class="greedy-overview-lead">Greedy algorithms are often short to write and easy to get wrong. This chapter is organized around one question: what can we decide now and prove we will never regret?</p><div class="chapter-prereq-note">Helpful before you start: <a href="../sorting/">Sorting →</a> · <a href="../data-structures/">Heaps and priority queues →</a></div>
+<p class="greedy-overview-lead">Across 11 articles, this chapter treats greedy algorithms as a design method rather than a list of tricks: propose a local rule, attack it with counterexamples, identify the invariant, and decide whether the result is exact, approximate, or merely heuristic.</p><div class="chapter-prereq-note">Helpful before you start: <a href="../sorting/">Sorting →</a> · <a href="../data-structures/">Heaps and priority queues →</a></div>
 <div class="sorting-part">
 <div class="sorting-part-head">
 <div>
@@ -110,7 +110,7 @@
 <div class="chapter-card-icon"><img alt="" src="assets/greedy-fractional-knapsack.svg"/></div>
 <div>
 <h3>Fractional Knapsack</h3>
-<p>Sort by value per unit of weight, fill greedily, and see exactly where the proof fails for 0/1 Knapsack.</p>
+<p>Sort by marginal value per unit of weight, derive the exchange proof and LP shape, compare sort vs heap, and see exactly why 0/1 Knapsack needs more state.</p>
 <span class="chapter-link">Open section →</span>
 </div>
 </a>
@@ -118,7 +118,7 @@
 <div class="chapter-card-icon"><img alt="" src="assets/greedy-huffman.svg"/></div>
 <div>
 <h3>Huffman Coding</h3>
-<p>Give frequent symbols short codes by repeatedly merging the two least frequent nodes.</p>
+<p>Build optimal prefix codes by merging the two lightest nodes, connect the same rule to optimal file merging, entropy, and canonical Huffman codes.</p>
 <span class="chapter-link">Open section →</span>
 </div>
 </a>
@@ -137,7 +137,7 @@
 <div class="chapter-card-icon"><img alt="" src="assets/greedy-mst.svg"/></div>
 <div>
 <h3>Minimum Spanning Trees</h3>
-<p>Two MST algorithms, one proof idea: the cut property. Implement with DSU or a priority queue.</p>
+<p>Kruskal, Prim, and Borůvka through one proof idea: safe edges across cuts, with DSU, heaps, density trade-offs, and clustering applications.</p>
 <span class="chapter-link">Open section →</span>
 </div>
 </a>
@@ -145,7 +145,7 @@
 <div class="chapter-card-icon"><img alt="" src="assets/greedy-dijkstra.svg"/></div>
 <div>
 <h3>Dijkstra’s Algorithm</h3>
-<p>Finalize the smallest tentative distance, relax its edges, and see precisely why negative weights break the argument.</p>
+<p>Think of Dijkstra as weighted BFS: finalize the cheapest frontier, relax neighbors, compare with Prim, and choose correctly among BFS, Dijkstra, Bellman–Ford, and A*.</p>
 <span class="chapter-link">Open section →</span>
 </div>
 </a>
@@ -176,11 +176,16 @@
 <div class="sorting-part-head">
 <div>
 <span class="sorting-part-kicker">Further Reading</span>
-<h3>Standard references behind the chapter</h3>
+<h3>Five complementary textbooks, plus formal references</h3>
 </div>
-<p>The presentation and examples here are written for this handbook, but the chapter follows the standard greedy-algorithm curriculum developed in the classic algorithms literature.</p>
+<p>This chapter deliberately combines different teaching styles: counterexample-driven design, large problem banks, interview-pattern recognition, plain-language optimization, and visual intuition.</p>
 </div>
 <div class="reference-list">
+<div class="reference-item"><b>Steven S. Skiena — The Algorithm Design Manual</b><span>False starts, counterexamples, modeling, scheduling, MST, Dijkstra, and the distinction between exact algorithms, heuristics, and approximation.</span></div>
+<div class="reference-item"><b>Narasimha Karumanchi — Data Structures and Algorithms Made Easy</b><span>A wide greedy problem bank: Huffman, interval scheduling/coloring, coin change, fractional knapsack, platforms, job scheduling, MST, and Dijkstra.</span></div>
+<div class="reference-item"><b>Alex Xu & Shaun Gunawardane — Coding Interview Patterns</b><span>Greedy recognition through Jump Game, Gas Station, Candies, intervals, and the contrast with 0/1 Knapsack DP.</span></div>
+<div class="reference-item"><b>Jay Wengrow — A Common-Sense Guide to Data Structures and Algorithms in Python</b><span>Plain-language derivation of faster greedy-style optimizations and a detailed Dijkstra walkthrough.</span></div>
+<div class="reference-item"><b>Aditya Y. Bhargava — Grokking Algorithms</b><span>Visual intuition for scheduling, knapsack, Set Cover approximation, Huffman coding, and Dijkstra.</span></div>
 <a class="reference-item" href="https://www.pearson.com/en-us/subject-catalog/p/algorithm-design/P200000003259" target="_blank" rel="noopener"><b>Jon Kleinberg & Eva Tardos — Algorithm Design</b><span>Especially Chapter 4: scheduling, exchange arguments, MSTs, and shortest paths.</span></a>
 <a class="reference-item" href="https://mitpress.mit.edu/9780262046305/introduction-to-algorithms/" target="_blank" rel="noopener"><b>Cormen, Leiserson, Rivest & Stein — Introduction to Algorithms</b><span>Greedy algorithms, Huffman coding, MSTs, and single-source shortest paths.</span></a>
 <a class="reference-item" href="https://www.rfc-editor.org/info/rfc1951/" target="_blank" rel="noopener"><b>RFC 1951 — DEFLATE</b><span>A concrete real-world use of Huffman code lengths and deterministic code construction.</span></a>
