@@ -8,7 +8,7 @@
 <body class="lecture-page"><div aria-hidden="true" class="progress-track"><div class="progress-bar" id="reading-progress"></div></div>
 <header class="topbar"><a class="brand" href="../index-ru.html"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name ru-brand-name"><span class="ru-brand-lines"><span>Гайд по алгоритмам</span><span class="ru-brand-presented">presented by Аллан</span></span></span></a>
 <nav aria-label="Основная навигация" class="topnav"><a href="index-ru.html">Жадные алгоритмы</a><div aria-label="Язык" class="language-switch"><a href="dijkstra.html">EN</a><span class="language-separator">·</span><span class="current">RU</span></div></nav></header>
-<aside aria-label="Навигация по разделу" class="sidebar"><div class="sidebar-title">Глава 9 · Раздел 10</div><a href="#problem">Постановка</a><a href="#idea">Жадная идея</a><a href="#mental-model">Модель в четыре шага</a><a href="#demo">По шагам</a><a href="#bfs-link">От BFS к Dijkstra</a><a href="#proof">Корректность</a><a href="#negative">Отрицательные рёбра</a><a href="#implementation">Реализация</a><a href="#paths">Восстановление путей</a><a href="#comparison">Сравнение с MST</a><a href="#choice-guide">Какой shortest-path метод?</a><a href="#exercises">Задачи</a></aside>
+<aside aria-label="Навигация по разделу" class="sidebar"><div class="sidebar-title">Глава 9 · Раздел 10</div><a href="#problem">Постановка</a><a href="#idea">Жадная идея</a><a href="#fewest-cheapest">Меньше рёбер vs дешевле путь</a><a href="#mental-model">Модель в четыре шага</a><a href="#demo">По шагам</a><a href="#bfs-link">От BFS к Dijkstra</a><a href="#state-table">Costs, parents, processed</a><a href="#proof">Корректность</a><a href="#negative">Отрицательные рёбра</a><a href="#implementation">Реализация</a><a href="#paths">Восстановление путей</a><a href="#comparison">Сравнение с MST</a><a href="#choice-guide">Какой shortest-path метод?</a><a href="#exercises">Задачи</a></aside>
 <main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Глава 9 · Раздел 10</div><h1>Алгоритм Дейкстры</h1><p class="chapter-topics">При неотрицательных весах минимальную временную метку можно безопасно зафиксировать. На этом одном жадном шаге построен алгоритм Дейкстры.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-dijkstra.svg"/></div></section>
 <section class="lecture-section" id="problem">
 <h2>Кратчайшие пути из одного источника</h2>
@@ -34,6 +34,17 @@
 </section>
 
 <!-- book-synthesis-dijkstra -->
+<!-- grokking-pass-dijkstra -->
+<section class="lecture-section" id="fewest-cheapest">
+<h2>“Shortest” может означать две разные вещи</h2>
+<p class="lead">Самый простой способ понять, почему Dijkstra — не просто BFS, — сравнить путь с меньшим числом рёбер и путь с меньшей суммарной стоимостью.</p>
+<div class="path-choice">
+<article class="bad"><h3>Два ребра, total cost 11</h3><p><span class="math">S → X → T</span> использует меньше segments. Unweighted BFS предпочтёт его, потому что измеряет distance числом рёбер.</p></article>
+<article class="good"><h3>Три ребра, total cost 7</h3><p><span class="math">S → A → B → T</span> длиннее по числу segments, но дешевле по total weight. Dijkstra выбирает его, потому что objective — накопленная стоимость.</p></article>
+</div>
+<div class="one-line"><strong>Выбирайте algorithm из смысла distance.</strong> Минимум рёбер → BFS. Минимум суммы неотрицательных weights → Dijkstra.</div>
+</section>
+
 <section class="lecture-section" id="mental-model">
 <h2>Ментальная модель в четыре шага</h2>
 <p class="lead">Реализация выглядит громоздко из-за heap и stale entries, но идея алгоритма маленькая. Повторяем четыре действия, пока не закончатся достижимые tentative vertices.</p>
@@ -69,6 +80,19 @@
 <tr><td>Неотрицательные веса</td><td>Min-priority queue</td><td>Безопасна вершина с минимальной <em>накопленной</em> стоимостью, а не та, которую раньше обнаружили.</td></tr>
 </tbody></table></div>
 <div class="one-line"><strong>Полезный reduction.</strong> Если каждый вес равен 1, priority order Дейкстры превращается в BFS layers. Используйте BFS: он проще и работает за <span class="math">O(V+E)</span>.</div>
+</section>
+
+<section class="lecture-section" id="state-table">
+<h2>Три части состояния рассказывают весь Dijkstra</h2>
+<p class="lead">Очень удобно трассировать алгоритм тремя вещами: tentative costs, parent для восстановления пути и признак того, finalized ли вершина.</p>
+<div class="table-wrap state-table"><table><thead><tr><th>Vertex</th><th>Final distance from S</th><th>Parent</th><th>Status</th></tr></thead><tbody>
+<tr><td>S</td><td>0</td><td>—</td><td>final</td></tr>
+<tr><td>B</td><td>1</td><td>S</td><td>final</td></tr>
+<tr><td>A</td><td>3</td><td>B</td><td>final</td></tr>
+<tr><td>C</td><td>4</td><td>A</td><td>final</td></tr>
+<tr><td>D</td><td>7</td><td>C</td><td>final</td></tr>
+</tbody></table></div>
+<div class="predict-card"><span class="predict-kicker">Восстановите путь до D</span><h3>Идите назад по parents: D ← C ← A ← B ← S</h3><p>Разверните цепочку и получите <span class="math">S → B → A → C → D</span>. Distances отвечают «сколько стоит?», parents — «какой именно путь?».</p></div>
 </section>
 
 <section class="lecture-section" id="proof">
