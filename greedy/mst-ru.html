@@ -8,7 +8,7 @@
 <body class="lecture-page"><div aria-hidden="true" class="progress-track"><div class="progress-bar" id="reading-progress"></div></div>
 <header class="topbar"><a class="brand" href="../index-ru.html"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name ru-brand-name"><span class="ru-brand-lines"><span>Гайд по алгоритмам</span><span class="ru-brand-presented">presented by Аллан</span></span></span></a>
 <nav aria-label="Основная навигация" class="topnav"><a href="index-ru.html">Жадные алгоритмы</a><div aria-label="Язык" class="language-switch"><a href="mst.html">EN</a><span class="language-separator">·</span><span class="current">RU</span></div></nav></header>
-<aside aria-label="Навигация по разделу" class="sidebar"><div class="sidebar-title">Глава 9 · Раздел 9</div><a href="#problem">Постановка</a><a href="#model-story">Сначала смоделируйте сюжет</a><a href="#cut">Свойство разреза</a><a href="#first-bad">Доказательство через первую ошибку</a><a href="#kruskal">Краскал</a><a href="#prim">Прим</a><a href="#boruvka">Борувка</a><a href="#implementation">Реализации</a><a href="#complexity">Сложность</a><a href="#applications">Применения и варианты</a><a href="#properties">Полезные факты</a><a href="#exercises">Задачи</a></aside>
+<aside aria-label="Навигация по разделу" class="sidebar"><div class="sidebar-title">Глава 9 · Раздел 9</div><a href="#problem">Постановка</a><a href="#model-story">Сначала смоделируйте сюжет</a><a href="#network-vs-route">Network и route</a><a href="#cut">Свойство разреза</a><a href="#first-bad">Доказательство через первую ошибку</a><a href="#kruskal">Краскал</a><a href="#prim">Прим</a><a href="#boruvka">Борувка</a><a href="#implementation">Реализации</a><a href="#complexity">Сложность</a><a href="#applications">Применения и варианты</a><a href="#properties">Полезные факты</a><a href="#exercises">Задачи</a></aside>
 <main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Глава 9 · Раздел 9</div><h1>Минимальные остовные деревья</h1><p class="chapter-topics">Нужно соединить все вершины с минимальным суммарным весом. Краскал и Прим выглядят по-разному, но оба основаны на свойстве разреза.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-mst.svg"/></div></section>
 <section class="lecture-section" id="problem">
 <h2>Соединить всё как можно дешевле</h2>
@@ -31,6 +31,18 @@
 <article class="grokking-card approx"><span>Objective</span><h3>Соединить всё как можно дешевле</h3><p>Минимизируем сумму выбранных weights при условии connected graph.</p></article>
 </div>
 <div class="one-line"><strong>Не путайте сюжет с shortest paths.</strong> MST минимизирует стоимость всей сети, Dijkstra — маршрут от одного source до каждой destination.</div>
+</section>
+
+<!-- grokking-round-mst -->
+<section class="lecture-section" id="network-vs-route">
+<h2>Дешёвая сеть и дешёвые маршруты — разные задачи</h2>
+<p class="lead">Shortest-path story заставляет думать об одном путешественнике, идущем от source. MST задаёт другой вопрос: если мы строим саму инфраструктуру, какие edges вообще должны существовать?</p>
+<div class="objective-swap">
+<article><h3>Dijkstra: cheapest routes от одного source</h3><p>Пусть AB=2, AC=2, BC=1 и source=A. Shortest-path tree может взять AB и AC: до каждой вершины получаем cheapest route из A, а сумма выбранных edges равна 4.</p></article>
+<div class="objective-arrow">≠</div>
+<article><h3>MST: cheapest connected network</h3><p>MST может взять AB и BC с total weight 3. До C из A теперь идём через B, потому что objective — цена всей сети, а не каждой source-to-vertex route отдельно.</p></article>
+</div>
+<div class="predict-card"><span class="predict-kicker">Ментальная модель</span><h3>Вы платите за поездку или за строительство дорог?</h3><p>Цена поездки ведёт к shortest paths. Стоимость построения connected network — к MST. Граф может быть тем же самым, а objective совершенно другая.</p></div>
 </section>
 
 <section class="lecture-section" id="cut">
