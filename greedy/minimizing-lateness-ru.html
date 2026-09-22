@@ -8,7 +8,7 @@
 <body class="lecture-page"><div aria-hidden="true" class="progress-track"><div class="progress-bar" id="reading-progress"></div></div>
 <header class="topbar"><a class="brand" href="../index-ru.html"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name ru-brand-name"><span class="ru-brand-lines"><span>Гайд по алгоритмам</span><span class="ru-brand-presented">presented by Аллан</span></span></span></a>
 <nav aria-label="Основная навигация" class="topnav"><a href="index-ru.html">Жадные алгоритмы</a><div aria-label="Язык" class="language-switch"><a href="minimizing-lateness.html">EN</a><span class="language-separator">·</span><span class="current">RU</span></div></nav></header>
-<aside aria-label="Навигация по разделу" class="sidebar"><div class="sidebar-title">Глава 9 · Раздел 6</div><a href="#problem">Постановка</a><a href="#example">Пример</a><a href="#same-looking">Похожий сюжет, новая цель</a><a href="#spt">Другая scheduling objective: SPT</a><a href="#model">Сначала модель</a><a href="#algorithm">Алгоритм EDF</a><a href="#proof">Корректность</a><a href="#runtime">Один выбор порядка, затем scan</a><a href="#implementation">Реализация</a><a href="#interview-recognition">Recognition checklist</a><a href="#boundaries">Границы модели</a><a href="#exercises">Задачи</a></aside>
+<aside aria-label="Навигация по разделу" class="sidebar"><div class="sidebar-title">Глава 9 · Раздел 6</div><a href="#problem">Постановка</a><a href="#example">Пример</a><a href="#same-looking">Похожий сюжет, новая цель</a><a href="#spt">Другая scheduling objective: SPT</a><a href="#model">Сначала модель</a><a href="#scheduling-map">Scheduling — семейство моделей</a><a href="#algorithm">Алгоритм EDF</a><a href="#proof">Корректность</a><a href="#runtime">Один выбор порядка, затем scan</a><a href="#implementation">Реализация</a><a href="#interview-recognition">Recognition checklist</a><a href="#boundaries">Границы модели</a><a href="#exercises">Задачи</a></aside>
 <main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Глава 9 · Раздел 6</div><h1>Минимизация максимального опоздания</h1><p class="chapter-topics">На одной машине худшее опоздание минимизируется простым правилом: сначала выполняем задачу с самым ранним дедлайном.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-lateness.svg"/></div></section>
 <section class="lecture-section" id="problem">
 <h2>Сначала — самый срочный дедлайн</h2>
@@ -82,6 +82,19 @@
 <article class="variant-card"><h3>Поменяли availability</h3><p>Release times меняют notation на <span class="math">1|r_j|L_max</span> и саму вычислительную задачу. Правило, доказанное для <span class="math">1||L_max</span>, нельзя просто перенести.</p></article>
 </div>
 <div class="one-line"><strong>Сначала модель, потом правило.</strong> В scheduling те же jobs могут требовать совершенно разных алгоритмов после изменения preemption, release times, числа машин или objective.</div>
+</section>
+
+<!-- skiena-round-lateness -->
+<section class="lecture-section" id="scheduling-map">
+<h2>“Scheduling” — это семейство задач, а не один algorithm</h2>
+<p class="lead">Слово scheduling описывает application domain. Математическая model определяется constraints и objective, и разные models могут приводить к совершенно разным algorithmic tools.</p>
+<div class="sort-key-grid">
+<article><code>precedence constraints</code><h3>Topological ordering</h3><p>Если edge означает «task u должна закончиться раньше task v», сначала надо понять, образуют ли constraints DAG и какие topological orders feasible.</p></article>
+<article><code>jobs ↔ qualified workers</code><h3>Matching</h3><p>Если задача — назначить jobs людям, которые умеют их выполнять, structure задаётся bipartite compatibility, а не timeline ordering rule.</p></article>
+<article><code>pairwise conflicts</code><h3>Graph coloring</h3><p>Если конфликтующие jobs не могут делить один time slot, constraint естественно становится coloring. Interval structure может сильно упростить special cases.</p></article>
+</div>
+<div class="candidate-elimination"><h3>Preemption может менять сложность</h3><p>Можно ли прерывать job, разбивать её между processors или продолжать позже — не implementation detail. Эти свободы способны изменить сам optimization problem, поэтому их надо зафиксировать до выбора greedy key.</p></div>
+<div class="one-line"><strong>Сначала переведите story в модель, потом сортируйте.</strong> EDF — theorem для конкретной scheduling model, а не универсальный ответ на слова jobs и deadlines.</div>
 </section>
 
 <section class="lecture-section" id="algorithm">
