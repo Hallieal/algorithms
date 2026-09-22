@@ -8,7 +8,7 @@
 <body class="lecture-page"><div aria-hidden="true" class="progress-track"><div class="progress-bar" id="reading-progress"></div></div>
 <header class="topbar"><a class="brand" href="../index-ru.html"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name ru-brand-name"><span class="ru-brand-lines"><span>Гайд по алгоритмам</span><span class="ru-brand-presented">presented by Аллан</span></span></span></a>
 <nav aria-label="Основная навигация" class="topnav"><a href="index-ru.html">Жадные алгоритмы</a><div aria-label="Язык" class="language-switch"><a href="interval-partitioning.html">EN</a><span class="language-separator">·</span><span class="current">RU</span></div></nav></header>
-<aside aria-label="Навигация по разделу" class="sidebar"><div class="sidebar-title">Глава 9 · Раздел 5</div><a href="#problem">Постановка</a><a href="#depth">Depth</a><a href="#same-input">Те же интервалы, другая задача</a><a href="#algorithm">Алгоритм</a><a href="#sweep">Только число комнат: sweep line</a><a href="#proof">Корректность</a><a href="#data-structure">Почему нужен heap</a><a href="#implementation">Реализация</a><a href="#comparison">Сравнение</a><a href="#exercises">Задачи</a></aside>
+<aside aria-label="Навигация по разделу" class="sidebar"><div class="sidebar-title">Глава 9 · Раздел 5</div><a href="#problem">Постановка</a><a href="#depth">Depth</a><a href="#same-input">Те же интервалы, другая задача</a><a href="#algorithm">Алгоритм</a><a href="#sweep">Только число комнат: sweep line</a><a href="#two-array-sweep">Two-array sweep</a><a href="#proof">Корректность</a><a href="#data-structure">Почему нужен heap</a><a href="#implementation">Реализация</a><a href="#comparison">Сравнение</a><a href="#exercises">Задачи</a></aside>
 <main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Глава 9 · Раздел 5</div><h1>Разбиение интервалов по ресурсам</h1><p class="chapter-topics">Нужно разместить все интервалы в минимальном числе аудиторий. Переиспользуем ту, которая освобождается раньше всех.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-interval-partitioning.svg"/></div></section>
 <section class="lecture-section" id="problem">
 <h2>Использовать как можно меньше аудиторий</h2>
@@ -81,6 +81,24 @@
 <tr><td>Только минимальное число комнат</td><td>Отсортированные start/finish events</td><td>Максимальную глубину</td></tr>
 <tr><td>Конкретное распределение по комнатам</td><td>Min-heap времён освобождения</td><td>Room id для каждого интервала</td></tr>
 </tbody></table></div>
+</section>
+
+<!-- coding-patterns-round-partition -->
+<section class="lecture-section" id="two-array-sweep">
+<h2>Interview variant: разделяем starts и finishes на два sorted arrays</h2>
+<p class="lead">Sweep line можно реализовать без tagged events. Храним отдельно sorted starts и sorted finishes и двигаем pointer того события, которое происходит раньше.</p>
+<div class="code-explainer">
+<div class="annotated-code">
+<div class="code-row"><span class="line-no">1</span><code>starts = sorted(s for s, f in intervals)</code></div>
+<div class="code-row"><span class="line-no">2</span><code>ends = sorted(f for s, f in intervals)</code></div>
+<div class="code-row"><span class="line-no">3</span><code>i = j = active = best = 0</code></div>
+<div class="code-row marked"><span class="line-no">4</span><code>if starts[i] &lt; ends[j]: active += 1; i += 1</code></div>
+<div class="code-row"><span class="line-no">5</span><code>else: active -= 1; j += 1</code></div>
+<div class="code-row"><span class="line-no">6</span><code>best = max(best, active)</code></div>
+</div>
+<div class="code-notes"><h3>Почему strict inequality?</h3><p>Для half-open intervals <span class="math">[s,f)</span> пара, заканчивающаяся в 10:00, не пересекается с начинающейся в 10:00. Поэтому при равных timestamps сначала обрабатывается end — ветка <code>else</code>.</p></div>
+</div>
+<div class="one-line"><strong>Representation choice.</strong> Tagged events и два sorted endpoint arrays реализуют один и тот же sweep; two-array версия делает tie-rule особенно заметным.</div>
 </section>
 
 <section class="lecture-section" id="proof">
