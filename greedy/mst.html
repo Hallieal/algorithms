@@ -3,11 +3,12 @@
 <title>Minimum Spanning Trees | Allan's Handbook of Algorithms</title>
 <link href="../assets/css/styles.css" rel="stylesheet"/><link href="assets/greedy.css" rel="stylesheet"/>
 <link href="../assets/images/favicon-32.png" rel="icon" sizes="32x32" type="image/png"/><link href="../assets/images/favicon.png" rel="icon" sizes="64x64" type="image/png"/><link href="../assets/images/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180"/>
-<link href="mst.html" hreflang="en" rel="alternate"/><link href="mst-ru.html" hreflang="ru" rel="alternate"/></head>
+<link href="mst.html" hreflang="en" rel="alternate"/><link href="mst-ru.html" hreflang="ru" rel="alternate"/><noscript><style>.answer-box[hidden]{display:block!important}.reveal{display:none!important}</style></noscript>
+</head>
 <body class="lecture-page"><div aria-hidden="true" class="progress-track"><div class="progress-bar" id="reading-progress"></div></div>
 <header class="topbar"><a class="brand" href="../"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name">Allan's Handbook of Algorithms</span></a>
 <nav aria-label="Primary navigation" class="topnav"><a href="./">Greedy overview</a><div aria-label="Language" class="language-switch"><span class="current">EN</span><span class="language-separator">·</span><a href="mst-ru.html">RU</a></div></nav></header>
-<aside aria-label="Section navigation" class="sidebar"><div class="sidebar-title">Chapter 9 · Section 9</div><a href="#problem">Problem</a><a href="#cut">Cut property</a><a href="#kruskal">Kruskal</a><a href="#prim">Prim</a><a href="#implementation">Implementations</a><a href="#complexity">Complexity</a><a href="#properties">Useful facts</a><a href="#exercises">Exercises</a></aside>
+<aside aria-label="Section navigation" class="sidebar"><div class="sidebar-title">Chapter 9 · Section 9</div><a href="#problem">Problem</a><a href="#cut">Cut property</a><a href="#kruskal">Kruskal</a><a href="#prim">Prim</a><a href="#boruvka">Borůvka</a><a href="#implementation">Implementations</a><a href="#complexity">Complexity</a><a href="#properties">Useful facts</a><a href="#exercises">Exercises</a></aside>
 <main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Chapter 9 · Section 9</div><h1>Minimum Spanning Trees</h1><p class="chapter-topics">Connect every vertex with minimum total edge weight. Kruskal and Prim look different, but both are powered by the same cut property.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-mst.svg"/></div></section>
 <section class="lecture-section" id="problem">
 <h2>Connect everything as cheaply as possible</h2>
@@ -53,6 +54,17 @@
 <article class="algo-compare-card prim"><h3>Prim</h3><p>Greedy object: cheapest edge crossing from the current tree to an outside vertex.</p><div class="method-state-row"><span class="method-state active">one tree</span><span class="method-state">heap</span><span class="method-state">frontier</span></div></article>
 </div>
 <p>Prim’s correctness is almost a direct reading of the cut property: take the cut “vertices already in the tree” versus “vertices not yet in the tree”. The cheapest crossing edge is safe.</p>
+</section>
+
+<section class="lecture-section" id="boruvka">
+<h2>Borůvka: every component moves at once</h2>
+<p class="lead">Kruskal chooses one safe edge at a time; Prim grows one component. Borůvka lets every current component choose its cheapest outgoing edge in the same round.</p>
+<div class="algorithm-triptych">
+<article><h3>1. One choice per component</h3><p>For each connected component of the current forest, find its minimum-weight outgoing edge.</p></article>
+<article><h3>2. Add all safe edges</h3><p>Each chosen edge is lightest across the cut “this component versus the rest”, so the cut property makes it safe.</p></article>
+<article><h3>3. Contract and repeat</h3><p>Merge the connected components created by those edges. The number of components drops by at least a factor of two each round.</p></article>
+</div>
+<div class="practice-note"><h3>Why Borůvka matters</h3><p>The choices for different components can be found simultaneously, which makes Borůvka a natural starting point for parallel and distributed MST algorithms. A straightforward sequential implementation scans all edges in each of <span class="math">O(log V)</span> rounds, giving <span class="math">O(E log V)</span>.</p></div>
 </section>
 
 <section class="lecture-section" id="implementation">
@@ -115,12 +127,14 @@ def prim(graph, start=0):
 <div class="table-wrap"><table class="graph-code-table"><thead><tr><th>Algorithm</th><th>Main structure</th><th>Typical complexity</th><th>Often convenient when</th></tr></thead><tbody>
 <tr><td>Kruskal</td><td>Sort edges + DSU</td><td>O(E log E)</td><td>You already have an edge list; graph may be sparse</td></tr>
 <tr><td>Prim with binary heap</td><td>Adjacency list + heap</td><td>O(E log V)</td><td>You naturally store neighbors by vertex</td></tr>
+<tr><td>Borůvka</td><td>Components + cheapest outgoing edge</td><td>O(E log V)</td><td>Parallel/distributed processing; component contraction</td></tr>
 </tbody></table></div>
 <p class="caption">Since <span class="math">E ≤ V²</span>, the logarithmic factors are closely related. In practice, representation and surrounding code often matter more than the asymptotic distinction.</p>
 </section>
 
 <section class="lecture-section" id="properties">
 <h2>Four facts worth remembering</h2>
+<div class="theory-note"><h3>MST is the clean matroid example</h3><p>The edge sets that contain no cycle form the <em>graphic matroid</em>. A spanning tree is a basis of this matroid. Kruskal is therefore an instance of the general matroid greedy theorem: order elements by weight and keep an element whenever independence is preserved. The cut-property proof is the graph-specific form of that exchange theorem.</p></div>
 <div class="decision-grid">
 <article class="decision-card greedy-signal"><h3>Distinct weights imply uniqueness</h3><p>If every edge weight is different, the graph has a unique MST.</p></article>
 <article class="decision-card greedy-signal"><h3>Ties may give several MSTs</h3><p>Different safe choices of equal weight can lead to different spanning trees with the same minimum total weight.</p></article>
@@ -134,7 +148,7 @@ def prim(graph, start=0):
 <div class="exercise-list">
 <article class="exercise"><div class="exercise-num">1</div><div><h3>Tree edge count</h3><p>How many edges must a spanning tree on 17 vertices contain?</p><button class="reveal" data-reveal="mst-en-1" type="button">Show answer</button><div class="answer-box" hidden id="mst-en-1">Exactly 16 edges.</div></div></article>
 <article class="exercise"><div class="exercise-num">2</div><div><h3>Kruskal decision</h3><p>Why does Kruskal reject an edge whose endpoints are already in the same DSU component?</p><button class="reveal" data-reveal="mst-en-2" type="button">Show answer</button><div class="answer-box" hidden id="mst-en-2">There is already a path between the endpoints. Adding the edge would create a cycle, so it cannot belong to the current forest.</div></div></article>
-<article class="exercise"><div class="exercise-num">3</div><div><h3>Cut property</h3><p>If several minimum-weight edges cross the same cut, must every MST contain all of them?</p><button class="reveal" data-reveal="mst-en-3" type="button">Show answer</button><div class="answer-box" hidden id="mst-en-3">No. Each such light edge is safe in the sense that some MST can contain it, but different MSTs may choose different tied edges.</div></div></article>
+<article class="exercise"><div class="exercise-num">3</div><div><h3>Ties and multiple MSTs</h3><p>Take a triangle whose three edges all have weight 1. How many different MSTs does it have, and what does this say about “safe” edges?</p><button class="reveal" data-reveal="mst-en-3" type="button">Show answer</button><div class="answer-box" hidden id="mst-en-3">Any two of the three edges form an MST, so there are three MSTs. A light edge can be safe—contained in some MST—without being forced into every MST.</div></div></article>
 </div>
 <div class="next-part"><h3>Next: Dijkstra’s Algorithm</h3><p>MST greedily finalizes edges. Dijkstra instead greedily finalizes shortest-path distances to vertices.</p><a class="next-part-link" href="dijkstra.html">Dijkstra’s Algorithm →</a></div>
 </section></main>
