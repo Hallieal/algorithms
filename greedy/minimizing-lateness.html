@@ -1,57 +1,104 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1" name="viewport"/>
-<meta content="A scheduling problem where the right greedy order is determined by deadlines." name="description"/>
-<meta content="Minimizing Maximum Lateness | Allan's Handbook of Algorithms" property="og:title"/>
-<meta content="A scheduling problem where the right greedy order is determined by deadlines." property="og:description"/>
-<meta content="article" property="og:type"/>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="Order jobs by increasing deadlines to minimize the largest lateness on a single machine." name="description"/><meta content="Minimizing Maximum Lateness | Allan's Handbook of Algorithms" property="og:title"/><meta content="Order jobs by increasing deadlines to minimize the largest lateness on a single machine." property="og:description"/><meta content="article" property="og:type"/>
 <title>Minimizing Maximum Lateness | Allan's Handbook of Algorithms</title>
-<link href="../assets/css/styles.css" rel="stylesheet"/>
-<link href="assets/greedy.css" rel="stylesheet"/>
-<link href="../assets/images/favicon-32.png" rel="icon" sizes="32x32" type="image/png"/>
-<link href="../assets/images/favicon.png" rel="icon" sizes="64x64" type="image/png"/>
-<link href="../assets/images/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180"/>
-<link href="minimizing-lateness.html" hreflang="en" rel="alternate"/><link href="minimizing-lateness-ru.html" hreflang="ru" rel="alternate"/>
-</head>
-<body class="lecture-page">
-<header class="topbar">
-<a class="brand" href="../"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name">Allan's Handbook of Algorithms</span></a>
-<nav aria-label="Primary navigation" class="topnav">
-<a href="./">Greedy overview</a>
-<div aria-label="Language" class="language-switch"><span class="current">EN</span><span class="language-separator">·</span><a href="minimizing-lateness-ru.html">RU</a></div>
-</nav>
-</header>
-<aside aria-label="Section navigation" class="sidebar">
-<div class="sidebar-title">Chapter 9 · Section 6</div>
-<a href="#coming-soon">Coming soon</a>
-</aside>
-<main class="lecture">
-<section class="lecture-hero greedy-placeholder-hero">
-<div>
-<div class="chapter-label">Chapter 9 · Section 6</div>
-<h1>Minimizing Maximum Lateness</h1>
-<p class="chapter-topics">A scheduling problem where the right greedy order is determined by deadlines.</p>
-</div>
-<div class="greedy-hero-icon"><img alt="" src="assets/greedy-lateness.svg"/></div>
+<link href="../assets/css/styles.css" rel="stylesheet"/><link href="assets/greedy.css" rel="stylesheet"/>
+<link href="../assets/images/favicon-32.png" rel="icon" sizes="32x32" type="image/png"/><link href="../assets/images/favicon.png" rel="icon" sizes="64x64" type="image/png"/><link href="../assets/images/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180"/>
+<link href="minimizing-lateness.html" hreflang="en" rel="alternate"/><link href="minimizing-lateness-ru.html" hreflang="ru" rel="alternate"/></head>
+<body class="lecture-page"><div aria-hidden="true" class="progress-track"><div class="progress-bar" id="reading-progress"></div></div>
+<header class="topbar"><a class="brand" href="../"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name">Allan's Handbook of Algorithms</span></a>
+<nav aria-label="Primary navigation" class="topnav"><a href="./">Greedy overview</a><div aria-label="Language" class="language-switch"><span class="current">EN</span><span class="language-separator">·</span><a href="minimizing-lateness-ru.html">RU</a></div></nav></header>
+<aside aria-label="Section navigation" class="sidebar"><div class="sidebar-title">Chapter 9 · Section 6</div><a href="#problem">Problem</a><a href="#example">Example</a><a href="#algorithm">EDF algorithm</a><a href="#proof">Correctness</a><a href="#implementation">Implementation</a><a href="#boundaries">Model boundaries</a><a href="#exercises">Exercises</a></aside>
+<main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Chapter 9 · Section 6</div><h1>Minimizing Maximum Lateness</h1><p class="chapter-topics">Order jobs by increasing deadlines to minimize the largest lateness on a single machine.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-lateness.svg"/></div></section>
+<section class="lecture-section" id="problem">
+<h2>The problem</h2>
+<p class="lead">We have one machine and several jobs. Job <span class="math">j</span> takes processing time <span class="math">pⱼ</span> and has deadline <span class="math">dⱼ</span>. All jobs are available from time 0, and the machine processes one job at a time.</p>
+<div class="greedy-definition"><span>Objective</span><p>If job <span class="math">j</span> completes at time <span class="math">Cⱼ</span>, its lateness is <span class="math">Lⱼ = Cⱼ − dⱼ</span>. We want an ordering of all jobs that minimizes <span class="math">L<sub>max</sub> = maxⱼ Lⱼ</span>.</p></div>
+<div class="greedy-caution"><strong>Lateness may be negative.</strong> A job that finishes before its deadline has negative lateness. The objective cares about the worst value over all jobs.</div>
 </section>
-<section class="lecture-section" id="coming-soon">
-<div class="coming-soon-panel">
-<span class="coming-soon-kicker">In development</span>
-<h2>This page will be filled soon</h2>
-<p>We will study Earliest Deadline First for jobs with processing times and deadlines, define lateness precisely, and prove that sorting jobs by increasing deadlines minimizes maximum lateness.</p>
+
+<section class="lecture-section" id="example">
+<h2>A small example</h2>
+<p class="lead">Consider four jobs. Processing times and deadlines are shown below.</p>
+<div class="table-wrap"><table class="lateness-table"><thead><tr><th>Job</th><th>Processing time</th><th>Deadline</th><th>Completion in EDF order</th><th>Lateness</th></tr></thead><tbody>
+<tr><td>A</td><td>3</td><td>4</td><td>3</td><td>−1</td></tr>
+<tr><td>B</td><td>2</td><td>6</td><td>5</td><td>−1</td></tr>
+<tr><td>C</td><td>4</td><td>9</td><td>9</td><td>0</td></tr>
+<tr><td>D</td><td>2</td><td>12</td><td>11</td><td>−1</td></tr>
+</tbody></table></div>
+<div class="lateness-sequence">
+<div class="lateness-job ontime"><span>Job A</span><b>p=3 · d=4</b><small>finish 3</small></div>
+<div class="lateness-job ontime"><span>Job B</span><b>p=2 · d=6</b><small>finish 5</small></div>
+<div class="lateness-job ontime"><span>Job C</span><b>p=4 · d=9</b><small>finish 9</small></div>
+<div class="lateness-job ontime"><span>Job D</span><b>p=2 · d=12</b><small>finish 11</small></div>
 </div>
-<div class="placeholder-navigation">
-<a href="interval-partitioning.html">← Interval Partitioning</a>
-<a href="fractional-knapsack.html">Fractional Knapsack →</a>
+<div class="lateness-formula">L<sub>max</sub> = max(−1, −1, 0, −1) = 0</div>
+</section>
+
+<section class="lecture-section" id="algorithm">
+<h2>Earliest Deadline First</h2>
+<p class="lead">The optimal greedy rule is simple: sort jobs by nondecreasing deadline and process them in that order. This is often called Earliest Deadline First (EDF) or Earliest Due Date (EDD).</p>
+<div class="step-flow">
+<article class="step-item"><div class="step-number">1</div><div><h3>Sort by deadline</h3><p>Arrange jobs so that <span class="math">d₁ ≤ d₂ ≤ ··· ≤ dₙ</span>.</p></div></article>
+<article class="step-item"><div class="step-number">2</div><div><h3>Process without idle time</h3><p>Start the next job immediately when the current one finishes.</p></div></article>
+<article class="step-item"><div class="step-number">3</div><div><h3>Track completion times</h3><p>After each job, cumulative processing time is its completion time.</p></div></article>
+<article class="step-item"><div class="step-number">4</div><div><h3>Measure the worst lateness</h3><p>Compute <span class="math">Cⱼ-dⱼ</span> and take the maximum.</p></div></article>
+</div>
+<div class="greedy-caution"><strong>Why no idle time?</strong> When all jobs are already available, inserting idle time only delays one or more completion times. It cannot reduce maximum lateness.</div>
+</section>
+
+<section class="lecture-section" id="proof">
+<h2>Correctness by swapping inversions</h2>
+<p class="lead">Suppose a schedule contains two consecutive jobs <span class="math">i</span> then <span class="math">j</span> with <span class="math">dᵢ &gt; dⱼ</span>. Their deadlines are inverted. We show that swapping them cannot increase maximum lateness.</p>
+<div class="swap-proof">
+<div class="swap-order"><span>Before</span><div class="swap-jobs"><div class="swap-job">i · later deadline</div><div class="swap-job">j · earlier deadline</div></div></div>
+<div class="swap-arrow">→</div>
+<div class="swap-order"><span>After</span><div class="swap-jobs"><div class="swap-job good">j · earlier deadline</div><div class="swap-job good">i · later deadline</div></div></div>
+</div>
+<p>Let both jobs start after some already-fixed prefix ending at time <span class="math">S</span>. Before the swap, job <span class="math">j</span> finishes at <span class="math">S+pᵢ+pⱼ</span>. After the swap, job <span class="math">i</span> finishes at exactly that same time, while <span class="math">j</span> finishes earlier.</p>
+<div class="two-column-block">
+<div class="text-panel"><h3>After swapping: job j</h3><p><span class="math">L'ⱼ = S+pⱼ-dⱼ ≤ S+pᵢ+pⱼ-dⱼ = Lⱼ</span>.</p><p>So the earlier-deadline job cannot become later than it was before.</p></div>
+<div class="proof-panel"><h3>After swapping: job i</h3><p><span class="math">L'ᵢ = S+pⱼ+pᵢ-dᵢ ≤ S+pᵢ+pⱼ-dⱼ = Lⱼ</span>, because <span class="math">dᵢ &gt; dⱼ</span>.</p><p>Thus neither swapped job creates lateness larger than the old lateness of <span class="math">j</span>.</p></div>
+</div>
+<div class="proof-goal"><h3>Finish the proof</h3><p>Repeatedly swap adjacent deadline inversions. Maximum lateness never increases, and eventually the schedule is sorted by deadline. Therefore an EDF schedule is optimal.</p></div>
+</section>
+
+<section class="lecture-section" id="implementation">
+<h2>Python implementation</h2>
+<div class="code-explainer">
+<div class="annotated-code">
+<div class="code-row"><span class="line-no">1</span><code>def minimize_max_lateness(jobs):</code></div>
+<div class="code-row marked"><span class="line-no">2</span><code>    jobs = sorted(jobs, key=lambda job: job[1])</code></div>
+<div class="code-row"><span class="line-no">3</span><code>    time = 0</code></div>
+<div class="code-row"><span class="line-no">4</span><code>    max_lateness = float("-inf")</code></div>
+<div class="code-row marked"><span class="line-no">5</span><code>    for processing, deadline in jobs:</code></div>
+<div class="code-row"><span class="line-no">6</span><code>        time += processing</code></div>
+<div class="code-row marked"><span class="line-no">7</span><code>        lateness = time - deadline</code></div>
+<div class="code-row"><span class="line-no">8</span><code>        max_lateness = max(max_lateness, lateness)</code></div>
+<div class="code-row"><span class="line-no">9</span><code>    return max_lateness</code></div>
+</div>
+<div class="code-notes"><h3>Implementation notes</h3>
+<div class="code-note-item"><span>2</span><p>The entire greedy choice is encoded by sorting on deadline.</p></div>
+<div class="code-note-item wide-note"><span>5–8</span><p>A single scan accumulates completion time and updates the worst lateness seen so far.</p></div>
+</div></div>
+<div class="complexity-strip"><div><span>Sorting</span><b>O(n log n)</b><small>by deadline</small></div><div><span>Scan</span><b>O(n)</b><small>all jobs</small></div><div><span>Total</span><b>O(n log n)</b><small>dominant sort</small></div><div><span>Extra state</span><b>O(1)</b><small>besides sorting</small></div></div>
+</section>
+
+<section class="lecture-section" id="boundaries">
+<h2>Where the theorem stops</h2>
+<p class="lead">EDF is optimal for this exact model. Small changes to the model can require different algorithms.</p>
+<div class="decision-grid">
+<article class="decision-card greedy-signal"><h3>Release times</h3><p>If jobs become available at different times, the simple “sort once by deadline” rule no longer directly solves the general problem.</p></article>
+<article class="decision-card greedy-signal"><h3>Different objective</h3><p>Minimizing total completion time, total weighted tardiness, or the number of late jobs are different scheduling problems with different optimal rules or harder algorithms.</p></article>
 </div>
 </section>
-</main>
-<footer class="lecture-footer">
-<div>Allan's Handbook of Algorithms</div>
-<div>© 2026 Allan Allemand</div>
-</footer>
-<script src="../assets/js/language-switch.js"></script>
-</body>
-</html>
+
+<section class="lecture-section" id="exercises">
+<h2>Exercises</h2>
+<div class="exercise-list">
+<article class="exercise"><div class="exercise-num">1</div><div><h3>Compute lateness</h3><p>A job has deadline 8 and completes at time 11. What is its lateness?</p><button class="reveal" data-reveal="ml-en-1" type="button">Show answer</button><div class="answer-box" hidden id="ml-en-1">Its lateness is 11 − 8 = 3.</div></div></article>
+<article class="exercise"><div class="exercise-num">2</div><div><h3>Early completion</h3><p>A job has deadline 10 and completes at time 7. Is its lateness 0?</p><button class="reveal" data-reveal="ml-en-2" type="button">Show answer</button><div class="answer-box" hidden id="ml-en-2">No. Lateness is 7 − 10 = −3. Tardiness would be max(0, L) = 0, but lateness itself may be negative.</div></div></article>
+<article class="exercise"><div class="exercise-num">3</div><div><h3>Swap argument</h3><p>Why does swapping an inverted adjacent pair not affect completion times of jobs after the pair?</p><button class="reveal" data-reveal="ml-en-3" type="button">Show answer</button><div class="answer-box" hidden id="ml-en-3">The two jobs have the same total processing time in either order, so the time at which the pair finishes is unchanged. Every later job therefore starts at the same time as before.</div></div></article>
+</div>
+<div class="next-part"><h3>Next block: Choosing and Building</h3><p>The scheduling subsection is complete. Next we move to Fractional Knapsack and Huffman Coding.</p><a class="next-part-link" href="fractional-knapsack.html">Fractional Knapsack →</a></div>
+</section></main>
+<footer class="lecture-footer"><div>Allan's Handbook of Algorithms</div><div>© 2026 Allan Allemand</div></footer><script src="../assets/js/lecture-core.js"></script><script src="../assets/js/language-switch.js"></script></body></html>
