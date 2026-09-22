@@ -8,7 +8,7 @@
 <body class="lecture-page"><div aria-hidden="true" class="progress-track"><div class="progress-bar" id="reading-progress"></div></div>
 <header class="topbar"><a class="brand" href="../"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name">Allan's Handbook of Algorithms</span></a>
 <nav aria-label="Primary navigation" class="topnav"><a href="./">Greedy overview</a><div aria-label="Language" class="language-switch"><span class="current">EN</span><span class="language-separator">·</span><a href="mst-ru.html">RU</a></div></nav></header>
-<aside aria-label="Section navigation" class="sidebar"><div class="sidebar-title">Chapter 9 · Section 9</div><a href="#problem">Problem</a><a href="#cut">Cut property</a><a href="#first-bad">First-bad-edge proof</a><a href="#kruskal">Kruskal</a><a href="#prim">Prim</a><a href="#boruvka">Borůvka</a><a href="#implementation">Implementations</a><a href="#complexity">Complexity</a><a href="#applications">Applications and variants</a><a href="#properties">Useful facts</a><a href="#exercises">Exercises</a></aside>
+<aside aria-label="Section navigation" class="sidebar"><div class="sidebar-title">Chapter 9 · Section 9</div><a href="#problem">Problem</a><a href="#model-story">Model the story first</a><a href="#cut">Cut property</a><a href="#first-bad">First-bad-edge proof</a><a href="#kruskal">Kruskal</a><a href="#prim">Prim</a><a href="#boruvka">Borůvka</a><a href="#implementation">Implementations</a><a href="#complexity">Complexity</a><a href="#applications">Applications and variants</a><a href="#properties">Useful facts</a><a href="#exercises">Exercises</a></aside>
 <main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Chapter 9 · Section 9</div><h1>Minimum Spanning Trees</h1><p class="chapter-topics">Connect every vertex with minimum total edge weight. Kruskal and Prim look different, but both are powered by the same cut property.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-mst.svg"/></div></section>
 <section class="lecture-section" id="problem">
 <h2>Connect everything as cheaply as possible</h2>
@@ -19,6 +19,18 @@
 </div>
 <div class="greedy-definition"><span>Minimum Spanning Tree</span><p>A spanning tree contains every vertex, is connected, has no cycles, and therefore uses exactly <span class="math">|V|−1</span> edges. An MST is a spanning tree of minimum total edge weight.</p></div>
 <div class="greedy-caution"><strong>MST is not a shortest-path tree.</strong> It minimizes the sum of all selected edge weights, not the distance from one source to every vertex.</div>
+</section>
+
+<!-- grokking-pass-mst -->
+<section class="lecture-section" id="model-story">
+<h2>Before choosing an algorithm, turn the story into a graph</h2>
+<p class="lead">A concrete story makes the objective visible. Suppose several offices must all be connected by new fiber links, and each possible link has a construction cost.</p>
+<div class="grokking-contrast">
+<article class="grokking-card good"><span>Vertices</span><h3>Things that must be connected</h3><p>Each office becomes a vertex.</p></article>
+<article class="grokking-card warn"><span>Edges</span><h3>Possible direct links</h3><p>An edge means a link can be built; its weight is the construction cost.</p></article>
+<article class="grokking-card approx"><span>Objective</span><h3>Connect everything as cheaply as possible</h3><p>We minimize the sum of chosen edge weights while keeping the graph connected.</p></article>
+</div>
+<div class="one-line"><strong>Do not confuse the story with shortest paths.</strong> MST minimizes the total cost of the whole network; Dijkstra minimizes a route from one source to each destination.</div>
 </section>
 
 <section class="lecture-section" id="cut">
