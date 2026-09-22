@@ -24,7 +24,7 @@
 </header>
 <aside aria-label="Section navigation" class="sidebar">
 <div class="sidebar-title">Chapter 9 · Section 11</div>
-<a href="#map">The big picture</a><a href="#matroid">Matroids</a><a href="#mst">Kruskal</a><a href="#limits">What is not a matroid</a><a href="#exact-vs-fast">Exact search vs fast greedy</a><a href="#guarantees">Heuristic vs approximation</a><a href="#approx">Approximation</a><a href="#setcover">Set Cover worked example</a><a href="#set-code">Set Cover in code</a><a href="#optimization">Greedy as state compression</a><a href="#pattern-library">Pattern library, not one template</a><a href="#decision">Decision map</a><a href="#reading">Further reading</a><a href="#exercises">Exercises</a>
+<a href="#map">The big picture</a><a href="#matroid">Matroids</a><a href="#mst">Kruskal</a><a href="#limits">What is not a matroid</a><a href="#exact-vs-fast">Exact search vs fast greedy</a><a href="#guarantees">Heuristic vs approximation</a><a href="#line-cover">When geometry makes coverage exact</a><a href="#approx">Approximation</a><a href="#metric-tsp">MST as an approximation scaffold</a><a href="#setcover">Set Cover worked example</a><a href="#set-code">Set Cover in code</a><a href="#optimization">Greedy as state compression</a><a href="#pattern-library">Pattern library, not one template</a><a href="#decision">Decision map</a><a href="#reading">Further reading</a><a href="#exercises">Exercises</a>
 </aside>
 <main class="lecture">
 <section class="lecture-hero greedy-lecture-hero">
@@ -106,11 +106,40 @@
 <div class="one-line"><strong>Why the distinction matters.</strong> “Greedy is often good enough” is an engineering statement. “Greedy is within <span class="math">ln n+1</span> of optimum” is a mathematical guarantee.</div>
 </section>
 
+<!-- karumanchi-round-beyond -->
+<section class="lecture-section" id="line-cover">
+<h2>Coverage can be exact when the geometry gives you an order</h2>
+<p class="lead">General Set Cover needs approximation, but a one-dimensional covering problem can have a clean exact greedy rule.</p>
+<div class="candidate-elimination">
+<h3>Cell towers along a road</h3>
+<p>Suppose houses lie at points on a line and each tower covers distance <span class="math">R</span> in both directions. Let <span class="math">x</span> be the leftmost uncovered house. Any valid solution must place some tower within distance <span class="math">R</span> of <span class="math">x</span>. Push that tower as far right as possible—to <span class="math">x+R</span>—so it still covers <span class="math">x</span> while reaching maximally far into the future.</p>
+</div>
+<div class="clean-steps">
+<div class="clean-step"><span>1</span><p>Find the leftmost uncovered house <span class="math">x</span>.</p></div>
+<div class="clean-step"><span>2</span><p>Place a tower at the rightmost location that still covers it: <span class="math">x+R</span>.</p></div>
+<div class="clean-step"><span>3</span><p>That tower covers through <span class="math">x+2R</span>; discard all houses in that range and repeat.</p></div>
+</div>
+<div class="proof-goal"><h3>Exchange intuition</h3><p>Take any optimal solution’s tower that covers the first uncovered house. Sliding it right until <span class="math">x+R</span> cannot uncover any house to the right that it previously covered, and there are no still-uncovered houses to the left of <span class="math">x</span>. So the greedy placement is safe.</p></div>
+<div class="one-line"><strong>Structural lesson.</strong> The same word “cover” can mean exact greedy on a line and approximation in unrestricted Set Cover. Geometry changes the feasible structure.</div>
+</section>
+
 <section class="lecture-section" id="approx">
 <h2>Greedy can be valuable without being exact</h2>
 <p class="lead">Approximation algorithms ask a different question: if greedy misses the optimum, how far away can it ever be?</p>
 <div class="approx-box"><h3>Set Cover</h3><p>There are <span class="math">n</span> elements and a collection of sets covering them. Repeatedly choose the set containing the largest number of still-uncovered elements. The result may not use the minimum number of sets, but it uses at most <span class="math">Hₙ</span> times optimum, where <span class="math">Hₙ=1+1/2+···+1/n ≤ ln n+1</span>.</p></div>
 <div class="inline-contrast"><div class="yes"><h3>Exact greedy</h3><p>Prove every irreversible choice is safe. The approximation ratio is 1.</p></div><div class="no"><h3>Approximation greedy</h3><p>Allow local loss, then bound the total loss across all steps.</p></div></div>
+</section>
+
+<section class="lecture-section" id="metric-tsp">
+<h2>An MST can be a scaffold for approximation</h2>
+<p class="lead">A classic example shows how an exactly solved greedy subproblem can become part of an approximation algorithm for a harder problem.</p>
+<div class="step-flow">
+<article class="step-item"><div class="step-number">1</div><div><h3>Build an MST</h3><p>Its weight is at most the weight of an optimal travelling-salesperson tour with one edge removed, so <span class="math">w(MST) ≤ OPT</span>.</p></div></article>
+<article class="step-item"><div class="step-number">2</div><div><h3>Walk the tree</h3><p>A depth-first traversal that returns along tree edges uses each MST edge twice, for total walk length <span class="math">2w(MST)</span>.</p></div></article>
+<article class="step-item"><div class="step-number">3</div><div><h3>Shortcut repeats</h3><p>For metric distances, triangle inequality lets us skip already visited vertices without increasing the tour length.</p></div></article>
+</div>
+<div class="formula-line">tour ≤ 2·w(MST) ≤ 2·OPT</div>
+<div class="source-note"><h3>The condition matters</h3><p>The simple “MST + DFS gives factor 2” sketch is valid for metric TSP, where distances satisfy the triangle inequality. Without that condition, shortcutting repeated vertices need not preserve the bound.</p></div>
 </section>
 
 <section class="lecture-section" id="setcover">
@@ -210,6 +239,7 @@ while uncovered:
 <section class="lecture-section" id="reading">
 <h2>Further reading</h2>
 <div class="reference-list">
+<div class="reference-item"><b>Narasimha Karumanchi — Data Structures and Algorithms Made Easy</b><span>Chapter 17 is especially useful as a counterexample-driven greedy workbook: optimal file merging, interval scheduling/partitioning, coin change failures, fractional knapsack, railway platforms, one-dimensional coverage, and scheduling by processing time. The graph chapter also gives a practical Prim/Kruskal/Dijkstra comparison.</span></div>
 <div class="reference-item"><b>Alex Xu & Shaun Gunawardane — Coding Interview Patterns</b><span>Chapter 16 develops three complementary greedy forms—backward destination movement, candidate elimination on a circular route, and two directional passes. Chapter 9 supplies the interval/sweep-line pattern, while Chapters 8 and 13 reinforce heaps and Union-Find as supporting structures.</span></div>
 <div class="reference-item"><b>Jay Wengrow — A Common-Sense Guide to Data Structures and Algorithms in Python</b><span>Chapter 20 develops the optimization workflow from current Big O to best-imaginable Big O, then uses greedy state compression for array maximum, maximum-subarray sum, and increasing triplets; Chapter 18 gives a detailed Dijkstra walk-through and compares a simple array frontier with a priority queue.</span></div>
 <div class="reference-item"><b>Aditya Y. Bhargava — Grokking Algorithms, 2nd ed.</b><span>Chapter 10 gives the intuitive progression from classroom scheduling to a failing 0/1 Knapsack greedy rule and then to greedy Set Cover as an approximation; Chapters 7 and 9 give visual treatments of Huffman coding and Dijkstra.</span></div>
