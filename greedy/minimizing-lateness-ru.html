@@ -8,7 +8,7 @@
 <body class="lecture-page"><div aria-hidden="true" class="progress-track"><div class="progress-bar" id="reading-progress"></div></div>
 <header class="topbar"><a class="brand" href="../index-ru.html"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name ru-brand-name"><span class="ru-brand-lines"><span>Гайд по алгоритмам</span><span class="ru-brand-presented">presented by Аллан</span></span></span></a>
 <nav aria-label="Основная навигация" class="topnav"><a href="index-ru.html">Жадные алгоритмы</a><div aria-label="Язык" class="language-switch"><a href="minimizing-lateness.html">EN</a><span class="language-separator">·</span><span class="current">RU</span></div></nav></header>
-<aside aria-label="Навигация по разделу" class="sidebar"><div class="sidebar-title">Глава 9 · Раздел 6</div><a href="#problem">Постановка</a><a href="#example">Пример</a><a href="#model">Сначала модель</a><a href="#algorithm">Алгоритм EDF</a><a href="#proof">Корректность</a><a href="#implementation">Реализация</a><a href="#boundaries">Границы модели</a><a href="#exercises">Задачи</a></aside>
+<aside aria-label="Навигация по разделу" class="sidebar"><div class="sidebar-title">Глава 9 · Раздел 6</div><a href="#problem">Постановка</a><a href="#example">Пример</a><a href="#same-looking">Похожий сюжет, новая цель</a><a href="#model">Сначала модель</a><a href="#algorithm">Алгоритм EDF</a><a href="#proof">Корректность</a><a href="#implementation">Реализация</a><a href="#boundaries">Границы модели</a><a href="#exercises">Задачи</a></aside>
 <main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Глава 9 · Раздел 6</div><h1>Минимизация максимального опоздания</h1><p class="chapter-topics">На одной машине худшее опоздание минимизируется простым правилом: сначала выполняем задачу с самым ранним дедлайном.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-lateness.svg"/></div></section>
 <section class="lecture-section" id="problem">
 <h2>Сначала — самый срочный дедлайн</h2>
@@ -41,6 +41,18 @@
 </section>
 
 <!-- book-synthesis-lateness -->
+<!-- grokking-pass-lateness -->
+<section class="lecture-section" id="same-looking">
+<h2>Похожий scheduling-сюжет может скрывать другую optimization problem</h2>
+<p class="lead">«Разместить jobs на одной машине» звучит похоже на classroom scheduling, но objective полностью другой. Мы не максимизируем число поместившихся jobs: выполнить надо все, а минимизируется худшее нарушение deadline.</p>
+<div class="objective-swap">
+<article><h3>Maximum number of compatible activities</h3><p>Часть интервалов можно отбросить. Полезный frontier — finish time, поэтому работает earliest finish.</p></article>
+<div class="objective-arrow">→</div>
+<article><h3>Minimum maximum lateness</h3><p>Нельзя отбросить ни одной job. Важнее всего ближайший deadline, поэтому ключ сортировки меняется на deadline.</p></article>
+</div>
+<div class="one-line"><strong>Переносите вопрос, а не rule.</strong> Механически применять знакомый greedy-order после смены objective — один из самых простых способов ошибиться в scheduling.</div>
+</section>
+
 <section class="lecture-section" id="model">
 <h2>Scheduling notation делает предположения явными</h2>
 <p class="lead">Задачи расписаний особенно чувствительны к маленьким изменениям модели. Полезная привычка — сначала назвать machine environment, дополнительные constraints и objective, и только потом выбирать порядок.</p>
