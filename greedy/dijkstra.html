@@ -67,7 +67,8 @@
 <article class="greedy-process-card"><div class="greedy-process-num">3</div><h3>Finalize it</h3><p>Its tentative distance is now guaranteed to be the true shortest-path distance.</p></article>
 <article class="greedy-process-card"><div class="greedy-process-num">4</div><h3>Relax outgoing edges</h3><p>Try to improve each neighbor using a path through the newly finalized vertex.</p></article>
 </div>
-<div class="greedy-definition"><span>Relaxation</span><p>For an edge <span class="math">(u,v)</span> of weight <span class="math">w</span>, replace <span class="math">dist[v]</span> by <span class="math">min(dist[v], dist[u]+w)</span>.</p></div>
+<div class="greedy-definition"><span>Relaxation</span><p>For an edge <span class="math">(u,v)</span>, compare the current label of <span class="math">v</span> with the route through <span class="math">u</span>.</p></div>
+<div class="formula-line">dist[v] ← min(dist[v], dist[u] + w(u,v))</div>
 </section>
 
 <!-- book-synthesis-dijkstra -->
