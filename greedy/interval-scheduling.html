@@ -1,5 +1,5 @@
 <!DOCTYPE html><html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1" name="viewport"/>
-<meta content="Select the largest possible set of non-overlapping intervals by repeatedly taking the compatible interval that finishes first." name="description"/><meta content="Interval Scheduling | Allan's Handbook of Algorithms" property="og:title"/><meta content="Select the largest possible set of non-overlapping intervals by repeatedly taking the compatible interval that finishes first." property="og:description"/><meta content="article" property="og:type"/>
+<meta content="Choose as many non-overlapping intervals as possible. The right greedy move is simple: finish early and leave room for what comes next." name="description"/><meta content="Interval Scheduling | Allan's Handbook of Algorithms" property="og:title"/><meta content="Choose as many non-overlapping intervals as possible. The right greedy move is simple: finish early and leave room for what comes next." property="og:description"/><meta content="article" property="og:type"/>
 <title>Interval Scheduling | Allan's Handbook of Algorithms</title>
 <link href="../assets/css/styles.css" rel="stylesheet"/><link href="assets/greedy.css" rel="stylesheet"/>
 <link href="../assets/images/favicon-32.png" rel="icon" sizes="32x32" type="image/png"/><link href="../assets/images/favicon.png" rel="icon" sizes="64x64" type="image/png"/><link href="../assets/images/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180"/>
@@ -8,10 +8,14 @@
 <header class="topbar"><a class="brand" href="../"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name">Allan's Handbook of Algorithms</span></a>
 <nav aria-label="Primary navigation" class="topnav"><a href="./">Greedy overview</a><div aria-label="Language" class="language-switch"><span class="current">EN</span><span class="language-separator">·</span><a href="interval-scheduling-ru.html">RU</a></div></nav></header>
 <aside aria-label="Section navigation" class="sidebar"><div class="sidebar-title">Chapter 9 · Section 4</div><a href="#problem">Problem</a><a href="#choices">Choosing the rule</a><a href="#algorithm">Algorithm</a><a href="#proof">Correctness</a><a href="#implementation">Implementation</a><a href="#variants">Variants</a><a href="#exercises">Exercises</a></aside>
-<main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Chapter 9 · Section 4</div><h1>Interval Scheduling</h1><p class="chapter-topics">Select the largest possible set of non-overlapping intervals by repeatedly taking the compatible interval that finishes first.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-interval-scheduling.svg"/></div></section>
+<main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Chapter 9 · Section 4</div><h1>Interval Scheduling</h1><p class="chapter-topics">Choose as many non-overlapping intervals as possible. The right greedy move is simple: finish early and leave room for what comes next.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-interval-scheduling.svg"/></div></section>
 <section class="lecture-section" id="problem">
-<h2>The problem</h2>
-<p class="lead">We are given activities represented by time intervals. Two activities are compatible if they do not overlap. The goal is to select as many mutually compatible activities as possible.</p>
+<h2>Choose as many intervals as possible</h2>
+<p class="lead">Each activity occupies a time interval. We want the largest set of activities that do not overlap. The key question is not which interval looks shortest or starts earliest, but which choice leaves the most room after it.</p><div class="concept-strip">
+<article class="concept-cell rule"><span>Rule</span><b>Take the interval that finishes first</b><p>Among compatible choices, end as early as possible.</p></article>
+<article class="concept-cell proof"><span>Why it works</span><b>It never leaves less room for the future</b><p>Exchange the first interval of an optimum with the greedy one.</p></article>
+<article class="concept-cell cost"><span>Cost</span><b>O(n log n)</b><p>Sort by finish time, then scan once.</p></article>
+</div>
 <div class="greedy-definition"><span>Interval Scheduling</span><p>Given intervals <span class="math">[sᵢ,fᵢ)</span>, choose a largest-cardinality subset in which no two chosen intervals overlap.</p></div>
 <div class="interval-figure">
 <div class="interval-axis"><span>time</span><span>0</span><span>2</span><span>4</span><span>6</span><span>8</span><span>10</span><span>12</span><span>14</span><span>16</span><span>18</span></div>
@@ -24,8 +28,8 @@
 </section>
 
 <section class="lecture-section" id="choices">
-<h2>Which greedy rule should we try?</h2>
-<p class="lead">Several local rules sound plausible. Most are wrong. The correct one is surprisingly specific: always take the compatible interval that finishes first.</p>
+<h2>The tempting rules — and the one that works</h2>
+<p class="lead">Earliest start, shortest duration, and fewest conflicts all sound reasonable. None is universally correct. Earliest finish is.</p>
 <div class="greedy-rule-strip">
 <article class="greedy-rule-option bad"><h3>Earliest start</h3><p>Can choose one very long interval and block many short ones.</p></article>
 <article class="greedy-rule-option bad"><h3>Shortest duration</h3><p>A short interval can be placed badly and still destroy useful choices.</p></article>
@@ -36,7 +40,7 @@
 </section>
 
 <section class="lecture-section" id="algorithm">
-<h2>The greedy algorithm</h2>
+<h2>Algorithm: sort once, scan once</h2>
 <div class="step-flow">
 <article class="step-item"><div class="step-number">1</div><div><h3>Sort by finishing time</h3><p>Process intervals from earliest finish to latest finish.</p></div></article>
 <article class="step-item"><div class="step-number">2</div><div><h3>Take the first interval</h3><p>It has the earliest finishing time among all remaining candidates.</p></div></article>
@@ -52,8 +56,8 @@
 </section>
 
 <section class="lecture-section" id="proof">
-<h2>Why earliest finish is optimal</h2>
-<p class="lead">The proof is a clean exchange argument. Let <span class="math">g</span> be the interval with the earliest finish time. Consider any optimal solution <span class="math">O</span>.</p>
+<h2>Why finishing first is safe</h2>
+<p class="lead">Let <span class="math">g</span> be the interval that finishes first. Take any optimal schedule <span class="math">O</span>. We only need to show that its first interval can be replaced by <span class="math">g</span> without losing anything.</p>
 <div class="timeline-proof">
 <div class="timeline-proof-card"><h3>Optimal solution O</h3><p>Suppose its first selected interval is <span class="math">o</span>. It may differ from <span class="math">g</span>.</p></div>
 <div class="timeline-proof-arrow">→</div>
@@ -84,7 +88,7 @@
 </section>
 
 <section class="lecture-section" id="variants">
-<h2>What changes in nearby problems?</h2>
+<h2>Small change, different algorithm</h2>
 <div class="decision-grid">
 <article class="decision-card greedy-signal"><h3>Weighted intervals</h3><p>If intervals have different profits and we want maximum total profit, earliest finish is no longer enough. The standard solution becomes dynamic programming.</p></article>
 <article class="decision-card greedy-signal"><h3>Need all intervals?</h3><p>If every interval must be scheduled and we minimize the number of rooms, the objective changes completely. That is the next section: Interval Partitioning.</p></article>
