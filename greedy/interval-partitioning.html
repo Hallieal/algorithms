@@ -33,14 +33,15 @@
 
 <!-- grokking-pass-partition -->
 <section class="lecture-section" id="same-input">
-<h2>The classroom story changes because the objective changes</h2>
-<p class="lead">The intervals can be identical to Interval Scheduling, but the problem is no longer “which classes should we keep?” Every class must happen. The only freedom is which room receives it.</p>
+<h2>The same classroom picture can mean a completely different problem</h2>
+<p class="lead">Greedy rules are tied to objectives, not to surface vocabulary. “Classes with start and finish times” can describe two problems whose correct local choices are different.</p>
 <div class="objective-swap">
-<article><h3>Interval Scheduling</h3><p>You may reject classes. Goal: keep as many as possible. Greedy decision: which class should be accepted next?</p></article>
+<article><h3>One room, reject some classes</h3><p>Goal: keep as many classes as possible. Choosing the class that ends first is useful because it preserves room on the timeline.</p></article>
 <div class="objective-arrow">→</div>
-<article><h3>Interval Partitioning</h3><p>You may reject nothing. Goal: use as few rooms as possible. Greedy decision: which existing room can safely be reused?</p></article>
+<article><h3>Many rooms, keep every class</h3><p>Goal: use as few rooms as possible. No interval may be discarded, so the decision changes from <em>which class?</em> to <em>which room?</em></p></article>
 </div>
-<div class="predict-card"><span class="predict-kicker">Recognition check</span><h3>Same picture of intervals does not imply the same greedy rule.</h3><p>Always identify what the algorithm is allowed to discard and what the objective is before importing a familiar ordering rule.</p></div>
+<div class="predict-card"><span class="predict-kicker">Recognition check</span><h3>Suppose three classes overlap at 10:30. Can any clever ordering use only two rooms?</h3><p>No. The overlap itself is a lower bound of three. This is the key mental picture: greedy is optimal because every new room it opens is forced by a simultaneous overlap.</p></div>
+<div class="one-line"><strong>Do not copy a greedy rule just because the objects look familiar.</strong> First ask what can be rejected, what must be kept, and what quantity is being optimized.</div>
 </section>
 
 <section class="lecture-section" id="algorithm">
