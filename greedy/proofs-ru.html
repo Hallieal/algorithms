@@ -9,7 +9,7 @@
 <body class="lecture-page"><div aria-hidden="true" class="progress-track"><div class="progress-bar" id="reading-progress"></div></div>
 <header class="topbar"><a class="brand" href="../index-ru.html"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name ru-brand-name"><span class="ru-brand-lines"><span>Гайд по алгоритмам</span><span class="ru-brand-presented">presented by Аллан</span></span></span></a>
 <nav aria-label="Основная навигация" class="topnav"><a href="index-ru.html">Жадные алгоритмы</a><div aria-label="Язык" class="language-switch"><a href="proofs.html">EN</a><span class="language-separator">·</span><span class="current">RU</span></div></nav></header>
-<aside aria-label="Навигация по разделу" class="sidebar"><div class="sidebar-title">Глава 9 · Раздел 2</div><a href="#goal">Что нужно доказать?</a><a href="#patterns">Схемы доказательств</a><a href="#counterexamples">Лаборатория контрпримеров</a><a href="#exchange">Обменный аргумент</a><a href="#worked">Полное доказательство</a><a href="#ahead">«Жадный не отстаёт»</a><a href="#induction">Индукция</a><a href="#discard">Как доказывать discard</a><a href="#gas-proof">Candidate-elimination proof</a><a href="#bound-certificate">Совпасть с lower bound</a><a href="#template">Шаблон доказательства</a><a href="#directional-proof">Two-pass proof</a><a href="#intuition-proof">Интуиция и proof</a><a href="#summary-not-witness">Summary и witness</a><a href="#mistakes">Типичные ошибки</a><a href="#exercises">Задачи</a></aside>
+<aside aria-label="Навигация по разделу" class="sidebar"><div class="sidebar-title">Глава 9 · Раздел 2</div><a href="#goal">Что нужно доказать?</a><a href="#patterns">Схемы доказательств</a><a href="#counterexample-lab">Лаборатория контрпримеров</a><a href="#counterexamples">Лаборатория контрпримеров</a><a href="#exchange">Обменный аргумент</a><a href="#worked">Полное доказательство</a><a href="#ahead">«Жадный не отстаёт»</a><a href="#induction">Индукция</a><a href="#discard">Как доказывать discard</a><a href="#gas-proof">Candidate-elimination proof</a><a href="#bound-certificate">Совпасть с lower bound</a><a href="#template">Шаблон доказательства</a><a href="#directional-proof">Two-pass proof</a><a href="#intuition-proof">Интуиция и proof</a><a href="#summary-not-witness">Summary и witness</a><a href="#mistakes">Типичные ошибки</a><a href="#exercises">Задачи</a></aside>
 <main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Глава 9 · Раздел 2</div><h1>Доказательства корректности</h1><p class="chapter-topics">У доказательства greedy одна главная задача: показать, что локальный выбор можно зафиксировать, не потеряв оптимальность.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-proofs.svg"/></div></section>
 <section class="lecture-section" id="goal">
 <h2>Что должно доказать жадное доказательство</h2>
@@ -38,6 +38,19 @@
 </section>
 
 <!-- book-synthesis-proofs -->
+<!-- skiena-round-proofs -->
+<section class="lecture-section" id="counterexample-lab">
+<h2>Как целенаправленно искать counterexample</h2>
+<p class="lead">«Попробуйте несколько примеров» слишком расплывчато. Полезнее конструировать adversarial instances, которые бьют ровно по той информации, которую greedy key игнорирует.</p>
+<div class="recognition-grid">
+<article class="recognition-card"><span class="signal">Think small</span><h3>Оставьте только суть</h3><p>Три intervals часто лучше тридцати. Маленький counterexample легче проверить, и он обычно сразу показывает structural failure.</p></article>
+<article class="recognition-card"><span class="signal">Go for a tie</span><h3>Лишите heuristic информации</h3><p>Если rule выбирает «largest» или «shortest», сделайте несколько candidates равными по этому score. Затем проверьте, может ли неудачный tie заставить сделать плохой irreversible choice.</p></article>
+<article class="recognition-card"><span class="signal">Seek extremes</span><h3>Смешивайте огромное и маленькое</h3><p>Один очень длинный interval среди коротких, один тяжёлый item среди лёгких или один дорогой edge среди дешёвых часто показывает, что именно local score не защищает.</p></article>
+</div>
+<div class="candidate-elimination"><h3>Систематический поиск лучше случайного</h3><p>Для минимального нетривиального input переберите качественно разные configurations. Для двух intervals есть disjoint, overlap и nesting; добавление третьего разными способами часто уже ломает неверный rule.</p></div>
+<div class="proof-goal"><h3>Counterexample должен доказать две вещи</h3><p>Сначала вычислите ответ proposed algorithm, затем покажите строго лучшее feasible solution на том же instance. Если одна из сторон неочевидна, counterexample ещё не закончен.</p></div>
+</section>
+
 <section class="lecture-section" id="counterexamples">
 <h2>Контрпример — тоже инструмент доказательства</h2>
 <p class="lead">До попытки доказать greedy-rule полезно целенаправленно пытаться его опровергнуть. Маленький провал часто информативнее десятков удачных примеров: он показывает, какой ресурс локальный выбор расходует неправильно.</p>
