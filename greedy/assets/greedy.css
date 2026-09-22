@@ -810,3 +810,210 @@
   .design-loop-grid,.pattern-lenses,.proof-template,.variant-grid,.book-map{grid-template-columns:1fr}
   .sweep-row{grid-template-columns:58px 1fr 74px}
 }
+
+
+/* =========================================================
+   Grokking Algorithms pass — intuition before formalism
+   ========================================================= */
+.grokking-contrast{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:12px;
+  margin-top:22px;
+}
+.grokking-card{
+  padding:18px 19px;
+  border:1px solid var(--line);
+  border-radius:15px;
+  background:#fff;
+}
+.grokking-card.good{border-top:3px solid var(--green)}
+.grokking-card.warn{border-top:3px solid #c89547}
+.grokking-card.approx{border-top:3px solid var(--purple)}
+.grokking-card span{
+  display:block;
+  margin-bottom:7px;
+  color:#8a9298;
+  font-size:9px;
+  font-weight:850;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+}
+.grokking-card h3{font-size:15px;margin-bottom:6px}
+.grokking-card p{margin:0;color:#68727a;font-size:12.5px;line-height:1.55}
+
+.predict-card{
+  margin-top:22px;
+  padding:20px 22px;
+  border:1px dashed #c9cfd4;
+  border-radius:15px;
+  background:#fbfbfa;
+}
+.predict-card .predict-kicker{
+  display:block;
+  margin-bottom:7px;
+  color:#7c858c;
+  font-size:10px;
+  font-weight:850;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+}
+.predict-card h3{font-size:16px;margin-bottom:7px}
+.predict-card p{margin:0;color:#667078;font-size:13px;line-height:1.6}
+
+.knapsack-ladder{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:12px;
+  margin-top:22px;
+}
+.knapsack-rung{
+  position:relative;
+  padding:20px;
+  border:1px solid var(--line);
+  border-radius:15px;
+  background:#fff;
+}
+.knapsack-rung .rung-no{
+  display:grid;
+  place-items:center;
+  width:28px;height:28px;
+  margin-bottom:10px;
+  border-radius:50%;
+  background:#eef3f7;
+  color:#55708f;
+  font-size:11px;font-weight:850;
+}
+.knapsack-rung h3{font-size:15px;margin-bottom:6px}
+.knapsack-rung p{margin:0;color:#68727a;font-size:12.5px;line-height:1.55}
+.knapsack-rung small{display:block;margin-top:9px;color:#949b9f;font-size:10.5px;line-height:1.45}
+
+.classroom-walk{
+  display:grid;
+  gap:10px;
+  margin-top:22px;
+}
+.classroom-step{
+  display:grid;
+  grid-template-columns:82px minmax(0,1fr);
+  gap:12px;
+  align-items:start;
+  padding:14px 16px;
+  border:1px solid var(--line);
+  border-radius:13px;
+  background:#fff;
+}
+.classroom-step > span{
+  padding:5px 8px;
+  border-radius:999px;
+  background:#edf5df;
+  color:#55752d;
+  font-size:10px;
+  font-weight:850;
+  text-align:center;
+}
+.classroom-step p{margin:1px 0 0;color:#667078;font-size:13px;line-height:1.55}
+.classroom-step del{color:#a1a7ab}
+
+.bit-baseline{
+  display:grid;
+  grid-template-columns:1fr auto 1fr;
+  gap:14px;
+  align-items:center;
+  margin-top:22px;
+}
+.bit-side{
+  padding:20px;
+  border:1px solid var(--line);
+  border-radius:15px;
+  background:#fff;
+}
+.bit-side.good{border-color:#d7e5bd;background:#f8fbf2}
+.bit-side h3{font-size:15px;margin-bottom:7px}
+.bit-side p{margin:0;color:#667078;font-size:12.5px;line-height:1.55}
+.bit-arrow{font-size:24px;color:#9ba2a7;text-align:center}
+
+.decode-tape{
+  display:flex;
+  gap:6px;
+  flex-wrap:wrap;
+  margin:14px 0 4px;
+}
+.decode-bit{
+  width:30px;height:30px;
+  display:grid;place-items:center;
+  border-radius:8px;
+  background:#eef1f3;
+  color:#4e5b64;
+  font:800 13px/1 monospace;
+}
+.decode-bit.leaf{background:#eaf3dc;color:#55752d}
+.decode-rule{
+  margin-top:14px;
+  color:#69737a;
+  font-size:12.5px;
+  line-height:1.55;
+}
+
+.path-choice{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+  margin-top:22px;
+}
+.path-choice article{
+  padding:19px;
+  border:1px solid var(--line);
+  border-radius:14px;
+  background:#fff;
+}
+.path-choice article.bad{border-left:4px solid #c87979}
+.path-choice article.good{border-left:4px solid var(--green)}
+.path-choice h3{font-size:15px;margin-bottom:6px}
+.path-choice p{margin:0;color:#667078;font-size:12.5px;line-height:1.55}
+
+.state-table{
+  margin-top:18px;
+}
+.state-table td code{font-size:11px}
+
+.set-cover-code{
+  margin-top:22px;
+}
+.set-cover-code pre{
+  margin:0;
+  padding:18px 20px;
+  overflow:auto;
+  border:1px solid var(--line);
+  border-radius:14px;
+  background:#f7f6f3;
+  font-size:12px;
+  line-height:1.6;
+}
+
+.objective-swap{
+  display:grid;
+  grid-template-columns:1fr auto 1fr;
+  gap:14px;
+  align-items:center;
+  margin-top:22px;
+}
+.objective-swap article{
+  padding:18px;
+  border:1px solid var(--line);
+  border-radius:14px;
+  background:#fff;
+}
+.objective-swap h3{font-size:15px;margin-bottom:6px}
+.objective-swap p{margin:0;color:#667078;font-size:12.5px;line-height:1.55}
+.objective-arrow{font-size:22px;color:#9aa1a6}
+
+@media(max-width:820px){
+  .grokking-contrast,.knapsack-ladder{grid-template-columns:1fr}
+  .bit-baseline,.objective-swap{grid-template-columns:1fr}
+  .bit-arrow,.objective-arrow{transform:rotate(90deg)}
+}
+@media(max-width:700px){
+  .path-choice{grid-template-columns:1fr}
+  .classroom-step{grid-template-columns:70px 1fr}
+}
