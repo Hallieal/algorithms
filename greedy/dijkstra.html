@@ -9,10 +9,10 @@
 <header class="topbar"><a class="brand" href="../"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name">Allan's Handbook of Algorithms</span></a>
 <nav aria-label="Primary navigation" class="topnav"><a href="./">Greedy overview</a><div aria-label="Language" class="language-switch"><span class="current">EN</span><span class="language-separator">·</span><a href="dijkstra-ru.html">RU</a></div></nav></header>
 <aside aria-label="Section navigation" class="sidebar"><div class="sidebar-title">Chapter 9 · Section 10</div><a href="#problem">Problem</a><a href="#all-distances">One source gives all distances</a><a href="#query-scope">Single source vs all pairs</a><a href="#model-transform">Transform the model, keep Dijkstra</a><a href="#idea">Greedy idea</a><a href="#fewest-cheapest">Fewest edges vs cheapest path</a><a href="#cost-not-distance">Cost need not be distance</a><a href="#mental-model">Four-step mental model</a><a href="#demo">Step-by-step</a><a href="#bfs-link">From BFS to Dijkstra</a><a href="#state-table">Costs, parents, processed</a><a href="#proof">Correctness</a><a href="#negative">Negative edges</a><a href="#frontier-structure">Array frontier vs heap frontier</a><a href="#implementation">Implementation</a><a href="#paths">Recover paths</a><a href="#comparison">MST comparison</a><a href="#interview-decompose">Interview decomposition</a><a href="#choice-guide">Which shortest-path tool?</a><a href="#exercises">Exercises</a></aside>
-<main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Chapter 9 · Section 10</div><h1>Dijkstra’s Algorithm</h1><p class="chapter-topics">For nonnegative edge weights, the smallest tentative distance is safe to finalize. That single greedy step is Dijkstra’s algorithm.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-dijkstra.svg"/></div></section>
+<main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Chapter 9 · Section 10</div><h1>Dijkstra’s Algorithm</h1><p class="chapter-topics">Dijkstra's algorithm solves single-source shortest paths in graphs with nonnegative edge weights by finalizing vertices in increasing tentative-distance order.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-dijkstra.svg"/></div></section>
 <section class="lecture-section" id="problem">
-<h2>Shortest paths from one source</h2>
-<p class="lead">Choose a source <span class="math">s</span>. For every vertex, we want the cheapest path from <span class="math">s</span> to that vertex. Paths may use many edges; only their total weight matters.</p><div class="concept-strip">
+<h2>Problem statement</h2>
+<p class="lead">Given a source vertex s in a graph with nonnegative edge weights, compute the minimum path cost from s to every reachable vertex.</p><div class="concept-strip">
 <article class="concept-cell rule"><span>Rule</span><b>Finalize the smallest tentative distance</b><p>Then relax every outgoing edge from that vertex.</p></article>
 <article class="concept-cell proof"><span>Why it works</span><b>Nonnegative edges cannot create a cheaper path later</b><p>Once the minimum label is extracted, it is final.</p></article>
 <article class="concept-cell cost"><span>Cost</span><b>O((V+E) log V)</b><p>Adjacency lists plus a binary heap.</p></article>
@@ -23,8 +23,8 @@
 
 <!-- common-sense-round-dijkstra -->
 <section class="lecture-section" id="all-distances">
-<h2>One target query gives you a whole shortest-path map</h2>
-<p class="lead">Dijkstra is often introduced as “find the cheapest route from S to T”, but the algorithm naturally computes more information: once it finishes, every reachable vertex has its shortest distance from the source.</p>
+<h2>Distances and predecessor information</h2>
+<p class="lead">A complete run of Dijkstra computes shortest-path distances from one source to all reachable vertices. Predecessor pointers can be stored at the same time to reconstruct actual paths.</p>
 <div class="grokking-contrast">
 <article class="grokking-card good"><span>Distance table</span><h3>How cheap is each destination?</h3><p><code>dist[v]</code> stores the cheapest known source-to-<span class="math">v</span> cost and becomes final when <span class="math">v</span> is extracted safely.</p></article>
 <article class="grokking-card warn"><span>Parent table</span><h3>How do we actually get there?</h3><p><code>parent[v]</code> records the predecessor that produced the best cost. Backtracking parents reconstructs the route.</p></article>
@@ -35,8 +35,8 @@
 
 <!-- karumanchi-round-dijkstra -->
 <section class="lecture-section" id="query-scope">
-<h2>Single-source and all-pairs shortest paths are different query shapes</h2>
-<p class="lead">One run of Dijkstra answers every destination from one source. If the problem asks for every source-to-destination pair, the outer problem changes even though the inner single-source routine may stay the same.</p>
+<h2>Single-source and all-pairs queries</h2>
+<p class="lead">Dijkstra solves the single-source problem. If distances are required for every ordered pair of vertices, the outer problem is different and may call for repeated single-source runs or an all-pairs algorithm.</p>
 <div class="table-wrap"><table><thead><tr><th>Question</th><th>Natural approach</th><th>Important condition</th></tr></thead><tbody>
 <tr><td>One source → all vertices</td><td>Dijkstra</td><td>All edge weights are nonnegative</td></tr>
 <tr><td>All sources → all vertices</td><td>Run Dijkstra from each source</td><td>Still requires nonnegative edge weights</td></tr>
@@ -47,8 +47,8 @@
 
 <!-- skiena-round-dijkstra -->
 <section class="lecture-section" id="model-transform">
-<h2>Sometimes the cleanest algorithm change is no algorithm change at all</h2>
-<p class="lead">If a shortest-path story puts costs on vertices instead of edges, it is tempting to rewrite Dijkstra. A cleaner approach is often to transform the input into the model the existing algorithm already solves.</p>
+<h2>Reduction from vertex costs to edge costs</h2>
+<p class="lead">If costs are attached to vertices, assign each directed edge (u,v) the cost of its destination v. Dijkstra can then be used without changing the shortest-path routine.</p>
 <div class="two-column-block">
 <div class="text-panel"><h3>Original model</h3><p>Each vertex <span class="math">v</span> has nonnegative cost <span class="math">c(v)</span>. The cost of a path is the sum of the costs of vertices visited.</p></div>
 <div class="proof-panel"><h3>Edge-weighted model</h3><p>For every directed edge <span class="math">(u,v)</span>, assign weight <span class="math">w(u,v)=c(v)</span>. Traversing into <span class="math">v</span> now pays exactly the cost that used to live on the vertex.</p></div>
@@ -59,8 +59,8 @@
 </section>
 
 <section class="lecture-section" id="idea">
-<h2>Finalize the closest unfinished vertex</h2>
-<p class="lead">Each <span class="math">dist[v]</span> is the best route found so far, not necessarily the final answer. Dijkstra repeatedly takes the smallest such label and declares exactly that one final.</p>
+<h2>Finalizing tentative distances</h2>
+<p class="lead">Maintain the best known distance to every unfinished vertex. Repeatedly select the unfinished vertex with minimum tentative distance, finalize it, and relax its outgoing edges.</p>
 <div class="greedy-process-grid">
 <article class="greedy-process-card"><div class="greedy-process-num">1</div><h3>Start at the source</h3><p>Set <span class="math">dist[s]=0</span> and all other distances to infinity.</p></article>
 <article class="greedy-process-card"><div class="greedy-process-num">2</div><h3>Extract the minimum</h3><p>Choose the unsettled vertex with the smallest current tentative distance.</p></article>
@@ -73,8 +73,8 @@
 <!-- book-synthesis-dijkstra -->
 <!-- grokking-pass-dijkstra -->
 <section class="lecture-section" id="fewest-cheapest">
-<h2>“Shortest” can mean two different things</h2>
-<p class="lead">The easiest way to understand why Dijkstra is not just BFS is to compare a path with fewer edges against a path with lower total weight.</p>
+<h2>Fewest edges versus minimum total weight</h2>
+<p class="lead">BFS minimizes the number of edges in an unweighted graph. Dijkstra minimizes the sum of nonnegative edge weights, so a shortest weighted path may contain more edges.</p>
 <div class="path-choice">
 <article class="bad"><h3>Two edges, total cost 11</h3><p><span class="math">S → X → T</span> uses fewer segments. An unweighted BFS would prefer it because BFS measures distance in number of edges.</p></article>
 <article class="good"><h3>Three edges, total cost 7</h3><p><span class="math">S → A → B → T</span> uses more segments but less total weight. Dijkstra prefers this path because the objective is accumulated cost.</p></article>
@@ -84,8 +84,8 @@
 
 <!-- grokking-round-dijkstra -->
 <section class="lecture-section" id="cost-not-distance">
-<h2>“Shortest” can mean cheapest, fastest, or least costly</h2>
-<p class="lead">Dijkstra does not care whether an edge weight is measured in kilometers. It only needs an additive nonnegative cost.</p>
+<h2>Edge weights as general nonnegative costs</h2>
+<p class="lead">The weights can represent distance, time, price, or any other additive nonnegative quantity. The algorithm only uses their order and additivity.</p>
 <div class="path-choice">
 <article class="good"><h3>A trade graph</h3><p>Imagine nodes are objects you can trade for and an edge weight is the extra money required for that trade. A path is then a sequence of trades, and its total weight is the money spent.</p></article>
 <article><h3>The same algorithm</h3><p>The labels still mean “best cost found so far”. Relaxation asks whether reaching an item through the current node makes the total trade cheaper.</p></article>
@@ -94,8 +94,8 @@
 </section>
 
 <section class="lecture-section" id="mental-model">
-<h2>The four-step mental model</h2>
-<p class="lead">The implementation can look busy because of heaps and stale entries. The algorithmic idea is much smaller. Repeat the same four moves until no reachable tentative vertex remains.</p>
+<h2>Algorithm steps</h2>
+<p class="lead">Each iteration performs four operations: extract the smallest tentative distance, finalize that vertex, relax its outgoing edges, and continue until no reachable unfinished vertex remains.</p>
 <div class="proof-template">
 <article><b>1. Pick</b><p>Choose the unfinalized vertex with the smallest tentative distance.</p></article>
 <article><b>2. Finalize</b><p>Declare that distance permanent. Nonnegative edges are what make this commitment safe.</p></article>
@@ -106,8 +106,8 @@
 </section>
 
 <section class="lecture-section" id="demo">
-<h2>Watch the labels settle</h2>
-<p class="lead">Use the undirected graph with edges S—A=4, S—B=1, B—A=2, B—C=5, A—C=1, A—D=7, C—D=3, and B—D=8.</p>
+<h2>Worked example</h2>
+<p class="lead">The example graph has edges S—A=4, S—B=1, B—A=2, B—C=5, A—C=1, A—D=7, C—D=3, and B—D=8.</p>
 <div class="visualizer dijkstra-demo">
 <div class="visualizer-head"><div><h3>Distances from S</h3><p>Green rows are finalized. Orange marks the vertex finalized on the current step.</p></div><div class="step-nav-controls"><button class="previous-step" data-action="previous" type="button">← Previous</button><button class="primary-step" data-action="next" type="button">Next →</button></div></div>
 <div class="dijkstra-demo-grid">
@@ -121,8 +121,8 @@
 </section>
 
 <section class="lecture-section" id="bfs-link">
-<h2>Dijkstra is BFS with a more informative frontier</h2>
-<p class="lead">BFS and Dijkstra solve the same conceptual problem—expand the next vertex whose shortest distance is known—but they use different data structures because their edge models differ.</p>
+<h2>Relation to breadth-first search</h2>
+<p class="lead">BFS and Dijkstra both expand vertices in nondecreasing distance from the source. BFS can use a FIFO queue because every edge has equal cost; Dijkstra needs a priority queue for unequal weights.</p>
 <div class="table-wrap"><table><thead><tr><th>Graph</th><th>Frontier structure</th><th>Why it works</th></tr></thead><tbody>
 <tr><td>Unweighted or all edges have equal weight</td><td>FIFO queue</td><td>Vertices discovered one layer later are exactly one edge farther away.</td></tr>
 <tr><td>Nonnegative weighted graph</td><td>Min-priority queue</td><td>The next safe vertex is the one with smallest <em>accumulated</em> tentative cost, not the one discovered earliest.</td></tr>
@@ -131,8 +131,8 @@
 </section>
 
 <section class="lecture-section" id="state-table">
-<h2>Three pieces of state tell the whole story</h2>
-<p class="lead">A very readable way to trace Dijkstra is to maintain tentative costs, a parent for path reconstruction, and whether the vertex has been finalized.</p>
+<h2>State maintained by the algorithm</h2>
+<p class="lead">A trace can be represented by tentative distances, predecessor pointers, and a flag indicating whether each vertex has been finalized.</p>
 <div class="table-wrap state-table"><table><thead><tr><th>Vertex</th><th>Final distance from S</th><th>Parent</th><th>Status</th></tr></thead><tbody>
 <tr><td>S</td><td>0</td><td>—</td><td>final</td></tr>
 <tr><td>B</td><td>1</td><td>S</td><td>final</td></tr>
@@ -144,8 +144,8 @@
 </section>
 
 <section class="lecture-section" id="proof">
-<h2>Why a finalized distance never changes</h2>
-<p class="lead">Take the unfinished vertex <span class="math">u</span> with the smallest label. If a cheaper path to <span class="math">u</span> still existed, that path would have to leave the already-finalized region through some unfinished vertex whose label is no larger. That contradicts the choice of <span class="math">u</span>.</p>
+<h2>Why finalization is correct</h2>
+<p class="lead">Let u be the unfinished vertex with minimum tentative distance. Any alternative path to u must first enter the unfinished region at a vertex whose tentative distance is no smaller, so with nonnegative edges it cannot improve u.</p>
 <div class="proof-checklist">
 <div class="proof-check"><span>1</span><p>Assume there is a shorter path from <span class="math">s</span> to <span class="math">u</span> than <span class="math">dist[u]</span>.</p></div>
 <div class="proof-check"><span>2</span><p>On that shortest path, let <span class="math">x</span> be the first unsettled vertex and <span class="math">y</span> its predecessor. Then <span class="math">y</span> is already finalized.</p></div>
@@ -157,8 +157,8 @@
 </section>
 
 <section class="lecture-section" id="negative">
-<h2>Exactly what a negative edge breaks</h2>
-<p class="lead">A negative edge can make a path cheaper after we have already passed through a more expensive-looking vertex. That destroys the argument that the current minimum label is final.</p>
+<h2>Why negative edges invalidate Dijkstra</h2>
+<p class="lead">A negative edge can create a cheaper path to a vertex after that vertex has already been finalized. This breaks the invariant used by the correctness proof.</p>
 <div class="negative-counterexample">
 <div class="negative-side bad"><h3>What Dijkstra sees first</h3><p>After processing S: <span class="math">dist[A]=2</span> and <span class="math">dist[B]=5</span>. It finalizes A because 2 is smaller.</p></div>
 <div class="negative-arrow">→</div>
@@ -170,8 +170,8 @@
 </section>
 
 <section class="lecture-section" id="frontier-structure">
-<h2>The frontier representation changes Dijkstra’s Big O</h2>
-<p class="lead">The abstract algorithm says “choose the unfinalized vertex with minimum tentative distance”. It does not require one particular data structure.</p>
+<h2>Array and heap implementations</h2>
+<p class="lead">The abstract operation is to extract the unfinished vertex with minimum tentative distance. A linear scan gives O(V²); a binary heap is preferable on sparse graphs.</p>
 <div class="operation-profile">
 <article class="neutral"><h3>Simple array / linear search</h3><p>Finding the next minimum may scan all unvisited vertices. Repeating that can produce an <span class="math">O(V²)</span> implementation. This version is often easier to trace by hand.</p></article>
 <article class="good"><h3>Min-priority queue</h3><p>A heap exposes the next minimum efficiently. With adjacency lists, the standard heap implementation runs in <span class="math">O((V+E) log V)</span>, commonly written <span class="math">O(E log V)</span> for connected graphs.</p></article>
@@ -181,7 +181,7 @@
 
 <section class="lecture-section" id="implementation">
 <h2>Priority-queue implementation</h2>
-<p class="lead">The heap stores pairs <code>(tentative_distance, vertex)</code>. Python’s <code>heapq</code> has no decrease-key operation, so the standard implementation pushes a new pair whenever a distance improves and skips stale entries later.</p>
+<p class="lead">Python's heapq does not provide decrease-key. Push a new pair whenever a distance improves and ignore stale entries when they are later removed.</p>
 <div class="code-explainer">
 <div class="annotated-code">
 <div class="code-row"><span class="line-no">1</span><code>import heapq</code></div>
@@ -212,8 +212,8 @@
 </section>
 
 <section class="lecture-section" id="paths">
-<h2>Distances are not paths: keep parents too</h2>
-<p class="lead">A cost table tells you how expensive the optimum is. A parent table tells you how to achieve it.</p>
+<h2>Path reconstruction</h2>
+<p class="lead">Store parent[v] whenever dist[v] improves. Following parent pointers backward from a destination reconstructs a shortest path.</p>
 <div class="code-explainer">
 <div class="annotated-code">
 <div class="code-row"><span class="line-no">1</span><code>if new_dist &lt; dist[v]:</code></div>
@@ -232,7 +232,7 @@
 </section>
 
 <section class="lecture-section" id="comparison">
-<h2>Prim and Dijkstra look similar — the heap key is different</h2>
+<h2>Prim and Dijkstra use different heap keys</h2>
 <div class="table-wrap"><table><thead><tr><th>Question</th><th>Prim</th><th>Dijkstra</th></tr></thead><tbody>
 <tr><td>Goal</td><td>Minimum total weight of one spanning tree</td><td>Minimum path weight from one source to every vertex</td></tr>
 <tr><td>What the heap key means</td><td>Cheapest edge connecting a vertex to the current tree</td><td>Best known accumulated distance from the source</td></tr>
@@ -245,8 +245,8 @@
 
 <!-- coding-patterns-round-dijkstra -->
 <section class="lecture-section" id="interview-decompose">
-<h2>Interview decomposition: translate the story before choosing Dijkstra</h2>
-<p class="lead">Shortest-path questions are often hidden inside stories about prices, delays, transformations, or routes. Before coding, turn the story into four graph ingredients.</p>
+<h2>Modeling shortest-path problems</h2>
+<p class="lead">Translate the application into vertices, edges, edge weights, and weight restrictions before selecting the shortest-path algorithm.</p>
 <div class="interview-flow">
 <article><span>1</span><h3>Vertices</h3><p>What are the states? Cities, pages, accounts, configurations, positions, or something else?</p></article>
 <article><span>2</span><h3>Edges</h3><p>What single transition is allowed from one state to another? Is direction important?</p></article>
@@ -262,7 +262,7 @@
 </section>
 
 <section class="lecture-section" id="choice-guide">
-<h2>Which shortest-path tool should you reach for?</h2>
+<h2>Choosing a shortest-path algorithm</h2>
 <div class="table-wrap"><table><thead><tr><th>Input</th><th>Natural method</th><th>Main reason</th></tr></thead><tbody>
 <tr><td>Unweighted / unit weights</td><td>BFS</td><td>No heap is needed; distance is measured in edges.</td></tr>
 <tr><td>Nonnegative weights</td><td>Dijkstra</td><td>Minimum tentative distance can be finalized greedily.</td></tr>
