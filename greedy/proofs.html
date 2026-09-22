@@ -9,7 +9,7 @@
 <body class="lecture-page"><div aria-hidden="true" class="progress-track"><div class="progress-bar" id="reading-progress"></div></div>
 <header class="topbar"><a class="brand" href="../"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name">Allan's Handbook of Algorithms</span></a>
 <nav aria-label="Primary navigation" class="topnav"><a href="./">Greedy overview</a><div aria-label="Language" class="language-switch"><span class="current">EN</span><span class="language-separator">·</span><a href="proofs-ru.html">RU</a></div></nav></header>
-<aside aria-label="Section navigation" class="sidebar"><div class="sidebar-title">Chapter 9 · Section 2</div><a href="#goal">What must be proved?</a><a href="#patterns">Proof patterns</a><a href="#counterexamples">Counterexample laboratory</a><a href="#exchange">Exchange arguments</a><a href="#worked">Worked proof</a><a href="#ahead">Staying ahead</a><a href="#induction">Induction</a><a href="#template">Proof template</a><a href="#intuition-proof">Intuition vs proof</a><a href="#mistakes">Common mistakes</a><a href="#exercises">Exercises</a></aside>
+<aside aria-label="Section navigation" class="sidebar"><div class="sidebar-title">Chapter 9 · Section 2</div><a href="#goal">What must be proved?</a><a href="#patterns">Proof patterns</a><a href="#counterexamples">Counterexample laboratory</a><a href="#exchange">Exchange arguments</a><a href="#worked">Worked proof</a><a href="#ahead">Staying ahead</a><a href="#induction">Induction</a><a href="#discard">Prove that discarded state is useless</a><a href="#template">Proof template</a><a href="#intuition-proof">Intuition vs proof</a><a href="#summary-not-witness">Summary vs witness</a><a href="#mistakes">Common mistakes</a><a href="#exercises">Exercises</a></aside>
 <main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Chapter 9 · Section 2</div><h1>Proving Greedy Correctness</h1><p class="chapter-topics">A greedy proof has one job: show that the next local choice can be fixed without losing optimality.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-proofs.svg"/></div></section>
 <section class="lecture-section" id="goal">
 <h2>What a greedy proof must show</h2>
@@ -95,6 +95,18 @@
 </div>
 </section>
 
+<!-- common-sense-round-proofs -->
+<section class="lecture-section" id="discard">
+<h2>A greedy proof can justify throwing information away</h2>
+<p class="lead">One-pass greedy optimizations often look different from scheduling or MST: the commitment is not “take this item”, but “forget this entire class of prefixes”. The proof obligation is the same—show the discarded alternatives can never help later.</p>
+<div class="two-column-block">
+<div class="text-panel"><h3>Maximum-subarray reset</h3><p>Suppose the running sum of the current prefix is <span class="math">p&lt;0</span>. Let a future continuation have sum <span class="math">T</span>. Keeping the negative prefix produces <span class="math">p+T</span>.</p></div>
+<div class="proof-panel"><h3>Why reset is safe</h3><p>Because <span class="math">p&lt;0</span>, we have <span class="math">p+T&lt;T</span>. Starting the future subarray after the negative prefix is strictly better than carrying that prefix forward.</p></div>
+</div>
+<div class="one-line"><strong>Greedy discard rule.</strong> Once a partial state is provably worse for every possible continuation, it can be deleted forever.</div>
+<div class="practice-note"><h3>This is a reusable proof shape</h3><p>To justify state compression, compare two histories under an arbitrary common future. If one history is never better after any continuation, it is dominated and does not need to survive.</p></div>
+</section>
+
 <section class="lecture-section" id="template">
 <h2>A reusable greedy-proof template</h2>
 <p class="lead">The surface details change from intervals to graphs to codes, but most exact greedy proofs can be organized around the same four questions.</p>
@@ -123,6 +135,17 @@
 <article><b>Formal proof</b><p>Only after the invariant survives should you write the exchange, staying-ahead, induction, or cut argument.</p></article>
 </div>
 <div class="one-line"><strong>Examples discover the proof; they do not replace it.</strong> The purpose of the story is to expose the invariant you will later prove for every input.</div>
+</section>
+
+<section class="lecture-section" id="summary-not-witness">
+<h2>Your state variables do not always have to form the final witness</h2>
+<p class="lead">Greedy summaries can encode enough information to prove that a solution exists without literally storing one consistent solution at every instant.</p>
+<div class="mini-example-grid">
+<article class="mini-example good"><h3>Increasing triplet</h3><p>Maintain the smallest <code>low</code> seen and the smallest possible <code>middle</code> that has appeared after some earlier lower value. If a later number exceeds <code>middle</code>, a triplet exists.</p></article>
+<article class="mini-example bad"><h3>The subtle point</h3><p>After <code>middle</code> is set, <code>low</code> may later be replaced by an even smaller value that occurs <em>after</em> that middle. The current pair <code>(low, middle)</code> may therefore not itself be an ordered pair from the witness.</p></article>
+</div>
+<div class="proof-goal"><h3>What the invariant must really say</h3><p>Whenever <code>middle</code> is finite, there existed some earlier value smaller than it. Updating <code>low</code> later does not erase that historical fact. Therefore a future value larger than <code>middle</code> completes a valid increasing triplet.</p></div>
+<div class="one-line"><strong>Proof the abstraction, not the picture in the variables.</strong> A compressed state may represent a fact about the past rather than a literal partial solution.</div>
 </section>
 
 <section class="lecture-section" id="mistakes">
