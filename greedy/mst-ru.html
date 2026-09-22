@@ -8,7 +8,7 @@
 <body class="lecture-page"><div aria-hidden="true" class="progress-track"><div class="progress-bar" id="reading-progress"></div></div>
 <header class="topbar"><a class="brand" href="../index-ru.html"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name ru-brand-name"><span class="ru-brand-lines"><span>Гайд по алгоритмам</span><span class="ru-brand-presented">presented by Аллан</span></span></span></a>
 <nav aria-label="Основная навигация" class="topnav"><a href="index-ru.html">Жадные алгоритмы</a><div aria-label="Язык" class="language-switch"><a href="mst.html">EN</a><span class="language-separator">·</span><span class="current">RU</span></div></nav></header>
-<aside aria-label="Навигация по разделу" class="sidebar"><div class="sidebar-title">Глава 9 · Раздел 9</div><a href="#problem">Постановка</a><a href="#cut">Свойство разреза</a><a href="#kruskal">Краскал</a><a href="#prim">Прим</a><a href="#boruvka">Борувка</a><a href="#implementation">Реализации</a><a href="#complexity">Сложность</a><a href="#properties">Полезные факты</a><a href="#exercises">Задачи</a></aside>
+<aside aria-label="Навигация по разделу" class="sidebar"><div class="sidebar-title">Глава 9 · Раздел 9</div><a href="#problem">Постановка</a><a href="#cut">Свойство разреза</a><a href="#first-bad">Доказательство через первую ошибку</a><a href="#kruskal">Краскал</a><a href="#prim">Прим</a><a href="#boruvka">Борувка</a><a href="#implementation">Реализации</a><a href="#complexity">Сложность</a><a href="#applications">Применения и варианты</a><a href="#properties">Полезные факты</a><a href="#exercises">Задачи</a></aside>
 <main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Глава 9 · Раздел 9</div><h1>Минимальные остовные деревья</h1><p class="chapter-topics">Нужно соединить все вершины с минимальным суммарным весом. Краскал и Прим выглядят по-разному, но оба основаны на свойстве разреза.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-mst.svg"/></div></section>
 <section class="lecture-section" id="problem">
 <h2>Соединить всё как можно дешевле</h2>
@@ -31,6 +31,19 @@
 </div>
 <div class="proof-goal"><h3>Свойство разреза</h3><p>Если разрез согласован с уже выбранными рёбрами, то ребро минимального веса, пересекающее этот разрез, безопасно: существует MST, содержащее все прежние выбранные рёбра и это ребро.</p></div>
 <div class="subsection"><h3>Почему это верно</h3><p>Берём MST <span class="math">T</span>, согласованное с текущими выборами. Если лёгкое ребро <span class="math">e</span> уже входит в <span class="math">T</span>, всё готово. Иначе добавим <span class="math">e</span>: появится цикл. В этом цикле обязательно есть другое ребро <span class="math">f</span>, пересекающее тот же разрез. Так как <span class="math">e</span> — минимальное среди пересекающих, <span class="math">w(e) ≤ w(f)</span>. Удаляем <span class="math">f</span>; дерево остаётся остовным, а его вес не увеличивается.</p></div>
+</section>
+
+<!-- book-synthesis-mst -->
+<section class="lecture-section" id="first-bad">
+<h2>Сильный proof-приём: предположить первую ошибку greedy</h2>
+<p class="lead">Для инкрементальных greedy-алгоритмов удобно рассматривать <em>первый</em> шаг, который якобы может уничтожить оптимальность. До него текущий greedy-prefix ещё содержится в некотором optimum.</p>
+<div class="proof-template">
+<article><b>До ошибки</b><p>Пусть текущий greedy-forest <span class="math">F</span> входит в некоторое MST <span class="math">T</span>.</p></article>
+<article><b>Greedy выбирает e</b><p>Следующее ребро <span class="math">e</span> минимально через нужный cut, но предположим <span class="math">e∉T</span>.</p></article>
+<article><b>Добавляем e в T</b><p>Появляется цикл. В нём есть другое ребро <span class="math">f</span>, пересекающее тот же cut.</p></article>
+<article><b>Exchange</b><p>Поскольку <span class="math">w(e)≤w(f)</span>, замена <span class="math">f</span> на <span class="math">e</span> даёт MST, уже содержащее более длинный greedy-prefix.</p></article>
+</div>
+<div class="one-line"><strong>Первой ошибки быть не может.</strong> Это cut property, переписанное как contradiction через «первое плохое решение» — очень переносимый proof-style.</div>
 </section>
 
 <section class="lecture-section" id="kruskal">
@@ -130,6 +143,17 @@ def prim(graph, start=0):
 <tr><td>Борувка</td><td>Компоненты + минимальное исходящее ребро</td><td>O(E log V)</td><td>Параллельная обработка и сжатие компонент</td></tr>
 </tbody></table></div>
 <p class="caption">Так как <span class="math">E ≤ V²</span>, логарифмические множители близки. На практике часто важнее формат хранения графа и окружающий код.</p>
+</section>
+
+<section class="lecture-section" id="applications">
+<h2>Что ещё даёт структура MST</h2>
+<div class="variant-grid">
+<article class="variant-card"><h3>Clustering</h3><p>Строим MST по точкам или объектам и удаляем самые тяжёлые рёбра. Оставшиеся connected components дают кластеры, разделённые дорогими связями.</p></article>
+<article class="variant-card"><h3>Maximum spanning tree</h3><p>Используем ту же greedy-логику, но идём по весам в обратном порядке. Эквивалентно — меняем знак весов и строим minimum spanning tree.</p></article>
+<article class="variant-card"><h3>Minimum bottleneck</h3><p>Любое MST минимизирует максимальный использованный вес ребра среди всех spanning trees. Цель «минимизировать худшую связь» получается бесплатно.</p></article>
+<article class="variant-card"><h3>Dense vs sparse implementation</h3><p>Heap-based Prim естественен на sparse adjacency lists. Простая array-версия <span class="math">O(V²)</span> может быть конкурентной на dense graphs из-за отсутствия heap overhead.</p></article>
+</div>
+<div class="practice-note"><h3>Representation — часть алгоритма</h3><p>Kruskal естественно использует edge list + DSU, Prim — adjacency по вершинам. Математический greedy-choice может быть одинаково хорош, а оптимальная data structure зависит от плотности графа.</p></div>
 </section>
 
 <section class="lecture-section" id="properties">
