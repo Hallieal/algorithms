@@ -9,7 +9,7 @@
 <body class="lecture-page"><div aria-hidden="true" class="progress-track"><div class="progress-bar" id="reading-progress"></div></div>
 <header class="topbar"><a class="brand" href="../"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name">Allan's Handbook of Algorithms</span></a>
 <nav aria-label="Primary navigation" class="topnav"><a href="./">Greedy overview</a><div aria-label="Language" class="language-switch"><span class="current">EN</span><span class="language-separator">·</span><a href="proofs-ru.html">RU</a></div></nav></header>
-<aside aria-label="Section navigation" class="sidebar"><div class="sidebar-title">Chapter 9 · Section 2</div><a href="#goal">What must be proved?</a><a href="#patterns">Proof patterns</a><a href="#counterexamples">Counterexample laboratory</a><a href="#exchange">Exchange arguments</a><a href="#worked">Worked proof</a><a href="#ahead">Staying ahead</a><a href="#induction">Induction</a><a href="#discard">Prove that discarded state is useless</a><a href="#gas-proof">Candidate-elimination proof</a><a href="#bound-certificate">Match a lower bound</a><a href="#template">Proof template</a><a href="#directional-proof">Two-pass proof</a><a href="#intuition-proof">Intuition vs proof</a><a href="#summary-not-witness">Summary vs witness</a><a href="#mistakes">Common mistakes</a><a href="#exercises">Exercises</a></aside>
+<aside aria-label="Section navigation" class="sidebar"><div class="sidebar-title">Chapter 9 · Section 2</div><a href="#goal">What must be proved?</a><a href="#patterns">Proof patterns</a><a href="#counterexample-lab">Counterexample laboratory</a><a href="#counterexamples">Counterexample laboratory</a><a href="#exchange">Exchange arguments</a><a href="#worked">Worked proof</a><a href="#ahead">Staying ahead</a><a href="#induction">Induction</a><a href="#discard">Prove that discarded state is useless</a><a href="#gas-proof">Candidate-elimination proof</a><a href="#bound-certificate">Match a lower bound</a><a href="#template">Proof template</a><a href="#directional-proof">Two-pass proof</a><a href="#intuition-proof">Intuition vs proof</a><a href="#summary-not-witness">Summary vs witness</a><a href="#mistakes">Common mistakes</a><a href="#exercises">Exercises</a></aside>
 <main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Chapter 9 · Section 2</div><h1>Proving Greedy Correctness</h1><p class="chapter-topics">A greedy proof has one job: show that the next local choice can be fixed without losing optimality.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-proofs.svg"/></div></section>
 <section class="lecture-section" id="goal">
 <h2>What a greedy proof must show</h2>
@@ -38,6 +38,19 @@
 </section>
 
 <!-- book-synthesis-proofs -->
+<!-- skiena-round-proofs -->
+<section class="lecture-section" id="counterexample-lab">
+<h2>How to hunt for a counterexample on purpose</h2>
+<p class="lead">“Try some examples” is too vague. A stronger habit is to design adversarial instances that attack exactly what the proposed greedy key ignores.</p>
+<div class="recognition-grid">
+<article class="recognition-card"><span class="signal">Think small</span><h3>Strip the instance to its essence</h3><p>Three intervals are often better than thirty. A tiny counterexample is easier to verify and usually makes the structural failure obvious.</p></article>
+<article class="recognition-card"><span class="signal">Go for a tie</span><h3>Remove the heuristic’s information</h3><p>If the rule prefers the “largest” or “shortest”, make several candidates equal on that score. Then ask whether an unlucky tie can force a bad irreversible choice.</p></article>
+<article class="recognition-card"><span class="signal">Seek extremes</span><h3>Mix huge with tiny</h3><p>One very long interval among many short ones, one very heavy item among light ones, or one expensive edge among cheap ones often exposes what the local score fails to protect.</p></article>
+</div>
+<div class="candidate-elimination"><h3>Systematic search beats random guessing</h3><p>For the smallest nontrivial input, enumerate the qualitatively different configurations. For intervals, two segments can be disjoint, overlapping, or nested; adding a third in each possible way is often enough to break a false rule.</p></div>
+<div class="proof-goal"><h3>A counterexample must prove two things</h3><p>Compute the answer returned by the proposed algorithm, then exhibit a strictly better feasible answer on the same instance. If either side is ambiguous, the example has not finished the job.</p></div>
+</section>
+
 <section class="lecture-section" id="counterexamples">
 <h2>Counterexamples are a proof tool too</h2>
 <p class="lead">Before proving a greedy rule, actively try to falsify it. Tiny failures are often more informative than a page of successful examples because they expose the exact resource a local choice is consuming.</p>
