@@ -8,7 +8,7 @@
 <body class="lecture-page"><div aria-hidden="true" class="progress-track"><div class="progress-bar" id="reading-progress"></div></div>
 <header class="topbar"><a class="brand" href="../index-ru.html"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name ru-brand-name"><span class="ru-brand-lines"><span>Гайд по алгоритмам</span><span class="ru-brand-presented">presented by Аллан</span></span></span></a>
 <nav aria-label="Основная навигация" class="topnav"><a href="index-ru.html">Жадные алгоритмы</a><div aria-label="Язык" class="language-switch"><a href="interval-scheduling.html">EN</a><span class="language-separator">·</span><span class="current">RU</span></div></nav></header>
-<aside aria-label="Навигация по разделу" class="sidebar"><div class="sidebar-title">Глава 9 · Раздел 4</div><a href="#problem">Постановка</a><a href="#choices">Выбор правила</a><a href="#residual-set">Почему earliest finish сохраняет choices</a><a href="#classroom-walk">Пошаговое расписание</a><a href="#frontier">Почему earliest finish доминирует</a><a href="#algorithm">Алгоритм</a><a href="#proof">Корректность</a><a href="#runtime">Откуда берётся O(n log n)</a><a href="#implementation">Реализация</a><a href="#interval-pattern">Какой interval pattern нужен?</a><a href="#recognition">Как распознать задачу</a><a href="#variants">Варианты задачи</a><a href="#exercises">Задачи</a></aside>
+<aside aria-label="Навигация по разделу" class="sidebar"><div class="sidebar-title">Глава 9 · Раздел 4</div><a href="#problem">Постановка</a><a href="#choices">Выбор правила</a><a href="#residual-set">Почему earliest finish сохраняет choices</a><a href="#classroom-walk">Пошаговое расписание</a><a href="#frontier">Почему earliest finish доминирует</a><a href="#algorithm">Алгоритм</a><a href="#proof">Корректность</a><a href="#runtime">Откуда берётся O(n log n)</a><a href="#implementation">Реализация</a><a href="#interval-pattern">Какой interval pattern нужен?</a><a href="#recognition">Как распознать задачу</a><a href="#model-boundary">Почему нужен один contiguous interval</a><a href="#variants">Варианты задачи</a><a href="#exercises">Задачи</a></aside>
 <main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Глава 9 · Раздел 4</div><h1>Выбор непересекающихся интервалов</h1><p class="chapter-topics">Нужно выбрать как можно больше непересекающихся интервалов. Правильный жадный ход — освободить время как можно раньше.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-interval-scheduling.svg"/></div></section>
 <section class="lecture-section" id="problem">
 <h2>Выбрать как можно больше интервалов</h2>
@@ -162,6 +162,18 @@
 <div class="proof-check"><span>4</span><p><strong>Rule:</strong> сортируем по окончанию и берём следующий совместимый интервал.</p></div>
 </div>
 <div class="practice-note"><h3>Типичная interview-ловушка</h3><p>Если «maximum number of intervals» заменили на «maximum total value», earliest finish больше нельзя переносить. Одно слово value превращает задачу в weighted interval scheduling с DP-state.</p></div>
+</section>
+
+<!-- skiena-round-interval -->
+<section class="lecture-section" id="model-boundary">
+<h2>Теорема зависит от того, что каждый job — один contiguous interval</h2>
+<p class="lead">Привычная картинка скрывает важное modeling assumption: каждая activity занимает один непрерывный кусок времени.</p>
+<div class="two-column-block">
+<div class="text-panel"><h3>Standard interval</h3><p>Movie снимается непрерывно от start до finish. После выбора earliest-finishing movie каждый compatible future job начинается после одного clean frontier.</p></div>
+<div class="proof-panel"><h3>Job с gaps</h3><p>Пусть один project снимается в сентябре и ноябре, но свободен в октябре. Другой project может поместиться в этот gap. Один “finish time” уже не описывает все future compatibility constraints.</p></div>
+</div>
+<div class="candidate-elimination"><h3>Что сломалось?</h3><p>Residual instance больше не определяется одной правой границей. Compatibility зависит от целого набора занятых кусочков, и earliest-finish exchange argument теряет ключевую structure.</p></div>
+<div class="one-line"><strong>Modeling restriction может давать algorithmic power.</strong> Понять, что input действительно состоит из intervals, а не arbitrary sets of time slots, — часть решения задачи.</div>
 </section>
 
 <section class="lecture-section" id="variants">
