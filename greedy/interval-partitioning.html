@@ -8,7 +8,7 @@
 <body class="lecture-page"><div aria-hidden="true" class="progress-track"><div class="progress-bar" id="reading-progress"></div></div>
 <header class="topbar"><a class="brand" href="../"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name">Allan's Handbook of Algorithms</span></a>
 <nav aria-label="Primary navigation" class="topnav"><a href="./">Greedy overview</a><div aria-label="Language" class="language-switch"><span class="current">EN</span><span class="language-separator">·</span><a href="interval-partitioning-ru.html">RU</a></div></nav></header>
-<aside aria-label="Section navigation" class="sidebar"><div class="sidebar-title">Chapter 9 · Section 5</div><a href="#problem">Problem</a><a href="#depth">Depth</a><a href="#same-input">Same intervals, different question</a><a href="#algorithm">Algorithm</a><a href="#sweep">Count only: sweep line</a><a href="#proof">Correctness</a><a href="#data-structure">Why a heap matters</a><a href="#implementation">Implementation</a><a href="#comparison">Comparison</a><a href="#exercises">Exercises</a></aside>
+<aside aria-label="Section navigation" class="sidebar"><div class="sidebar-title">Chapter 9 · Section 5</div><a href="#problem">Problem</a><a href="#depth">Depth</a><a href="#same-input">Same intervals, different question</a><a href="#algorithm">Algorithm</a><a href="#sweep">Count only: sweep line</a><a href="#two-array-sweep">Two-array sweep</a><a href="#proof">Correctness</a><a href="#data-structure">Why a heap matters</a><a href="#implementation">Implementation</a><a href="#comparison">Comparison</a><a href="#exercises">Exercises</a></aside>
 <main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Chapter 9 · Section 5</div><h1>Interval Partitioning</h1><p class="chapter-topics">Schedule every interval while using as few rooms as possible. Reuse the room that becomes free first.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-interval-partitioning.svg"/></div></section>
 <section class="lecture-section" id="problem">
 <h2>Use as few rooms as possible</h2>
@@ -82,6 +82,24 @@
 <tr><td>Only the minimum number of rooms</td><td>Sorted start/finish events</td><td>Maximum overlap depth</td></tr>
 <tr><td>An explicit room assignment</td><td>Min-heap of room finish times</td><td>Room id for every interval</td></tr>
 </tbody></table></div>
+</section>
+
+<!-- coding-patterns-round-partition -->
+<section class="lecture-section" id="two-array-sweep">
+<h2>Interview variant: split starts and finishes into two sorted arrays</h2>
+<p class="lead">The sweep-line idea can be implemented without building tagged events. Keep sorted starts and sorted finishes, then advance whichever event happens next.</p>
+<div class="code-explainer">
+<div class="annotated-code">
+<div class="code-row"><span class="line-no">1</span><code>starts = sorted(s for s, f in intervals)</code></div>
+<div class="code-row"><span class="line-no">2</span><code>ends = sorted(f for s, f in intervals)</code></div>
+<div class="code-row"><span class="line-no">3</span><code>i = j = active = best = 0</code></div>
+<div class="code-row marked"><span class="line-no">4</span><code>if starts[i] &lt; ends[j]: active += 1; i += 1</code></div>
+<div class="code-row"><span class="line-no">5</span><code>else: active -= 1; j += 1</code></div>
+<div class="code-row"><span class="line-no">6</span><code>best = max(best, active)</code></div>
+</div>
+<div class="code-notes"><h3>Why the strict inequality?</h3><p>For half-open intervals <span class="math">[s,f)</span>, a class ending at 10:00 does not overlap one starting at 10:00. So equal timestamps process the end first—the <code>else</code> branch.</p></div>
+</div>
+<div class="one-line"><strong>Representation choice.</strong> Tagged events and two sorted endpoint arrays implement the same sweep. The two-array version makes the tie rule especially visible.</div>
 </section>
 
 <section class="lecture-section" id="proof">
