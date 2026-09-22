@@ -6,7 +6,7 @@
 </head>
 <body class="lecture-page"><div aria-hidden="true" class="progress-track"><div class="progress-bar" id="reading-progress"></div></div>
 <header class="topbar"><a class="brand" href="../"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name">Allan's Handbook of Algorithms</span></a><nav aria-label="Primary navigation" class="topnav"><a href="./">Greedy overview</a><div aria-label="Language" class="language-switch"><span class="current">EN</span><span class="language-separator">·</span><a href="greedy-vs-dp-ru.html">RU</a></div></nav></header>
-<aside aria-label="Section navigation" class="sidebar"><div class="sidebar-title">Chapter 9 · Section 3</div><a href="#difference">Core difference</a><a href="#structure">Shared structure</a><a href="#coins">Coin change</a><a href="#knapsack">0/1 Knapsack</a><a href="#weighted">Weighted intervals</a><a href="#state">What must the future remember?</a><a href="#signals">Which technique?</a><a href="#code">Code comparison</a><a href="#spectrum">Exactness spectrum</a><a href="#comparison">Summary table</a><a href="#exercises">Exercises</a></aside>
+<aside aria-label="Section navigation" class="sidebar"><div class="sidebar-title">Chapter 9 · Section 3</div><a href="#difference">Core difference</a><a href="#structure">Shared structure</a><a href="#coins">Coin change</a><a href="#knapsack">0/1 Knapsack</a><a href="#knapsack-ladder">Knapsack: three levels</a><a href="#weighted">Weighted intervals</a><a href="#state">What must the future remember?</a><a href="#signals">Which technique?</a><a href="#code">Code comparison</a><a href="#spectrum">Exactness spectrum</a><a href="#comparison">Summary table</a><a href="#exercises">Exercises</a></aside>
 <main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Chapter 9 · Section 3</div><h1>Greedy vs Dynamic Programming</h1><p class="chapter-topics">Greedy keeps one future. Dynamic programming keeps several states alive until it knows which future wins.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-vs-dp.svg"/></div></section>
 <section class="lecture-section" id="difference">
 <h2>One path or many states?</h2>
@@ -58,6 +58,18 @@
 </div>
 </div>
 <p>The greedy first choice A is locally attractive but blocks the globally best combination. A DP indexed by remaining capacity or used capacity can compare these alternatives.</p>
+</section>
+
+<!-- grokking-pass-gvdp -->
+<section class="lecture-section" id="knapsack-ladder">
+<h2>Knapsack shows the whole spectrum in one problem</h2>
+<p class="lead">The same optimization problem can be attacked at three levels. Seeing them in order makes the role of dynamic programming much clearer.</p>
+<div class="knapsack-ladder">
+<article class="knapsack-rung"><div class="rung-no">1</div><h3>Try every subset</h3><p>Enumerate all combinations and keep the best feasible one.</p><small>Exact, but exponential: O(2ⁿ) subsets.</small></article>
+<article class="knapsack-rung"><div class="rung-no">2</div><h3>Make a greedy guess</h3><p>Take items in some locally attractive order. This is fast, but for indivisible items the rule can miss the best combination.</p><small>Fast, but not automatically exact.</small></article>
+<article class="knapsack-rung"><div class="rung-no">3</div><h3>Keep subproblem answers</h3><p>DP stores the best value for smaller capacities and reuses those answers when deciding whether to include the next item.</p><small>Exact for integer capacities; pseudo-polynomial in capacity.</small></article>
+</div>
+<div class="predict-card"><span class="predict-kicker">What changed between steps 2 and 3?</span><h3>DP refuses to discard alternative capacities too early.</h3><p>Greedy compresses the future to one path. Knapsack needs several partial solutions because an apparently weaker state can combine better with later items.</p></div>
 </section>
 
 <section class="lecture-section" id="weighted">
