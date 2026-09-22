@@ -9,10 +9,10 @@
 <header class="topbar"><a class="brand" href="../"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name">Allan's Handbook of Algorithms</span></a>
 <nav aria-label="Primary navigation" class="topnav"><a href="./">Greedy overview</a><div aria-label="Language" class="language-switch"><span class="current">EN</span><span class="language-separator">·</span><a href="fractional-knapsack-ru.html">RU</a></div></nav></header>
 <aside aria-label="Section navigation" class="sidebar"><div class="sidebar-title">Chapter 9 · Section 7</div><a href="#problem">Problem</a><a href="#whole-vs-fractional">Whole vs fractional</a><a href="#knapsack-landscape">A map of knapsack variants</a><a href="#interview-trap">0/1 interview trap</a><a href="#density">Value density</a><a href="#algorithm">Algorithm</a><a href="#proof">Correctness</a><a href="#lp-view">Why only one fraction?</a><a href="#divisibility">One assumption changes everything</a><a href="#boundary">0/1 boundary</a><a href="#runtime">Avoid repeated density search</a><a href="#implementation-choice">Sort or heap?</a><a href="#implementation">Implementation</a><a href="#exercises">Exercises</a></aside>
-<main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Chapter 9 · Section 7</div><h1>Fractional Knapsack</h1><p class="chapter-topics">When items are divisible, every unit of capacity should go to the item that pays the most per unit of weight.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-fractional-knapsack.svg"/></div></section>
+<main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Chapter 9 · Section 7</div><h1>Fractional Knapsack</h1><p class="chapter-topics">Fractional Knapsack is solved exactly by sorting items by value density and taking them in that order, using a fraction of the final item if necessary.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-fractional-knapsack.svg"/></div></section>
 <section class="lecture-section" id="problem">
-<h2>Spend capacity where it pays most</h2>
-<p class="lead">The knapsack has limited capacity, but items are divisible. That changes the problem completely: instead of choosing whole objects, we can treat capacity as a resource and ask where each next unit of weight earns the most value.</p><div class="concept-strip">
+<h2>Problem statement</h2>
+<p class="lead">Each item has a weight and a value, the knapsack has limited capacity, and items may be divided. The objective is to maximize total value.</p><div class="concept-strip">
 <article class="concept-cell rule"><span>Rule</span><b>Take the highest value per unit of weight first</b><p>Fill by decreasing ratio <span class="math">vᵢ/wᵢ</span>.</p></article>
 <article class="concept-cell proof"><span>Why it works</span><b>Equal weight is always better in the denser item</b><p>Move weight from lower density to higher density and value cannot fall.</p></article>
 <article class="concept-cell cost"><span>Cost</span><b>O(n log n)</b><p>Compute densities, sort once, scan once.</p></article>
@@ -23,8 +23,8 @@
 
 <!-- grokking-round-fractional -->
 <section class="lecture-section" id="whole-vs-fractional">
-<h2>The knapsack story changes completely when items become divisible</h2>
-<p class="lead">A useful way to understand Fractional Knapsack is to start from the famous greedy failure in 0/1 Knapsack and change exactly one assumption.</p>
+<h2>Fractional and 0/1 Knapsack</h2>
+<p class="lead">The divisibility assumption changes the problem. Value density gives an exact greedy algorithm for Fractional Knapsack but not for general 0/1 Knapsack.</p>
 <div class="mini-example-grid">
 <article class="mini-example bad"><h3>Whole items only</h3><p>In the classic thief example, grabbing the most expensive single item gives value 3000, while a different pair is worth 3500. Once the first whole item is taken, its capacity cannot be reclaimed in smaller pieces.</p></article>
 <article class="mini-example good"><h3>Fractions allowed</h3><p>Now capacity can be spent continuously. Instead of asking “which whole object is best?”, ask “where should the next unit of weight go?” The answer is the remaining item with highest value density.</p></article>
@@ -40,8 +40,8 @@
 <!-- coding-patterns-round-fractional -->
 <!-- skiena-round-fractional -->
 <section class="lecture-section" id="knapsack-landscape">
-<h2>Knapsack gets easy or hard depending on exactly what is equal or divisible</h2>
-<p class="lead">A useful way to understand the problem is to change one structural assumption at a time. The right algorithm changes with it.</p>
+<h2>Special cases of Knapsack</h2>
+<p class="lead">Equal values, equal weights, divisibility, and integer capacity each create different structure. The appropriate algorithm depends on which of these assumptions are present.</p>
 <div class="table-wrap"><table><thead><tr><th>Variant</th><th>What structure buys you</th><th>Natural method</th></tr></thead><tbody>
 <tr><td>Items are divisible</td><td>Capacity can move continuously between items</td><td>Exact greedy by decreasing <span class="math">v_i/w_i</span></td></tr>
 <tr><td>0/1, every item has equal value</td><td>Maximizing value means maximizing the number of items</td><td>Take smallest weights first</td></tr>
@@ -53,8 +53,8 @@
 </section>
 
 <section class="lecture-section" id="interview-trap">
-<h2>Interview trap: the word “fractional” changes the algorithm</h2>
-<p class="lead">A concrete 0/1 Knapsack example makes the boundary unmistakable. With capacity 7, weights <code>[5, 3, 4, 1]</code>, and values <code>[70, 50, 40, 10]</code>, the locally most valuable whole item is not part of the optimum.</p>
+<h2>Why divisibility changes the answer</h2>
+<p class="lead">A 0/1 instance can make density ordering fail because whole items cannot be exchanged in arbitrary amounts. Fractional Knapsack removes that obstruction.</p>
 <div class="mini-example-grid">
 <article class="mini-example bad"><h3>0/1: take the most valuable item first</h3><p>Take weight 5, value 70. Only one unit of capacity remains, so the weight-1 item adds 10. Total: <strong>80</strong>.</p></article>
 <article class="mini-example good"><h3>0/1 optimum</h3><p>Take weights 3 and 4, with values 50 and 40. They exactly fill capacity 7 for a total value of <strong>90</strong>.</p></article>
@@ -64,8 +64,8 @@
 </section>
 
 <section class="lecture-section" id="density">
-<h2>Compare value per unit of weight</h2>
-<p class="lead">Total value alone is misleading: a valuable item may also be very heavy. The meaningful quantity is density, <span class="math">vᵢ/wᵢ</span> — value earned by one unit of capacity.</p>
+<h2>Value density</h2>
+<p class="lead">For item i, define density as v_i / w_i. It measures the value obtained from one unit of capacity and is the quantity used to order divisible items.</p>
 <div class="table-wrap"><table class="density-table"><thead><tr><th>Item</th><th>Weight</th><th>Value</th><th>Value / weight</th></tr></thead><tbody>
 <tr><td>A</td><td>10</td><td>60</td><td><span class="density-pill">6.0</span></td></tr>
 <tr><td>B</td><td>20</td><td>100</td><td><span class="density-pill">5.0</span></td></tr>
@@ -75,7 +75,7 @@
 </section>
 
 <section class="lecture-section" id="algorithm">
-<h2>Algorithm: sort by density, then fill</h2>
+<h2>Algorithm</h2>
 <div class="step-flow">
 <article class="step-item"><div class="step-number">1</div><div><h3>Compute densities</h3><p>For each item calculate <span class="math">vᵢ/wᵢ</span>.</p></div></article>
 <article class="step-item"><div class="step-number">2</div><div><h3>Sort descending</h3><p>Consider high-value-per-weight items first.</p></div></article>
@@ -99,8 +99,8 @@
 </section>
 
 <section class="lecture-section" id="proof">
-<h2>Exchange one unit of weight</h2>
-<p class="lead">Suppose a solution uses some lower-density material while leaving higher-density material unused. Move the same amount of weight from the worse item to the better one.</p>
+<h2>Exchange proof</h2>
+<p class="lead">If a solution uses some weight from a lower-density item while leaving higher-density material unused, transfer an equal amount of weight to the higher-density item. Feasibility is preserved and value does not decrease.</p>
 <div class="exchange-density">
 <div class="density-side"><h3>Suppose an optimal solution is “out of order”</h3><div class="density-bars">
 <div class="density-bar"><span>higher density</span><div class="density-track"><span style="--fill:40%"></span></div><b>partly unused</b></div>
@@ -118,8 +118,8 @@
 
 <!-- book-synthesis-fk -->
 <section class="lecture-section" id="lp-view">
-<h2>Why the greedy solution has a simple shape</h2>
-<p class="lead">Fractional Knapsack is a linear optimization problem with one capacity constraint. That geometry explains a fact the greedy algorithm makes visible: after sorting by density, an optimal solution can fill a prefix completely and then take at most one partial item.</p>
+<h2>Linear-programming interpretation</h2>
+<p class="lead">With one capacity constraint and divisible items, an optimum can be chosen as a complete prefix of the density order plus at most one fractional item.</p>
 <div class="clean-steps">
 <div class="clean-step"><span>1</span><p>Every unit of capacity spent on density <span class="math">ρ₁</span> is at least as valuable as the same unit spent on lower density <span class="math">ρ₂</span>.</p></div>
 <div class="clean-step"><span>2</span><p>So if a lower-density item is used while a higher-density item is not full, transfer a small amount of weight upward. Value cannot decrease.</p></div>
@@ -130,8 +130,8 @@
 
 <!-- grokking-pass-fractional -->
 <section class="lecture-section" id="divisibility">
-<h2>One assumption changes the entire knapsack problem</h2>
-<p class="lead">The classic “greedy knapsack fails” example uses indivisible objects. This page changes exactly one modeling assumption: an item may be split. That is enough to make density-greedy exact.</p>
+<h2>Role of the divisibility assumption</h2>
+<p class="lead">The greedy proof relies on moving an arbitrary amount of weight between items. That operation is legal only in the fractional model.</p>
 <div class="path-choice">
 <article class="bad"><h3>0/1: whole items only</h3><p>After choosing an item, the leftover capacity may have the wrong shape for the remaining items. You cannot exchange “a little bit” of one object for another, so local density need not preserve OPT.</p></article>
 <article class="good"><h3>Fractional: weight is divisible</h3><p>If lower-density weight is present while higher-density weight is still available, move a small amount of capacity from the former to the latter. Value can only increase.</p></article>
@@ -140,8 +140,8 @@
 </section>
 
 <section class="lecture-section" id="boundary">
-<h2>This proof breaks in 0/1 Knapsack</h2>
-<p class="lead">Everything above relies on being able to move an arbitrary amount of weight. With indivisible items, that exchange may not be legal at all.</p>
+<h2>Why the proof fails for 0/1 Knapsack</h2>
+<p class="lead">With indivisible items, the exchange used in the fractional proof may be impossible. A high-density item can block a more valuable combination of lower-density items.</p>
 <div class="boundary-example">
 <article class="boundary-card good"><h3>Fractional version</h3><p>Capacity 50 with A=(10,60), B=(20,100), C=(30,120). Density-greedy gets value 240 by taking A, B, and 2/3 of C — optimal.</p></article>
 <article class="boundary-card bad"><h3>0/1 version</h3><p>The same density order takes A and B for value 160. But B+C fits exactly and gives 220. The greedy first choice A blocks the optimum.</p></article>
@@ -152,8 +152,8 @@
 
 <!-- common-sense-round-fractional -->
 <section class="lecture-section" id="runtime">
-<h2>The rule is “take max density”; do not search for it from scratch every time</h2>
-<p class="lead">Once the proof says the next unit of capacity should come from the highest remaining density, implementation becomes an optimization problem of its own.</p>
+<h2>Running time</h2>
+<p class="lead">Sorting all items by density gives O(n log n) time. If only a small number of top-density items will be used, a priority queue is another possible representation.</p>
 <div class="runtime-ladder">
 <article class="runtime-step"><span>Naive</span><h3>Scan all remaining items for maximum density</h3><p>Repeating a linear maximum search after every item can cost <span class="math">O(n²)</span>.</p></article>
 <article class="runtime-step best"><span>Sort once</span><h3>Order all densities up front</h3><p>Compute ratios in <span class="math">O(n)</span>, sort in <span class="math">O(n log n)</span>, then consume the ordered list in one pass.</p></article>
@@ -163,8 +163,8 @@
 </section>
 
 <section class="lecture-section" id="implementation-choice">
-<h2>Full sort or priority queue?</h2>
-<p class="lead">The mathematical rule is the same—take the remaining item of largest density—but the data structure can change depending on how many items you expect to consume.</p>
+<h2>Sorting versus a priority queue</h2>
+<p class="lead">Both implementations follow the same density order. Their difference is only how the next maximum-density item is retrieved.</p>
 <div class="table-wrap"><table><thead><tr><th>Implementation</th><th>Cost</th><th>When it is attractive</th></tr></thead><tbody>
 <tr><td>Sort all items by density</td><td>O(n log n)</td><td>Simplest code; you may inspect most items anyway.</td></tr>
 <tr><td>Build a max-heap of densities</td><td>O(n + c log n)</td><td>If only <span class="math">c</span> highest-density items are extracted before capacity fills and <span class="math">c ≪ n</span>.</td></tr>
