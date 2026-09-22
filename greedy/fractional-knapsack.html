@@ -1,5 +1,5 @@
 <!DOCTYPE html><html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1" name="viewport"/>
-<meta content="Maximize value under a capacity constraint by taking items in decreasing order of value per unit of weight." name="description"/><meta content="Fractional Knapsack | Allan's Handbook of Algorithms" property="og:title"/><meta content="Maximize value under a capacity constraint by taking items in decreasing order of value per unit of weight." property="og:description"/><meta content="article" property="og:type"/>
+<meta content="When items are divisible, every unit of capacity should go to the item that pays the most per unit of weight." name="description"/><meta content="Fractional Knapsack | Allan's Handbook of Algorithms" property="og:title"/><meta content="When items are divisible, every unit of capacity should go to the item that pays the most per unit of weight." property="og:description"/><meta content="article" property="og:type"/>
 <title>Fractional Knapsack | Allan's Handbook of Algorithms</title>
 <link href="../assets/css/styles.css" rel="stylesheet"/><link href="assets/greedy.css" rel="stylesheet"/>
 <link href="../assets/images/favicon-32.png" rel="icon" sizes="32x32" type="image/png"/><link href="../assets/images/favicon.png" rel="icon" sizes="64x64" type="image/png"/><link href="../assets/images/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180"/>
@@ -8,16 +8,20 @@
 <header class="topbar"><a class="brand" href="../"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name">Allan's Handbook of Algorithms</span></a>
 <nav aria-label="Primary navigation" class="topnav"><a href="./">Greedy overview</a><div aria-label="Language" class="language-switch"><span class="current">EN</span><span class="language-separator">·</span><a href="fractional-knapsack-ru.html">RU</a></div></nav></header>
 <aside aria-label="Section navigation" class="sidebar"><div class="sidebar-title">Chapter 9 · Section 7</div><a href="#problem">Problem</a><a href="#density">Value density</a><a href="#algorithm">Algorithm</a><a href="#proof">Correctness</a><a href="#boundary">0/1 boundary</a><a href="#implementation">Implementation</a><a href="#exercises">Exercises</a></aside>
-<main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Chapter 9 · Section 7</div><h1>Fractional Knapsack</h1><p class="chapter-topics">Maximize value under a capacity constraint by taking items in decreasing order of value per unit of weight.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-fractional-knapsack.svg"/></div></section>
+<main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Chapter 9 · Section 7</div><h1>Fractional Knapsack</h1><p class="chapter-topics">When items are divisible, every unit of capacity should go to the item that pays the most per unit of weight.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-fractional-knapsack.svg"/></div></section>
 <section class="lecture-section" id="problem">
-<h2>The problem</h2>
-<p class="lead">We have a knapsack of capacity <span class="math">W</span>. Item <span class="math">i</span> has weight <span class="math">wᵢ</span> and value <span class="math">vᵢ</span>. Unlike 0/1 Knapsack, we are allowed to take any fraction of an item.</p>
+<h2>Spend capacity where it pays most</h2>
+<p class="lead">The knapsack has limited capacity, but items are divisible. That changes the problem completely: instead of choosing whole objects, we can treat capacity as a resource and ask where each next unit of weight earns the most value.</p><div class="concept-strip">
+<article class="concept-cell rule"><span>Rule</span><b>Take the highest value per unit of weight first</b><p>Fill by decreasing ratio <span class="math">vᵢ/wᵢ</span>.</p></article>
+<article class="concept-cell proof"><span>Why it works</span><b>Equal weight is always better in the denser item</b><p>Move weight from lower density to higher density and value cannot fall.</p></article>
+<article class="concept-cell cost"><span>Cost</span><b>O(n log n)</b><p>Compute densities, sort once, scan once.</p></article>
+</div>
 <div class="greedy-definition"><span>Fractional Knapsack</span><p>Choose fractions <span class="math">0 ≤ xᵢ ≤ 1</span> to maximize <span class="math">∑ xᵢvᵢ</span> subject to <span class="math">∑ xᵢwᵢ ≤ W</span>.</p></div>
 </section>
 
 <section class="lecture-section" id="density">
-<h2>The right local criterion: value density</h2>
-<p class="lead">If a small amount of weight can be taken from any item, the relevant comparison is not total value and not total weight. It is how much value we gain per unit of capacity.</p>
+<h2>Compare value per unit of weight</h2>
+<p class="lead">Total value alone is misleading: a valuable item may also be very heavy. The meaningful quantity is density, <span class="math">vᵢ/wᵢ</span> — value earned by one unit of capacity.</p>
 <div class="table-wrap"><table class="density-table"><thead><tr><th>Item</th><th>Weight</th><th>Value</th><th>Value / weight</th></tr></thead><tbody>
 <tr><td>A</td><td>10</td><td>60</td><td><span class="density-pill">6.0</span></td></tr>
 <tr><td>B</td><td>20</td><td>100</td><td><span class="density-pill">5.0</span></td></tr>
@@ -27,7 +31,7 @@
 </section>
 
 <section class="lecture-section" id="algorithm">
-<h2>The greedy algorithm</h2>
+<h2>Algorithm: sort by density, then fill</h2>
 <div class="step-flow">
 <article class="step-item"><div class="step-number">1</div><div><h3>Compute densities</h3><p>For each item calculate <span class="math">vᵢ/wᵢ</span>.</p></div></article>
 <article class="step-item"><div class="step-number">2</div><div><h3>Sort descending</h3><p>Consider high-value-per-weight items first.</p></div></article>
@@ -51,8 +55,8 @@
 </section>
 
 <section class="lecture-section" id="proof">
-<h2>Why sorting by density is optimal</h2>
-<p class="lead">The proof uses an exchange argument at the level of tiny amounts of weight.</p>
+<h2>Exchange one unit of weight</h2>
+<p class="lead">Suppose a solution uses some lower-density material while leaving higher-density material unused. Move the same amount of weight from the worse item to the better one.</p>
 <div class="exchange-density">
 <div class="density-side"><h3>Suppose an optimal solution is “out of order”</h3><div class="density-bars">
 <div class="density-bar"><span>higher density</span><div class="density-track"><span style="--fill:40%"></span></div><b>partly unused</b></div>
@@ -69,8 +73,8 @@
 </section>
 
 <section class="lecture-section" id="boundary">
-<h2>Why 0/1 Knapsack is different</h2>
-<p class="lead">The proof above depends completely on divisibility. If items are indivisible, we cannot exchange an arbitrarily small equal amount of weight.</p>
+<h2>This proof breaks in 0/1 Knapsack</h2>
+<p class="lead">Everything above relies on being able to move an arbitrary amount of weight. With indivisible items, that exchange may not be legal at all.</p>
 <div class="boundary-example">
 <article class="boundary-card good"><h3>Fractional version</h3><p>Capacity 50 with A=(10,60), B=(20,100), C=(30,120). Density-greedy gets value 240 by taking A, B, and 2/3 of C — optimal.</p></article>
 <article class="boundary-card bad"><h3>0/1 version</h3><p>The same density order takes A and B for value 160. But B+C fits exactly and gives 220. The greedy first choice A blocks the optimum.</p></article>
