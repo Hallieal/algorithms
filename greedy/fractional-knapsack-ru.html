@@ -8,7 +8,7 @@
 <body class="lecture-page"><div aria-hidden="true" class="progress-track"><div class="progress-bar" id="reading-progress"></div></div>
 <header class="topbar"><a class="brand" href="../index-ru.html"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name ru-brand-name"><span class="ru-brand-lines"><span>Гайд по алгоритмам</span><span class="ru-brand-presented">presented by Аллан</span></span></span></a>
 <nav aria-label="Основная навигация" class="topnav"><a href="index-ru.html">Жадные алгоритмы</a><div aria-label="Язык" class="language-switch"><a href="fractional-knapsack.html">EN</a><span class="language-separator">·</span><span class="current">RU</span></div></nav></header>
-<aside aria-label="Навигация по разделу" class="sidebar"><div class="sidebar-title">Глава 9 · Раздел 7</div><a href="#problem">Постановка</a><a href="#density">Плотность ценности</a><a href="#algorithm">Алгоритм</a><a href="#proof">Корректность</a><a href="#lp-view">Почему только одна дробь?</a><a href="#boundary">Граница с 0/1</a><a href="#implementation-choice">Sort или heap?</a><a href="#implementation">Реализация</a><a href="#exercises">Задачи</a></aside>
+<aside aria-label="Навигация по разделу" class="sidebar"><div class="sidebar-title">Глава 9 · Раздел 7</div><a href="#problem">Постановка</a><a href="#density">Плотность ценности</a><a href="#algorithm">Алгоритм</a><a href="#proof">Корректность</a><a href="#lp-view">Почему только одна дробь?</a><a href="#divisibility">Одно предположение меняет всё</a><a href="#boundary">Граница с 0/1</a><a href="#implementation-choice">Sort или heap?</a><a href="#implementation">Реализация</a><a href="#exercises">Задачи</a></aside>
 <main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Глава 9 · Раздел 7</div><h1>Дробная задача о рюкзаке</h1><p class="chapter-topics">Если предметы делимы, каждую единицу вместимости выгодно отдавать предмету с максимальной ценностью на единицу веса.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-fractional-knapsack.svg"/></div></section>
 <section class="lecture-section" id="problem">
 <h2>Тратим вместимость там, где она приносит больше всего</h2>
@@ -84,6 +84,17 @@
 <div class="clean-step"><span>3</span><p>После всех обменов получаем полностью заполненный density-sorted prefix, возможно один fractional boundary item, затем нули. При ties можно выбрать эквивалентный optimum такой формы.</p></div>
 </div>
 <div class="rule-formula">marginal value одной дополнительной единицы capacity = value / weight</div>
+</section>
+
+<!-- grokking-pass-fractional -->
+<section class="lecture-section" id="divisibility">
+<h2>Одно предположение полностью меняет Knapsack</h2>
+<p class="lead">Классический пример «greedy knapsack ломается» относится к неделимым предметам. На этой странице меняется ровно одно modeling assumption: предмет можно делить. Этого уже достаточно, чтобы density-greedy стал exact.</p>
+<div class="path-choice">
+<article class="bad"><h3>0/1: только целые items</h3><p>После выбора leftover capacity может плохо подходить оставшимся предметам. Нельзя заменить «немного» одного объекта другим, поэтому локальная density не обязана сохранять OPT.</p></article>
+<article class="good"><h3>Fractional: weight делим</h3><p>Если часть low-density weight уже лежит в рюкзаке, а high-density weight ещё доступен, переносим маленькую порцию capacity наверх. Value только увеличится.</p></article>
+</div>
+<div class="predict-card"><span class="predict-kicker">Урок моделирования</span><h3>До вопроса «какой greedy-rule?» спросите «какие операции вообще разрешены?»</h3><p>Proof работает именно потому, что fractions допустимы. Уберите это разрешение — и тот же priority перестаёт быть безопасным.</p></div>
 </section>
 
 <section class="lecture-section" id="boundary">
