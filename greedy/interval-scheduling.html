@@ -8,7 +8,7 @@
 <body class="lecture-page"><div aria-hidden="true" class="progress-track"><div class="progress-bar" id="reading-progress"></div></div>
 <header class="topbar"><a class="brand" href="../"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name">Allan's Handbook of Algorithms</span></a>
 <nav aria-label="Primary navigation" class="topnav"><a href="./">Greedy overview</a><div aria-label="Language" class="language-switch"><span class="current">EN</span><span class="language-separator">·</span><a href="interval-scheduling-ru.html">RU</a></div></nav></header>
-<aside aria-label="Section navigation" class="sidebar"><div class="sidebar-title">Chapter 9 · Section 4</div><a href="#problem">Problem</a><a href="#choices">Choosing the rule</a><a href="#algorithm">Algorithm</a><a href="#proof">Correctness</a><a href="#implementation">Implementation</a><a href="#variants">Variants</a><a href="#exercises">Exercises</a></aside>
+<aside aria-label="Section navigation" class="sidebar"><div class="sidebar-title">Chapter 9 · Section 4</div><a href="#problem">Problem</a><a href="#choices">Choosing the rule</a><a href="#frontier">Why earliest finish dominates</a><a href="#algorithm">Algorithm</a><a href="#proof">Correctness</a><a href="#implementation">Implementation</a><a href="#recognition">Recognition checklist</a><a href="#variants">Variants</a><a href="#exercises">Exercises</a></aside>
 <main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Chapter 9 · Section 4</div><h1>Interval Scheduling</h1><p class="chapter-topics">Choose as many non-overlapping intervals as possible. The right greedy move is simple: finish early and leave room for what comes next.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-interval-scheduling.svg"/></div></section>
 <section class="lecture-section" id="problem">
 <h2>Choose as many intervals as possible</h2>
@@ -38,6 +38,17 @@
 <article class="greedy-rule-option good"><h3>Earliest finish</h3><p>Leaves the largest possible amount of time for all future activities.</p></article>
 </div>
 <div class="greedy-caution"><strong>Counterexample to earliest start.</strong> Take [0,10), [1,2), [2,3), and [3,4). Earliest start chooses [0,10) and gets one activity; the other three fit together. The failure can be made arbitrarily large by adding more short intervals.</div>
+</section>
+
+<!-- book-synthesis-is -->
+<section class="lecture-section" id="frontier">
+<h2>Earliest finish is a dominance rule</h2>
+<p class="lead">The successful greedy rule is not “pick something short”. It is “push the occupied frontier as little as possible”. Among all candidates we could take next, the earliest-finishing one leaves a residual instance that contains every option left by any later-finishing choice—and sometimes more.</p>
+<div class="inline-contrast">
+<div class="no"><h3>Duration asks the wrong question</h3><p>A 20-minute interval placed in the middle of a busy region may destroy two useful intervals. Length measures the chosen interval itself, not the future it leaves.</p></div>
+<div class="yes"><h3>Finish time measures the residual problem</h3><p>If <span class="math">f(g) ≤ f(o)</span>, then every interval available after <span class="math">o</span> is also available after <span class="math">g</span>. This is exactly the dominance statement the proof needs.</p></div>
+</div>
+<div class="one-line"><strong>Greedy design lesson.</strong> Prefer a rule that directly improves the shape of the remaining problem, not merely a statistic that looks attractive on the chosen object.</div>
 </section>
 
 <section class="lecture-section" id="algorithm">
@@ -87,6 +98,17 @@
 <div class="code-note-item wide-note"><span>5–8</span><p>After sorting, a single scan is enough. We accept exactly the intervals compatible with the last selected one.</p></div>
 </div></div>
 <div class="complexity-strip"><div><span>Sorting</span><b>O(n log n)</b><small>by finish</small></div><div><span>Scan</span><b>O(n)</b><small>one pass</small></div><div><span>Total</span><b>O(n log n)</b><small>dominant sort</small></div><div><span>Extra memory</span><b>O(n)</b><small>for output</small></div></div>
+</section>
+
+<section class="lecture-section" id="recognition">
+<h2>Recognition checklist</h2>
+<div class="proof-checklist">
+<div class="proof-check"><span>1</span><p><strong>Objective:</strong> maximize the <em>number</em> of selected intervals, not total weight or profit.</p></div>
+<div class="proof-check"><span>2</span><p><strong>Constraint:</strong> selected intervals must be pairwise non-overlapping on one resource.</p></div>
+<div class="proof-check"><span>3</span><p><strong>Safe frontier:</strong> after a choice, only the finishing time matters for future compatibility.</p></div>
+<div class="proof-check"><span>4</span><p><strong>Rule:</strong> sort by finishing time and take the next compatible interval.</p></div>
+</div>
+<div class="practice-note"><h3>Common interview trap</h3><p>If the prompt changes “maximum number of intervals” to “maximum total value”, do not reuse earliest finish. That one word—value—creates weighted interval scheduling and a DP state.</p></div>
 </section>
 
 <section class="lecture-section" id="variants">
