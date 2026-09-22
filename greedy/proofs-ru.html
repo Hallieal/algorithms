@@ -109,13 +109,20 @@
 
 <!-- grokking-pass-proofs -->
 <section class="lecture-section" id="intuition-proof">
-<h2>Чем «очевиднее» greedy-rule, тем важнее доказательство</h2>
-<p class="lead">Два локальных правила могут выглядеть одинаково естественно и иметь совершенно разный статус. Картинка создаёт интуицию; только структурный argument показывает, безопасен ли commitment на любом input.</p>
+<h2>Сначала сделайте выбор почти неизбежным. Потом докажите его.</h2>
+<p class="lead">У хорошего greedy-объяснения два слоя. Первый — картинка в голове: почему этот шаг оставляет будущее в лучшем состоянии? Второй — доказательство, что скрытого контрпримера действительно нет.</p>
 <div class="path-choice">
-<article class="good"><h3>Earliest finish</h3><p>В maximum-cardinality interval scheduling более ранний finish оставляет все варианты, которые оставил бы поздний. Интуиция превращается в exchange proof.</p></article>
-<article class="bad"><h3>Взять самый привлекательный целый item</h3><p>В 0/1 Knapsack первый хороший item может съесть capacity, нужную лучшей паре. Правило выглядит не менее естественным, но маленький counterexample его уничтожает.</p></article>
+<article class="good"><h3>Classroom scheduling</h3><p>Самое раннее окончание выглядит разумно, потому что освобождает аудиторию раньше всех. Эта интуиция подсказывает инвариант: всё, что доступно после более позднего finish, доступно и после более раннего.</p></article>
+<article class="bad"><h3>0/1 Knapsack</h3><p>«Сначала возьми самый дорогой предмет» выглядит не менее естественно, но один item может занять capacity, нужную для лучшей пары. Одной картинки недостаточно, чтобы оправдать commitment.</p></article>
 </div>
-<div class="one-line"><strong>Педагогическое правило:</strong> пример помогает найти invariant, а затем invariant надо доказать. Сам пример доказательством не является.</div>
+<div class="predict-card"><span class="predict-kicker">Попробуйте до формального proof</span><h3>Какую будущую возможность greedy-choice точно не делает хуже?</h3><p>Если это нельзя сформулировать одним предложением, скорее всего, ещё не ясно, что именно должно сохранять доказательство.</p></div>
+<div class="proof-template">
+<article><b>Интуиция</b><p>Опишите выбор обычным языком: «освободить комнату раньше», «тратить capacity на более плотный item», «зафиксировать самый дешёвый достижимый node».</p></article>
+<article><b>Инвариант</b><p>Переведите картинку в сравнимую величину: remaining candidates, capacity, cut weight или tentative distance.</p></article>
+<article><b>Контрпример</b><p>Попробуйте построить минимальный input, который ломает этот invariant. Если получилось — меняйте правило.</p></article>
+<article><b>Formal proof</b><p>Только после этого пишите exchange, staying-ahead, induction или cut argument.</p></article>
+</div>
+<div class="one-line"><strong>Пример помогает открыть доказательство, но не заменяет его.</strong> История нужна, чтобы увидеть invariant, который затем доказывается для любого input.</div>
 </section>
 
 <section class="lecture-section" id="mistakes">
