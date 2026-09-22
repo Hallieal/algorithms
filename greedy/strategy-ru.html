@@ -92,14 +92,18 @@
 
 <!-- grokking-pass-strategy -->
 <section class="lecture-section" id="grokking-outcomes">
-<h2>Одна и та же greedy-интуиция может привести к трём разным результатам</h2>
-<p class="lead">Greedy особенно хорошо понимается на сравнении задач, которые сначала выглядят одинаково простыми. Локальный выбор может быть точно оптимальным, просто полезным или лишь приближённым.</p>
+<h2>Один greedy-инстинкт — три совершенно разные гарантии</h2>
+<p class="lead">Самый быстрый способ понять greedy — сравнить три задачи, в которых хочется сделать одно и то же: «возьми лучший вариант прямо сейчас». Отличается не форма цикла, а то, что мы умеем про него доказать.</p>
 <div class="grokking-contrast">
-<article class="grokking-card good"><span>Exact</span><h3>Classroom scheduling</h3><p>Берём совместимую пару, которая заканчивается раньше всех. Здесь можно доказать, что локальный выбор сохраняет optimum.</p></article>
-<article class="grokking-card warn"><span>Не exact</span><h3>0/1 Knapsack</h3><p>Локально привлекательный целый предмет может заблокировать более выгодную комбинацию. Естественный greedy-rule ещё не равен OPT.</p></article>
-<article class="grokking-card approx"><span>Approximation</span><h3>Set Cover</h3><p>Когда exact search слишком дорог, каждый раз покрываем максимум ещё не покрытых элементов и получаем быстрое решение с доказанной гарантией качества.</p></article>
+<article class="grokking-card good"><span>Exact</span><h3>Classroom scheduling</h3><p>Берём совместимую пару, которая заканчивается раньше всех. Она оставляет не меньше места для будущих пар, поэтому правило можно доказать оптимальным.</p></article>
+<article class="grokking-card warn"><span>Greedy guess</span><h3>0/1 Knapsack</h3><p>Берём самый привлекательный целый предмет. Правило выглядит естественно, но может проиграть комбинации нескольких меньших предметов. Без отдельной гарантии это лишь heuristic.</p></article>
+<article class="grokking-card approx"><span>Approximation</span><h3>Set Cover</h3><p>Берём множество, покрывающее максимум ещё не покрытых элементов. Exact optimum не гарантирован, зато отклонение можно математически ограничить.</p></article>
 </div>
-<div class="predict-card"><span class="predict-kicker">Два вопроса сразу</span><h3>Сохраняет ли локальный выбор optimum? Если нет — какая гарантия остаётся?</h3><p>Эта пара вопросов полезнее списка «greedy-задач»: она разделяет exact greedy, heuristic и approximation algorithms.</p></div>
+<div class="inline-contrast">
+<div class="yes"><h3>Как оценивать approximation</h3><p>Нужно разделять два вопроса: насколько быстро работает алгоритм и насколько близко к OPT он гарантированно приходит.</p></div>
+<div class="no"><h3>Как оценивать heuristic</h3><p>Хорошие результаты на тестах важны, но «на моих примерах всё работает» не является worst-case гарантией.</p></div>
+</div>
+<div class="predict-card"><span class="predict-kicker">Главная привычка</span><h3>После предложения greedy-rule сразу спросите, какое именно утверждение вы делаете.</h3><p>Exact optimum? Provable approximation? Или просто практический heuristic? Внешне один и тот же цикл может относиться к любому из трёх случаев.</p></div>
 </section>
 
 <section class="lecture-section" id="failure">
