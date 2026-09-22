@@ -24,7 +24,7 @@
 </header>
 <aside aria-label="Section navigation" class="sidebar">
 <div class="sidebar-title">Chapter 9 · Section 11</div>
-<a href="#map">The big picture</a><a href="#matroid">Matroids</a><a href="#mst">Kruskal</a><a href="#limits">What is not a matroid</a><a href="#exact-vs-fast">Exact search vs fast greedy</a><a href="#guarantees">Heuristic vs approximation</a><a href="#approx">Approximation</a><a href="#setcover">Set Cover worked example</a><a href="#set-code">Set Cover in code</a><a href="#decision">Decision map</a><a href="#reading">Further reading</a><a href="#exercises">Exercises</a>
+<a href="#map">The big picture</a><a href="#matroid">Matroids</a><a href="#mst">Kruskal</a><a href="#limits">What is not a matroid</a><a href="#exact-vs-fast">Exact search vs fast greedy</a><a href="#guarantees">Heuristic vs approximation</a><a href="#approx">Approximation</a><a href="#setcover">Set Cover worked example</a><a href="#set-code">Set Cover in code</a><a href="#optimization">Greedy as state compression</a><a href="#decision">Decision map</a><a href="#reading">Further reading</a><a href="#exercises">Exercises</a>
 </aside>
 <main class="lecture">
 <section class="lecture-hero greedy-lecture-hero">
@@ -169,6 +169,19 @@ while uncovered:
 <div class="one-line"><strong>Implementation mirrors the idea.</strong> Intersection finds new coverage; set difference removes what is already covered. Good data structures can make an algorithmic idea much easier to see in code.</div>
 </section>
 
+<!-- common-sense-round-beyond -->
+<section class="lecture-section" id="optimization">
+<h2>Greedy is broader than “sort and select”</h2>
+<p class="lead">A useful optimization view is that greedy can compress a large space of partial possibilities into a tiny running state—provided the discarded possibilities are provably dominated.</p>
+<div class="grokking-contrast">
+<article class="grokking-card good"><span>One value</span><h3>Array maximum</h3><p>All previous values smaller than <code>best_so_far</code> are irrelevant to the final maximum. One number summarizes the prefix.</p></article>
+<article class="grokking-card warn"><span>One running prefix</span><h3>Maximum subarray</h3><p>A negative accumulated prefix can never help a future continuation. Resetting it removes an entire family of dominated histories.</p></article>
+<article class="grokking-card approx"><span>Two thresholds</span><h3>Increasing triplet</h3><p>Keep the lowest first value and the lowest feasible middle threshold. Lower thresholds dominate higher ones because they are easier for a future third value to exceed.</p></article>
+</div>
+<div class="optimization-gap"><b>Best-imaginable Big O is a design target, not a correctness proof</b><p>Knowing that an <span class="math">O(n)</span> solution feels plausible can motivate a one-pass search for compressed state. It does not justify the discard rule. Correctness still requires an invariant, dominance argument, exchange, or another proof.</p></div>
+<div class="one-line"><strong>A compact state is the reward for a proof.</strong> First show which alternatives can never matter again; only then delete them from the algorithm.</div>
+</section>
+
 <section class="lecture-section" id="decision">
 <h2>A checklist for new problems</h2>
 <div class="proof-checklist">
@@ -182,6 +195,7 @@ while uncovered:
 <section class="lecture-section" id="reading">
 <h2>Further reading</h2>
 <div class="reference-list">
+<div class="reference-item"><b>Jay Wengrow — A Common-Sense Guide to Data Structures and Algorithms in Python</b><span>Chapter 20 develops the optimization workflow from current Big O to best-imaginable Big O, then uses greedy state compression for array maximum, maximum-subarray sum, and increasing triplets; Chapter 18 gives a detailed Dijkstra walk-through and compares a simple array frontier with a priority queue.</span></div>
 <div class="reference-item"><b>Aditya Y. Bhargava — Grokking Algorithms, 2nd ed.</b><span>Chapter 10 gives the intuitive progression from classroom scheduling to a failing 0/1 Knapsack greedy rule and then to greedy Set Cover as an approximation; Chapters 7 and 9 give visual treatments of Huffman coding and Dijkstra.</span></div>
 <a class="reference-item" href="https://www.pearson.com/en-us/subject-catalog/p/algorithm-design/P200000003259" target="_blank" rel="noopener"><b>Jon Kleinberg & Eva Tardos — Algorithm Design</b><span>A more proof-oriented treatment of scheduling, MSTs, and greedy design.</span></a>
 <a class="reference-item" href="https://mitpress.mit.edu/9780262046305/introduction-to-algorithms/" target="_blank" rel="noopener"><b>Cormen, Leiserson, Rivest & Stein — Introduction to Algorithms</b><span>Formal reference for greedy algorithms, Huffman coding, MSTs, and shortest paths.</span></a>
