@@ -24,7 +24,7 @@
 </header>
 <aside aria-label="Навигация по разделу" class="sidebar">
 <div class="sidebar-title">Глава 9 · Раздел 11</div>
-<a href="#map">Общая картина</a><a href="#matroid">Матроиды</a><a href="#mst">Краскал</a><a href="#limits">Что не является матроидом</a><a href="#approx">Приближения</a><a href="#decision">Как выбирать подход</a><a href="#reading">Что читать дальше</a><a href="#exercises">Задачи</a>
+<a href="#map">Общая картина</a><a href="#matroid">Матроиды</a><a href="#mst">Краскал</a><a href="#limits">Что не является матроидом</a><a href="#guarantees">Heuristic vs approximation</a><a href="#approx">Приближения</a><a href="#setcover">Пример Set Cover</a><a href="#decision">Как выбирать подход</a><a href="#book-map">Пять взглядов из книг</a><a href="#reading">Что читать дальше</a><a href="#exercises">Задачи</a>
 </aside>
 <main class="lecture">
 <section class="lecture-hero greedy-lecture-hero">
@@ -80,11 +80,33 @@
 </div>
 </section>
 
+<!-- book-synthesis-beyond -->
+<section class="lecture-section" id="guarantees">
+<h2>Heuristic и approximation algorithm — не одно и то же</h2>
+<p class="lead">Оба могут вернуть неоптимальное решение, но только один тип метода сопровождается теоремой о том, насколько плохим вообще может быть ответ.</p>
+<div class="inline-contrast">
+<div class="no"><h3>Heuristic</h3><p>Правило проектируется так, чтобы быстро или хорошо работать на практике. Качество может быть отличным, но общей worst-case гарантии нет, пока она отдельно не доказана.</p></div>
+<div class="yes"><h3>Approximation algorithm</h3><p>Работает эффективно и имеет доказанную связь с OPT. Для minimization ratio <span class="math">α</span> означает <span class="math">ALG ≤ α·OPT</span> на любом допустимом input.</p></div>
+</div>
+<div class="one-line"><strong>Разница принципиальна.</strong> «Greedy обычно достаточно хорош» — инженерное наблюдение. «Greedy не хуже чем <span class="math">ln n+1</span> от optimum» — математическая гарантия.</div>
+</section>
+
 <section class="lecture-section" id="approx">
 <h2>Greedy полезен и без точного оптимума</h2>
 <p class="lead">В approximation algorithms вопрос меняется: если greedy промахивается мимо optimum, насколько далеко он вообще может уйти?</p>
 <div class="approx-box"><h3>Set Cover</h3><p>Есть <span class="math">n</span> элементов и семейство множеств, вместе покрывающих их все. Каждый раз выбираем множество, которое покрывает максимум ещё не покрытых элементов. Greedy может быть не оптимален, но использует не более чем в <span class="math">Hₙ</span> раз больше множеств, чем optimum, где <span class="math">Hₙ=1+1/2+···+1/n ≤ ln n+1</span>.</p></div>
 <div class="inline-contrast"><div class="yes"><h3>Exact greedy</h3><p>Доказываем безопасность каждого необратимого выбора. Approximation ratio равен 1.</p></div><div class="no"><h3>Approximation greedy</h3><p>Допускаем локальную потерю, но ограничиваем суммарную потерю по всем шагам.</p></div></div>
+</section>
+
+<section class="lecture-section" id="setcover">
+<h2>Worked approximation example: Set Cover</h2>
+<p class="lead">Сам greedy-step очень простой: выбираем множество, покрывающее максимум ещё не покрытых элементов. Доказать approximation ratio существенно труднее, чем выполнить алгоритм.</p>
+<div class="clean-steps">
+<div class="clean-step"><span>1</span><p>Universe: <span class="math">{1,2,3,4,5,6}</span>. Пусть A покрывает {1,2,3}, B — {2,4,5}, C — {3,5,6}, D — {4,6}.</p></div>
+<div class="clean-step"><span>2</span><p>Greedy сначала берёт A: оно покрывает три новых элемента. Остаются {4,5,6}.</p></div>
+<div class="clean-step"><span>3</span><p>B и C покрывают по два оставшихся элемента. Берём любое; после B остаётся только {6}, которое закрывает C или D.</p></div>
+</div>
+<div class="practice-note"><h3>Что измеряет approximation proof</h3><p>Если OPT использует <span class="math">k</span> множеств для покрытия оставшегося universe, хотя бы одно OPT-множество покрывает не меньше <span class="math">1/k</span> оставшихся элементов. Greedy покрывает как минимум столько же. Повторение этого charging argument даёт harmonic bound.</p></div>
 </section>
 
 <section class="lecture-section" id="decision">
@@ -97,12 +119,29 @@
 </div>
 </section>
 
+<section class="lecture-section" id="book-map">
+<h2>Пять книжных взглядов, из которых собрана глава</h2>
+<p class="lead">Сильная версия handbook не копирует одну книгу, а объединяет разные педагогические преимущества.</p>
+<div class="book-map">
+<article class="book-card"><h3>Steven S. Skiena — The Algorithm Design Manual</h3><p>Главная сильная сторона — дизайн через false starts: предложить естественное правило, сломать его контрпримером и понять, почему правильный инвариант выживает.</p><small>Особенно полезно для strategy, proofs, interval scheduling, MST, Dijkstra и heuristic vs approximation.</small></article>
+<article class="book-card"><h3>Narasimha Karumanchi — Data Structures and Algorithms Made Easy</h3><p>Сильная сторона — огромное число вариантов и упражнений: Huffman, interval coloring, coin change, fractional knapsack, railway platforms, job scheduling, Prim/Kruskal, Dijkstra.</p><small>Полезно для edge cases, альтернативных реализаций, sweep line и problem bank.</small></article>
+<article class="book-card"><h3>Alex Xu & Shaun Gunawardane — Coding Interview Patterns</h3><p>Сильная сторона — узнавание паттерна через invariant: Jump Game сжимает suffix в один frontier, Gas Station выбрасывает блок стартов, Candies разделяет ограничения на два направления.</p><small>Полезно для recognition, Greedy vs DP и interview-style задач.</small></article>
+<article class="book-card"><h3>Jay Wengrow — A Common-Sense Guide to Data Structures and Algorithms in Python</h3><p>Сильная сторона — вывод быстрого решения из медленного простым языком. Greedy показан как способ оптимизации и поиска паттерна, а не как список рецептов.</p><small>Полезно для intuition, runtime motivation и Dijkstra walkthrough.</small></article>
+<article class="book-card"><h3>Aditya Y. Bhargava — Grokking Algorithms</h3><p>Сильная сторона — визуальная интуиция и запоминающиеся сюжеты. Scheduling, knapsack, Set Cover, Huffman и Dijkstra сначала становятся понятными, а потом формализуются.</p><small>Полезно для visual intuition, approximation, prefix codes и shortest-path mental model.</small></article>
+</div>
+</section>
+
 <section class="lecture-section" id="reading">
 <h2>Что читать дальше</h2>
 <div class="reference-list">
-<a class="reference-item" href="https://www.pearson.com/en-us/subject-catalog/p/algorithm-design/P200000003259" target="_blank" rel="noopener"><b>Jon Kleinberg & Eva Tardos — Algorithm Design</b><span>Глава 4 — классическое изложение greedy, scheduling, MST и shortest paths.</span></a>
-<a class="reference-item" href="https://mitpress.mit.edu/9780262046305/introduction-to-algorithms/" target="_blank" rel="noopener"><b>Cormen, Leiserson, Rivest & Stein — Introduction to Algorithms</b><span>См. главы про greedy, Huffman, minimum spanning trees и shortest paths.</span></a>
-<a class="reference-item" href="https://www.rfc-editor.org/info/rfc1951/" target="_blank" rel="noopener"><b>RFC 1951 — DEFLATE</b><span>Практический пример Huffman code lengths и восстановления кодов в реальном формате сжатия.</span></a>
+<div class="reference-item"><b>Steven S. Skiena — The Algorithm Design Manual, 2nd ed.</b><span>Особенно “Selecting the Right Jobs”, Minimum Spanning Trees, Dijkstra’s Algorithm и обсуждение heuristics/approximation для трудных задач.</span></div>
+<div class="reference-item"><b>Narasimha Karumanchi — Data Structures and Algorithms Made Easy, 5th ed.</b><span>Chapter 17 про Greedy Algorithms плюс разделы графовой главы про Dijkstra, Prim и Kruskal.</span></div>
+<div class="reference-item"><b>Alex Xu & Shaun Gunawardane — Coding Interview Patterns</b><span>Chapter 16 (Jump to the End, Gas Stations, Candies), Chapter 9 про intervals и 0/1 Knapsack в DP.</span></div>
+<div class="reference-item"><b>Jay Wengrow — A Common-Sense Guide to Data Structures and Algorithms in Python, Vol. 1</b><span>Greedy optimization в Chapter 20 и пошаговый Dijkstra в graph chapter.</span></div>
+<div class="reference-item"><b>Aditya Y. Bhargava — Grokking Algorithms, 2nd ed.</b><span>Chapter 10 про greedy/approximation, Chapter 9 про Dijkstra и Huffman в главе про trees.</span></div>
+<a class="reference-item" href="https://www.pearson.com/en-us/subject-catalog/p/algorithm-design/P200000003259" target="_blank" rel="noopener"><b>Jon Kleinberg & Eva Tardos — Algorithm Design</b><span>Более proof-oriented изложение scheduling, MST и greedy design.</span></a>
+<a class="reference-item" href="https://mitpress.mit.edu/9780262046305/introduction-to-algorithms/" target="_blank" rel="noopener"><b>Cormen, Leiserson, Rivest & Stein — Introduction to Algorithms</b><span>Формальный reference для greedy, Huffman, MST и shortest paths.</span></a>
+<a class="reference-item" href="https://www.rfc-editor.org/info/rfc1951/" target="_blank" rel="noopener"><b>RFC 1951 — DEFLATE</b><span>Реальное применение Huffman code lengths и canonical code construction.</span></a>
 </div>
 </section>
 
