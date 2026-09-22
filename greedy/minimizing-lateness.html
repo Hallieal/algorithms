@@ -43,14 +43,15 @@
 <!-- book-synthesis-lateness -->
 <!-- grokking-pass-lateness -->
 <section class="lecture-section" id="same-looking">
-<h2>A familiar scheduling story can hide a different optimization problem</h2>
-<p class="lead">“Put jobs on one machine” sounds close to classroom scheduling, but the objective has changed completely. We are not maximizing how many jobs fit; every job must run, and we care about the worst deadline violation.</p>
+<h2>Same schedule, different question, different greedy key</h2>
+<p class="lead">A useful greedy habit is to separate the picture of the input from the objective. Intervals and jobs can look almost identical on a timeline while asking for a completely different optimization.</p>
 <div class="objective-swap">
-<article><h3>Maximum number of compatible activities</h3><p>Some intervals may be discarded. The useful frontier is finish time, so earliest finish is the right greedy order.</p></article>
+<article><h3>Interval Scheduling</h3><p>Some jobs may be rejected. We maximize how many survive, so finishing early protects future compatibility.</p></article>
 <div class="objective-arrow">→</div>
-<article><h3>Minimum maximum lateness</h3><p>No job may be discarded. What matters is who has the earliest deadline, so the ordering key becomes the deadline instead.</p></article>
+<article><h3>Maximum lateness</h3><p>Every job must run. We minimize the worst deadline violation, so the critical information is the deadline rather than the finish time of the interval itself.</p></article>
 </div>
-<div class="one-line"><strong>Transfer the question, not the rule.</strong> Reusing a familiar greedy ordering after the objective changes is one of the easiest ways to get a scheduling problem wrong.</div>
+<div class="predict-card"><span class="predict-kicker">Try the rule before seeing it</span><h3>What should move to the front: the shortest job, the earliest-starting job, or the earliest deadline?</h3><p>Only one of these priorities is tied directly to the quantity we are minimizing. The proof section will show why that link is enough.</p></div>
+<div class="one-line"><strong>Transfer the question, not the old answer.</strong> Greedy algorithms are easy to misuse when two problems share the same story but optimize different quantities.</div>
 </section>
 
 <section class="lecture-section" id="model">
