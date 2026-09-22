@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1" name="viewport"/>
-<meta content="Exchange arguments, staying ahead, induction, and safe-choice techniques for proving greedy algorithms correct." name="description"/><meta content="Proving Greedy Correctness | Allan's Handbook of Algorithms" property="og:title"/><meta content="Exchange arguments, staying ahead, induction, and safe-choice techniques for proving greedy algorithms correct." property="og:description"/><meta content="article" property="og:type"/>
+<meta content="A greedy proof has one job: show that the next local choice can be fixed without losing optimality." name="description"/><meta content="Proving Greedy Correctness | Allan's Handbook of Algorithms" property="og:title"/><meta content="A greedy proof has one job: show that the next local choice can be fixed without losing optimality." property="og:description"/><meta content="article" property="og:type"/>
 <title>Proving Greedy Correctness | Allan's Handbook of Algorithms</title>
 <link href="../assets/css/styles.css" rel="stylesheet"/><link href="assets/greedy.css" rel="stylesheet"/>
 <link href="../assets/images/favicon-32.png" rel="icon" sizes="32x32" type="image/png"/><link href="../assets/images/favicon.png" rel="icon" sizes="64x64" type="image/png"/><link href="../assets/images/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180"/>
@@ -9,10 +9,14 @@
 <header class="topbar"><a class="brand" href="../"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name">Allan's Handbook of Algorithms</span></a>
 <nav aria-label="Primary navigation" class="topnav"><a href="./">Greedy overview</a><div aria-label="Language" class="language-switch"><span class="current">EN</span><span class="language-separator">·</span><a href="proofs-ru.html">RU</a></div></nav></header>
 <aside aria-label="Section navigation" class="sidebar"><div class="sidebar-title">Chapter 9 · Section 2</div><a href="#goal">What must be proved?</a><a href="#patterns">Proof patterns</a><a href="#exchange">Exchange arguments</a><a href="#worked">Worked proof</a><a href="#ahead">Staying ahead</a><a href="#induction">Induction</a><a href="#mistakes">Common mistakes</a><a href="#exercises">Exercises</a></aside>
-<main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Chapter 9 · Section 2</div><h1>Proving Greedy Correctness</h1><p class="chapter-topics">Exchange arguments, staying ahead, induction, and safe-choice techniques for proving greedy algorithms correct.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-proofs.svg"/></div></section>
+<main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Chapter 9 · Section 2</div><h1>Proving Greedy Correctness</h1><p class="chapter-topics">A greedy proof has one job: show that the next local choice can be fixed without losing optimality.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-proofs.svg"/></div></section>
 <section class="lecture-section" id="goal">
-<h2>What exactly must be proved?</h2>
-<p class="lead">A greedy algorithm often looks obvious after we see it. The proof is the hard part: we must show that committing to one local choice cannot force us away from every globally optimal solution.</p>
+<h2>What a greedy proof must show</h2>
+<p class="lead">The code may be one loop. The proof has to explain why that loop is allowed to throw alternatives away. At every step, we need to know that at least one optimal solution is still compatible with the choices already fixed.</p><div class="concept-strip">
+<article class="concept-cell rule"><span>What to prove</span><b>The next greedy choice is safe</b><p>Some optimal solution can be made to contain it.</p></article>
+<article class="concept-cell proof"><span>Then</span><b>Reduce to a smaller instance</b><p>The remaining decisions must have the same structure.</p></article>
+<article class="concept-cell cost"><span>Typical tools</span><b>Exchange, staying ahead, cuts</b><p>Pick the proof that matches the shape of the problem.</p></article>
+</div>
 <div class="proof-goal"><h3>The core statement</h3><p>After the greedy algorithm makes its next choice, there must still be at least one optimal solution consistent with all choices made so far.</p></div>
 <div class="greedy-properties">
 <article class="greedy-property"><h3>Safety of the choice</h3><p>The next greedy decision can be included in some optimal solution.</p></article>
@@ -21,8 +25,8 @@
 </section>
 
 <section class="lecture-section" id="patterns">
-<h2>Main proof patterns</h2>
-<p class="lead">There is no single universal greedy proof, but a small collection of techniques covers a large fraction of textbook and contest problems.</p>
+<h2>Four proof patterns worth knowing</h2>
+<p class="lead">Most greedy proofs are variations of a few ideas. The names matter less than the move you make: exchange a choice, compare partial progress, reduce the instance, or use a cut.</p>
 <div class="proof-pattern-grid">
 <article class="proof-pattern-card"><div class="proof-pattern-mark">↔</div><h3>Exchange argument</h3><p>Start from an optimal solution. If it does not use the greedy choice, modify it so that it does, without making the objective worse.</p></article>
 <article class="proof-pattern-card"><div class="proof-pattern-mark">≥</div><h3>Greedy stays ahead</h3><p>Compare the greedy partial solution with an arbitrary optimal one after every step and show that greedy is never behind.</p></article>
@@ -32,8 +36,8 @@
 </section>
 
 <section class="lecture-section" id="exchange">
-<h2>Exchange arguments</h2>
-<p class="lead">The exchange argument is the most characteristic greedy proof. It does not try to describe every optimal solution. It only shows that one optimal solution can be transformed to agree with the greedy algorithm.</p>
+<h2>1. Exchange argument</h2>
+<p class="lead">Start with an optimal solution that may disagree with greedy. Change only the first conflicting part, keep feasibility, and show the objective does not get worse. Now an optimal solution agrees with greedy one step further.</p>
 <div class="exchange-demo">
 <div class="exchange-side"><span>An optimal solution</span><div class="exchange-set"><div class="exchange-item">different choice</div><div class="exchange-item">...</div><div class="exchange-item">...</div></div></div>
 <div class="exchange-arrow">→</div>
@@ -48,7 +52,7 @@
 </section>
 
 <section class="lecture-section" id="worked">
-<h2>Worked proof: shortest jobs first</h2>
+<h2>Worked example: shortest jobs first</h2>
 <p class="lead">Return to the previous page’s problem: we have a time budget T, independent jobs with positive durations, and we want to complete as many jobs as possible. Greedy sorts jobs by increasing duration and takes them while they fit.</p>
 <div class="two-column-block">
 <div class="text-panel"><h3>Greedy solution</h3><p>Let the sorted durations be <span class="math">d₁ ≤ d₂ ≤ ··· ≤ dₙ</span>. Suppose greedy takes the first <span class="math">k</span> jobs, so</p><div class="formula-line">d₁ + ··· + dₖ ≤ T</div><p>but adding <span class="math">dₖ₊₁</span> would exceed T.</p></div>
@@ -58,14 +62,14 @@
 </section>
 
 <section class="lecture-section" id="ahead">
-<h2>Greedy stays ahead</h2>
+<h2>2. Greedy stays ahead</h2>
 <p class="lead">Sometimes it is easier to compare partial solutions step by step. We define a quantity that measures progress and prove that after the first choice, the second choice, and so on, greedy is at least as far ahead as any optimal solution.</p>
 <div class="proof-goal"><h3>Typical form</h3><p>If the greedy solution makes choices <span class="math">g₁, g₂, ...</span> and an optimal solution makes <span class="math">o₁, o₂, ...</span>, prove an inequality such as <span class="math">progress(g₁,...,gᵢ) ≥ progress(o₁,...,oᵢ)</span> for every i.</p></div>
 <p>A classic example is interval scheduling: after choosing the first i compatible intervals, the schedule that always picks the earliest finishing interval finishes no later than any other schedule containing i intervals. That leaves at least as much room for future intervals.</p>
 </section>
 
 <section class="lecture-section" id="induction">
-<h2>Safe choice + induction</h2>
+<h2>3. Safe choice, then induction</h2>
 <p class="lead">Many greedy proofs have the same recursive shape even when the algorithm itself is written as a loop.</p>
 <div class="proof-checklist">
 <div class="proof-check"><span>1</span><p><strong>Prove the next greedy choice is safe.</strong> Show that some optimal solution contains it.</p></div>
@@ -76,9 +80,9 @@
 </section>
 
 <section class="lecture-section" id="mistakes">
-<h2>Common proof mistakes</h2>
+<h2>What is not a proof</h2>
 <div class="proof-mistakes">
-<article class="proof-mistake"><h3>“It is obviously best now”</h3><p>A local comparison says nothing about downstream consequences. You still need a global argument.</p></article>
+<article class="proof-mistake"><h3>“It is obviously best now”</h3><p>“Best right now” is exactly the claim that needs justification. The future can overturn a local advantage.</p></article>
 <article class="proof-mistake"><h3>Only checking examples</h3><p>Examples can falsify a greedy rule, but no finite set of successful examples proves correctness.</p></article>
 <article class="proof-mistake"><h3>Assuming optimal substructure is enough</h3><p>Dynamic programming also has optimal substructure. Greedy additionally needs a safe irreversible choice.</p></article>
 </div>
