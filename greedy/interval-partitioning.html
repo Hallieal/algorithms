@@ -1,5 +1,5 @@
 <!DOCTYPE html><html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1" name="viewport"/>
-<meta content="Assign every interval to a resource while using the minimum possible number of rooms, with a min-heap for the earliest finishing room." name="description"/><meta content="Interval Partitioning | Allan's Handbook of Algorithms" property="og:title"/><meta content="Assign every interval to a resource while using the minimum possible number of rooms, with a min-heap for the earliest finishing room." property="og:description"/><meta content="article" property="og:type"/>
+<meta content="Schedule every interval while using as few rooms as possible. Reuse the room that becomes free first." name="description"/><meta content="Interval Partitioning | Allan's Handbook of Algorithms" property="og:title"/><meta content="Schedule every interval while using as few rooms as possible. Reuse the room that becomes free first." property="og:description"/><meta content="article" property="og:type"/>
 <title>Interval Partitioning | Allan's Handbook of Algorithms</title>
 <link href="../assets/css/styles.css" rel="stylesheet"/><link href="assets/greedy.css" rel="stylesheet"/>
 <link href="../assets/images/favicon-32.png" rel="icon" sizes="32x32" type="image/png"/><link href="../assets/images/favicon.png" rel="icon" sizes="64x64" type="image/png"/><link href="../assets/images/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180"/>
@@ -8,17 +8,21 @@
 <header class="topbar"><a class="brand" href="../"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name">Allan's Handbook of Algorithms</span></a>
 <nav aria-label="Primary navigation" class="topnav"><a href="./">Greedy overview</a><div aria-label="Language" class="language-switch"><span class="current">EN</span><span class="language-separator">·</span><a href="interval-partitioning-ru.html">RU</a></div></nav></header>
 <aside aria-label="Section navigation" class="sidebar"><div class="sidebar-title">Chapter 9 · Section 5</div><a href="#problem">Problem</a><a href="#depth">Depth</a><a href="#algorithm">Algorithm</a><a href="#proof">Correctness</a><a href="#implementation">Implementation</a><a href="#comparison">Comparison</a><a href="#exercises">Exercises</a></aside>
-<main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Chapter 9 · Section 5</div><h1>Interval Partitioning</h1><p class="chapter-topics">Assign every interval to a resource while using the minimum possible number of rooms, with a min-heap for the earliest finishing room.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-interval-partitioning.svg"/></div></section>
+<main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Chapter 9 · Section 5</div><h1>Interval Partitioning</h1><p class="chapter-topics">Schedule every interval while using as few rooms as possible. Reuse the room that becomes free first.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-interval-partitioning.svg"/></div></section>
 <section class="lecture-section" id="problem">
-<h2>The problem</h2>
-<p class="lead">This time we are not allowed to discard intervals. Every lecture, meeting, or machine job must be assigned to a resource, and overlapping intervals cannot use the same resource.</p>
+<h2>Use as few rooms as possible</h2>
+<p class="lead">Every interval must stay. The only freedom is where to place it. Overlapping intervals need different rooms, so the problem is to reuse rooms as aggressively as possible without creating a conflict.</p><div class="concept-strip">
+<article class="concept-cell rule"><span>Rule</span><b>Process by start time; reuse the earliest-free room</b><p>A min-heap tells us which room becomes available first.</p></article>
+<article class="concept-cell proof"><span>Why it works</span><b>A new room is opened only when all rooms are busy</b><p>At that moment the overlap depth forces the same number of rooms.</p></article>
+<article class="concept-cell cost"><span>Cost</span><b>O(n log n)</b><p>Sort once; one heap update per interval.</p></article>
+</div>
 <div class="greedy-definition"><span>Interval Partitioning</span><p>Assign every interval to a room so that overlapping intervals receive different rooms, while minimizing the total number of rooms.</p></div>
 <div class="greedy-caution"><strong>Do not confuse this with Interval Scheduling.</strong> There we maximized how many intervals to keep. Here every interval must remain, and we minimize the number of parallel resources.</div>
 </section>
 
 <section class="lecture-section" id="depth">
-<h2>The unavoidable lower bound: depth</h2>
-<p class="lead">At any moment when <span class="math">d</span> intervals overlap, those <span class="math">d</span> intervals must occupy different rooms. Therefore no algorithm can use fewer than the maximum number of simultaneously active intervals.</p>
+<h2>First find the lower bound: depth</h2>
+<p class="lead">If <span class="math">d</span> intervals overlap at one instant, they need <span class="math">d</span> different rooms. The maximum such overlap is called the depth, and no schedule can beat it.</p>
 <div class="depth-illustration">
 <div class="depth-card"><h3>Depth</h3><div class="depth-number">3</div><p>In our example, A, B, and C overlap around time 2. Therefore at least 3 rooms are necessary.</p></div>
 <div class="depth-card"><h3>Goal of the greedy proof</h3><p>If our algorithm never uses more rooms than the depth, then it is optimal: it matches a lower bound that every schedule must obey.</p></div>
@@ -26,8 +30,8 @@
 </section>
 
 <section class="lecture-section" id="algorithm">
-<h2>The greedy rule</h2>
-<p class="lead">Process intervals by increasing start time. For each new interval, reuse a room that is already free. The best room to reuse is the one whose current interval finishes earliest.</p>
+<h2>Reuse the room that frees first</h2>
+<p class="lead">Sort by start time. For each interval, look at the room with the smallest current finish time. If that room is free, reuse it. If even that room is still busy, every room is busy.</p>
 <div class="step-flow">
 <article class="step-item"><div class="step-number">1</div><div><h3>Sort by start time</h3><p>When we process an interval, all earlier-starting intervals have already been assigned.</p></div></article>
 <article class="step-item"><div class="step-number">2</div><div><h3>Look at the earliest finishing room</h3><p>A min-heap lets us find the room that becomes free first.</p></div></article>
@@ -44,7 +48,7 @@
 </section>
 
 <section class="lecture-section" id="proof">
-<h2>Why the algorithm is optimal</h2>
+<h2>Why opening a new room is unavoidable</h2>
 <p class="lead">The key moment is when the algorithm opens a new room for an interval <span class="math">j</span> starting at time <span class="math">sⱼ</span>.</p>
 <div class="proof-checklist">
 <div class="proof-check"><span>1</span><p>The earliest-finishing existing room is still occupied after <span class="math">sⱼ</span>.</p></div>
@@ -84,7 +88,7 @@
 </section>
 
 <section class="lecture-section" id="comparison">
-<h2>Scheduling vs partitioning</h2>
+<h2>Do not confuse the two interval problems</h2>
 <div class="table-wrap"><table><thead><tr><th>Question</th><th>Interval Scheduling</th><th>Interval Partitioning</th></tr></thead><tbody>
 <tr><td>May we discard intervals?</td><td>Yes</td><td>No</td></tr>
 <tr><td>Objective</td><td>Maximize number selected</td><td>Minimize number of rooms</td></tr>
