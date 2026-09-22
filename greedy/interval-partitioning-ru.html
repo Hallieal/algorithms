@@ -8,7 +8,7 @@
 <body class="lecture-page"><div aria-hidden="true" class="progress-track"><div class="progress-bar" id="reading-progress"></div></div>
 <header class="topbar"><a class="brand" href="../index-ru.html"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name ru-brand-name"><span class="ru-brand-lines"><span>Гайд по алгоритмам</span><span class="ru-brand-presented">presented by Аллан</span></span></span></a>
 <nav aria-label="Основная навигация" class="topnav"><a href="index-ru.html">Жадные алгоритмы</a><div aria-label="Язык" class="language-switch"><a href="interval-partitioning.html">EN</a><span class="language-separator">·</span><span class="current">RU</span></div></nav></header>
-<aside aria-label="Навигация по разделу" class="sidebar"><div class="sidebar-title">Глава 9 · Раздел 5</div><a href="#problem">Постановка</a><a href="#depth">Depth</a><a href="#algorithm">Алгоритм</a><a href="#sweep">Только число комнат: sweep line</a><a href="#proof">Корректность</a><a href="#implementation">Реализация</a><a href="#comparison">Сравнение</a><a href="#exercises">Задачи</a></aside>
+<aside aria-label="Навигация по разделу" class="sidebar"><div class="sidebar-title">Глава 9 · Раздел 5</div><a href="#problem">Постановка</a><a href="#depth">Depth</a><a href="#same-input">Те же интервалы, другая задача</a><a href="#algorithm">Алгоритм</a><a href="#sweep">Только число комнат: sweep line</a><a href="#proof">Корректность</a><a href="#implementation">Реализация</a><a href="#comparison">Сравнение</a><a href="#exercises">Задачи</a></aside>
 <main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Глава 9 · Раздел 5</div><h1>Разбиение интервалов по ресурсам</h1><p class="chapter-topics">Нужно разместить все интервалы в минимальном числе аудиторий. Переиспользуем ту, которая освобождается раньше всех.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-interval-partitioning.svg"/></div></section>
 <section class="lecture-section" id="problem">
 <h2>Использовать как можно меньше аудиторий</h2>
@@ -29,6 +29,18 @@
 <div class="depth-card"><h3>Depth</h3><div class="depth-number">3</div><p>В нашем примере A, B и C пересекаются около момента 2. Значит, нужны как минимум 3 аудитории.</p></div>
 <div class="depth-card"><h3>Что достаточно доказать</h3><p>Если жадный алгоритм никогда не использует больше аудиторий, чем depth, он оптимален: он достигает нижней границы, обязательной для любого расписания.</p></div>
 </div>
+</section>
+
+<!-- grokking-pass-partition -->
+<section class="lecture-section" id="same-input">
+<h2>Сюжет с аудиториями меняется, потому что меняется objective</h2>
+<p class="lead">Интервалы могут быть ровно теми же, что в Interval Scheduling, но вопрос уже не «какие пары оставить?». Все пары обязаны состояться; свобода только в выборе аудитории.</p>
+<div class="objective-swap">
+<article><h3>Interval Scheduling</h3><p>Пары можно отбрасывать. Цель — оставить максимум. Greedy decision: какую пару принять следующей?</p></article>
+<div class="objective-arrow">→</div>
+<article><h3>Interval Partitioning</h3><p>Отбрасывать нельзя ничего. Цель — использовать минимум аудиторий. Greedy decision: какую уже существующую аудиторию безопасно переиспользовать?</p></article>
+</div>
+<div class="predict-card"><span class="predict-kicker">Проверка распознавания</span><h3>Одинаковая картинка с интервалами не означает одинаковый greedy-rule.</h3><p>Сначала выясните, что алгоритм имеет право выбрасывать и что именно оптимизируется, и только потом переносите знакомый порядок.</p></div>
 </section>
 
 <section class="lecture-section" id="algorithm">
