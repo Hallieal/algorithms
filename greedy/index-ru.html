@@ -40,7 +40,7 @@
 <div class="chapter-card-icon"><img alt="" src="assets/greedy-strategy.svg"/></div>
 <div>
 <h3>Жадная стратегия</h3>
-<p>Что такое жадный выбор, что именно фиксируется и почему «сейчас выглядит лучше» ещё ничего не доказывает.</p>
+<p>Начинаем с трёх исходов — exact, heuristic, approximation — и разбираемся, что именно утверждает необратимый локальный выбор.</p>
 <span class="chapter-link">Открыть раздел →</span>
 </div>
 </a>
@@ -48,7 +48,7 @@
 <div class="chapter-card-icon"><img alt="" src="assets/greedy-proofs.svg"/></div>
 <div>
 <h3>Доказательства корректности</h3>
-<p>Обмен, принцип «не отстаёт», индукция и разрезы — небольшой набор приёмов, который повторяется во многих задачах.</p>
+<p>Идём от intuition к invariant и только потом к proof: пример помогает найти правильное утверждение, а exchange/staying ahead/induction/cut его доказывают.</p>
 <span class="chapter-link">Открыть раздел →</span>
 </div>
 </a>
@@ -56,7 +56,7 @@
 <div class="chapter-card-icon"><img alt="" src="assets/greedy-vs-dp.svg"/></div>
 <div>
 <h3>Жадные алгоритмы и динамическое программирование</h3>
-<p>Greedy оставляет одно будущее, DP хранит несколько. Разбираемся, какая информация ещё может понадобиться позже.</p>
+<p>На Knapsack сравниваем brute force, greedy и DP и видим, когда будущему действительно нужно хранить несколько states.</p>
 <span class="chapter-link">Открыть раздел →</span>
 </div>
 </a>
@@ -75,7 +75,7 @@
 <div class="chapter-card-icon"><img alt="" src="assets/greedy-interval-scheduling.svg"/></div>
 <div>
 <h3>Выбор непересекающихся интервалов</h3>
-<p>Оставить максимум интервалов: каждый раз берём совместимый интервал с самым ранним окончанием.</p>
+<p>Проходим classroom schedule шаг за шагом, а затем доказываем, почему earliest finish оставляет лучшее возможное будущее.</p>
 <span class="chapter-link">Открыть раздел →</span>
 </div>
 </a>
@@ -83,7 +83,7 @@
 <div class="chapter-card-icon"><img alt="" src="assets/greedy-interval-partitioning.svg"/></div>
 <div>
 <h3>Разбиение интервалов по ресурсам</h3>
-<p>Сохраняем все интервалы, но используем минимум аудиторий, переиспользуя ту, которая освобождается первой.</p>
+<p>Та же картинка с парами, другая objective: оставить все занятия, совпасть с overlap depth и переиспользовать earliest-free room.</p>
 <span class="chapter-link">Открыть раздел →</span>
 </div>
 </a>
@@ -91,7 +91,7 @@
 <div class="chapter-card-icon"><img alt="" src="assets/greedy-lateness.svg"/></div>
 <div>
 <h3>Минимизация максимального опоздания</h3>
-<p>На одной машине сортировка по дедлайну минимизирует худшее опоздание.</p>
+<p>Видим, как смена scheduling objective меняет greedy-key: все jobs остаются, поэтому порядок определяют deadlines.</p>
 <span class="chapter-link">Открыть раздел →</span>
 </div>
 </a>
@@ -110,7 +110,7 @@
 <div class="chapter-card-icon"><img alt="" src="assets/greedy-fractional-knapsack.svg"/></div>
 <div>
 <h3>Дробная задача о рюкзаке</h3>
-<p>Сортируем по marginal value на единицу веса, выводим exchange proof и LP-структуру, сравниваем sort с heap и видим, почему 0/1 Knapsack требует больше state.</p>
+<p>Начинаем с классического провала greedy в 0/1 Knapsack, разрешаем fractions и видим, как divisibility превращает density в exact rule.</p>
 <span class="chapter-link">Открыть раздел →</span>
 </div>
 </a>
@@ -118,7 +118,7 @@
 <div class="chapter-card-icon"><img alt="" src="assets/greedy-huffman.svg"/></div>
 <div>
 <h3>Кодирование Хаффмана</h3>
-<p>Строим оптимальный prefix code через merge двух минимальных весов и связываем тот же принцип с optimal file merging, entropy и canonical Huffman.</p>
+<p>Сначала считаем bits и учимся декодировать проходом по tree, затем выводим two-smallest merge, entropy bound и canonical Huffman.</p>
 <span class="chapter-link">Открыть раздел →</span>
 </div>
 </a>
@@ -137,7 +137,7 @@
 <div class="chapter-card-icon"><img alt="" src="assets/greedy-mst.svg"/></div>
 <div>
 <h3>Минимальные остовные деревья</h3>
-<p>Kruskal, Prim и Borůvka через одну идею безопасного ребра: cut property, DSU, heap, выбор реализации по плотности графа и clustering applications.</p>
+<p>Сначала разводим «cheapest route» и «cheapest network», затем выводим Kruskal, Prim и Borůvka из safe edges через cuts.</p>
 <span class="chapter-link">Открыть раздел →</span>
 </div>
 </a>
@@ -145,7 +145,7 @@
 <div class="chapter-card-icon"><img alt="" src="assets/greedy-dijkstra.svg"/></div>
 <div>
 <h3>Алгоритм Дейкстры</h3>
-<p>Смотрим на Dijkstra как на weighted BFS: finalize cheapest frontier, relax neighbors, сравниваем с Prim и выбираем между BFS, Dijkstra, Bellman–Ford и A*.</p>
+<p>Edge weights — это любая неотрицательная cost, не только distance: finalize, relax, parent chain и точное место, где negative edge ломает proof.</p>
 <span class="chapter-link">Открыть раздел →</span>
 </div>
 </a>
@@ -165,7 +165,7 @@
 <div class="chapter-card-icon"><img alt="" src="assets/greedy-matroids.svg"/></div>
 <div>
 <h3>Матроиды и дальше</h3>
-<p>Почему Краскал — настоящий matroid greedy, почему Interval Scheduling матроидом не является и зачем greedy нужен даже тогда, когда даёт только приближение.</p>
+<p>Финальная картина: matroid greedy, exact и approximate guarantees и Set Cover — от экспоненциального поиска к быстрому set-based approximation.</p>
 <span class="chapter-link">Открыть раздел →</span>
 </div>
 </a>
