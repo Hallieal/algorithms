@@ -4,7 +4,8 @@
 <title>Proving Greedy Correctness | Allan's Handbook of Algorithms</title>
 <link href="../assets/css/styles.css" rel="stylesheet"/><link href="assets/greedy.css" rel="stylesheet"/>
 <link href="../assets/images/favicon-32.png" rel="icon" sizes="32x32" type="image/png"/><link href="../assets/images/favicon.png" rel="icon" sizes="64x64" type="image/png"/><link href="../assets/images/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180"/>
-<link href="proofs.html" hreflang="en" rel="alternate"/><link href="proofs-ru.html" hreflang="ru" rel="alternate"/></head>
+<link href="proofs.html" hreflang="en" rel="alternate"/><link href="proofs-ru.html" hreflang="ru" rel="alternate"/><noscript><style>.answer-box[hidden]{display:block!important}.reveal{display:none!important}</style></noscript>
+</head>
 <body class="lecture-page"><div aria-hidden="true" class="progress-track"><div class="progress-bar" id="reading-progress"></div></div>
 <header class="topbar"><a class="brand" href="../"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name">Allan's Handbook of Algorithms</span></a>
 <nav aria-label="Primary navigation" class="topnav"><a href="./">Greedy overview</a><div aria-label="Language" class="language-switch"><span class="current">EN</span><span class="language-separator">·</span><a href="proofs-ru.html">RU</a></div></nav></header>
@@ -33,6 +34,7 @@
 <article class="proof-pattern-card"><div class="proof-pattern-mark">1</div><h3>Induction on choices</h3><p>Prove the first greedy choice is safe, reduce the problem, then apply the same reasoning to the smaller instance.</p></article>
 <article class="proof-pattern-card"><div class="proof-pattern-mark">✂</div><h3>Safe edge / cut argument</h3><p>For graph problems, identify a boundary and prove that a best edge crossing it can safely be added.</p></article>
 </div>
+<div class="bridge-note"><h3>These patterns are different views of the same move</h3><p>An exchange argument proves one local replacement is safe. “Staying ahead” repeats that comparison over every prefix. Induction packages the same safe step into a proof on the reduced instance. A cut proof is an exchange argument specialized to graph structure. In practice, these techniques often appear together rather than in isolation.</p></div>
 </section>
 
 <section class="lecture-section" id="exchange">
@@ -59,6 +61,7 @@
 <div class="proof-panel"><h3>Why no solution can take k + 1 jobs</h3><p>Among all subsets of <span class="math">k+1</span> jobs, the minimum possible total duration is the sum of the <span class="math">k+1</span> shortest jobs.</p><div class="formula-line">d₁ + ··· + dₖ₊₁ &gt; T</div><p>Therefore every set of <span class="math">k+1</span> jobs exceeds the budget. Greedy is optimal.</p></div>
 </div>
 <p>This can also be phrased as an exchange argument: whenever a solution uses a longer job instead of a shorter omitted one, swapping them cannot hurt feasibility.</p>
+<div class="theory-note"><h3>A second worked pattern: staying ahead on intervals</h3><p>Suppose greedy always picks the compatible interval that finishes earliest. Let <span class="math">gᵢ</span> be the finish time of greedy’s <span class="math">i</span>-th chosen interval and <span class="math">oᵢ</span> the finish time of the <span class="math">i</span>-th interval in any other feasible schedule. Inductively, <span class="math">gᵢ ≤ oᵢ</span>: greedy’s first finish is earliest, and if it is no later after <span class="math">i−1</span> choices, it has at least as many candidates available for choice <span class="math">i</span>. Greedy therefore never uses up more of the timeline than a competitor with the same number of intervals.</p></div>
 </section>
 
 <section class="lecture-section" id="ahead">
@@ -85,6 +88,7 @@
 <article class="proof-mistake"><h3>“It is obviously best now”</h3><p>“Best right now” is exactly the claim that needs justification. The future can overturn a local advantage.</p></article>
 <article class="proof-mistake"><h3>Only checking examples</h3><p>Examples can falsify a greedy rule, but no finite set of successful examples proves correctness.</p></article>
 <article class="proof-mistake"><h3>Assuming optimal substructure is enough</h3><p>Dynamic programming also has optimal substructure. Greedy additionally needs a safe irreversible choice.</p></article>
+<article class="proof-mistake"><h3>Proving feasibility instead of optimality</h3><p>Showing that every greedy step keeps the solution valid only proves that the algorithm returns <em>a</em> legal answer. It says nothing about whether a better legal answer was discarded.</p></article>
 </div>
 <div class="subsection"><h3>A useful proof checklist</h3><div class="proof-checklist">
 <div class="proof-check"><span>✓</span><p>What exactly is the greedy choice?</p></div>
@@ -100,6 +104,7 @@
 <article class="exercise"><div class="exercise-num">1</div><div><h3>Exchange step</h3><p>Suppose an optimal job set contains a 7-minute job but omits an available 3-minute job. What happens if we exchange them?</p><button class="reveal" data-reveal="gp-en-1" type="button">Show answer</button><div class="answer-box" hidden id="gp-en-1">The number of chosen jobs stays the same and total duration decreases by 4 minutes, so feasibility cannot be harmed.</div></div></article>
 <article class="exercise"><div class="exercise-num">2</div><div><h3>What must be preserved?</h3><p>In an exchange argument, is it enough that the new solution has the same objective value?</p><button class="reveal" data-reveal="gp-en-2" type="button">Show answer</button><div class="answer-box" hidden id="gp-en-2">No. The transformed solution must also remain feasible. A swap that improves the objective but violates constraints proves nothing.</div></div></article>
 <article class="exercise"><div class="exercise-num">3</div><div><h3>Counterexamples</h3><p>What role does a counterexample play in greedy algorithm design?</p><button class="reveal" data-reveal="gp-en-3" type="button">Show answer</button><div class="answer-box" hidden id="gp-en-3">A single counterexample is enough to disprove a proposed greedy rule. If no counterexample is found, the rule is still unproved.</div></div></article>
+<article class="exercise"><div class="exercise-num">4</div><div><h3>Cut property as exchange</h3><p>In an MST proof, take a lightest edge crossing a cut. Explain how the usual cut-property proof is an exchange argument.</p><button class="reveal" data-reveal="gp-en-4" type="button">Show answer</button><div class="answer-box" hidden id="gp-en-4">Start from an MST that does not contain the chosen light edge e. Adding e creates a cycle; that cycle contains another edge f crossing the same cut. Since w(e) ≤ w(f), replacing f by e keeps a spanning tree and does not increase weight. That is exactly an exchange.</div></div></article>
 </div>
 <div class="next-part"><h3>Next section: Greedy vs Dynamic Programming</h3><p>The next question is not merely “can greedy be proved?” but “when should we abandon greediness and keep several subproblem states instead?”</p><a class="next-part-link" href="greedy-vs-dp.html">Greedy vs Dynamic Programming →</a></div>
 </section></main>
