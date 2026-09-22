@@ -6,7 +6,7 @@
 </head>
 <body class="lecture-page"><div aria-hidden="true" class="progress-track"><div class="progress-bar" id="reading-progress"></div></div>
 <header class="topbar"><a class="brand" href="../"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name">Allan's Handbook of Algorithms</span></a><nav aria-label="Primary navigation" class="topnav"><a href="./">Greedy overview</a><div aria-label="Language" class="language-switch"><span class="current">EN</span><span class="language-separator">·</span><a href="greedy-vs-dp-ru.html">RU</a></div></nav></header>
-<aside aria-label="Section navigation" class="sidebar"><div class="sidebar-title">Chapter 9 · Section 3</div><a href="#difference">Core difference</a><a href="#structure">Shared structure</a><a href="#coins">Coin change</a><a href="#knapsack">0/1 Knapsack</a><a href="#knapsack-ladder">Knapsack: three levels</a><a href="#weighted">Weighted intervals</a><a href="#state">What must the future remember?</a><a href="#compressed-dp">When DP collapses to one state</a><a href="#signals">Which technique?</a><a href="#code">Code comparison</a><a href="#spectrum">Exactness spectrum</a><a href="#comparison">Summary table</a><a href="#exercises">Exercises</a></aside>
+<aside aria-label="Section navigation" class="sidebar"><div class="sidebar-title">Chapter 9 · Section 3</div><a href="#difference">Core difference</a><a href="#structure">Shared structure</a><a href="#coins">Coin change</a><a href="#knapsack">0/1 Knapsack</a><a href="#knapsack-ladder">Knapsack: three levels</a><a href="#weighted">Weighted intervals</a><a href="#state">What must the future remember?</a><a href="#compressed-dp">When DP collapses to one state</a><a href="#branch-test">Can one branch be discarded?</a><a href="#signals">Which technique?</a><a href="#code">Code comparison</a><a href="#spectrum">Exactness spectrum</a><a href="#comparison">Summary table</a><a href="#exercises">Exercises</a></aside>
 <main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Chapter 9 · Section 3</div><h1>Greedy vs Dynamic Programming</h1><p class="chapter-topics">Greedy keeps one future. Dynamic programming keeps several states alive until it knows which future wins.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-vs-dp.svg"/></div></section>
 <section class="lecture-section" id="difference">
 <h2>One path or many states?</h2>
@@ -116,6 +116,18 @@
 <article><code>discard rule</code><p>A negative running prefix is dominated by starting after it.</p></article>
 </div>
 <div class="one-line"><strong>The deeper distinction is how much state survives.</strong> Some DP recurrences compress to constant state; some greedy arguments can be written as tiny recurrences. Algorithm labels are less important than understanding what information the future needs.</div>
+</section>
+
+<!-- coding-patterns-round-gvdp -->
+<section class="lecture-section" id="branch-test">
+<h2>A useful interview test: can one branch be discarded forever?</h2>
+<p class="lead">Greedy and DP can both start from “there are several choices”. The difference is whether one choice provably dominates the others or whether multiple futures must remain alive.</p>
+<div class="recognition-grid">
+<article class="recognition-card"><span class="signal">Jump to the End</span><h3>One frontier survives</h3><p>Once index <span class="math">j</span> can reach the old destination, making <span class="math">j</span> the new destination does not lose any earlier solution: any earlier index that could reach the old destination can also reach <span class="math">j</span>.</p></article>
+<article class="recognition-card"><span class="signal">Gas Stations</span><h3>A failed segment kills candidates</h3><p>If start <span class="math">a</span> first fails at <span class="math">b</span>, all starts in that block can be discarded together. There is no reason to branch and test each one independently.</p></article>
+<article class="recognition-card"><span class="signal">0/1 Knapsack</span><h3>Include and exclude both matter</h3><p>For an item that fits, “take it” and “skip it” can each lead to the optimum under different remaining capacities. Neither branch dominates in general, so DP preserves both through the recurrence.</p></article>
+</div>
+<div class="interview-answer"><h3>The question to ask out loud</h3><p>“Can I prove that after this local decision, every discarded alternative is no better for every future continuation?” If yes, greedy is plausible. If no, identify the state needed to keep the competing futures.</p></div>
 </section>
 
 <section class="lecture-section" id="signals">
