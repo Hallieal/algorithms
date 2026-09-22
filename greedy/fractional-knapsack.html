@@ -8,7 +8,7 @@
 <body class="lecture-page"><div aria-hidden="true" class="progress-track"><div class="progress-bar" id="reading-progress"></div></div>
 <header class="topbar"><a class="brand" href="../"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name">Allan's Handbook of Algorithms</span></a>
 <nav aria-label="Primary navigation" class="topnav"><a href="./">Greedy overview</a><div aria-label="Language" class="language-switch"><span class="current">EN</span><span class="language-separator">·</span><a href="fractional-knapsack-ru.html">RU</a></div></nav></header>
-<aside aria-label="Section navigation" class="sidebar"><div class="sidebar-title">Chapter 9 · Section 7</div><a href="#problem">Problem</a><a href="#whole-vs-fractional">Whole vs fractional</a><a href="#interview-trap">0/1 interview trap</a><a href="#density">Value density</a><a href="#algorithm">Algorithm</a><a href="#proof">Correctness</a><a href="#lp-view">Why only one fraction?</a><a href="#divisibility">One assumption changes everything</a><a href="#boundary">0/1 boundary</a><a href="#runtime">Avoid repeated density search</a><a href="#implementation-choice">Sort or heap?</a><a href="#implementation">Implementation</a><a href="#exercises">Exercises</a></aside>
+<aside aria-label="Section navigation" class="sidebar"><div class="sidebar-title">Chapter 9 · Section 7</div><a href="#problem">Problem</a><a href="#whole-vs-fractional">Whole vs fractional</a><a href="#knapsack-landscape">A map of knapsack variants</a><a href="#interview-trap">0/1 interview trap</a><a href="#density">Value density</a><a href="#algorithm">Algorithm</a><a href="#proof">Correctness</a><a href="#lp-view">Why only one fraction?</a><a href="#divisibility">One assumption changes everything</a><a href="#boundary">0/1 boundary</a><a href="#runtime">Avoid repeated density search</a><a href="#implementation-choice">Sort or heap?</a><a href="#implementation">Implementation</a><a href="#exercises">Exercises</a></aside>
 <main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Chapter 9 · Section 7</div><h1>Fractional Knapsack</h1><p class="chapter-topics">When items are divisible, every unit of capacity should go to the item that pays the most per unit of weight.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-fractional-knapsack.svg"/></div></section>
 <section class="lecture-section" id="problem">
 <h2>Spend capacity where it pays most</h2>
@@ -38,6 +38,20 @@
 </section>
 
 <!-- coding-patterns-round-fractional -->
+<!-- skiena-round-fractional -->
+<section class="lecture-section" id="knapsack-landscape">
+<h2>Knapsack gets easy or hard depending on exactly what is equal or divisible</h2>
+<p class="lead">A useful way to understand the problem is to change one structural assumption at a time. The right algorithm changes with it.</p>
+<div class="table-wrap"><table><thead><tr><th>Variant</th><th>What structure buys you</th><th>Natural method</th></tr></thead><tbody>
+<tr><td>Items are divisible</td><td>Capacity can move continuously between items</td><td>Exact greedy by decreasing <span class="math">v_i/w_i</span></td></tr>
+<tr><td>0/1, every item has equal value</td><td>Maximizing value means maximizing the number of items</td><td>Take smallest weights first</td></tr>
+<tr><td>0/1, every item has equal weight</td><td>Every chosen item consumes the same capacity</td><td>Take largest values first</td></tr>
+<tr><td>General 0/1, integer capacity</td><td>No simple order dominates, but capacity gives a DP state</td><td>Dynamic programming in <span class="math">O(nC)</span></td></tr>
+</tbody></table></div>
+<div class="greedy-caution"><strong>Equal density does not make general 0/1 Knapsack easy.</strong> If all items have the same value-to-weight ratio, the remaining challenge is packing sizes tightly enough to use capacity well—essentially subset-sum structure rather than a useful greedy ranking.</div>
+<div class="one-line"><strong>Look for what collapses the choice.</strong> Divisibility, equal values, or equal sizes can turn a hard combinatorial choice into a simple ordering rule; without such structure, density alone is only a heuristic for 0/1 Knapsack.</div>
+</section>
+
 <section class="lecture-section" id="interview-trap">
 <h2>Interview trap: the word “fractional” changes the algorithm</h2>
 <p class="lead">A concrete 0/1 Knapsack example makes the boundary unmistakable. With capacity 7, weights <code>[5, 3, 4, 1]</code>, and values <code>[70, 50, 40, 10]</code>, the locally most valuable whole item is not part of the optimum.</p>
