@@ -67,7 +67,8 @@
 <article class="greedy-process-card"><div class="greedy-process-num">3</div><h3>Фиксируем её</h3><p>Эта временная метка уже гарантированно равна истинному кратчайшему расстоянию.</p></article>
 <article class="greedy-process-card"><div class="greedy-process-num">4</div><h3>Релаксируем рёбра</h3><p>Пытаемся улучшить расстояния до соседей путями через только что зафиксированную вершину.</p></article>
 </div>
-<div class="greedy-definition"><span>Релаксация</span><p>Для ребра <span class="math">(u,v)</span> веса <span class="math">w</span> заменяем <span class="math">dist[v]</span> на <span class="math">min(dist[v], dist[u]+w)</span>.</p></div>
+<div class="greedy-definition"><span>Релаксация</span><p>Для edge <span class="math">(u,v)</span> сравниваем текущую метку <span class="math">v</span> со стоимостью пути через <span class="math">u</span>.</p></div>
+<div class="formula-line">dist[v] ← min(dist[v], dist[u] + w(u,v))</div>
 </section>
 
 <!-- book-synthesis-dijkstra -->
