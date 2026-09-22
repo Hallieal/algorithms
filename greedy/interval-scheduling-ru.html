@@ -8,7 +8,7 @@
 <body class="lecture-page"><div aria-hidden="true" class="progress-track"><div class="progress-bar" id="reading-progress"></div></div>
 <header class="topbar"><a class="brand" href="../index-ru.html"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name ru-brand-name"><span class="ru-brand-lines"><span>Гайд по алгоритмам</span><span class="ru-brand-presented">presented by Аллан</span></span></span></a>
 <nav aria-label="Основная навигация" class="topnav"><a href="index-ru.html">Жадные алгоритмы</a><div aria-label="Язык" class="language-switch"><a href="interval-scheduling.html">EN</a><span class="language-separator">·</span><span class="current">RU</span></div></nav></header>
-<aside aria-label="Навигация по разделу" class="sidebar"><div class="sidebar-title">Глава 9 · Раздел 4</div><a href="#problem">Постановка</a><a href="#choices">Выбор правила</a><a href="#classroom-walk">Пошаговое расписание</a><a href="#frontier">Почему earliest finish доминирует</a><a href="#algorithm">Алгоритм</a><a href="#proof">Корректность</a><a href="#implementation">Реализация</a><a href="#recognition">Как распознать задачу</a><a href="#variants">Варианты задачи</a><a href="#exercises">Задачи</a></aside>
+<aside aria-label="Навигация по разделу" class="sidebar"><div class="sidebar-title">Глава 9 · Раздел 4</div><a href="#problem">Постановка</a><a href="#choices">Выбор правила</a><a href="#classroom-walk">Пошаговое расписание</a><a href="#frontier">Почему earliest finish доминирует</a><a href="#algorithm">Алгоритм</a><a href="#proof">Корректность</a><a href="#runtime">Откуда берётся O(n log n)</a><a href="#implementation">Реализация</a><a href="#recognition">Как распознать задачу</a><a href="#variants">Варианты задачи</a><a href="#exercises">Задачи</a></aside>
 <main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Глава 9 · Раздел 4</div><h1>Выбор непересекающихся интервалов</h1><p class="chapter-topics">Нужно выбрать как можно больше непересекающихся интервалов. Правильный жадный ход — освободить время как можно раньше.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-interval-scheduling.svg"/></div></section>
 <section class="lecture-section" id="problem">
 <h2>Выбрать как можно больше интервалов</h2>
@@ -93,6 +93,18 @@
 </div>
 <div class="proof-goal"><h3>Вывод</h3><p>Существует оптимальное решение, начинающееся ровно с жадного выбора <span class="math">g</span>. После него остаётся та же задача для интервалов, начинающихся после <span class="math">f(g)</span>.</p></div>
 <div class="compact-proof"><h3>Индукция, скрытая в слове «повторяем»</h3><p>Пусть <span class="math">P(k)</span> означает: существует оптимальное решение, совпадающее с greedy на первых <span class="math">k</span> выбранных интервалах. Обмен выше доказывает <span class="math">P(1)</span>. Если верно <span class="math">P(k)</span>, удаляем первые <span class="math">k</span> интервалов и всё, что с ними конфликтует. Остаётся новая задача Interval Scheduling, к которой применим тот же обмен, значит верно <span class="math">P(k+1)</span>. Поэтому оптимальное решение можно согласовать с greedy на каждом шаге.</p></div>
+</section>
+
+<!-- common-sense-round-interval -->
+<section class="lecture-section" id="runtime">
+<h2>Сам greedy-step линейный; дорогая часть — получить правильный порядок</h2>
+<p class="lead">Полезная optimization-привычка — отделять математическое правило от работы, необходимой, чтобы это правило можно было дёшево выполнять.</p>
+<div class="runtime-ladder">
+<article class="runtime-step"><span>Naive selection</span><h3>Каждый раз заново искать earliest finish</h3><p>После каждого принятого interval снова просматриваем оставшихся кандидатов и ищем совместимый с минимальным finish. В worst case линейная работа повторяется много раз: <span class="math">O(n²)</span>.</p></article>
+<article class="runtime-step best"><span>Preprocess once</span><h3>Один раз отсортировать по finish time</h3><p>Платим <span class="math">O(n log n)</span> один раз, затем идём слева направо и принимаем совместимые intervals за <span class="math">O(n)</span>.</p></article>
+<article class="runtime-step"><span>Input уже отсортирован</span><h3>Sorting вообще не нужен</h3><p>Если intervals изначально идут по finish time, сам greedy algorithm — один scan за <span class="math">O(n)</span>.</p></article>
+</div>
+<div class="optimization-gap"><b>Optimization lesson</b><p>Не приписывайте весь runtime слову «greedy». Proof говорит, какой порядок безопасен; implementation определяет, сколько работы стоит этот порядок получить.</p></div>
 </section>
 
 <section class="lecture-section" id="implementation">
