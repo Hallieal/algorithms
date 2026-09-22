@@ -8,7 +8,7 @@
 <body class="lecture-page"><div aria-hidden="true" class="progress-track"><div class="progress-bar" id="reading-progress"></div></div>
 <header class="topbar"><a class="brand" href="../"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name">Allan's Handbook of Algorithms</span></a>
 <nav aria-label="Primary navigation" class="topnav"><a href="./">Greedy overview</a><div aria-label="Language" class="language-switch"><span class="current">EN</span><span class="language-separator">·</span><a href="huffman-ru.html">RU</a></div></nav></header>
-<aside aria-label="Section navigation" class="sidebar"><div class="sidebar-title">Chapter 9 · Section 8</div><a href="#problem">Problem</a><a href="#bits-first">Why variable-length codes?</a><a href="#prefix">Prefix codes</a><a href="#decode">Decode by walking the tree</a><a href="#algorithm">Algorithm</a><a href="#tree">Tree and codes</a><a href="#merge">Optimal merge pattern</a><a href="#entropy">Entropy</a><a href="#proof">Correctness</a><a href="#heap-optimization">Why the heap changes everything</a><a href="#implementation">Implementation</a><a href="#limits">What it optimizes</a><a href="#exercises">Exercises</a></aside>
+<aside aria-label="Section navigation" class="sidebar"><div class="sidebar-title">Chapter 9 · Section 8</div><a href="#problem">Problem</a><a href="#bits-first">Why variable-length codes?</a><a href="#prefix">Prefix codes</a><a href="#decode">Decode by walking the tree</a><a href="#algorithm">Algorithm</a><a href="#tree">Tree and codes</a><a href="#merge">Optimal merge pattern</a><a href="#entropy">Entropy</a><a href="#proof">Correctness</a><a href="#heap-pattern">Heap recognition pattern</a><a href="#heap-optimization">Why the heap changes everything</a><a href="#implementation">Implementation</a><a href="#limits">What it optimizes</a><a href="#exercises">Exercises</a></aside>
 <main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Chapter 9 · Section 8</div><h1>Huffman Coding</h1><p class="chapter-topics">Frequent symbols should get short codes. Huffman achieves this by repeatedly merging the two least frequent nodes.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-huffman.svg"/></div></section>
 <section class="lecture-section" id="problem">
 <h2>Frequent symbols should be cheap to encode</h2>
@@ -145,6 +145,18 @@
 </section>
 
 <!-- common-sense-round-huffman -->
+<!-- coding-patterns-round-huffman -->
+<section class="lecture-section" id="heap-pattern">
+<h2>Interview recognition: a changing collection with repeated min extraction suggests a heap</h2>
+<p class="lead">Huffman is a clean example of a broader priority-queue pattern. The candidate set changes after every choice, but each step only needs the one or two highest-priority elements.</p>
+<div class="recognition-grid">
+<article class="recognition-card"><span class="signal">Repeated query</span><h3>Which two weights are smallest now?</h3><p>The answer changes after every merge because the combined node is inserted back into the candidate set.</p></article>
+<article class="recognition-card"><span class="signal">Data structure</span><h3>Min-heap</h3><p><code>pop</code> exposes the current minimum, and <code>push</code> restores the collection after inserting the merged weight. No global re-sort is necessary.</p></article>
+<article class="recognition-card"><span class="signal">Greedy rule</span><h3>Merge, reinsert, repeat</h3><p>The algorithmic pattern becomes almost literal code: pop twice, add the weights, push the sum, and continue until one tree remains.</p></article>
+</div>
+<div class="interview-answer"><h3>Generalization to remember</h3><p>If the problem repeatedly asks for the current min/max while the candidate set changes, think priority queue before thinking “sort after every update”.</p></div>
+</section>
+
 <section class="lecture-section" id="heap-optimization">
 <h2>The obvious Huffman implementation is quadratic</h2>
 <p class="lead">The mathematical rule says “repeatedly remove the two smallest weights”. The first implementation idea is to scan the whole collection every time—but the repeated minimum search becomes the bottleneck.</p>
