@@ -1,15 +1,19 @@
 <!DOCTYPE html><html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1" name="viewport"/>
-<meta content="How greedy algorithms differ from dynamic programming, when local commitment is safe, and when a problem needs multiple states." name="description"/><meta content="Greedy vs Dynamic Programming | Allan's Handbook of Algorithms" property="og:title"/><meta content="How greedy algorithms differ from dynamic programming, when local commitment is safe, and when a problem needs multiple states." property="og:description"/><meta content="article" property="og:type"/>
+<meta content="Greedy keeps one future. Dynamic programming keeps several states alive until it knows which future wins." name="description"/><meta content="Greedy vs Dynamic Programming | Allan's Handbook of Algorithms" property="og:title"/><meta content="Greedy keeps one future. Dynamic programming keeps several states alive until it knows which future wins." property="og:description"/><meta content="article" property="og:type"/>
 <title>Greedy vs Dynamic Programming | Allan's Handbook of Algorithms</title>
 <link href="../assets/css/styles.css" rel="stylesheet"/><link href="assets/greedy.css" rel="stylesheet"/><link href="../assets/images/favicon-32.png" rel="icon" sizes="32x32" type="image/png"/><link href="../assets/images/favicon.png" rel="icon" sizes="64x64" type="image/png"/><link href="../assets/images/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180"/>
 <link href="greedy-vs-dp.html" hreflang="en" rel="alternate"/><link href="greedy-vs-dp-ru.html" hreflang="ru" rel="alternate"/></head>
 <body class="lecture-page"><div aria-hidden="true" class="progress-track"><div class="progress-bar" id="reading-progress"></div></div>
 <header class="topbar"><a class="brand" href="../"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name">Allan's Handbook of Algorithms</span></a><nav aria-label="Primary navigation" class="topnav"><a href="./">Greedy overview</a><div aria-label="Language" class="language-switch"><span class="current">EN</span><span class="language-separator">·</span><a href="greedy-vs-dp-ru.html">RU</a></div></nav></header>
 <aside aria-label="Section navigation" class="sidebar"><div class="sidebar-title">Chapter 9 · Section 3</div><a href="#difference">Core difference</a><a href="#structure">Shared structure</a><a href="#coins">Coin change</a><a href="#knapsack">0/1 Knapsack</a><a href="#signals">Which technique?</a><a href="#code">Code comparison</a><a href="#comparison">Summary table</a><a href="#exercises">Exercises</a></aside>
-<main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Chapter 9 · Section 3</div><h1>Greedy vs Dynamic Programming</h1><p class="chapter-topics">How greedy algorithms differ from dynamic programming, when local commitment is safe, and when a problem needs multiple states.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-vs-dp.svg"/></div></section>
+<main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Chapter 9 · Section 3</div><h1>Greedy vs Dynamic Programming</h1><p class="chapter-topics">Greedy keeps one future. Dynamic programming keeps several states alive until it knows which future wins.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-vs-dp.svg"/></div></section>
 <section class="lecture-section" id="difference">
-<h2>Same goal, different commitment</h2>
-<p class="lead">Greedy algorithms and dynamic programming are both ways to exploit structure instead of brute-force enumeration. The key difference is how many possibilities remain alive after each decision.</p>
+<h2>One path or many states?</h2>
+<p class="lead">Both methods avoid brute force by exploiting structure. The difference is what they refuse to forget: greedy keeps one promising continuation, while dynamic programming keeps several partial answers because the future may treat them differently.</p><div class="concept-strip">
+<article class="concept-cell rule"><span>Greedy</span><b>Keep one future</b><p>Commit as soon as one choice can be proved safe.</p></article>
+<article class="concept-cell proof"><span>DP</span><b>Keep several states</b><p>Different partial choices remain relevant to the future.</p></article>
+<article class="concept-cell cost"><span>Diagnostic</span><b>Can one state dominate the rest?</b><p>If you cannot prove that, throwing alternatives away is dangerous.</p></article>
+</div>
 <div class="method-compare">
 <div class="method-lane greedy-lane"><h3>Greedy</h3><p>Choose one locally best continuation and discard the alternatives immediately.</p><div class="method-state-row"><span class="method-state">A</span><span class="method-state active">B</span><span class="method-state">C</span><span class="method-state">D</span></div></div>
 <div class="method-vs">VS</div>
@@ -19,7 +23,7 @@
 </section>
 
 <section class="lecture-section" id="structure">
-<h2>What they have in common</h2>
+<h2>What they share</h2>
 <div class="greedy-properties">
 <article class="greedy-property"><h3>Optimal substructure</h3><p>Both methods often rely on the fact that an optimal solution contains optimal solutions to smaller subproblems.</p></article>
 <article class="greedy-property"><h3>Repeated structure</h3><p>Both methods exploit a regular way in which a large problem reduces to smaller ones.</p></article>
@@ -28,7 +32,7 @@
 </section>
 
 <section class="lecture-section" id="coins">
-<h2>Coin change: greedy loses information</h2>
+<h2>Coin change: what greedy throws away</h2>
 <p class="lead">Suppose the coins are 1, 3, and 4 and we want to make amount 6 with the minimum number of coins.</p>
 <div class="two-column-block">
 <div class="text-panel"><h3>Greedy</h3><p>Take the largest coin that fits:</p><div class="formula-line">6 → 2 → 1 → 0</div><p>Choices: 4, 1, 1. Total: 3 coins.</p></div>
@@ -56,8 +60,8 @@
 </section>
 
 <section class="lecture-section" id="signals">
-<h2>How to decide which technique to try</h2>
-<p class="lead">These are not proofs, but they are useful signals when solving a new problem.</p>
+<h2>A practical test</h2>
+<p class="lead">Ask what information a future decision may still need. If two partial solutions can trade off different resources, keeping only one is usually unsafe.</p>
 <div class="decision-grid">
 <article class="decision-card greedy-signal"><h3>Signal for greedy: exchangeability</h3><p>You can replace a choice in an optimal solution by the greedy choice without making the answer worse.</p></article>
 <article class="decision-card greedy-signal"><h3>Signal for greedy: one safe frontier</h3><p>There is a clear next edge, interval, item, or vertex that can be finalized permanently.</p></article>
@@ -67,7 +71,7 @@
 </section>
 
 <section class="lecture-section" id="code">
-<h2>The difference in code</h2>
+<h2>The difference shows up in memory</h2>
 <p class="lead">For the same coin problem, the greedy implementation follows one path. The DP implementation explicitly stores answers to many smaller amounts.</p>
 <div class="dual-code">
 <div class="dual-code-block"><h3>Greedy change</h3><pre><code>def greedy_change(amount, coins):
@@ -97,7 +101,7 @@
 </section>
 
 <section class="lecture-section" id="comparison">
-<h2>Greedy vs DP at a glance</h2>
+<h2>Side by side</h2>
 <div class="table-wrap"><table><thead><tr><th>Question</th><th>Greedy</th><th>Dynamic programming</th></tr></thead><tbody>
 <tr><td>How many alternatives are kept?</td><td>Usually one</td><td>Many subproblem states</td></tr>
 <tr><td>Can an earlier choice be reconsidered?</td><td>No</td><td>Indirectly, by comparing state transitions</td></tr>
