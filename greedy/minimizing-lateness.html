@@ -1,5 +1,5 @@
 <!DOCTYPE html><html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1" name="viewport"/>
-<meta content="Order jobs by increasing deadlines to minimize the largest lateness on a single machine." name="description"/><meta content="Minimizing Maximum Lateness | Allan's Handbook of Algorithms" property="og:title"/><meta content="Order jobs by increasing deadlines to minimize the largest lateness on a single machine." property="og:description"/><meta content="article" property="og:type"/>
+<meta content="On one machine, minimizing the worst lateness has a crisp greedy rule: do the earliest deadline first." name="description"/><meta content="Minimizing Maximum Lateness | Allan's Handbook of Algorithms" property="og:title"/><meta content="On one machine, minimizing the worst lateness has a crisp greedy rule: do the earliest deadline first." property="og:description"/><meta content="article" property="og:type"/>
 <title>Minimizing Maximum Lateness | Allan's Handbook of Algorithms</title>
 <link href="../assets/css/styles.css" rel="stylesheet"/><link href="assets/greedy.css" rel="stylesheet"/>
 <link href="../assets/images/favicon-32.png" rel="icon" sizes="32x32" type="image/png"/><link href="../assets/images/favicon.png" rel="icon" sizes="64x64" type="image/png"/><link href="../assets/images/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180"/>
@@ -8,16 +8,20 @@
 <header class="topbar"><a class="brand" href="../"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name">Allan's Handbook of Algorithms</span></a>
 <nav aria-label="Primary navigation" class="topnav"><a href="./">Greedy overview</a><div aria-label="Language" class="language-switch"><span class="current">EN</span><span class="language-separator">·</span><a href="minimizing-lateness-ru.html">RU</a></div></nav></header>
 <aside aria-label="Section navigation" class="sidebar"><div class="sidebar-title">Chapter 9 · Section 6</div><a href="#problem">Problem</a><a href="#example">Example</a><a href="#algorithm">EDF algorithm</a><a href="#proof">Correctness</a><a href="#implementation">Implementation</a><a href="#boundaries">Model boundaries</a><a href="#exercises">Exercises</a></aside>
-<main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Chapter 9 · Section 6</div><h1>Minimizing Maximum Lateness</h1><p class="chapter-topics">Order jobs by increasing deadlines to minimize the largest lateness on a single machine.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-lateness.svg"/></div></section>
+<main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Chapter 9 · Section 6</div><h1>Minimizing Maximum Lateness</h1><p class="chapter-topics">On one machine, minimizing the worst lateness has a crisp greedy rule: do the earliest deadline first.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-lateness.svg"/></div></section>
 <section class="lecture-section" id="problem">
-<h2>The problem</h2>
-<p class="lead">We have one machine and several jobs. Job <span class="math">j</span> takes processing time <span class="math">pⱼ</span> and has deadline <span class="math">dⱼ</span>. All jobs are available from time 0, and the machine processes one job at a time.</p>
+<h2>Put the most urgent deadline first</h2>
+<p class="lead">Every job has a processing time and a deadline. We must run all jobs on one machine. The objective is not to finish everything as early as possible; it is to make the worst deadline miss as small as possible.</p><div class="concept-strip">
+<article class="concept-cell rule"><span>Rule</span><b>Earliest deadline first</b><p>Sort by deadline and never idle while work is available.</p></article>
+<article class="concept-cell proof"><span>Why it works</span><b>Swap every deadline inversion</b><p>Putting the earlier deadline first cannot increase the worst lateness.</p></article>
+<article class="concept-cell cost"><span>Cost</span><b>O(n log n)</b><p>The sort dominates the final linear scan.</p></article>
+</div>
 <div class="greedy-definition"><span>Objective</span><p>If job <span class="math">j</span> completes at time <span class="math">Cⱼ</span>, its lateness is <span class="math">Lⱼ = Cⱼ − dⱼ</span>. We want an ordering of all jobs that minimizes <span class="math">L<sub>max</sub> = maxⱼ Lⱼ</span>.</p></div>
 <div class="greedy-caution"><strong>Lateness may be negative.</strong> A job that finishes before its deadline has negative lateness. The objective cares about the worst value over all jobs.</div>
 </section>
 
 <section class="lecture-section" id="example">
-<h2>A small example</h2>
+<h2>Example: four jobs, four deadlines</h2>
 <p class="lead">Consider four jobs. Processing times and deadlines are shown below.</p>
 <div class="table-wrap"><table class="lateness-table"><thead><tr><th>Job</th><th>Processing time</th><th>Deadline</th><th>Completion in EDF order</th><th>Lateness</th></tr></thead><tbody>
 <tr><td>A</td><td>3</td><td>4</td><td>3</td><td>−1</td></tr>
@@ -35,8 +39,8 @@
 </section>
 
 <section class="lecture-section" id="algorithm">
-<h2>Earliest Deadline First</h2>
-<p class="lead">The optimal greedy rule is simple: sort jobs by nondecreasing deadline and process them in that order. This is often called Earliest Deadline First (EDF) or Earliest Due Date (EDD).</p>
+<h2>Algorithm: Earliest Deadline First</h2>
+<p class="lead">Sort jobs by nondecreasing deadline and run them back-to-back. This rule is usually called Earliest Deadline First (EDF) or Earliest Due Date (EDD).</p>
 <div class="step-flow">
 <article class="step-item"><div class="step-number">1</div><div><h3>Sort by deadline</h3><p>Arrange jobs so that <span class="math">d₁ ≤ d₂ ≤ ··· ≤ dₙ</span>.</p></div></article>
 <article class="step-item"><div class="step-number">2</div><div><h3>Process without idle time</h3><p>Start the next job immediately when the current one finishes.</p></div></article>
@@ -47,8 +51,8 @@
 </section>
 
 <section class="lecture-section" id="proof">
-<h2>Correctness by swapping inversions</h2>
-<p class="lead">Suppose a schedule contains two consecutive jobs <span class="math">i</span> then <span class="math">j</span> with <span class="math">dᵢ &gt; dⱼ</span>. Their deadlines are inverted. We show that swapping them cannot increase maximum lateness.</p>
+<h2>Why sorting by deadline is safe</h2>
+<p class="lead">If two consecutive jobs appear in the wrong deadline order—<span class="math">i</span> before <span class="math">j</span> but <span class="math">dᵢ &gt; dⱼ</span>—swap them. The pair finishes at the same time as before, while the earlier-deadline job finishes sooner.</p>
 <div class="swap-proof">
 <div class="swap-order"><span>Before</span><div class="swap-jobs"><div class="swap-job">i · later deadline</div><div class="swap-job">j · earlier deadline</div></div></div>
 <div class="swap-arrow">→</div>
@@ -84,8 +88,8 @@
 </section>
 
 <section class="lecture-section" id="boundaries">
-<h2>Where the theorem stops</h2>
-<p class="lead">EDF is optimal for this exact model. Small changes to the model can require different algorithms.</p>
+<h2>Change the model, change the algorithm</h2>
+<p class="lead">EDF is optimal for this exact objective and assumptions. Add release times or change what is being minimized, and the proof no longer applies automatically.</p>
 <div class="decision-grid">
 <article class="decision-card greedy-signal"><h3>Release times</h3><p>If jobs become available at different times, the simple “sort once by deadline” rule no longer directly solves the general problem.</p></article>
 <article class="decision-card greedy-signal"><h3>Different objective</h3><p>Minimizing total completion time, total weighted tardiness, or the number of late jobs are different scheduling problems with different optimal rules or harder algorithms.</p></article>
