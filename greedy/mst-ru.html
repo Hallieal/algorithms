@@ -1,5 +1,5 @@
 <!DOCTYPE html><html lang="ru"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1" name="viewport"/>
-<meta content="Как строить остов минимального веса с помощью свойства разреза, алгоритмов Краскала и Прима, DSU и очереди с приоритетом." name="description"/><meta content="Минимальные остовные деревья | Гайд по алгоритмам — presented by Аллан" property="og:title"/><meta content="Как строить остов минимального веса с помощью свойства разреза, алгоритмов Краскала и Прима, DSU и очереди с приоритетом." property="og:description"/><meta content="article" property="og:type"/>
+<meta content="Нужно соединить все вершины с минимальным суммарным весом. Краскал и Прим выглядят по-разному, но оба основаны на свойстве разреза." name="description"/><meta content="Минимальные остовные деревья | Гайд по алгоритмам — presented by Аллан" property="og:title"/><meta content="Нужно соединить все вершины с минимальным суммарным весом. Краскал и Прим выглядят по-разному, но оба основаны на свойстве разреза." property="og:description"/><meta content="article" property="og:type"/>
 <title>Минимальные остовные деревья | Гайд по алгоритмам — presented by Аллан</title>
 <link href="../assets/css/styles.css" rel="stylesheet"/><link href="assets/greedy.css" rel="stylesheet"/>
 <link href="../assets/images/favicon-32.png" rel="icon" sizes="32x32" type="image/png"/><link href="../assets/images/favicon.png" rel="icon" sizes="64x64" type="image/png"/><link href="../assets/images/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180"/>
@@ -8,17 +8,21 @@
 <header class="topbar"><a class="brand" href="../index-ru.html"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name ru-brand-name"><span class="ru-brand-lines"><span>Гайд по алгоритмам</span><span class="ru-brand-presented">presented by Аллан</span></span></span></a>
 <nav aria-label="Основная навигация" class="topnav"><a href="index-ru.html">Жадные алгоритмы</a><div aria-label="Язык" class="language-switch"><a href="mst.html">EN</a><span class="language-separator">·</span><span class="current">RU</span></div></nav></header>
 <aside aria-label="Навигация по разделу" class="sidebar"><div class="sidebar-title">Глава 9 · Раздел 9</div><a href="#problem">Постановка</a><a href="#cut">Свойство разреза</a><a href="#kruskal">Краскал</a><a href="#prim">Прим</a><a href="#implementation">Реализации</a><a href="#complexity">Сложность</a><a href="#properties">Полезные факты</a><a href="#exercises">Задачи</a></aside>
-<main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Глава 9 · Раздел 9</div><h1>Минимальные остовные деревья</h1><p class="chapter-topics">Как строить остов минимального веса с помощью свойства разреза, алгоритмов Краскала и Прима, DSU и очереди с приоритетом.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-mst.svg"/></div></section>
+<main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Глава 9 · Раздел 9</div><h1>Минимальные остовные деревья</h1><p class="chapter-topics">Нужно соединить все вершины с минимальным суммарным весом. Краскал и Прим выглядят по-разному, но оба основаны на свойстве разреза.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-mst.svg"/></div></section>
 <section class="lecture-section" id="problem">
-<h2>Постановка задачи</h2>
-<p class="lead">Дан связный неориентированный взвешенный граф. Нужно соединить все вершины, минимизируя суммарный вес выбранных рёбер.</p>
+<h2>Соединить всё как можно дешевле</h2>
+<p class="lead">Нужно выбрать связный набор рёбер, который достигает всех вершин и не содержит циклов. Среди всех таких деревьев ищем минимальный суммарный вес.</p><div class="concept-strip">
+<article class="concept-cell rule"><span>Главный факт</span><b>Самое лёгкое безопасное ребро через разрез можно брать</b><p>На этом одном утверждении держатся и Краскал, и Прим.</p></article>
+<article class="concept-cell proof"><span>Два взгляда</span><b>Краскал растит лес, Прим — одно дерево</b><p>Механика разная, доказательство одно.</p></article>
+<article class="concept-cell cost"><span>Сложность</span><b>O(E log E) или O(E log V)</b><p>DSU для Краскала, heap для Прима.</p></article>
+</div>
 <div class="greedy-definition"><span>Минимальное остовное дерево</span><p>Остовное дерево содержит все вершины, связно, не имеет циклов и поэтому содержит ровно <span class="math">|V|−1</span> рёбер. MST — остовное дерево минимального суммарного веса.</p></div>
 <div class="greedy-caution"><strong>MST — не дерево кратчайших путей.</strong> Оно минимизирует сумму весов всех выбранных рёбер, а не расстояние от одной исходной вершины до остальных.</div>
 </section>
 
 <section class="lecture-section" id="cut">
-<h2>Свойство разреза</h2>
-<p class="lead">Главный жадный факт, стоящий и за Краскалом, и за Примом, связан с разрезами. Разрез делит вершины на два непустых множества <span class="math">S</span> и <span class="math">V\S</span>. Ребро пересекает разрез, если его концы лежат по разные стороны.</p>
+<h2>Один факт для обоих алгоритмов: свойство разреза</h2>
+<p class="lead">Разрез просто делит вершины на две непустые стороны, <span class="math">S</span> и <span class="math">V\S</span>. Нас интересует самый дешёвый способ перейти с одной стороны на другую.</p>
 <div class="cut-diagram">
 <div class="cut-side"><h3>Сторона S</h3><p>Часть вершин и уже зафиксированные безопасные рёбра.</p></div>
 <div class="cut-bridge">самое лёгкое ребро<br/>через разрез</div>
@@ -29,8 +33,8 @@
 </section>
 
 <section class="lecture-section" id="kruskal">
-<h2>Алгоритм Краскала</h2>
-<p class="lead">Краскал рассматривает рёбра глобально от самых лёгких к самым тяжёлым. Ребро добавляется только тогда, когда оно соединяет две разные текущие компоненты.</p>
+<h2>Краскал: растим лес</h2>
+<p class="lead">Сортируем все рёбра по весу и проходим один раз. Ребро оставляем, если оно соединяет разные компоненты; если его концы уже связаны, оно создаст цикл и пропускается.</p>
 <div class="visualizer kruskal-demo">
 <div class="visualizer-head"><div><h3>Краскал по шагам</h3><p>Список рёбер уже отсортирован по весу. Зелёные рёбра входят в лес, бледные отклонены из-за цикла.</p></div><div class="step-nav-controls"><button class="previous-step" data-action="previous" type="button">← Назад</button><button class="primary-step" data-action="next" type="button">Дальше →</button></div></div>
 <div class="edge-list" data-role="edges"></div>
@@ -42,8 +46,8 @@
 </section>
 
 <section class="lecture-section" id="prim">
-<h2>Алгоритм Прима</h2>
-<p class="lead">Прим растит одно дерево, а не несколько компонент. Начинаем с произвольной вершины и каждый раз добавляем самое дешёвое ребро, ведущее из текущего дерева в ещё не посещённую вершину.</p>
+<h2>Прим: растим одно дерево</h2>
+<p class="lead">Начинаем с любой вершины. Поддерживаем одно связное дерево и каждый раз добавляем самое дешёвое ребро, которое выходит из него наружу.</p>
 <div class="algo-compare-grid">
 <article class="algo-compare-card kruskal"><h3>Краскал</h3><p>Жадный объект: глобально самое дешёвое ребро, соединяющее две разные компоненты.</p><div class="method-state-row"><span class="method-state active">лес</span><span class="method-state">сортировка рёбер</span><span class="method-state">DSU</span></div></article>
 <article class="algo-compare-card prim"><h3>Прим</h3><p>Жадный объект: самое дешёвое ребро из текущего дерева наружу.</p><div class="method-state-row"><span class="method-state active">одно дерево</span><span class="method-state">heap</span><span class="method-state">граница</span></div></article>
@@ -52,7 +56,7 @@
 </section>
 
 <section class="lecture-section" id="implementation">
-<h2>Реализации на Python</h2>
+<h2>Одно доказательство, разные структуры данных</h2>
 <div class="dual-code">
 <div class="dual-code-block"><h3>Краскал + DSU</h3><pre><code>def kruskal(n, edges):
     parent = list(range(n))
@@ -116,7 +120,7 @@ def prim(graph, start=0):
 </section>
 
 <section class="lecture-section" id="properties">
-<h2>Полезные факты об MST</h2>
+<h2>Четыре факта, которые стоит помнить</h2>
 <div class="decision-grid">
 <article class="decision-card greedy-signal"><h3>Разные веса ⇒ единственность</h3><p>Если веса всех рёбер различны, MST единственно.</p></article>
 <article class="decision-card greedy-signal"><h3>При равных весах MST может быть несколько</h3><p>Разные безопасные рёбра одинакового веса могут привести к разным остовным деревьям с одной и той же минимальной стоимостью.</p></article>
