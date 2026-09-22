@@ -3,7 +3,8 @@
 <title>Interval Scheduling | Allan's Handbook of Algorithms</title>
 <link href="../assets/css/styles.css" rel="stylesheet"/><link href="assets/greedy.css" rel="stylesheet"/>
 <link href="../assets/images/favicon-32.png" rel="icon" sizes="32x32" type="image/png"/><link href="../assets/images/favicon.png" rel="icon" sizes="64x64" type="image/png"/><link href="../assets/images/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180"/>
-<link href="interval-scheduling.html" hreflang="en" rel="alternate"/><link href="interval-scheduling-ru.html" hreflang="ru" rel="alternate"/></head>
+<link href="interval-scheduling.html" hreflang="en" rel="alternate"/><link href="interval-scheduling-ru.html" hreflang="ru" rel="alternate"/><noscript><style>.answer-box[hidden]{display:block!important}.reveal{display:none!important}</style></noscript>
+</head>
 <body class="lecture-page"><div aria-hidden="true" class="progress-track"><div class="progress-bar" id="reading-progress"></div></div>
 <header class="topbar"><a class="brand" href="../"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name">Allan's Handbook of Algorithms</span></a>
 <nav aria-label="Primary navigation" class="topnav"><a href="./">Greedy overview</a><div aria-label="Language" class="language-switch"><span class="current">EN</span><span class="language-separator">·</span><a href="interval-scheduling-ru.html">RU</a></div></nav></header>
@@ -36,7 +37,7 @@
 <article class="greedy-rule-option bad"><h3>Fewest conflicts</h3><p>Looks globally informed, but does not produce a universally correct greedy rule.</p></article>
 <article class="greedy-rule-option good"><h3>Earliest finish</h3><p>Leaves the largest possible amount of time for all future activities.</p></article>
 </div>
-<div class="greedy-caution"><strong>Counterexample to earliest start.</strong> One interval may start first and last almost the whole day, while several later short intervals fit together. Choosing by start time can therefore be arbitrarily bad.</div>
+<div class="greedy-caution"><strong>Counterexample to earliest start.</strong> Take [0,10), [1,2), [2,3), and [3,4). Earliest start chooses [0,10) and gets one activity; the other three fit together. The failure can be made arbitrarily large by adding more short intervals.</div>
 </section>
 
 <section class="lecture-section" id="algorithm">
@@ -63,7 +64,8 @@
 <div class="timeline-proof-arrow">→</div>
 <div class="timeline-proof-card"><h3>Replace o by g</h3><p>Because <span class="math">f(g) ≤ f(o)</span>, every interval that starts after <span class="math">o</span> finishes also starts after <span class="math">g</span> finishes. The rest of O still fits.</p></div>
 </div>
-<div class="proof-goal"><h3>Conclusion</h3><p>There is an optimal solution whose first interval is exactly the greedy choice <span class="math">g</span>. After choosing it, the remaining problem consists only of intervals that start after <span class="math">f(g)</span>, so the same argument applies again.</p></div>
+<div class="proof-goal"><h3>Conclusion</h3><p>There is an optimal solution whose first interval is exactly the greedy choice <span class="math">g</span>. After choosing it, the remaining problem consists only of intervals that start after <span class="math">f(g)</span>.</p></div>
+<div class="compact-proof"><h3>The induction hidden inside “repeat”</h3><p>Let <span class="math">P(k)</span> mean: some optimal solution agrees with greedy on its first <span class="math">k</span> chosen intervals. The exchange above proves <span class="math">P(1)</span>. If <span class="math">P(k)</span> holds, remove those first <span class="math">k</span> intervals and every interval that conflicts with them. What remains is another interval-scheduling instance, so the same exchange proves <span class="math">P(k+1)</span>. Therefore greedy can be matched by an optimal solution at every step.</p></div>
 </section>
 
 <section class="lecture-section" id="implementation">
@@ -90,7 +92,7 @@
 <section class="lecture-section" id="variants">
 <h2>Small change, different algorithm</h2>
 <div class="decision-grid">
-<article class="decision-card greedy-signal"><h3>Weighted intervals</h3><p>If intervals have different profits and we want maximum total profit, earliest finish is no longer enough. The standard solution becomes dynamic programming.</p></article>
+<article class="decision-card greedy-signal"><h3>Weighted intervals</h3><p>If intervals have different profits, earliest finish is no longer enough. The standard solution is dynamic programming after sorting by finish time. This handbook does not yet have a standalone Weighted Interval Scheduling page; the recurrence is previewed in <a href="greedy-vs-dp.html#weighted">Greedy vs Dynamic Programming</a>.</p></article>
 <article class="decision-card greedy-signal"><h3>Need all intervals?</h3><p>If every interval must be scheduled and we minimize the number of rooms, the objective changes completely. That is the next section: Interval Partitioning.</p></article>
 </div>
 </section>
