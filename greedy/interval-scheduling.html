@@ -8,7 +8,7 @@
 <body class="lecture-page"><div aria-hidden="true" class="progress-track"><div class="progress-bar" id="reading-progress"></div></div>
 <header class="topbar"><a class="brand" href="../"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name">Allan's Handbook of Algorithms</span></a>
 <nav aria-label="Primary navigation" class="topnav"><a href="./">Greedy overview</a><div aria-label="Language" class="language-switch"><span class="current">EN</span><span class="language-separator">·</span><a href="interval-scheduling-ru.html">RU</a></div></nav></header>
-<aside aria-label="Section navigation" class="sidebar"><div class="sidebar-title">Chapter 9 · Section 4</div><a href="#problem">Problem</a><a href="#choices">Choosing the rule</a><a href="#residual-set">Why earliest finish preserves options</a><a href="#classroom-walk">Classroom walkthrough</a><a href="#frontier">Why earliest finish dominates</a><a href="#algorithm">Algorithm</a><a href="#proof">Correctness</a><a href="#runtime">Where the O(n log n) comes from</a><a href="#implementation">Implementation</a><a href="#interval-pattern">Choose the right interval pattern</a><a href="#recognition">Recognition checklist</a><a href="#variants">Variants</a><a href="#exercises">Exercises</a></aside>
+<aside aria-label="Section navigation" class="sidebar"><div class="sidebar-title">Chapter 9 · Section 4</div><a href="#problem">Problem</a><a href="#choices">Choosing the rule</a><a href="#residual-set">Why earliest finish preserves options</a><a href="#classroom-walk">Classroom walkthrough</a><a href="#frontier">Why earliest finish dominates</a><a href="#algorithm">Algorithm</a><a href="#proof">Correctness</a><a href="#runtime">Where the O(n log n) comes from</a><a href="#implementation">Implementation</a><a href="#interval-pattern">Choose the right interval pattern</a><a href="#recognition">Recognition checklist</a><a href="#model-boundary">Why one contiguous interval matters</a><a href="#variants">Variants</a><a href="#exercises">Exercises</a></aside>
 <main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Chapter 9 · Section 4</div><h1>Interval Scheduling</h1><p class="chapter-topics">Choose as many non-overlapping intervals as possible. The right greedy move is simple: finish early and leave room for what comes next.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-interval-scheduling.svg"/></div></section>
 <section class="lecture-section" id="problem">
 <h2>Choose as many intervals as possible</h2>
@@ -163,6 +163,18 @@
 <div class="proof-check"><span>4</span><p><strong>Rule:</strong> sort by finishing time and take the next compatible interval.</p></div>
 </div>
 <div class="practice-note"><h3>Common interview trap</h3><p>If the prompt changes “maximum number of intervals” to “maximum total value”, do not reuse earliest finish. That one word—value—creates weighted interval scheduling and a DP state.</p></div>
+</section>
+
+<!-- skiena-round-interval -->
+<section class="lecture-section" id="model-boundary">
+<h2>The theorem depends on each job being one contiguous interval</h2>
+<p class="lead">The familiar picture hides an important modeling assumption: every activity occupies one uninterrupted block of time.</p>
+<div class="two-column-block">
+<div class="text-panel"><h3>Standard interval</h3><p>A movie films continuously from its start to its finish. Once we choose the earliest-finishing movie, every compatible future job starts after one clean frontier.</p></div>
+<div class="proof-panel"><h3>A job with gaps</h3><p>Suppose one project films in September and November but is idle in October. Another project can fit inside that gap. A single “finish time” no longer summarizes which future jobs remain compatible.</p></div>
+</div>
+<div class="candidate-elimination"><h3>What broke?</h3><p>The residual instance is no longer determined by one right endpoint. Compatibility depends on an entire set of occupied pieces, so the earliest-finish exchange argument has lost the structural fact it needs.</p></div>
+<div class="one-line"><strong>A modeling restriction can be algorithmic power.</strong> Recognizing that the input really consists of intervals—not arbitrary sets of time slots—is part of solving the problem.</div>
 </section>
 
 <section class="lecture-section" id="variants">
