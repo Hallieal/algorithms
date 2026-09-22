@@ -27,7 +27,7 @@
 </header>
 <aside aria-label="Section navigation" class="sidebar">
 <div class="sidebar-title">Chapter 9 · Section 1</div>
-<a href="#idea">The basic idea</a><a href="#anatomy">Anatomy</a><a href="#example">First example</a><a href="#failure">When greedy fails</a><a href="#properties">Structural properties</a><a href="#implementation">Implementation</a><a href="#complexity">Efficiency</a><a href="#exercises">Exercises</a>
+<a href="#idea">The basic idea</a><a href="#guarantees">Algorithm or heuristic?</a><a href="#anatomy">Anatomy</a><a href="#example">First example</a><a href="#failure">When greedy fails</a><a href="#design-loop">Design loop</a><a href="#properties">Structural properties</a><a href="#implementation">Implementation</a><a href="#complexity">Efficiency</a><a href="#recognition">Recognition patterns</a><a href="#exercises">Exercises</a>
 </aside>
 <main class="lecture">
 <section class="lecture-hero greedy-lecture-hero">
@@ -53,6 +53,18 @@
 <article class="greedy-process-card"><div class="greedy-process-num">4</div><h3>Commit and continue</h3><p>Do not backtrack. Reduce the problem and repeat on what remains.</p></article>
 </div>
 <div class="greedy-definition"><span>Definition</span><p>A greedy algorithm constructs a solution incrementally by repeatedly making a locally optimal feasible choice and never revisiting choices that have already been fixed.</p></div>
+</section>
+
+<!-- book-synthesis-strategy -->
+<section class="lecture-section" id="guarantees">
+<h2>Greedy algorithm, heuristic, or approximation?</h2>
+<p class="lead">The same local-looking rule can play three very different roles. Keeping these roles separate prevents one of the most common mistakes in algorithm design: treating “works well on my examples” as a correctness argument.</p>
+<div class="concept-strip">
+<article class="concept-cell rule"><span>Exact algorithm</span><b>Always returns an optimum</b><p>Interval Scheduling, Fractional Knapsack, Huffman, MST, and Dijkstra belong here once their assumptions are satisfied.</p></article>
+<article class="concept-cell proof"><span>Heuristic</span><b>Fast rule with no worst-case guarantee</b><p>A heuristic may be excellent in practice, but correctness is empirical rather than proved. Greedy ideas are often useful this way on hard problems.</p></article>
+<article class="concept-cell cost"><span>Approximation</span><b>May miss OPT, but by a proved amount</b><p>Greedy Set Cover is not exact, yet it comes with a mathematical approximation guarantee. That is much stronger than “usually good”.</p></article>
+</div>
+<div class="one-line"><strong>Design principle.</strong> First decide which claim you are making: exact optimum, guaranteed approximation, or practical heuristic. The proof obligation is different in each case.</div>
 </section>
 
 <section class="lecture-section" id="anatomy">
@@ -99,6 +111,19 @@
 <div class="mini-example-grid"><article class="mini-example bad"><h3>Another failure: maximum matching</h3><p>On the path 1—2—3—4, a rule that happens to choose the middle edge (2,3) first gets a matching of size 1.</p></article><article class="mini-example good"><h3>The optimum</h3><p>Choosing (1,2) and (3,4) gives size 2. The failure is not specific to coins: irreversible local choices can destroy future compatibility.</p></article></div>
 </section>
 
+<section class="lecture-section" id="design-loop">
+<h2>How greedy algorithms are actually discovered</h2>
+<p class="lead">Good greedy rules rarely arrive fully formed. A productive workflow is to make a plausible choice, attack it with counterexamples, and keep only the structural insight that survives.</p>
+<div class="design-loop-grid">
+<article class="design-loop-card"><span>1</span><h3>Model the objective</h3><p>State exactly what is feasible and what quantity is minimized or maximized. Tiny modeling changes can invalidate the whole rule.</p></article>
+<article class="design-loop-card"><span>2</span><h3>Guess a local rule</h3><p>Earliest finish? Largest density? Cheapest edge? Smallest tentative distance? Make the choice explicit enough to test.</p></article>
+<article class="design-loop-card"><span>3</span><h3>Try to break it</h3><p>Construct tiny adversarial examples. A single counterexample kills an exact greedy claim and often reveals what the correct rule must protect.</p></article>
+<article class="design-loop-card"><span>4</span><h3>Name the invariant</h3><p>What remains safe after the choice: more free time, an acyclic forest, a finalized distance, a feasible prefix, or a dominance frontier?</p></article>
+<article class="design-loop-card"><span>5</span><h3>Prove or downgrade</h3><p>Use exchange, staying ahead, induction, or a cut argument. If no proof exists, the rule may still be a heuristic or approximation—but call it that.</p></article>
+</div>
+<div class="practice-note"><h3>Counterexamples are part of the design process</h3><p>Trying earliest start and shortest duration before discovering earliest finish is not wasted effort. The failed rules explain what information matters and make the final proof easier to see.</p></div>
+</section>
+
 <section class="lecture-section" id="properties">
 <h2>What a proof has to establish</h2>
 <p class="lead">A correct greedy proof normally has to justify two facts: the next local choice is safe, and after fixing it the remainder is still the same kind of problem.</p>
@@ -142,13 +167,25 @@
 <p class="caption">The exact bound always depends on the problem and data structures. A greedy algorithm can even be slow if its local choice is expensive to compute.</p>
 </section>
 
+<section class="lecture-section" id="recognition">
+<h2>Three interview-style greedy patterns</h2>
+<p class="lead">Not every greedy problem looks like sorting intervals. These three patterns are useful because each compresses many possible futures into one safe summary.</p>
+<div class="pattern-lenses">
+<article class="pattern-lens"><span class="pattern-tag">Backward frontier</span><h3>Jump to the end</h3><p>Scan right-to-left and keep the leftmost index known to reach the destination. If index <span class="math">i</span> can reach that frontier, replace the frontier by <span class="math">i</span>. One integer summarizes every successful suffix.</p></article>
+<article class="pattern-lens"><span class="pattern-tag">Candidate elimination</span><h3>Gas station</h3><p>If starting at <span class="math">a</span> first makes the running tank negative at <span class="math">b</span>, then no station strictly between <span class="math">a</span> and <span class="math">b</span> can be a valid start. One failed prefix eliminates a whole block of candidates.</p></article>
+<article class="pattern-lens"><span class="pattern-tag">Directional constraints</span><h3>Candies</h3><p>One left-to-right pass enforces the left-neighbor inequality; one right-to-left pass enforces the right-neighbor inequality. Greedy can work by satisfying independent local constraints in separate directions.</p></article>
+</div>
+<div class="bridge-note"><h3>What to look for</h3><p>A promising greedy problem often has a <em>dominance</em> statement: one partial state is never worse than many alternatives, so those alternatives can be discarded permanently.</p></div>
+</section>
+
 <section class="lecture-section" id="exercises">
 <h2>Exercises</h2>
 <div class="exercise-list">
 <article class="exercise"><div class="exercise-num">1</div><div><h3>Identify the greedy components</h3><p>In the 10-minute job example, what are the priority rule, feasibility condition, and commitment?</p><button aria-expanded="false" class="reveal" data-reveal="gs-en-1" type="button">Show answer</button><div class="answer-box" hidden id="gs-en-1">Priority: shortest remaining job first. Feasibility: the job must fit in the remaining time. Commitment: once a job is selected, it stays in the schedule.</div></div></article>
 <article class="exercise"><div class="exercise-num">2</div><div><h3>Break the coin heuristic</h3><p>For coins 1, 5, and 6 and amount 10, what does “take the largest coin” return? What is optimal? Then define what it would mean for a coin system to be <em>canonical</em>.</p><button aria-expanded="false" class="reveal" data-reveal="gs-en-2" type="button">Show answer</button><div class="answer-box" hidden id="gs-en-2">Greedy gives 6 + 1 + 1 + 1 + 1, five coins. The optimum is 5 + 5, two coins. A coin system is called canonical when the largest-coin-first greedy algorithm gives a minimum-cardinality change for every target amount.</div></div></article>
 <article class="exercise"><div class="exercise-num">3</div><div><h3>Feasible is not optimal</h3><p>Why does checking feasibility after each choice not prove that the final solution is optimal?</p><button aria-expanded="false" class="reveal" data-reveal="gs-en-3" type="button">Show answer</button><div class="answer-box" hidden id="gs-en-3">Feasibility only says the partial solution obeys the constraints. It does not say that the choice preserves the possibility of reaching a globally best solution.</div></div></article>
-<article class="exercise"><div class="exercise-num">4</div><div><h3>Complexity</h3><p>If a greedy algorithm sorts n candidates and then checks each candidate in O(1), what is its total running time?</p><button aria-expanded="false" class="reveal" data-reveal="gs-en-4" type="button">Show answer</button><div class="answer-box" hidden id="gs-en-4">O(n log n): sorting dominates the subsequent O(n) scan.</div></div></article>
+<article class="exercise"><div class="exercise-num">4</div><div><h3>Classify the claim</h3><p>A fast rule gives solutions within 10% of optimum on every test file you tried, but you have no proof. Is it an exact algorithm, approximation algorithm, or heuristic?</p><button aria-expanded="false" class="reveal" data-reveal="gs-en-4a" type="button">Show answer</button><div class="answer-box" hidden id="gs-en-4a">As stated, it is a heuristic. Experimental quality is useful evidence, but an approximation algorithm requires a proved worst-case bound, and an exact algorithm requires a proof of optimality.</div></div></article>
+<article class="exercise"><div class="exercise-num">5</div><div><h3>Complexity</h3><p>If a greedy algorithm sorts n candidates and then checks each candidate in O(1), what is its total running time?</p><button aria-expanded="false" class="reveal" data-reveal="gs-en-4" type="button">Show answer</button><div class="answer-box" hidden id="gs-en-4">O(n log n): sorting dominates the subsequent O(n) scan.</div></div></article>
 </div>
 <div class="next-part"><h3>Next section: proving greedy correctness</h3><p>Now we turn the intuition of a “safe local choice” into reusable proof techniques.</p><a class="next-part-link" href="proofs.html">Proving Greedy Correctness →</a></div>
 </section>
