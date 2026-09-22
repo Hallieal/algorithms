@@ -6,7 +6,7 @@
 </head>
 <body class="lecture-page"><div aria-hidden="true" class="progress-track"><div class="progress-bar" id="reading-progress"></div></div>
 <header class="topbar"><a class="brand" href="../index-ru.html"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name ru-brand-name"><span class="ru-brand-lines"><span>Гайд по алгоритмам</span><span class="ru-brand-presented">presented by Аллан</span></span></span></a><nav aria-label="Основная навигация" class="topnav"><a href="index-ru.html">Жадные алгоритмы</a><div aria-label="Язык" class="language-switch"><a href="greedy-vs-dp.html">EN</a><span class="language-separator">·</span><span class="current">RU</span></div></nav></header>
-<aside aria-label="Навигация по разделу" class="sidebar"><div class="sidebar-title">Глава 9 · Раздел 3</div><a href="#difference">Главное отличие</a><a href="#structure">Общая структура</a><a href="#coins">Размен монет</a><a href="#coin-system">Ловушка с реалистичными coins</a><a href="#knapsack">Рюкзак 0/1</a><a href="#knapsack-ladder">Knapsack: три уровня</a><a href="#weighted">Взвешенные интервалы</a><a href="#state">Что должно помнить будущее?</a><a href="#compressed-dp">Когда DP сжимается в одно state</a><a href="#branch-test">Можно ли удалить одну ветку?</a><a href="#signals">Как выбрать метод?</a><a href="#code">Сравнение кода</a><a href="#spectrum">Спектр методов</a><a href="#comparison">Итоговая таблица</a><a href="#exercises">Задачи</a></aside>
+<aside aria-label="Навигация по разделу" class="sidebar"><div class="sidebar-title">Глава 9 · Раздел 3</div><a href="#difference">Главное отличие</a><a href="#structure">Общая структура</a><a href="#coins">Размен монет</a><a href="#coin-system">Ловушка с реалистичными coins</a><a href="#knapsack">Рюкзак 0/1</a><a href="#knapsack-ladder">Knapsack: три уровня</a><a href="#capacity-state">Когда DP быстро только при small capacity</a><a href="#weighted">Взвешенные интервалы</a><a href="#state">Что должно помнить будущее?</a><a href="#compressed-dp">Когда DP сжимается в одно state</a><a href="#branch-test">Можно ли удалить одну ветку?</a><a href="#signals">Как выбрать метод?</a><a href="#code">Сравнение кода</a><a href="#spectrum">Спектр методов</a><a href="#comparison">Итоговая таблица</a><a href="#exercises">Задачи</a></aside>
 <main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Глава 9 · Раздел 3</div><h1>Жадные алгоритмы и динамическое программирование</h1><p class="chapter-topics">Greedy оставляет одно будущее. Динамическое программирование хранит несколько состояний, пока не станет ясно, какое из них победит.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-vs-dp.svg"/></div></section>
 <section class="lecture-section" id="difference">
 <h2>Один путь или несколько состояний?</h2>
@@ -91,6 +91,22 @@
 <tr><td>4</td><td>Финальная цель строится из меньших ответов.</td></tr>
 </tbody></table></div>
 <div class="predict-card"><span class="predict-kicker">Настоящая разница</span><h3>Greedy выбрасывает альтернативные будущие; DP хранит те, которые ещё могут понадобиться.</h3><p>Именно этот структурный вопрос полезно задавать до выбора техники.</p></div>
+</section>
+
+<!-- skiena-round-gvdp -->
+<section class="lecture-section" id="capacity-state">
+<h2>Размер state-space важен: O(nC) — pseudo-polynomial</h2>
+<p class="lead">Стандартный knapsack DP по integer capacity хорошо показывает, что компактная recurrence ещё не означает маленькую complexity относительно длины input.</p>
+<div class="two-column-block">
+<div class="text-panel"><h3>Сколько стоит table</h3><p>При <span class="math">n</span> items и integer capacity <span class="math">C</span> одномерная implementation работает за <span class="math">O(nC)</span> time и <span class="math">O(C)</span> space.</p></div>
+<div class="proof-panel"><h3>Почему “pseudo-polynomial”?</h3><p>Число <span class="math">C</span> записывается всего <span class="math">Θ(log C)</span> bits. Поэтому runtime, линейный по численному значению <span class="math">C</span>, может быть экспоненциальным по длине этой части input.</p></div>
+</div>
+<div class="runtime-ladder">
+<article class="runtime-step best"><span>Small C</span><h3>DP практичен</h3><p>Если capacity — несколько тысяч, хранить state для каждого значения может быть совершенно нормально.</p></article>
+<article class="runtime-step"><span>Huge C</span><h3>State range взрывается</h3><p>Capacity в миллионы или миллиарды делает ту же recurrence неудобной даже при умеренном <span class="math">n</span>.</p></article>
+<article class="runtime-step"><span>Greedy heuristic</span><h3>Fast не значит safe</h3><p>Для общего 0/1 Knapsack density ordering может быть сколь угодно плохим относительно optimum. Скорость не заменяет proof или approximation guarantee.</p></article>
+</div>
+<div class="one-line"><strong>Выбор метода зависит и от structure, и от чисел.</strong> DP сохраняет нужные alternatives, но диапазон state variable определяет, насколько exact method практичен.</div>
 </section>
 
 <section class="lecture-section" id="weighted">
