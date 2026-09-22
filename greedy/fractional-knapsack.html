@@ -8,7 +8,7 @@
 <body class="lecture-page"><div aria-hidden="true" class="progress-track"><div class="progress-bar" id="reading-progress"></div></div>
 <header class="topbar"><a class="brand" href="../"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name">Allan's Handbook of Algorithms</span></a>
 <nav aria-label="Primary navigation" class="topnav"><a href="./">Greedy overview</a><div aria-label="Language" class="language-switch"><span class="current">EN</span><span class="language-separator">·</span><a href="fractional-knapsack-ru.html">RU</a></div></nav></header>
-<aside aria-label="Section navigation" class="sidebar"><div class="sidebar-title">Chapter 9 · Section 7</div><a href="#problem">Problem</a><a href="#whole-vs-fractional">Whole vs fractional</a><a href="#density">Value density</a><a href="#algorithm">Algorithm</a><a href="#proof">Correctness</a><a href="#lp-view">Why only one fraction?</a><a href="#divisibility">One assumption changes everything</a><a href="#boundary">0/1 boundary</a><a href="#runtime">Avoid repeated density search</a><a href="#implementation-choice">Sort or heap?</a><a href="#implementation">Implementation</a><a href="#exercises">Exercises</a></aside>
+<aside aria-label="Section navigation" class="sidebar"><div class="sidebar-title">Chapter 9 · Section 7</div><a href="#problem">Problem</a><a href="#whole-vs-fractional">Whole vs fractional</a><a href="#interview-trap">0/1 interview trap</a><a href="#density">Value density</a><a href="#algorithm">Algorithm</a><a href="#proof">Correctness</a><a href="#lp-view">Why only one fraction?</a><a href="#divisibility">One assumption changes everything</a><a href="#boundary">0/1 boundary</a><a href="#runtime">Avoid repeated density search</a><a href="#implementation-choice">Sort or heap?</a><a href="#implementation">Implementation</a><a href="#exercises">Exercises</a></aside>
 <main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Chapter 9 · Section 7</div><h1>Fractional Knapsack</h1><p class="chapter-topics">When items are divisible, every unit of capacity should go to the item that pays the most per unit of weight.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-fractional-knapsack.svg"/></div></section>
 <section class="lecture-section" id="problem">
 <h2>Spend capacity where it pays most</h2>
@@ -35,6 +35,18 @@
 <div class="bit-side good"><h3>Fractional decision</h3><p>Take any fraction <span class="math">0≤xᵢ≤1</span>. Equal units of weight can be exchanged between items, which is exactly what makes the density proof work.</p></div>
 </div>
 <div class="predict-card"><span class="predict-kicker">Key modeling lesson</span><h3>The greedy rule did not magically improve. The feasible set changed.</h3><p>Divisibility is the assumption that turns a plausible density heuristic into an exact greedy algorithm.</p></div>
+</section>
+
+<!-- coding-patterns-round-fractional -->
+<section class="lecture-section" id="interview-trap">
+<h2>Interview trap: the word “fractional” changes the algorithm</h2>
+<p class="lead">A concrete 0/1 Knapsack example makes the boundary unmistakable. With capacity 7, weights <code>[5, 3, 4, 1]</code>, and values <code>[70, 50, 40, 10]</code>, the locally most valuable whole item is not part of the optimum.</p>
+<div class="mini-example-grid">
+<article class="mini-example bad"><h3>0/1: take the most valuable item first</h3><p>Take weight 5, value 70. Only one unit of capacity remains, so the weight-1 item adds 10. Total: <strong>80</strong>.</p></article>
+<article class="mini-example good"><h3>0/1 optimum</h3><p>Take weights 3 and 4, with values 50 and 40. They exactly fill capacity 7 for a total value of <strong>90</strong>.</p></article>
+</div>
+<div class="candidate-elimination"><h3>Now allow fractions</h3><p>The densities are 14, 50/3≈16.67, 10, and 10. Fractional Knapsack can take the full weight-3 item first, then spend the remaining 4 units of capacity on 4/5 of the weight-5 item. Because weight is divisible, density comparisons can be repaired continuously by exchange.</p></div>
+<div class="interview-answer"><h3>The question to ask immediately</h3><p>“Can I take part of an item?” If yes, test value density. If items are indivisible, a density or raw-value ordering needs a proof—and for general 0/1 Knapsack no such greedy rule is exact.</p></div>
 </section>
 
 <section class="lecture-section" id="density">
