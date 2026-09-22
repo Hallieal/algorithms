@@ -8,7 +8,7 @@
 <body class="lecture-page"><div aria-hidden="true" class="progress-track"><div class="progress-bar" id="reading-progress"></div></div>
 <header class="topbar"><a class="brand" href="../"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name">Allan's Handbook of Algorithms</span></a>
 <nav aria-label="Primary navigation" class="topnav"><a href="./">Greedy overview</a><div aria-label="Language" class="language-switch"><span class="current">EN</span><span class="language-separator">·</span><a href="dijkstra-ru.html">RU</a></div></nav></header>
-<aside aria-label="Section navigation" class="sidebar"><div class="sidebar-title">Chapter 9 · Section 10</div><a href="#problem">Problem</a><a href="#all-distances">One source gives all distances</a><a href="#idea">Greedy idea</a><a href="#fewest-cheapest">Fewest edges vs cheapest path</a><a href="#cost-not-distance">Cost need not be distance</a><a href="#mental-model">Four-step mental model</a><a href="#demo">Step-by-step</a><a href="#bfs-link">From BFS to Dijkstra</a><a href="#state-table">Costs, parents, processed</a><a href="#proof">Correctness</a><a href="#negative">Negative edges</a><a href="#frontier-structure">Array frontier vs heap frontier</a><a href="#implementation">Implementation</a><a href="#paths">Recover paths</a><a href="#comparison">MST comparison</a><a href="#interview-decompose">Interview decomposition</a><a href="#choice-guide">Which shortest-path tool?</a><a href="#exercises">Exercises</a></aside>
+<aside aria-label="Section navigation" class="sidebar"><div class="sidebar-title">Chapter 9 · Section 10</div><a href="#problem">Problem</a><a href="#all-distances">One source gives all distances</a><a href="#query-scope">Single source vs all pairs</a><a href="#idea">Greedy idea</a><a href="#fewest-cheapest">Fewest edges vs cheapest path</a><a href="#cost-not-distance">Cost need not be distance</a><a href="#mental-model">Four-step mental model</a><a href="#demo">Step-by-step</a><a href="#bfs-link">From BFS to Dijkstra</a><a href="#state-table">Costs, parents, processed</a><a href="#proof">Correctness</a><a href="#negative">Negative edges</a><a href="#frontier-structure">Array frontier vs heap frontier</a><a href="#implementation">Implementation</a><a href="#paths">Recover paths</a><a href="#comparison">MST comparison</a><a href="#interview-decompose">Interview decomposition</a><a href="#choice-guide">Which shortest-path tool?</a><a href="#exercises">Exercises</a></aside>
 <main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Chapter 9 · Section 10</div><h1>Dijkstra’s Algorithm</h1><p class="chapter-topics">For nonnegative edge weights, the smallest tentative distance is safe to finalize. That single greedy step is Dijkstra’s algorithm.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-dijkstra.svg"/></div></section>
 <section class="lecture-section" id="problem">
 <h2>Shortest paths from one source</h2>
@@ -31,6 +31,18 @@
 <article class="grokking-card approx"><span>Visited/finalized</span><h3>Which answers are settled?</h3><p>This state separates tentative information from distances that the greedy proof says can never improve again.</p></article>
 </div>
 <div class="one-line"><strong>Useful bonus.</strong> If you later ask for another destination from the same source, the distance information is already there; you do not need to rerun a single-target search from scratch.</div>
+</section>
+
+<!-- karumanchi-round-dijkstra -->
+<section class="lecture-section" id="query-scope">
+<h2>Single-source and all-pairs shortest paths are different query shapes</h2>
+<p class="lead">One run of Dijkstra answers every destination from one source. If the problem asks for every source-to-destination pair, the outer problem changes even though the inner single-source routine may stay the same.</p>
+<div class="table-wrap"><table><thead><tr><th>Question</th><th>Natural approach</th><th>Important condition</th></tr></thead><tbody>
+<tr><td>One source → all vertices</td><td>Dijkstra</td><td>All edge weights are nonnegative</td></tr>
+<tr><td>All sources → all vertices</td><td>Run Dijkstra from each source</td><td>Still requires nonnegative edge weights</td></tr>
+<tr><td>All pairs with negative edges</td><td>Use an all-pairs method such as Floyd–Warshall</td><td>Finite shortest paths require no relevant negative cycle</td></tr>
+</tbody></table></div>
+<div class="one-line"><strong>Do not confuse output scope with the greedy invariant.</strong> Repeating Dijkstra changes how many times we solve the problem; negative edges change whether its finalization proof is valid at all.</div>
 </section>
 
 <section class="lecture-section" id="idea">
