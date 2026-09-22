@@ -24,7 +24,7 @@
 </header>
 <aside aria-label="Навигация по разделу" class="sidebar">
 <div class="sidebar-title">Глава 9 · Раздел 11</div>
-<a href="#map">Общая картина</a><a href="#matroid">Матроиды</a><a href="#mst">Краскал</a><a href="#limits">Что не является матроидом</a><a href="#exact-vs-fast">Exact search и fast greedy</a><a href="#guarantees">Heuristic vs approximation</a><a href="#line-cover">Когда geometry делает coverage exact</a><a href="#approx">Приближения</a><a href="#metric-tsp">MST как scaffold для approximation</a><a href="#setcover">Пример Set Cover</a><a href="#set-code">Set Cover в коде</a><a href="#optimization">Greedy как state compression</a><a href="#pattern-library">Pattern library, а не один template</a><a href="#decision">Как выбирать подход</a><a href="#reading">Что читать дальше</a><a href="#exercises">Задачи</a>
+<a href="#map">Общая картина</a><a href="#matroid">Матроиды</a><a href="#mst">Краскал</a><a href="#limits">Что не является матроидом</a><a href="#exact-vs-fast">Exact search и fast greedy</a><a href="#guarantees">Heuristic vs approximation</a><a href="#line-cover">Когда geometry делает coverage exact</a><a href="#approx">Приближения</a><a href="#metric-tsp">MST как scaffold для approximation</a><a href="#setcover">Пример Set Cover</a><a href="#setcover-proof">Откуда берётся logarithm</a><a href="#set-code">Set Cover в коде</a><a href="#optimization">Greedy как state compression</a><a href="#pattern-library">Pattern library, а не один template</a><a href="#decision">Как выбирать подход</a><a href="#reading">Что читать дальше</a><a href="#exercises">Задачи</a>
 </aside>
 <main class="lecture">
 <section class="lecture-hero greedy-lecture-hero">
@@ -166,6 +166,20 @@ while uncovered:
 <div class="approx-box"><h3>Более сильный результат</h3><p>Это правило не просто «обычно хорошее». Greedy Set Cover имеет harmonic approximation guarantee <span class="math">H_n ≤ ln n + 1</span>, где <span class="math">n</span> — размер universe.</p></div>
 </section>
 
+<!-- skiena-round-beyond -->
+<section class="lecture-section" id="setcover-proof">
+<h2>Почему в greedy Set Cover появляется logarithm</h2>
+<p class="lead">Harmonic bound — более точная theorem. Но есть очень наглядный более грубый proof: сгруппировать run по milestones, где число uncovered elements проходит степени двойки.</p>
+<div class="step-flow">
+<article class="step-item"><div class="step-number">1</div><div><h3>Отметьте powers-of-two milestones</h3><p>Группируем greedy choices, сделанные пока число uncovered падает примерно от <span class="math">2^{i+1}</span> до <span class="math">2^i</span>. Таких phases всего <span class="math">O(log n)</span>.</p></div></article>
+<article class="step-item"><div class="step-number">2</div><div><h3>Найдите самую широкую phase</h3><p>Пусть <span class="math">w_i</span> — число sets, выбранных greedy в phase <span class="math">i</span>, а <span class="math">w=max_i w_i</span>. Тогда всего greedy использует не больше примерно <span class="math">w log n</span> sets.</p></div></article>
+<article class="step-item"><div class="step-number">3</div><div><h3>Превратите slowdown greedy в lower bound</h3><p>Если phase требует <span class="math">w_i</span> selections, чтобы покрыть около <span class="math">2^i</span> elements, последний chosen set добавляет не больше phase-average <span class="math">2^i/w_i</span> новых elements. Поскольку greedy каждый раз берёт maximum remaining coverage, в этот момент ни один доступный set не может покрыть больше.</p></div></article>
+<article class="step-item"><div class="step-number">4</div><div><h3>OPT тоже обязан заплатить</h3><p>Чтобы покрыть оставшиеся <span class="math">2^i</span> elements, нужно минимум <span class="math">w_i</span> sets, значит <span class="math">OPT ≥ w</span>. Совмещая оценки, получаем <span class="math">O(log n)</span> approximation.</p></div></article>
+</div>
+<div class="formula-line">GREEDY ≤ O(w log n), &nbsp;&nbsp; OPT ≥ w &nbsp;&nbsp; ⇒ &nbsp;&nbsp; GREEDY / OPT = O(log n)</div>
+<div class="source-note"><h3>Это не просто слабый analysis</h3><p>Существуют Set Cover instances, где greedy действительно logarithmically хуже optimum. Logarithmic behavior относится к паре algorithm/problem, а не только к неудачному proof technique.</p></div>
+</section>
+
 <section class="lecture-section" id="set-code">
 <h2>Set Cover становится простым, когда data structure совпадает с операцией</h2>
 <p class="lead">Greedy-rule каждый раз задаёт один set-вопрос: «Сколько ещё не покрытых элементов добавит этот candidate?» Python sets делают этот вопрос почти буквальным.</p>
@@ -239,6 +253,7 @@ while uncovered:
 <section class="lecture-section" id="reading">
 <h2>Что читать дальше</h2>
 <div class="reference-list">
+<div class="reference-item"><b>Steven S. Skiena — The Algorithm Design Manual</b><span>Особенно opening movie-scheduling case study и counterexample methodology, главы про MST и shortest paths, catalog entries по knapsack/job scheduling, logarithmic Set Cover approximation argument и практическое сравнение Huffman с adaptive compression.</span></div>
 <div class="reference-item"><b>Narasimha Karumanchi — Data Structures and Algorithms Made Easy</b><span>Chapter 17 особенно полезна как counterexample-driven greedy workbook: optimal file merging, interval scheduling/partitioning, coin change failures, fractional knapsack, railway platforms, one-dimensional coverage и scheduling по processing time. Graph chapter также даёт практичное сравнение Prim/Kruskal/Dijkstra.</span></div>
 <div class="reference-item"><b>Alex Xu & Shaun Gunawardane — Coding Interview Patterns</b><span>Chapter 16 показывает три complementary greedy forms: backward destination movement, candidate elimination на circular route и два directional passes. Chapter 9 даёт interval/sweep-line pattern, а Chapters 8 и 13 усиливают supporting structures — heaps и Union-Find.</span></div>
 <div class="reference-item"><b>Jay Wengrow — A Common-Sense Guide to Data Structures and Algorithms in Python</b><span>Chapter 20 строит optimization workflow от current Big O к best-imaginable Big O и показывает greedy state compression на array maximum, maximum-subarray sum и increasing triplet; Chapter 18 подробно разбирает Dijkstra и сравнивает simple array frontier с priority queue.</span></div>
