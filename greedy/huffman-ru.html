@@ -3,11 +3,12 @@
 <title>Кодирование Хаффмана | Гайд по алгоритмам — presented by Аллан</title>
 <link href="../assets/css/styles.css" rel="stylesheet"/><link href="assets/greedy.css" rel="stylesheet"/>
 <link href="../assets/images/favicon-32.png" rel="icon" sizes="32x32" type="image/png"/><link href="../assets/images/favicon.png" rel="icon" sizes="64x64" type="image/png"/><link href="../assets/images/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180"/>
-<link href="huffman.html" hreflang="en" rel="alternate"/><link href="huffman-ru.html" hreflang="ru" rel="alternate"/></head>
+<link href="huffman.html" hreflang="en" rel="alternate"/><link href="huffman-ru.html" hreflang="ru" rel="alternate"/><noscript><style>.answer-box[hidden]{display:block!important}.reveal{display:none!important}</style></noscript>
+</head>
 <body class="lecture-page"><div aria-hidden="true" class="progress-track"><div class="progress-bar" id="reading-progress"></div></div>
 <header class="topbar"><a class="brand" href="../index-ru.html"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name ru-brand-name"><span class="ru-brand-lines"><span>Гайд по алгоритмам</span><span class="ru-brand-presented">presented by Аллан</span></span></span></a>
 <nav aria-label="Основная навигация" class="topnav"><a href="index-ru.html">Жадные алгоритмы</a><div aria-label="Язык" class="language-switch"><a href="huffman.html">EN</a><span class="language-separator">·</span><span class="current">RU</span></div></nav></header>
-<aside aria-label="Навигация по разделу" class="sidebar"><div class="sidebar-title">Глава 9 · Раздел 8</div><a href="#problem">Постановка</a><a href="#prefix">Префиксные коды</a><a href="#algorithm">Алгоритм</a><a href="#tree">Дерево и коды</a><a href="#proof">Корректность</a><a href="#implementation">Реализация</a><a href="#limits">Что оптимизируется</a><a href="#exercises">Задачи</a></aside>
+<aside aria-label="Навигация по разделу" class="sidebar"><div class="sidebar-title">Глава 9 · Раздел 8</div><a href="#problem">Постановка</a><a href="#prefix">Префиксные коды</a><a href="#algorithm">Алгоритм</a><a href="#tree">Дерево и коды</a><a href="#entropy">Энтропия</a><a href="#proof">Корректность</a><a href="#implementation">Реализация</a><a href="#limits">Что оптимизируется</a><a href="#exercises">Задачи</a></aside>
 <main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Глава 9 · Раздел 8</div><h1>Кодирование Хаффмана</h1><p class="chapter-topics">Частые символы должны иметь короткие коды. Хаффман добивается этого, каждый раз объединяя два узла с минимальными частотами.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-huffman.svg"/></div></section>
 <section class="lecture-section" id="problem">
 <h2>Частые символы должны кодироваться дёшево</h2>
@@ -84,6 +85,18 @@
 <div class="bit-card"><span>Код фиксированной длины</span><b>300 бит</b><small>Для 6 символов нужно 3 бита на символ, а суммарная частота равна 100.</small></div>
 <div class="bit-card good"><span>Код Хаффмана</span><b>224 бита</b><small>Взвешенная длина: 45·1 + 12·3 + 13·3 + 5·4 + 9·4 + 16·3.</small></div>
 </div>
+<div class="source-note"><h3>Метки 0 и 1 условны</h3><p>Если поменять местами левого и правого ребёнка любого внутреннего узла, сами битовые строки изменятся, но длины кодов останутся теми же. Поэтому оптимальных таблиц Хаффмана обычно много.</p></div>
+</section>
+
+<section class="lecture-section" id="entropy">
+<h2>Насколько Хаффман близок к пределу энтропии?</h2>
+<p class="lead">Нормируем частоты до вероятностей <span class="math">pᵢ</span>. Энтропия Шеннона <span class="math">H=-∑pᵢlog₂pᵢ</span> — нижняя граница на среднюю длину любого двоичного префиксного кода, а для Хаффмана выполняется <span class="math">H ≤ L &lt; H+1</span>.</p>
+<div class="entropy-strip">
+<div class="entropy-cell"><span>Энтропия H</span><b>≈ 2.220 бит/символ</b><small>Для вероятностей 0.45, 0.13, 0.12, 0.16, 0.09, 0.05.</small></div>
+<div class="entropy-cell"><span>Средняя длина Хаффмана L</span><b>2.24 бит/символ</b><small>224 бита на 100 появлений символов.</small></div>
+<div class="entropy-cell"><span>Разрыв</span><b>≈ 0.020 бит/символ</b><small>В этом примере код почти достигает информационно-теоретической границы.</small></div>
+</div>
+<div class="theory-note"><h3>Худшая длина одного кода</h3><p>При <span class="math">n</span> символах отдельное кодовое слово Хаффмана может иметь длину до <span class="math">n−1</span> бит при достаточно перекошенных частотах. Оптимальная средняя длина не означает, что каждый символ кодируется коротко.</p></div>
 </section>
 
 <section class="lecture-section" id="proof">
@@ -130,6 +143,7 @@
 
 <section class="lecture-section" id="limits">
 <h2>Оптимальность внутри конкретной модели</h2>
+<div class="practice-note"><h3>Canonical Huffman codes в реальных форматах</h3><p>Канонический код Хаффмана хранит длины кодовых слов, а сами битовые слова восстанавливает по детерминированному правилу. DEFLATE — формат, лежащий в основе gzip и zlib, — использует эту идею: достаточно передать длины, явное дерево не требуется.</p></div>
 <div class="decision-grid">
 <article class="decision-card greedy-signal"><h3>Оптимум среди двоичных префиксных кодов</h3><p>При заданных частотах символов Хаффман минимизирует ожидаемую или суммарную длину кода именно в этой модели.</p></article>
 <article class="decision-card dp-signal"><h3>Но это не «абсолютно лучшее сжатие»</h3><p>Более сложные методы могут использовать блоки символов, контекст или вероятностную структуру, которой нет в простой модели независимых символов.</p></article>
@@ -139,7 +153,7 @@
 <section class="lecture-section" id="exercises">
 <h2>Задачи</h2>
 <div class="exercise-list">
-<article class="exercise"><div class="exercise-num">1</div><div><h3>Первое объединение</h3><p>Для частот 2, 3, 7 и 8 какие два узла Хаффман объединит первыми?</p><button class="reveal" data-reveal="hf-ru-1" type="button">Показать ответ</button><div class="answer-box" hidden id="hf-ru-1">Две минимальные частоты 2 и 3. Они превращаются в узел веса 5.</div></div></article>
+<article class="exercise"><div class="exercise-num">1</div><div><h3>Постройте код до конца</h3><p>Для частот 2, 3, 7 и 8 выполните все объединения Хаффмана. Какова суммарная взвешенная длина и как она сравнивается с фиксированным 2-битным кодом?</p><button class="reveal" data-reveal="hf-ru-1" type="button">Показать ответ</button><div class="answer-box" hidden id="hf-ru-1">Объединяем 2+3=5, затем 5+7=12, затем 8+12=20. Длины кодов: 1 для частоты 8, 2 для 7 и 3 для 2 и 3. Итого 8·1 + 7·2 + 2·3 + 3·3 = 37 бит. Фиксированный 2-битный код использовал бы 20·2 = 40 бит.</div></div></article>
 <article class="exercise"><div class="exercise-num">2</div><div><h3>Префиксное свойство</h3><p>Почему код одного листа двоичного дерева не может быть префиксом кода другого листа?</p><button class="reveal" data-reveal="hf-ru-2" type="button">Показать ответ</button><div class="answer-box" hidden id="hf-ru-2">Тогда один лист должен был бы лежать на пути от корня к другому листу. Но у листа нет детей, поэтому это невозможно.</div></div></article>
 <article class="exercise"><div class="exercise-num">3</div><div><h3>Взвешенная длина</h3><p>Символ встречается 20 раз и получает код длины 3. Каков его вклад в общую длину?</p><button class="reveal" data-reveal="hf-ru-3" type="button">Показать ответ</button><div class="answer-box" hidden id="hf-ru-3">20·3 = 60 бит.</div></div></article>
 </div>
