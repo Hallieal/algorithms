@@ -10,10 +10,10 @@
 <header class="topbar"><a class="brand" href="../"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name">Allan's Handbook of Algorithms</span></a>
 <nav aria-label="Primary navigation" class="topnav"><a href="./">Greedy overview</a><div aria-label="Language" class="language-switch"><span class="current">EN</span><span class="language-separator">·</span><a href="proofs-ru.html">RU</a></div></nav></header>
 <aside aria-label="Section navigation" class="sidebar"><div class="sidebar-title">Chapter 9 · Section 2</div><a href="#goal">What must be proved?</a><a href="#patterns">Proof patterns</a><a href="#counterexample-lab">Counterexample laboratory</a><a href="#counterexamples">Counterexample laboratory</a><a href="#exchange">Exchange arguments</a><a href="#worked">Worked proof</a><a href="#ahead">Staying ahead</a><a href="#induction">Induction</a><a href="#discard">Prove that discarded state is useless</a><a href="#gas-proof">Candidate-elimination proof</a><a href="#bound-certificate">Match a lower bound</a><a href="#template">Proof template</a><a href="#directional-proof">Two-pass proof</a><a href="#intuition-proof">Intuition vs proof</a><a href="#summary-not-witness">Summary vs witness</a><a href="#mistakes">Common mistakes</a><a href="#exercises">Exercises</a></aside>
-<main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Chapter 9 · Section 2</div><h1>Proving Greedy Correctness</h1><p class="chapter-topics">A greedy proof has one job: show that the next local choice can be fixed without losing optimality.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-proofs.svg"/></div></section>
+<main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Chapter 9 · Section 2</div><h1>Proving Greedy Correctness</h1><p class="chapter-topics">A greedy algorithm is correct only if every irreversible choice can be justified. This page develops the proof techniques used to make that justification precise.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-proofs.svg"/></div></section>
 <section class="lecture-section" id="goal">
-<h2>What a greedy proof must show</h2>
-<p class="lead">The code may be one loop. The proof has to explain why that loop is allowed to throw alternatives away. At every step, we need to know that at least one optimal solution is still compatible with the choices already fixed.</p><div class="concept-strip">
+<h2>Correctness requirement</h2>
+<p class="lead">A greedy proof must show that every committed choice preserves at least one optimal completion. Without that statement, a locally reasonable rule is only a heuristic.</p><div class="concept-strip">
 <article class="concept-cell rule"><span>What to prove</span><b>The next greedy choice is safe</b><p>Some optimal solution can be made to contain it.</p></article>
 <article class="concept-cell proof"><span>Then</span><b>Reduce to a smaller instance</b><p>The remaining decisions must have the same structure.</p></article>
 <article class="concept-cell cost"><span>Typical tools</span><b>Exchange, staying ahead, cuts</b><p>Pick the proof that matches the shape of the problem.</p></article>
@@ -26,8 +26,8 @@
 </section>
 
 <section class="lecture-section" id="patterns">
-<h2>Four proof patterns worth knowing</h2>
-<p class="lead">Most greedy proofs are variations of a few ideas. The names matter less than the move you make: exchange a choice, compare partial progress, reduce the instance, or use a cut.</p>
+<h2>Common proof methods</h2>
+<p class="lead">Most exact greedy proofs use exchange, staying ahead, induction on the reduced instance, or a cut argument. These methods differ in presentation but all establish that a chosen step can be made without losing optimality.</p>
 <div class="proof-pattern-grid">
 <article class="proof-pattern-card"><div class="proof-pattern-mark">↔</div><h3>Exchange argument</h3><p>Start from an optimal solution. If it does not use the greedy choice, modify it so that it does, without making the objective worse.</p></article>
 <article class="proof-pattern-card"><div class="proof-pattern-mark">≥</div><h3>Greedy stays ahead</h3><p>Compare the greedy partial solution with an arbitrary optimal one after every step and show that greedy is never behind.</p></article>
@@ -40,8 +40,8 @@
 <!-- book-synthesis-proofs -->
 <!-- skiena-round-proofs -->
 <section class="lecture-section" id="counterexample-lab">
-<h2>How to hunt for a counterexample on purpose</h2>
-<p class="lead">“Try some examples” is too vague. A stronger habit is to design adversarial instances that attack exactly what the proposed greedy key ignores.</p>
+<h2>Systematic counterexample search</h2>
+<p class="lead">Counterexamples are easiest to find on small instances designed around the weakness of the proposed priority rule. Ties, extreme values, and minimal nontrivial configurations are especially useful.</p>
 <div class="recognition-grid">
 <article class="recognition-card"><span class="signal">Think small</span><h3>Strip the instance to its essence</h3><p>Three intervals are often better than thirty. A tiny counterexample is easier to verify and usually makes the structural failure obvious.</p></article>
 <article class="recognition-card"><span class="signal">Go for a tie</span><h3>Remove the heuristic’s information</h3><p>If the rule prefers the “largest” or “shortest”, make several candidates equal on that score. Then ask whether an unlucky tie can force a bad irreversible choice.</p></article>
@@ -52,8 +52,8 @@
 </section>
 
 <section class="lecture-section" id="counterexamples">
-<h2>Counterexamples are a proof tool too</h2>
-<p class="lead">Before proving a greedy rule, actively try to falsify it. Tiny failures are often more informative than a page of successful examples because they expose the exact resource a local choice is consuming.</p>
+<h2>Use counterexamples before proving</h2>
+<p class="lead">Testing a proposed rule against small adversarial inputs often reveals which resource or compatibility condition the rule fails to protect. That information usually points toward the correct invariant.</p>
 <div class="table-wrap"><table><thead><tr><th>Candidate rule</th><th>How to attack it</th><th>What the failure teaches</th></tr></thead><tbody>
 <tr><td>Earliest start</td><td>Make the first interval extremely long</td><td>Starting early is irrelevant if the choice blocks the whole future.</td></tr>
 <tr><td>Shortest interval</td><td>Place one short interval across the boundary of two compatible ones</td><td>Duration alone ignores <em>where</em> the interval sits.</td></tr>
@@ -64,8 +64,8 @@
 </section>
 
 <section class="lecture-section" id="exchange">
-<h2>1. Exchange argument</h2>
-<p class="lead">Start with an optimal solution that may disagree with greedy. Change only the first conflicting part, keep feasibility, and show the objective does not get worse. Now an optimal solution agrees with greedy one step further.</p>
+<h2>Exchange arguments</h2>
+<p class="lead">Start with an optimal solution that disagrees with the greedy choice. Replace its first conflicting part by the greedy choice, preserve feasibility, and show that the objective does not worsen.</p>
 <div class="exchange-demo">
 <div class="exchange-side"><span>An optimal solution</span><div class="exchange-set"><div class="exchange-item">different choice</div><div class="exchange-item">...</div><div class="exchange-item">...</div></div></div>
 <div class="exchange-arrow">→</div>
@@ -80,8 +80,8 @@
 </section>
 
 <section class="lecture-section" id="worked">
-<h2>Worked example: shortest jobs first</h2>
-<p class="lead">Return to the previous page’s problem: we have a time budget T, independent jobs with positive durations, and we want to complete as many jobs as possible. Greedy sorts jobs by increasing duration and takes them while they fit.</p>
+<h2>Example: shortest-job-first</h2>
+<p class="lead">With a fixed time budget and positive job durations, sorting by increasing duration maximizes the number of completed jobs. The proof compares the total duration of the greedy prefix with any other prefix of the same size.</p>
 <div class="two-column-block">
 <div class="text-panel"><h3>Greedy solution</h3><p>Let the sorted durations be <span class="math">d₁ ≤ d₂ ≤ ··· ≤ dₙ</span>. Suppose greedy takes the first <span class="math">k</span> jobs, so</p><div class="formula-line">d₁ + ··· + dₖ ≤ T</div><p>but adding <span class="math">dₖ₊₁</span> would exceed T.</p></div>
 <div class="proof-panel"><h3>Why no solution can take k + 1 jobs</h3><p>Among all subsets of <span class="math">k+1</span> jobs, the minimum possible total duration is the sum of the <span class="math">k+1</span> shortest jobs.</p><div class="formula-line">d₁ + ··· + dₖ₊₁ &gt; T</div><p>Therefore every set of <span class="math">k+1</span> jobs exceeds the budget. Greedy is optimal.</p></div>
@@ -91,15 +91,15 @@
 </section>
 
 <section class="lecture-section" id="ahead">
-<h2>2. Greedy stays ahead</h2>
-<p class="lead">Sometimes it is easier to compare partial solutions step by step. We define a quantity that measures progress and prove that after the first choice, the second choice, and so on, greedy is at least as far ahead as any optimal solution.</p>
+<h2>Staying-ahead proofs</h2>
+<p class="lead">A staying-ahead proof compares partial progress after each decision. The invariant states that the greedy partial solution is never worse than the corresponding prefix of an optimal solution.</p>
 <div class="proof-goal"><h3>Typical form</h3><p>If the greedy solution makes choices <span class="math">g₁, g₂, ...</span> and an optimal solution makes <span class="math">o₁, o₂, ...</span>, prove an inequality such as <span class="math">progress(g₁,...,gᵢ) ≥ progress(o₁,...,oᵢ)</span> for every i.</p></div>
 <p>A classic example is interval scheduling: after choosing the first i compatible intervals, the schedule that always picks the earliest finishing interval finishes no later than any other schedule containing i intervals. That leaves at least as much room for future intervals.</p>
 </section>
 
 <section class="lecture-section" id="induction">
-<h2>3. Safe choice, then induction</h2>
-<p class="lead">Many greedy proofs have the same recursive shape even when the algorithm itself is written as a loop.</p>
+<h2>Induction after a safe choice</h2>
+<p class="lead">Once the first greedy choice is proved safe, fix it and apply the same argument to the smaller residual instance. This gives a direct inductive proof of correctness.</p>
 <div class="proof-checklist">
 <div class="proof-check"><span>1</span><p><strong>Prove the next greedy choice is safe.</strong> Show that some optimal solution contains it.</p></div>
 <div class="proof-check"><span>2</span><p><strong>Reduce the problem.</strong> Once the choice is fixed, describe the remaining instance precisely.</p></div>
@@ -110,8 +110,8 @@
 
 <!-- common-sense-round-proofs -->
 <section class="lecture-section" id="discard">
-<h2>A greedy proof can justify throwing information away</h2>
-<p class="lead">One-pass greedy optimizations often look different from scheduling or MST: the commitment is not “take this item”, but “forget this entire class of prefixes”. The proof obligation is the same—show the discarded alternatives can never help later.</p>
+<h2>Proving that discarded states are irrelevant</h2>
+<p class="lead">In one-pass algorithms, the greedy decision may be to forget an entire class of partial states. The proof must show that every discarded state is dominated by one that is retained.</p>
 <div class="two-column-block">
 <div class="text-panel"><h3>Maximum-subarray reset</h3><p>Suppose the running sum of the current prefix is <span class="math">p&lt;0</span>. Let a future continuation have sum <span class="math">T</span>. Keeping the negative prefix produces <span class="math">p+T</span>.</p></div>
 <div class="proof-panel"><h3>Why reset is safe</h3><p>Because <span class="math">p&lt;0</span>, we have <span class="math">p+T&lt;T</span>. Starting the future subarray after the negative prefix is strictly better than carrying that prefix forward.</p></div>
@@ -122,8 +122,8 @@
 
 <!-- coding-patterns-round-proofs -->
 <section class="lecture-section" id="gas-proof">
-<h2>Candidate elimination: prove an entire block impossible at once</h2>
-<p class="lead">Gas Stations gives a useful proof pattern for interviews: when one attempted start fails, do not merely reject that start—show why a whole interval of candidates fails with it.</p>
+<h2>Candidate elimination</h2>
+<p class="lead">A failed candidate can sometimes rule out a whole interval of other candidates. The proof identifies a common obstruction and eliminates them together instead of testing them one by one.</p>
 <div class="candidate-elimination">
 <h3>Suppose start <span class="math">a</span> first runs out of gas before leaving station <span class="math">b</span></h3>
 <p>Let <span class="math">d_i = gas_i - cost_i</span>. Because <span class="math">b</span> is the first failure, every prefix sum from <span class="math">a</span> through any station before <span class="math">b</span> is nonnegative, but the total from <span class="math">a</span> through <span class="math">b</span> is negative.</p>
@@ -138,8 +138,8 @@
 
 <!-- karumanchi-round-proofs -->
 <section class="lecture-section" id="bound-certificate">
-<h2>Another proof pattern: construct a solution that meets a lower bound</h2>
-<p class="lead">Some greedy proofs do not need to exchange choices with an unknown optimum. Instead, find a number that every feasible solution must pay, then show the greedy algorithm pays exactly that amount.</p>
+<h2>Lower bounds and matching constructions</h2>
+<p class="lead">Another proof pattern is to derive a lower bound that applies to every feasible solution and then construct a greedy solution that attains that bound.</p>
 <div class="two-column-block">
 <div class="text-panel"><h3>Lower bound</h3><p>In interval partitioning, if <span class="math">d</span> classes overlap at one instant, any schedule needs at least <span class="math">d</span> rooms. This is unavoidable, regardless of the algorithm.</p></div>
 <div class="proof-panel"><h3>Greedy certificate</h3><p>When the start-time greedy algorithm opens its <span class="math">d</span>th room, the new class overlaps the last class already occupying each of the previous <span class="math">d−1</span> rooms. So there are <span class="math">d</span> simultaneous classes at that moment.</p></div>
@@ -149,8 +149,8 @@
 </section>
 
 <section class="lecture-section" id="template">
-<h2>A reusable greedy-proof template</h2>
-<p class="lead">The surface details change from intervals to graphs to codes, but most exact greedy proofs can be organized around the same four questions.</p>
+<h2>Proof checklist</h2>
+<p class="lead">For a new greedy algorithm, state the invariant, explain why the next choice is safe, describe the reduced instance, and identify exactly where the assumptions of the problem are used.</p>
 <div class="proof-template">
 <article><b>1. Name the choice</b><p>Specify the exact local object greedy commits to: interval, edge, item fraction, merge, or vertex distance.</p></article>
 <article><b>2. Compare with OPT</b><p>Take an optimal solution and identify where it first disagrees with greedy—or compare both solutions at the same prefix.</p></article>
@@ -162,8 +162,8 @@
 
 <!-- grokking-pass-proofs -->
 <section class="lecture-section" id="directional-proof">
-<h2>Two-pass greedy proofs: satisfy independent directions separately</h2>
-<p class="lead">Candies illustrates another proof shape. A local constraint can point in both directions, so one scan is insufficient; instead, enforce one family of inequalities per direction.</p>
+<h2>Two-pass proofs for two-sided constraints</h2>
+<p class="lead">When constraints point in opposite directions, one pass can enforce one family of inequalities and a second pass can enforce the other. The final solution combines the two requirements.</p>
 <div class="directional-passes">
 <article><h3>Left → right</h3><p>If <span class="math">rating_i &gt; rating_{i-1}</span>, set <span class="math">candies_i = candies_{i-1}+1</span>. After this pass, every left-neighbor requirement is satisfied with the smallest amounts forced by the prefix.</p></article>
 <article><h3>Right → left</h3><p>If <span class="math">rating_i &gt; rating_{i+1}</span>, require at least <span class="math">candies_{i+1}+1</span>. Keep <span class="math">max(current, right-required)</span> so the first pass is never undone.</p></article>
@@ -172,8 +172,8 @@
 </section>
 
 <section class="lecture-section" id="intuition-proof">
-<h2>First make the choice feel inevitable. Then prove it.</h2>
-<p class="lead">A good greedy explanation has two layers. The first is the picture in your head: why does this move seem to leave the future in the best shape? The second is the proof that no hidden counterexample survives.</p>
+<h2>From intuition to proof</h2>
+<p class="lead">An intuitive explanation should identify the resource preserved by the greedy choice. The formal proof must then show that no feasible optimal solution benefits from choosing differently.</p>
 <div class="path-choice">
 <article class="good"><h3>Classroom scheduling</h3><p>Finishing first feels right because it frees the room as early as possible. That intuition suggests the invariant: every class available after a later finish is still available after the earlier finish.</p></article>
 <article class="bad"><h3>0/1 Knapsack</h3><p>“Take the most valuable item first” feels just as natural, but one item can consume capacity needed by a better pair. The picture alone does not tell us whether commitment is safe.</p></article>
@@ -189,8 +189,8 @@
 </section>
 
 <section class="lecture-section" id="summary-not-witness">
-<h2>Your state variables do not always have to form the final witness</h2>
-<p class="lead">Greedy summaries can encode enough information to prove that a solution exists without literally storing one consistent solution at every instant.</p>
+<h2>Summary state versus explicit witness</h2>
+<p class="lead">A maintained state can be sufficient to certify that a solution exists even when it is not itself the final solution. What matters is that the state preserves every fact required by future decisions.</p>
 <div class="mini-example-grid">
 <article class="mini-example good"><h3>Increasing triplet</h3><p>Maintain the smallest <code>low</code> seen and the smallest possible <code>middle</code> that has appeared after some earlier lower value. If a later number exceeds <code>middle</code>, a triplet exists.</p></article>
 <article class="mini-example bad"><h3>The subtle point</h3><p>After <code>middle</code> is set, <code>low</code> may later be replaced by an even smaller value that occurs <em>after</em> that middle. The current pair <code>(low, middle)</code> may therefore not itself be an ordered pair from the witness.</p></article>
@@ -200,7 +200,7 @@
 </section>
 
 <section class="lecture-section" id="mistakes">
-<h2>What is not a proof</h2>
+<h2>Arguments that are not proofs</h2>
 <div class="proof-mistakes">
 <article class="proof-mistake"><h3>“It is obviously best now”</h3><p>“Best right now” is exactly the claim that needs justification. The future can overturn a local advantage.</p></article>
 <article class="proof-mistake"><h3>Only checking examples</h3><p>Examples can falsify a greedy rule, but no finite set of successful examples proves correctness.</p></article>
