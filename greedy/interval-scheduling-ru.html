@@ -9,10 +9,10 @@
 <header class="topbar"><a class="brand" href="../index-ru.html"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name ru-brand-name"><span class="ru-brand-lines"><span>Гайд по алгоритмам</span><span class="ru-brand-presented">presented by Аллан</span></span></span></a>
 <nav aria-label="Основная навигация" class="topnav"><a href="index-ru.html">Жадные алгоритмы</a><div aria-label="Язык" class="language-switch"><a href="interval-scheduling.html">EN</a><span class="language-separator">·</span><span class="current">RU</span></div></nav></header>
 <aside aria-label="Навигация по разделу" class="sidebar"><div class="sidebar-title">Глава 9 · Раздел 4</div><a href="#problem">Постановка</a><a href="#choices">Выбор правила</a><a href="#residual-set">Почему earliest finish сохраняет choices</a><a href="#classroom-walk">Пошаговое расписание</a><a href="#frontier">Почему earliest finish доминирует</a><a href="#algorithm">Алгоритм</a><a href="#proof">Корректность</a><a href="#runtime">Откуда берётся O(n log n)</a><a href="#implementation">Реализация</a><a href="#interval-pattern">Какой interval pattern нужен?</a><a href="#recognition">Как распознать задачу</a><a href="#model-boundary">Почему нужен один contiguous interval</a><a href="#variants">Варианты задачи</a><a href="#exercises">Задачи</a></aside>
-<main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Глава 9 · Раздел 4</div><h1>Выбор непересекающихся интервалов</h1><p class="chapter-topics">Нужно выбрать как можно больше непересекающихся интервалов. Правильный жадный ход — освободить время как можно раньше.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-interval-scheduling.svg"/></div></section>
+<main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Глава 9 · Раздел 4</div><h1>Выбор непересекающихся интервалов</h1><p class="chapter-topics">Interval Scheduling ищет максимальный набор непересекающихся intervals. Оптимальный greedy-rule — обрабатывать их по возрастанию времени окончания.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-interval-scheduling.svg"/></div></section>
 <section class="lecture-section" id="problem">
-<h2>Выбрать как можно больше интервалов</h2>
-<p class="lead">Каждая активность занимает временной интервал. Нужно оставить максимальное число активностей без пересечений. Важен не самый короткий интервал и не самое раннее начало, а выбор, после которого остаётся больше всего времени.</p><div class="concept-strip">
+<h2>Постановка задачи</h2>
+<p class="lead">Каждая activity занимает один временной интервал. Нужно выбрать максимальное число попарно непересекающихся intervals.</p><div class="concept-strip">
 <article class="concept-cell rule"><span>Правило</span><b>Берём интервал, который заканчивается раньше всех</b><p>Среди совместимых вариантов освобождаем время как можно раньше.</p></article>
 <article class="concept-cell proof"><span>Почему работает</span><b>Для будущего остаётся не меньше места</b><p>Первый интервал оптимального решения можно заменить на жадный.</p></article>
 <article class="concept-cell cost"><span>Сложность</span><b>O(n log n)</b><p>Сортировка по окончанию и один проход.</p></article>
@@ -29,8 +29,8 @@
 </section>
 
 <section class="lecture-section" id="choices">
-<h2>Естественные правила — и единственное правильное</h2>
-<p class="lead">Самое раннее начало, минимальная длина и минимальное число конфликтов звучат разумно. Но универсально работает только самое раннее окончание.</p>
+<h2>Возможные правила сортировки</h2>
+<p class="lead">Сортировка по start time, duration или числу конфликтов может давать неправильный ответ. Сортировка по finish time оптимальна.</p>
 <div class="greedy-rule-strip">
 <article class="greedy-rule-option bad"><h3>Самое раннее начало</h3><p>Можно выбрать один очень длинный интервал и заблокировать много коротких.</p></article>
 <article class="greedy-rule-option bad"><h3>Минимальная длина</h3><p>Короткий интервал может неудачно располагаться и уничтожать полезные варианты.</p></article>
@@ -44,8 +44,8 @@
 <!-- grokking-pass-interval -->
 <!-- karumanchi-round-interval -->
 <section class="lecture-section" id="residual-set">
-<h2>Earliest finish — это на самом деле утверждение о residual instance</h2>
-<p class="lead">Rule сильнее лозунга «оставить больше времени». Он оставляет superset будущих intervals по сравнению с любым другим возможным первым choice.</p>
+<h2>Почему работает earliest finish</h2>
+<p class="lead">Среди допустимых первых choices интервал с самым ранним finish оставляет максимально широкий набор intervals, которые ещё можно взять. На этом основано доказательство.</p>
 <div class="two-column-block">
 <div class="text-panel"><h3>Greedy first interval</h3><p>Пусть <span class="math">g</span> — interval с минимальным finish time. После него feasible остаются intervals со <span class="math">start ≥ finish(g)</span>.</p></div>
 <div class="proof-panel"><h3>Любой альтернативный first interval</h3><p>Если первым выбрать другой interval <span class="math">o</span>, то <span class="math">finish(g) ≤ finish(o)</span>. Поэтому каждый interval, допустимый после <span class="math">o</span>, допустим и после <span class="math">g</span>.</p></div>
@@ -55,8 +55,8 @@
 </section>
 
 <section class="lecture-section" id="classroom-walk">
-<h2>Посмотрим на greedy-choice по одной паре за раз</h2>
-<p class="lead">Classroom story удобна тем, что правило можно выполнить почти без формул. После каждого выбора отбрасываем всё, что уже конфликтует, и среди оставшегося берём пару с самым ранним окончанием.</p>
+<h2>Пример</h2>
+<p class="lead">Обрабатываем classes в порядке finish time и принимаем очередную, если её start не раньше finish последней выбранной class.</p>
 <div class="predict-card"><span class="predict-kicker">Сначала попробуйте сами</span><h3>Какую пару вы выберете первой?</h3><p>Доступны: Algorithms 09:00–10:00, Physics 09:30–11:00, Statistics 10:00–11:00, Music 10:30–12:00, Art 11:00–12:00. Не пытайтесь сразу построить всё расписание — сделайте только один локальный выбор.</p></div>
 <div class="classroom-walk">
 <div class="classroom-step"><span>Pick 1</span><p><strong>Algorithms</strong> заканчивается раньше всех — в 10:00. Оставляем её. <del>Physics</del> теперь невозможна из-за пересечения.</p></div>
@@ -71,8 +71,8 @@
 </section>
 
 <section class="lecture-section" id="frontier">
-<h2>Earliest finish — это правило доминирования</h2>
-<p class="lead">Правильное greedy-rule — не «возьми что-нибудь короткое», а «сдвинь занятую границу как можно меньше». Среди всех следующих кандидатов самый ранний finish оставляет остаточную задачу, содержащую все варианты, которые оставил бы более поздний finish, а иногда и дополнительные.</p>
+<h2>Доминирование остаточной задачи</h2>
+<p class="lead">После выбора interval допустимыми остаются только intervals, начинающиеся после его finish. Earliest finish сдвигает эту границу минимально.</p>
 <div class="inline-contrast">
 <div class="no"><h3>Duration задаёт неправильный вопрос</h3><p>Короткий интервал в неудачном месте может заблокировать два полезных. Длина описывает сам выбранный объект, а не будущее после него.</p></div>
 <div class="yes"><h3>Finish time описывает остаточную задачу</h3><p>Если <span class="math">f(g) ≤ f(o)</span>, то любой интервал, доступный после <span class="math">o</span>, доступен и после <span class="math">g</span>. Это ровно то dominance-утверждение, которое нужно доказательству.</p></div>
@@ -81,7 +81,7 @@
 </section>
 
 <section class="lecture-section" id="algorithm">
-<h2>Алгоритм: одна сортировка, один проход</h2>
+<h2>Алгоритм</h2>
 <div class="step-flow">
 <article class="step-item"><div class="step-number">1</div><div><h3>Сортируем по окончанию</h3><p>Рассматриваем интервалы от самого раннего окончания к самому позднему.</p></div></article>
 <article class="step-item"><div class="step-number">2</div><div><h3>Берём первый интервал</h3><p>Он заканчивается раньше всех оставшихся кандидатов.</p></div></article>
@@ -96,8 +96,8 @@
 </section>
 
 <section class="lecture-section" id="proof">
-<h2>Почему раннее окончание безопасно</h2>
-<p class="lead">Пусть <span class="math">g</span> заканчивается раньше всех. Берём произвольное оптимальное расписание <span class="math">O</span>. Достаточно показать, что его первый интервал можно заменить на <span class="math">g</span> без потерь.</p>
+<h2>Обменное доказательство</h2>
+<p class="lead">Пусть g заканчивается раньше всех. В любом optimal schedule первый interval можно заменить на g, не потеряв допустимость и не уменьшая число последующих intervals.</p>
 <div class="timeline-proof">
 <div class="timeline-proof-card"><h3>Оптимальное решение O</h3><p>Пусть его первый выбранный интервал — <span class="math">o</span>. Он может отличаться от <span class="math">g</span>.</p></div>
 <div class="timeline-proof-arrow">→</div>
@@ -109,8 +109,8 @@
 
 <!-- common-sense-round-interval -->
 <section class="lecture-section" id="runtime">
-<h2>Сам greedy-step линейный; дорогая часть — получить правильный порядок</h2>
-<p class="lead">Полезная optimization-привычка — отделять математическое правило от работы, необходимой, чтобы это правило можно было дёшево выполнять.</p>
+<h2>Сложность</h2>
+<p class="lead">После сортировки по finish time жадный проход линейный, поэтому общая сложность равна O(n log n).</p>
 <div class="runtime-ladder">
 <article class="runtime-step"><span>Naive selection</span><h3>Каждый раз заново искать earliest finish</h3><p>После каждого принятого interval снова просматриваем оставшихся кандидатов и ищем совместимый с минимальным finish. В worst case линейная работа повторяется много раз: <span class="math">O(n²)</span>.</p></article>
 <article class="runtime-step best"><span>Preprocess once</span><h3>Один раз отсортировать по finish time</h3><p>Платим <span class="math">O(n log n)</span> один раз, затем идём слева направо и принимаем совместимые intervals за <span class="math">O(n)</span>.</p></article>
@@ -142,8 +142,8 @@
 
 <!-- coding-patterns-round-interval -->
 <section class="lecture-section" id="interval-pattern">
-<h2>“Intervals” — не один pattern: representation выбирается по вопросу</h2>
-<p class="lead">На интервью interval inputs часто выглядят почти одинаково. Именно objective определяет, какая сортировка нужна и нужно ли вообще хранить intervals как единые объекты.</p>
+<h2>Как выбрать формулировку interval-задачи</h2>
+<p class="lead">Interval inputs могут задавать selection, partitioning, overlap counting или weighted optimization. Objective определяет, сортировать ли starts, finishes или endpoints.</p>
 <div class="sort-key-grid">
 <article><code>sort by start</code><h3>Merge overlaps</h3><p>После сортировки по start достаточно сравнивать текущий interval только с последним merged interval. Более ранний start задаёт левую границу.</p></article>
 <article><code>sort by finish</code><h3>Maximum compatible subset</h3><p>В Interval Scheduling цель не merge, а сохранить место для будущего. Поэтому safe greedy key — earliest finish.</p></article>
@@ -154,7 +154,7 @@
 </section>
 
 <section class="lecture-section" id="recognition">
-<h2>Как распознать Interval Scheduling</h2>
+<h2>Признаки задачи</h2>
 <div class="proof-checklist">
 <div class="proof-check"><span>1</span><p><strong>Цель:</strong> максимизировать <em>число</em> выбранных интервалов, а не суммарную прибыль.</p></div>
 <div class="proof-check"><span>2</span><p><strong>Ограничение:</strong> выбранные интервалы попарно не пересекаются на одном ресурсе.</p></div>
@@ -166,8 +166,8 @@
 
 <!-- skiena-round-interval -->
 <section class="lecture-section" id="model-boundary">
-<h2>Теорема зависит от того, что каждый job — один contiguous interval</h2>
-<p class="lead">Привычная картинка скрывает важное modeling assumption: каждая activity занимает один непрерывный кусок времени.</p>
+<h2>Почему важна непрерывность interval</h2>
+<p class="lead">Доказательство предполагает, что каждый job занимает один непрерывный отрезок времени. Если job состоит из нескольких раздельных блоков, один finish time уже не описывает совместимость с будущими jobs.</p>
 <div class="two-column-block">
 <div class="text-panel"><h3>Standard interval</h3><p>Movie снимается непрерывно от start до finish. После выбора earliest-finishing movie каждый compatible future job начинается после одного clean frontier.</p></div>
 <div class="proof-panel"><h3>Job с gaps</h3><p>Пусть один project снимается в сентябре и ноябре, но свободен в октябре. Другой project может поместиться в этот gap. Один “finish time” уже не описывает все future compatibility constraints.</p></div>
@@ -177,7 +177,7 @@
 </section>
 
 <section class="lecture-section" id="variants">
-<h2>Маленькое изменение — другой алгоритм</h2>
+<h2>Варианты задачи</h2>
 <div class="decision-grid">
 <article class="decision-card greedy-signal"><h3>Взвешенные интервалы</h3><p>Если у интервалов разные прибыли, раннего окончания уже недостаточно. Стандартное решение — DP после сортировки по окончанию. Отдельной страницы Weighted Interval Scheduling в handbook пока нет; рекуррентность уже показана в <a href="greedy-vs-dp-ru.html#weighted">разделе Greedy vs DP</a>.</p></article>
 <article class="decision-card greedy-signal"><h3>Нужно оставить все интервалы</h3><p>Если ни один интервал нельзя выбрасывать, а нужно минимизировать число аудиторий, задача меняется полностью. Это следующая страница — Interval Partitioning.</p></article>
