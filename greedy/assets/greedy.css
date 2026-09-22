@@ -1223,3 +1223,95 @@
 @media(max-width:700px){
   .interview-flow,.directional-passes{grid-template-columns:1fr}
 }
+
+
+
+/* =========================================================
+   Formula typography pass
+   ========================================================= */
+
+.lecture .math {
+  font-family: "Cambria Math", "STIX Two Math", "Times New Roman", serif;
+  font-style: normal;
+  font-size: 1.1em;
+  font-weight: 500;
+  line-height: 1.35;
+  color: #20262b;
+  letter-spacing: .005em;
+}
+
+.lecture .math sub,
+.lecture .math sup {
+  font-size: .72em;
+  font-style: normal;
+}
+
+.lecture .formula-line,
+.lecture .rule-formula,
+.lecture .lateness-formula,
+.lecture .merge-equation {
+  display: block;
+  max-width: 760px;
+  margin: 26px auto;
+  padding: 20px 24px;
+  border: 1px solid #d7d6d0;
+  border-radius: 12px;
+  background: #fbfbf9;
+  color: #20262b;
+  text-align: center;
+  font-family: "Cambria Math", "STIX Two Math", "Times New Roman", serif;
+  font-size: 24px;
+  font-weight: 500;
+  line-height: 1.5;
+  letter-spacing: .005em;
+}
+
+.lecture .formula-line .math,
+.lecture .rule-formula .math,
+.lecture .lateness-formula .math,
+.lecture .merge-equation .math {
+  font-size: 1em;
+}
+
+.lecture p:has(> .math:only-child),
+.lecture .text-panel:has(> .math:only-child),
+.lecture .proof-panel:has(> .math:only-child) {
+  max-width: 760px;
+  margin: 22px auto;
+  padding: 18px 22px;
+  border: 1px solid #d7d6d0;
+  border-radius: 12px;
+  background: #fbfbf9;
+  text-align: center;
+}
+
+.lecture p > .math:only-child,
+.lecture .text-panel > .math:only-child,
+.lecture .proof-panel > .math:only-child {
+  display: block;
+  font-size: 1.35em;
+  line-height: 1.5;
+}
+
+.lecture table .math,
+.lecture .concept-cell .math,
+.lecture .decision-card .math,
+.lecture .variant-card .math {
+  font-size: 1.08em;
+}
+
+@media (max-width: 760px) {
+  .lecture .formula-line,
+  .lecture .rule-formula,
+  .lecture .lateness-formula,
+  .lecture .merge-equation {
+    margin: 22px 0;
+    padding: 17px 16px;
+    font-size: 20px;
+    overflow-x: auto;
+  }
+
+  .lecture .math {
+    font-size: 1.06em;
+  }
+}
