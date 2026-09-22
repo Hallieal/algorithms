@@ -1,5 +1,5 @@
 <!DOCTYPE html><html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1" name="viewport"/>
-<meta content="Build a minimum-weight spanning tree with the cut property, Kruskal’s algorithm, Prim’s algorithm, DSU, and priority queues." name="description"/><meta content="Minimum Spanning Trees | Allan's Handbook of Algorithms" property="og:title"/><meta content="Build a minimum-weight spanning tree with the cut property, Kruskal’s algorithm, Prim’s algorithm, DSU, and priority queues." property="og:description"/><meta content="article" property="og:type"/>
+<meta content="Connect every vertex with minimum total edge weight. Kruskal and Prim look different, but both are powered by the same cut property." name="description"/><meta content="Minimum Spanning Trees | Allan's Handbook of Algorithms" property="og:title"/><meta content="Connect every vertex with minimum total edge weight. Kruskal and Prim look different, but both are powered by the same cut property." property="og:description"/><meta content="article" property="og:type"/>
 <title>Minimum Spanning Trees | Allan's Handbook of Algorithms</title>
 <link href="../assets/css/styles.css" rel="stylesheet"/><link href="assets/greedy.css" rel="stylesheet"/>
 <link href="../assets/images/favicon-32.png" rel="icon" sizes="32x32" type="image/png"/><link href="../assets/images/favicon.png" rel="icon" sizes="64x64" type="image/png"/><link href="../assets/images/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180"/>
@@ -8,17 +8,21 @@
 <header class="topbar"><a class="brand" href="../"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name">Allan's Handbook of Algorithms</span></a>
 <nav aria-label="Primary navigation" class="topnav"><a href="./">Greedy overview</a><div aria-label="Language" class="language-switch"><span class="current">EN</span><span class="language-separator">·</span><a href="mst-ru.html">RU</a></div></nav></header>
 <aside aria-label="Section navigation" class="sidebar"><div class="sidebar-title">Chapter 9 · Section 9</div><a href="#problem">Problem</a><a href="#cut">Cut property</a><a href="#kruskal">Kruskal</a><a href="#prim">Prim</a><a href="#implementation">Implementations</a><a href="#complexity">Complexity</a><a href="#properties">Useful facts</a><a href="#exercises">Exercises</a></aside>
-<main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Chapter 9 · Section 9</div><h1>Minimum Spanning Trees</h1><p class="chapter-topics">Build a minimum-weight spanning tree with the cut property, Kruskal’s algorithm, Prim’s algorithm, DSU, and priority queues.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-mst.svg"/></div></section>
+<main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Chapter 9 · Section 9</div><h1>Minimum Spanning Trees</h1><p class="chapter-topics">Connect every vertex with minimum total edge weight. Kruskal and Prim look different, but both are powered by the same cut property.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-mst.svg"/></div></section>
 <section class="lecture-section" id="problem">
-<h2>The problem</h2>
-<p class="lead">Given a connected, undirected, weighted graph, we want to connect every vertex while paying as little total edge weight as possible.</p>
+<h2>Connect everything as cheaply as possible</h2>
+<p class="lead">We need a connected set of edges that reaches every vertex and contains no cycle. Among all such trees, choose the one with minimum total weight.</p><div class="concept-strip">
+<article class="concept-cell rule"><span>Core fact</span><b>The lightest safe edge across a cut can be taken</b><p>This single statement drives both Kruskal and Prim.</p></article>
+<article class="concept-cell proof"><span>Two views</span><b>Kruskal grows a forest; Prim grows one tree</b><p>Different mechanics, same cut argument.</p></article>
+<article class="concept-cell cost"><span>Cost</span><b>O(E log E) or O(E log V)</b><p>DSU for Kruskal, a heap for Prim.</p></article>
+</div>
 <div class="greedy-definition"><span>Minimum Spanning Tree</span><p>A spanning tree contains every vertex, is connected, has no cycles, and therefore uses exactly <span class="math">|V|−1</span> edges. An MST is a spanning tree of minimum total edge weight.</p></div>
 <div class="greedy-caution"><strong>MST is not a shortest-path tree.</strong> It minimizes the sum of all selected edge weights, not the distance from one source to every vertex.</div>
 </section>
 
 <section class="lecture-section" id="cut">
-<h2>The cut property</h2>
-<p class="lead">The central greedy fact behind both Kruskal and Prim is about cuts. A cut partitions the vertices into two nonempty sets <span class="math">S</span> and <span class="math">V\S</span>. An edge crosses the cut if its endpoints lie on different sides.</p>
+<h2>One fact powers both algorithms: the cut property</h2>
+<p class="lead">A cut simply separates the vertices into two nonempty sides, <span class="math">S</span> and <span class="math">V\S</span>. The useful question is: which edge is the cheapest way to cross from one side to the other?</p>
 <div class="cut-diagram">
 <div class="cut-side"><h3>Side S</h3><p>Some vertices and the partial tree already fixed on this side.</p></div>
 <div class="cut-bridge">lightest edge<br/>across the cut</div>
@@ -29,8 +33,8 @@
 </section>
 
 <section class="lecture-section" id="kruskal">
-<h2>Kruskal’s algorithm</h2>
-<p class="lead">Kruskal looks at edges globally from lightest to heaviest. It adds an edge exactly when that edge connects two currently different components.</p>
+<h2>Kruskal: grow a forest</h2>
+<p class="lead">Sort all edges by weight. Walk through them once. Keep an edge if it joins two different components; reject it if its endpoints are already connected.</p>
 <div class="visualizer kruskal-demo">
 <div class="visualizer-head"><div><h3>Run Kruskal step by step</h3><p>The edge list is sorted by weight. Green edges enter the forest; faded edges are rejected because they close a cycle.</p></div><div class="step-nav-controls"><button class="previous-step" data-action="previous" type="button">← Previous</button><button class="primary-step" data-action="next" type="button">Next →</button></div></div>
 <div class="edge-list" data-role="edges"></div>
@@ -42,8 +46,8 @@
 </section>
 
 <section class="lecture-section" id="prim">
-<h2>Prim’s algorithm</h2>
-<p class="lead">Prim grows one tree rather than many components. Start at any vertex. At every step, add the minimum-weight edge that leaves the current tree and reaches an unvisited vertex.</p>
+<h2>Prim: grow one tree</h2>
+<p class="lead">Start from any vertex. Keep one connected tree and repeatedly add the cheapest edge leaving that tree. The new endpoint joins the tree; the frontier updates.</p>
 <div class="algo-compare-grid">
 <article class="algo-compare-card kruskal"><h3>Kruskal</h3><p>Greedy object: globally cheapest edge that joins two different components.</p><div class="method-state-row"><span class="method-state active">forest</span><span class="method-state">sort edges</span><span class="method-state">DSU</span></div></article>
 <article class="algo-compare-card prim"><h3>Prim</h3><p>Greedy object: cheapest edge crossing from the current tree to an outside vertex.</p><div class="method-state-row"><span class="method-state active">one tree</span><span class="method-state">heap</span><span class="method-state">frontier</span></div></article>
@@ -52,7 +56,7 @@
 </section>
 
 <section class="lecture-section" id="implementation">
-<h2>Python implementations</h2>
+<h2>Same proof, different data structures</h2>
 <div class="dual-code">
 <div class="dual-code-block"><h3>Kruskal + DSU</h3><pre><code>def kruskal(n, edges):
     parent = list(range(n))
@@ -116,7 +120,7 @@ def prim(graph, start=0):
 </section>
 
 <section class="lecture-section" id="properties">
-<h2>Useful MST facts</h2>
+<h2>Four facts worth remembering</h2>
 <div class="decision-grid">
 <article class="decision-card greedy-signal"><h3>Distinct weights imply uniqueness</h3><p>If every edge weight is different, the graph has a unique MST.</p></article>
 <article class="decision-card greedy-signal"><h3>Ties may give several MSTs</h3><p>Different safe choices of equal weight can lead to different spanning trees with the same minimum total weight.</p></article>
