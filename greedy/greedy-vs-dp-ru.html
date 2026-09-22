@@ -6,7 +6,7 @@
 </head>
 <body class="lecture-page"><div aria-hidden="true" class="progress-track"><div class="progress-bar" id="reading-progress"></div></div>
 <header class="topbar"><a class="brand" href="../index-ru.html"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name ru-brand-name"><span class="ru-brand-lines"><span>Гайд по алгоритмам</span><span class="ru-brand-presented">presented by Аллан</span></span></span></a><nav aria-label="Основная навигация" class="topnav"><a href="index-ru.html">Жадные алгоритмы</a><div aria-label="Язык" class="language-switch"><a href="greedy-vs-dp.html">EN</a><span class="language-separator">·</span><span class="current">RU</span></div></nav></header>
-<aside aria-label="Навигация по разделу" class="sidebar"><div class="sidebar-title">Глава 9 · Раздел 3</div><a href="#difference">Главное отличие</a><a href="#structure">Общая структура</a><a href="#coins">Размен монет</a><a href="#knapsack">Рюкзак 0/1</a><a href="#weighted">Взвешенные интервалы</a><a href="#signals">Как выбрать метод?</a><a href="#code">Сравнение кода</a><a href="#comparison">Итоговая таблица</a><a href="#exercises">Задачи</a></aside>
+<aside aria-label="Навигация по разделу" class="sidebar"><div class="sidebar-title">Глава 9 · Раздел 3</div><a href="#difference">Главное отличие</a><a href="#structure">Общая структура</a><a href="#coins">Размен монет</a><a href="#knapsack">Рюкзак 0/1</a><a href="#weighted">Взвешенные интервалы</a><a href="#state">Что должно помнить будущее?</a><a href="#signals">Как выбрать метод?</a><a href="#code">Сравнение кода</a><a href="#spectrum">Спектр методов</a><a href="#comparison">Итоговая таблица</a><a href="#exercises">Задачи</a></aside>
 <main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Глава 9 · Раздел 3</div><h1>Жадные алгоритмы и динамическое программирование</h1><p class="chapter-topics">Greedy оставляет одно будущее. Динамическое программирование хранит несколько состояний, пока не станет ясно, какое из них победит.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-vs-dp.svg"/></div></section>
 <section class="lecture-section" id="difference">
 <h2>Один путь или несколько состояний?</h2>
@@ -68,6 +68,18 @@
 <div class="source-note"><h3>Сортировка всё ещё полезна</h3><p>Это гибридный случай: сортировка по окончанию не решает задачу, но делает DP аккуратным. <span class="math">p(j)</span> — последний интервал, заканчивающийся до начала <span class="math">j</span>. Отдельной страницы про Weighted Interval Scheduling в handbook пока нет.</p></div>
 </section>
 
+<!-- book-synthesis-gvdp -->
+<section class="lecture-section" id="state">
+<h2>Спросите: что будущее должно помнить о прошлом?</h2>
+<p class="lead">Практичный способ отличить greedy от DP — понять, сколько информации о прошлом обязано пережить текущий шаг. Greedy работает, когда много разных историй можно безопасно сжать в одно доминирующее состояние.</p>
+<div class="pattern-lenses">
+<article class="pattern-lens"><span class="pattern-tag">Один frontier</span><h3>Jump Game</h3><p>При проходе справа налево достаточно хранить самую левую позицию, из которой конец уже достижим. Все успешные suffix-состояния позади неё доминируются этим frontier.</p></article>
+<article class="pattern-lens"><span class="pattern-tag">Один кандидат</span><h3>Gas Station</h3><p>Первый отрицательный running balance позволяет выбросить целый блок стартовых точек. Алгоритм хранит одного выжившего кандидата, а не состояние для каждого старта.</p></article>
+<article class="pattern-lens"><span class="pattern-tag">Много capacities</span><h3>0/1 Knapsack</h3><p>Два частичных рюкзака с разной занятой вместимостью могут оба понадобиться позже. Ни один не обязан доминировать, поэтому DP хранит таблицу альтернатив.</p></article>
+</div>
+<div class="rule-formula">Greedy-вопрос: можно ли заменить много историй одним доминирующим состоянием?</div>
+</section>
+
 <section class="lecture-section" id="signals">
 <h2>Практический тест</h2>
 <p class="lead">Спросите, какая информация может понадобиться будущим решениям. Если два частичных ответа по-разному расходуют ресурс и ни один явно не доминирует, хранить только один опасно.</p>
@@ -108,6 +120,17 @@
     return dp[amount]</code></pre></div>
 </div>
 <p>Жадная функция почти не хранит альтернативную историю. DP хранит лучший ответ для каждой суммы от 0 до целевой.</p>
+</section>
+
+<section class="lecture-section" id="spectrum">
+<h2>Greedy и DP — части более широкого спектра</h2>
+<div class="table-wrap"><table><thead><tr><th>Ситуация</th><th>Что хранить</th><th>Типичный метод</th><th>Пример</th></tr></thead><tbody>
+<tr><td>Одно состояние доминирует конкурентов</td><td>Один frontier / кандидат</td><td>Exact greedy</td><td>Interval Scheduling, Jump Game</td></tr>
+<tr><td>Выживает несколько несравнимых состояний</td><td>Таблицу состояний</td><td>Dynamic programming</td><td>0/1 Knapsack, weighted intervals</td></tr>
+<tr><td>Exact optimization слишком дорог</td><td>Дешёвое локально хорошее решение</td><td>Approximation</td><td>Greedy Set Cover</td></tr>
+<tr><td>Полезной гарантии нет</td><td>Практического кандидата</td><td>Heuristic</td><td>Problem-dependent local rule</td></tr>
+</tbody></table></div>
+<div class="bridge-note"><h3>Не превращайте “DP vs greedy” в спор о названиях</h3><p>Главный вопрос структурный: какие альтернативы можно доказанно забыть? Сортировка, heap и локальные решения могут встречаться внутри обоих подходов.</p></div>
 </section>
 
 <section class="lecture-section" id="comparison">
