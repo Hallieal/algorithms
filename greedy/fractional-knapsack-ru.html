@@ -3,7 +3,8 @@
 <title>Дробная задача о рюкзаке | Гайд по алгоритмам — presented by Аллан</title>
 <link href="../assets/css/styles.css" rel="stylesheet"/><link href="assets/greedy.css" rel="stylesheet"/>
 <link href="../assets/images/favicon-32.png" rel="icon" sizes="32x32" type="image/png"/><link href="../assets/images/favicon.png" rel="icon" sizes="64x64" type="image/png"/><link href="../assets/images/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180"/>
-<link href="fractional-knapsack.html" hreflang="en" rel="alternate"/><link href="fractional-knapsack-ru.html" hreflang="ru" rel="alternate"/></head>
+<link href="fractional-knapsack.html" hreflang="en" rel="alternate"/><link href="fractional-knapsack-ru.html" hreflang="ru" rel="alternate"/><noscript><style>.answer-box[hidden]{display:block!important}.reveal{display:none!important}</style></noscript>
+</head>
 <body class="lecture-page"><div aria-hidden="true" class="progress-track"><div class="progress-bar" id="reading-progress"></div></div>
 <header class="topbar"><a class="brand" href="../index-ru.html"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name ru-brand-name"><span class="ru-brand-lines"><span>Гайд по алгоритмам</span><span class="ru-brand-presented">presented by Аллан</span></span></span></a>
 <nav aria-label="Основная навигация" class="topnav"><a href="index-ru.html">Жадные алгоритмы</a><div aria-label="Язык" class="language-switch"><a href="fractional-knapsack.html">EN</a><span class="language-separator">·</span><span class="current">RU</span></div></nav></header>
@@ -17,6 +18,7 @@
 <article class="concept-cell cost"><span>Сложность</span><b>O(n log n)</b><p>Посчитать отношения, отсортировать, пройти один раз.</p></article>
 </div>
 <div class="greedy-definition"><span>Дробный рюкзак</span><p>Нужно выбрать доли <span class="math">0 ≤ xᵢ ≤ 1</span>, максимизируя <span class="math">∑ xᵢvᵢ</span> при ограничении <span class="math">∑ xᵢwᵢ ≤ W</span>.</p></div>
+<div class="source-note"><h3>Стандартные предположения</h3><p>В математической постановке обычно предполагают <span class="math">wᵢ &gt; 0</span> и <span class="math">vᵢ ≥ 0</span>. Код ниже чуть устойчивее: отрицательный вес запрещён, предметы с неположительной ценностью пропускаются, а положительная ценность при нулевом весе берётся бесплатно.</p></div>
 </section>
 
 <section class="lecture-section" id="density">
@@ -80,6 +82,7 @@
 <article class="boundary-card bad"><h3>Версия 0/1</h3><p>Тот же порядок по плотности берёт A и B и получает 160. Но B+C помещаются ровно и дают 220. Первый жадный выбор A блокирует оптимум.</p></article>
 </div>
 <div class="greedy-caution"><strong>Вывод.</strong> Небольшое изменение модели может полностью уничтожить жадное свойство. Нельзя переносить доказательство с одной версии задачи на другую, не проверив ключевое предположение.</div>
+<div class="bridge-note"><h3>Но дробный greedy всё ещё полезен для 0/1 Knapsack</h3><p>Оптимум дробной задачи — <strong>верхняя граница</strong> для 0/1-оптимума: разрешение дробей может только улучшить ответ. Такая граница используется в branch-and-bound. Для точного 0/1 Knapsack стандартный DP по вместимости псевдополиномиален. Простое density-greedy само по себе не имеет постоянной гарантии приближения; для approximation нужен дополнительный приём, например сравнение с лучшим одиночным предметом.</p></div>
 </section>
 
 <section class="lecture-section" id="implementation">
@@ -87,23 +90,33 @@
 <div class="code-explainer">
 <div class="annotated-code">
 <div class="code-row"><span class="line-no">1</span><code>def fractional_knapsack(items, capacity):</code></div>
-<div class="code-row marked"><span class="line-no">2</span><code>    items = sorted(</code></div>
-<div class="code-row"><span class="line-no">3</span><code>        items,</code></div>
-<div class="code-row"><span class="line-no">4</span><code>        key=lambda x: x[1] / x[0],</code></div>
-<div class="code-row"><span class="line-no">5</span><code>        reverse=True</code></div>
-<div class="code-row"><span class="line-no">6</span><code>    )</code></div>
-<div class="code-row"><span class="line-no">7</span><code>    value = 0.0</code></div>
-<div class="code-row marked"><span class="line-no">8</span><code>    for weight, item_value in items:</code></div>
-<div class="code-row marked"><span class="line-no">9</span><code>        take = min(weight, capacity)</code></div>
-<div class="code-row"><span class="line-no">10</span><code>        value += take * item_value / weight</code></div>
-<div class="code-row"><span class="line-no">11</span><code>        capacity -= take</code></div>
-<div class="code-row marked"><span class="line-no">12</span><code>        if capacity == 0:</code></div>
-<div class="code-row"><span class="line-no">13</span><code>            break</code></div>
-<div class="code-row"><span class="line-no">14</span><code>    return value</code></div>
+<div class="code-row"><span class="line-no">2</span><code>    if capacity &lt; 0:</code></div>
+<div class="code-row"><span class="line-no">3</span><code>        raise ValueError("capacity must be nonnegative")</code></div>
+<div class="code-row"><span class="line-no">4</span><code></code></div>
+<div class="code-row"><span class="line-no">5</span><code>    value = 0.0</code></div>
+<div class="code-row"><span class="line-no">6</span><code>    candidates = []</code></div>
+<div class="code-row marked"><span class="line-no">7</span><code>    for weight, item_value in items:</code></div>
+<div class="code-row"><span class="line-no">8</span><code>        if weight &lt; 0:</code></div>
+<div class="code-row"><span class="line-no">9</span><code>            raise ValueError("weight must be nonnegative")</code></div>
+<div class="code-row"><span class="line-no">10</span><code>        if item_value &lt;= 0:</code></div>
+<div class="code-row"><span class="line-no">11</span><code>            continue</code></div>
+<div class="code-row marked"><span class="line-no">12</span><code>        if weight == 0:</code></div>
+<div class="code-row"><span class="line-no">13</span><code>            value += item_value</code></div>
+<div class="code-row"><span class="line-no">14</span><code>        else:</code></div>
+<div class="code-row"><span class="line-no">15</span><code>            candidates.append((weight, item_value))</code></div>
+<div class="code-row"><span class="line-no">16</span><code></code></div>
+<div class="code-row marked"><span class="line-no">17</span><code>    candidates.sort(key=lambda x: x[1] / x[0], reverse=True)</code></div>
+<div class="code-row marked"><span class="line-no">18</span><code>    for weight, item_value in candidates:</code></div>
+<div class="code-row"><span class="line-no">19</span><code>        if capacity == 0:</code></div>
+<div class="code-row"><span class="line-no">20</span><code>            break</code></div>
+<div class="code-row"><span class="line-no">21</span><code>        take = min(weight, capacity)</code></div>
+<div class="code-row"><span class="line-no">22</span><code>        value += take * item_value / weight</code></div>
+<div class="code-row"><span class="line-no">23</span><code>        capacity -= take</code></div>
+<div class="code-row"><span class="line-no">24</span><code>    return value</code></div>
 </div>
 <div class="code-notes"><h3>Что важно</h3>
-<div class="code-note-item wide-note"><span>2–6</span><p>Жадный приоритет — убывание ценности на единицу веса.</p></div>
-<div class="code-note-item wide-note"><span>8–11</span><p>Берём предмет целиком, если он помещается; иначе — ровно оставшуюся вместимость.</p></div>
+<div class="code-note-item wide-note"><span>7–15</span><p>Граничные случаи обрабатываются до деления: отрицательный вес запрещаем, бесполезные по целевой функции предметы пропускаем, бесплатную положительную ценность собираем отдельно.</p></div>
+<div class="code-note-item wide-note"><span>17–23</span><p>Для положительных весов и ценностей жадный приоритет остаётся прежним: убывание <span class="math">v/w</span>.</p></div>
 </div></div>
 <div class="complexity-strip"><div><span>Плотности</span><b>O(n)</b><small>все предметы</small></div><div><span>Сортировка</span><b>O(n log n)</b><small>по плотности</small></div><div><span>Проход</span><b>O(n)</b><small>один раз</small></div><div><span>Итого</span><b>O(n log n)</b><small>доминирует сортировка</small></div></div>
 </section>
@@ -114,6 +127,7 @@
 <article class="exercise"><div class="exercise-num">1</div><div><h3>Плотность</h3><p>Предмет имеет вес 8 и ценность 52. Чему равна его ценность на единицу веса?</p><button class="reveal" data-reveal="fk-ru-1" type="button">Показать ответ</button><div class="answer-box" hidden id="fk-ru-1">52 / 8 = 6.5.</div></div></article>
 <article class="exercise"><div class="exercise-num">2</div><div><h3>Последняя доля</h3><p>Осталась вместимость 10, следующий предмет весит 25 и имеет ценность 100. Какую долю берём и какую ценность она добавит?</p><button class="reveal" data-reveal="fk-ru-2" type="button">Показать ответ</button><div class="answer-box" hidden id="fk-ru-2">Берём 10/25 = 40% предмета. Добавленная ценность: 0.4·100 = 40.</div></div></article>
 <article class="exercise"><div class="exercise-num">3</div><div><h3>Предположение доказательства</h3><p>Какое свойство задачи позволяет в обменном аргументе переносить одинаковый вес между двумя предметами?</p><button class="reveal" data-reveal="fk-ru-3" type="button">Показать ответ</button><div class="answer-box" hidden id="fk-ru-3">Делимость предметов. Без дробных решений обмен одинакового веса может вообще не соответствовать допустимому решению.</div></div></article>
+<article class="exercise"><div class="exercise-num">4</div><div><h3>Граничные случаи</h3><p>Что должно происходить, если вместимость уже равна 0? А если предмет имеет вес 0 и положительную ценность?</p><button class="reveal" data-reveal="fk-ru-4" type="button">Показать ответ</button><div class="answer-box" hidden id="fk-ru-4">При вместимости 0 нельзя брать предметы положительного веса. Но положительная ценность нулевого веса ничего не расходует, поэтому её надо взять; именно поэтому код обрабатывает такие предметы до основного цикла по capacity.</div></div></article>
 </div>
 <div class="next-part"><h3>Дальше: кодирование Хаффмана</h3><p>В дробном рюкзаке greedy выбирает лучший следующий материал. Хаффман устроен иначе: он снова и снова объединяет две самые дешёвые части в более крупную структуру.</p><a class="next-part-link" href="huffman-ru.html">Кодирование Хаффмана →</a></div>
 </section></main>
