@@ -34,7 +34,7 @@
 <section class="lecture-section" id="algorithm">
 <h2>Reuse the room that frees first</h2>
 <p class="lead">Sort by start time. For each interval, look at the room with the smallest current finish time. If that room is free, reuse it. If even that room is still busy, every room is busy.</p>
-<div class="source-note"><h3>Ties at the same start time</h3><p>If two intervals start simultaneously, their relative order does not affect correctness. They overlap at that start time, so they cannot reuse the same room regardless of which one is processed first.</p></div>
+<div class="source-note"><h3>Ties at the same start time</h3><p>Assuming positive-duration intervals, if two intervals start simultaneously, their relative order does not affect correctness. They overlap immediately, so they cannot reuse the same room regardless of which one is processed first.</p></div>
 <div class="step-flow">
 <article class="step-item"><div class="step-number">1</div><div><h3>Sort by start time</h3><p>When we process an interval, all earlier-starting intervals have already been assigned.</p></div></article>
 <article class="step-item"><div class="step-number">2</div><div><h3>Look at the earliest finishing room</h3><p>A min-heap lets us find the room that becomes free first.</p></div></article>
