@@ -6,7 +6,7 @@
 </head>
 <body class="lecture-page"><div aria-hidden="true" class="progress-track"><div class="progress-bar" id="reading-progress"></div></div>
 <header class="topbar"><a class="brand" href="../index-ru.html"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name ru-brand-name"><span class="ru-brand-lines"><span>Гайд по алгоритмам</span><span class="ru-brand-presented">presented by Аллан</span></span></span></a><nav aria-label="Основная навигация" class="topnav"><a href="index-ru.html">Жадные алгоритмы</a><div aria-label="Язык" class="language-switch"><a href="greedy-vs-dp.html">EN</a><span class="language-separator">·</span><span class="current">RU</span></div></nav></header>
-<aside aria-label="Навигация по разделу" class="sidebar"><div class="sidebar-title">Глава 9 · Раздел 3</div><a href="#difference">Главное отличие</a><a href="#structure">Общая структура</a><a href="#coins">Размен монет</a><a href="#knapsack">Рюкзак 0/1</a><a href="#knapsack-ladder">Knapsack: три уровня</a><a href="#weighted">Взвешенные интервалы</a><a href="#state">Что должно помнить будущее?</a><a href="#signals">Как выбрать метод?</a><a href="#code">Сравнение кода</a><a href="#spectrum">Спектр методов</a><a href="#comparison">Итоговая таблица</a><a href="#exercises">Задачи</a></aside>
+<aside aria-label="Навигация по разделу" class="sidebar"><div class="sidebar-title">Глава 9 · Раздел 3</div><a href="#difference">Главное отличие</a><a href="#structure">Общая структура</a><a href="#coins">Размен монет</a><a href="#knapsack">Рюкзак 0/1</a><a href="#knapsack-ladder">Knapsack: три уровня</a><a href="#weighted">Взвешенные интервалы</a><a href="#state">Что должно помнить будущее?</a><a href="#compressed-dp">Когда DP сжимается в одно state</a><a href="#signals">Как выбрать метод?</a><a href="#code">Сравнение кода</a><a href="#spectrum">Спектр методов</a><a href="#comparison">Итоговая таблица</a><a href="#exercises">Задачи</a></aside>
 <main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Глава 9 · Раздел 3</div><h1>Жадные алгоритмы и динамическое программирование</h1><p class="chapter-topics">Greedy оставляет одно будущее. Динамическое программирование хранит несколько состояний, пока не станет ясно, какое из них победит.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-vs-dp.svg"/></div></section>
 <section class="lecture-section" id="difference">
 <h2>Один путь или несколько состояний?</h2>
@@ -100,6 +100,22 @@
 <article class="pattern-lens"><span class="pattern-tag">Много capacities</span><h3>0/1 Knapsack</h3><p>Два частичных рюкзака с разной занятой вместимостью могут оба понадобиться позже. Ни один не обязан доминировать, поэтому DP хранит таблицу альтернатив.</p></article>
 </div>
 <div class="rule-formula">Greedy-вопрос: можно ли заменить много историй одним доминирующим состоянием?</div>
+</section>
+
+<!-- common-sense-round-gvdp -->
+<section class="lecture-section" id="compressed-dp">
+<h2>Иногда граница “greedy vs DP” поставлена не там</h2>
+<p class="lead">Maximum subarray полезен тем, что один и тот же one-pass algorithm естественно понимается с двух сторон: как DP recurrence и как greedy discard rule.</p>
+<div class="two-column-block">
+<div class="text-panel"><h3>DP view</h3><p>Пусть <span class="math">E_i</span> — лучший subarray sum, который <em>обязан заканчиваться</em> в позиции <span class="math">i</span>. Тогда</p><div class="formula-line">Eᵢ = max(aᵢ, Eᵢ₋₁ + aᵢ)</div><p>Нужно только предыдущее state, поэтому вся DP table сжимается в одну переменную.</p></div>
+<div class="proof-panel"><h3>Greedy view</h3><p>Если running prefix sum становится отрицательной, больше не тащим её вперёд. Любой будущий suffix лучше без отрицательного вклада, поэтому делаем reset и начинаем заново.</p></div>
+</div>
+<div class="stream-state">
+<article><code>current_sum</code><p>Лучший sum subarray, заканчивающегося в текущей позиции.</p></article>
+<article><code>best_sum</code><p>Лучший ответ среди всех ending positions, увиденных до сих пор.</p></article>
+<article><code>discard rule</code><p>Отрицательный running prefix dominated вариантом начать после него.</p></article>
+</div>
+<div class="one-line"><strong>Более глубокая граница — сколько state должно выжить.</strong> Некоторые DP recurrences сжимаются до constant state; некоторые greedy arguments можно записать маленькой recurrence. Название техники менее важно, чем понимание того, что реально нужно будущему.</div>
 </section>
 
 <section class="lecture-section" id="signals">
