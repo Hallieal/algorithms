@@ -8,7 +8,7 @@
 <body class="lecture-page"><div aria-hidden="true" class="progress-track"><div class="progress-bar" id="reading-progress"></div></div>
 <header class="topbar"><a class="brand" href="../"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name">Allan's Handbook of Algorithms</span></a>
 <nav aria-label="Primary navigation" class="topnav"><a href="./">Greedy overview</a><div aria-label="Language" class="language-switch"><span class="current">EN</span><span class="language-separator">·</span><a href="mst-ru.html">RU</a></div></nav></header>
-<aside aria-label="Section navigation" class="sidebar"><div class="sidebar-title">Chapter 9 · Section 9</div><a href="#problem">Problem</a><a href="#model-story">Model the story first</a><a href="#network-vs-route">Network vs route</a><a href="#cut">Cut property</a><a href="#first-bad">First-bad-edge proof</a><a href="#kruskal">Kruskal</a><a href="#prim">Prim</a><a href="#boruvka">Borůvka</a><a href="#data-structure">Same proof, different implementation</a><a href="#implementation">Implementations</a><a href="#complexity">Complexity</a><a href="#applications">Applications and variants</a><a href="#properties">Useful facts</a><a href="#exercises">Exercises</a></aside>
+<aside aria-label="Section navigation" class="sidebar"><div class="sidebar-title">Chapter 9 · Section 9</div><a href="#problem">Problem</a><a href="#model-story">Model the story first</a><a href="#network-vs-route">Network vs route</a><a href="#cut">Cut property</a><a href="#first-bad">First-bad-edge proof</a><a href="#kruskal">Kruskal</a><a href="#prim">Prim</a><a href="#boruvka">Borůvka</a><a href="#data-structure">Same proof, different implementation</a><a href="#dsu">Kruskal + Union-Find</a><a href="#implementation">Implementations</a><a href="#complexity">Complexity</a><a href="#applications">Applications and variants</a><a href="#properties">Useful facts</a><a href="#exercises">Exercises</a></aside>
 <main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Chapter 9 · Section 9</div><h1>Minimum Spanning Trees</h1><p class="chapter-topics">Connect every vertex with minimum total edge weight. Kruskal and Prim look different, but both are powered by the same cut property.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-mst.svg"/></div></section>
 <section class="lecture-section" id="problem">
 <h2>Connect everything as cheaply as possible</h2>
@@ -118,6 +118,26 @@
 <article class="good"><h3>Weak ordering is enough</h3><p>A heap keeps the minimum accessible while allowing updates without maintaining a globally sorted list. That is precisely the operation profile Prim needs.</p></article>
 </div>
 <div class="one-line"><strong>Algorithm design has two layers.</strong> First prove which local edge is safe; then choose a representation that exposes that edge efficiently.</div>
+</section>
+
+<!-- coding-patterns-round-mst -->
+<section class="lecture-section" id="dsu">
+<h2>Kruskal’s interview companion: Union-Find</h2>
+<p class="lead">The greedy rule says which edge to consider next. The remaining implementation question is connectivity: are the two endpoints already in the same component?</p>
+<div class="recognition-grid">
+<article class="recognition-card"><span class="signal">find(x)</span><h3>Which component contains x?</h3><p>Each component has a representative. If <code>find(u) == find(v)</code>, adding edge <span class="math">(u,v)</span> would create a cycle and Kruskal skips it.</p></article>
+<article class="recognition-card"><span class="signal">union(x,y)</span><h3>Merge two components</h3><p>If the representatives differ, the edge is safe with respect to acyclicity. Accept it, then union the two sets so future cycle tests see the new component.</p></article>
+<article class="recognition-card"><span class="signal">Optimization</span><h3>Union by size + path compression</h3><p>Attach the smaller tree under the larger representative and flatten parent chains during <code>find</code>. The operations become effectively constant amortized time.</p></article>
+</div>
+<div class="code-explainer">
+<div class="annotated-code">
+<div class="code-row"><span class="line-no">1</span><code>for w, u, v in sorted(edges):</code></div>
+<div class="code-row marked"><span class="line-no">2</span><code>    if find(u) != find(v):</code></div>
+<div class="code-row"><span class="line-no">3</span><code>        take(u, v, w)</code></div>
+<div class="code-row"><span class="line-no">4</span><code>        union(u, v)</code></div>
+</div>
+<div class="code-notes"><h3>Separate the two ideas</h3><p>Sorting is the greedy priority rule. Union-Find is not the proof of optimality; it is the fast mechanism for enforcing the “no cycles” feasibility constraint.</p></div>
+</div>
 </section>
 
 <section class="lecture-section" id="implementation">
