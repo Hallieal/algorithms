@@ -9,10 +9,10 @@
 <header class="topbar"><a class="brand" href="../index-ru.html"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name ru-brand-name"><span class="ru-brand-lines"><span>Гайд по алгоритмам</span><span class="ru-brand-presented">presented by Аллан</span></span></span></a>
 <nav aria-label="Основная навигация" class="topnav"><a href="index-ru.html">Жадные алгоритмы</a><div aria-label="Язык" class="language-switch"><a href="mst.html">EN</a><span class="language-separator">·</span><span class="current">RU</span></div></nav></header>
 <aside aria-label="Навигация по разделу" class="sidebar"><div class="sidebar-title">Глава 9 · Раздел 9</div><a href="#problem">Постановка</a><a href="#model-story">Сначала смоделируйте сюжет</a><a href="#network-vs-route">Network и route</a><a href="#cut">Свойство разреза</a><a href="#first-bad">Доказательство через первую ошибку</a><a href="#kruskal">Краскал</a><a href="#prim">Прим</a><a href="#boruvka">Борувка</a><a href="#data-structure">Один proof, разные implementations</a><a href="#dsu">Kruskal + Union-Find</a><a href="#implementation">Реализации</a><a href="#complexity">Сложность</a><a href="#applications">Применения и варианты</a><a href="#properties">Полезные факты</a><a href="#exercises">Задачи</a></aside>
-<main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Глава 9 · Раздел 9</div><h1>Минимальные остовные деревья</h1><p class="chapter-topics">Нужно соединить все вершины с минимальным суммарным весом. Краскал и Прим выглядят по-разному, но оба основаны на свойстве разреза.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-mst.svg"/></div></section>
+<main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Глава 9 · Раздел 9</div><h1>Минимальные остовные деревья</h1><p class="chapter-topics">Минимальное остовное дерево соединяет все vertices с минимальным суммарным весом edges. Kruskal и Prim используют разные data structures, но опираются на одно cut property.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-mst.svg"/></div></section>
 <section class="lecture-section" id="problem">
-<h2>Соединить всё как можно дешевле</h2>
-<p class="lead">Нужно выбрать связный набор рёбер, который достигает всех вершин и не содержит циклов. Среди всех таких деревьев ищем минимальный суммарный вес.</p><div class="concept-strip">
+<h2>Постановка задачи</h2>
+<p class="lead">Для связного взвешенного неориентированного графа нужно найти spanning tree минимального суммарного веса.</p><div class="concept-strip">
 <article class="concept-cell rule"><span>Главный факт</span><b>Самое лёгкое безопасное ребро через разрез можно брать</b><p>На этом одном утверждении держатся и Краскал, и Прим.</p></article>
 <article class="concept-cell proof"><span>Два взгляда</span><b>Краскал растит лес, Прим — одно дерево</b><p>Механика разная, доказательство одно.</p></article>
 <article class="concept-cell cost"><span>Сложность</span><b>O(E log E) или O(E log V)</b><p>DSU для Краскала, heap для Прима.</p></article>
@@ -23,8 +23,8 @@
 
 <!-- grokking-pass-mst -->
 <section class="lecture-section" id="model-story">
-<h2>До выбора алгоритма превратите сюжет в граф</h2>
-<p class="lead">Конкретная история делает objective видимым. Пусть несколько офисов нужно соединить новой оптоволоконной сетью, а для каждой возможной линии известна стоимость строительства.</p>
+<h2>Графовая модель</h2>
+<p class="lead">Vertices обозначают объекты, которые нужно соединить, edges — допустимые прямые связи, а weights — стоимость их построения.</p>
 <div class="grokking-contrast">
 <article class="grokking-card good"><span>Vertices</span><h3>Объекты, которые надо соединить</h3><p>Каждый офис становится вершиной.</p></article>
 <article class="grokking-card warn"><span>Edges</span><h3>Возможные прямые линии</h3><p>Edge означает, что линию можно построить; weight — её стоимость.</p></article>
@@ -35,8 +35,8 @@
 
 <!-- grokking-round-mst -->
 <section class="lecture-section" id="network-vs-route">
-<h2>Дешёвая сеть и дешёвые маршруты — разные задачи</h2>
-<p class="lead">Shortest-path story заставляет думать об одном путешественнике, идущем от source. MST задаёт другой вопрос: если мы строим саму инфраструктуру, какие edges вообще должны существовать?</p>
+<h2>MST и shortest paths</h2>
+<p class="lead">MST минимизирует суммарную стоимость выбранной сети. Shortest-path tree минимизирует пути от одного source до отдельных vertices. Это разные objectives.</p>
 <div class="objective-swap">
 <article><h3>Dijkstra: cheapest routes от одного source</h3><p>Пусть AB=2, AC=2, BC=1 и source=A. Shortest-path tree может взять AB и AC: до каждой вершины получаем cheapest route из A, а сумма выбранных edges равна 4.</p></article>
 <div class="objective-arrow">≠</div>
@@ -46,8 +46,8 @@
 </section>
 
 <section class="lecture-section" id="cut">
-<h2>Один факт для обоих алгоритмов: свойство разреза</h2>
-<p class="lead">Разрез просто делит вершины на две непустые стороны, <span class="math">S</span> и <span class="math">V\S</span>. Нас интересует самый дешёвый способ перейти с одной стороны на другую.</p>
+<h2>Свойство разреза</h2>
+<p class="lead">Для любого cut минимальное по весу edge, пересекающее cut, безопасно для некоторого MST. На этом основаны и Kruskal, и Prim.</p>
 <div class="cut-diagram">
 <div class="cut-side"><h3>Сторона S</h3><p>Часть вершин и уже зафиксированные безопасные рёбра.</p></div>
 <div class="cut-bridge">самое лёгкое ребро<br/>через разрез</div>
@@ -59,8 +59,8 @@
 
 <!-- book-synthesis-mst -->
 <section class="lecture-section" id="first-bad">
-<h2>Сильный proof-приём: предположить первую ошибку greedy</h2>
-<p class="lead">Для инкрементальных greedy-алгоритмов удобно рассматривать <em>первый</em> шаг, который якобы может уничтожить оптимальность. До него текущий greedy-prefix ещё содержится в некотором optimum.</p>
+<h2>Доказательство через первое конфликтующее ребро</h2>
+<p class="lead">Предположим, текущий greedy forest содержится в некотором MST, и рассмотрим первое выбранное edge вне этого tree. Его добавление создаёт cycle, из которого можно удалить edge не меньшего веса.</p>
 <div class="proof-template">
 <article><b>До ошибки</b><p>Пусть текущий greedy-forest <span class="math">F</span> входит в некоторое MST <span class="math">T</span>.</p></article>
 <article><b>Greedy выбирает e</b><p>Следующее ребро <span class="math">e</span> минимально через нужный cut, но предположим <span class="math">e∉T</span>.</p></article>
@@ -71,8 +71,8 @@
 </section>
 
 <section class="lecture-section" id="kruskal">
-<h2>Краскал: растим лес</h2>
-<p class="lead">Сортируем все рёбра по весу и проходим один раз. Ребро оставляем, если оно соединяет разные компоненты; если его концы уже связаны, оно создаст цикл и пропускается.</p>
+<h2>Алгоритм Краскала</h2>
+<p class="lead">Обрабатываем edges по неубыванию веса и добавляем edge тогда и только тогда, когда оно соединяет две разные connected components.</p>
 <div class="visualizer kruskal-demo">
 <div class="visualizer-head"><div><h3>Краскал по шагам</h3><p>Список рёбер уже отсортирован по весу. Зелёные рёбра входят в лес, бледные отклонены из-за цикла.</p></div><div class="step-nav-controls"><button class="previous-step" data-action="previous" type="button">← Назад</button><button class="primary-step" data-action="next" type="button">Дальше →</button></div></div>
 <div class="edge-list" data-role="edges"></div>
@@ -84,8 +84,8 @@
 </section>
 
 <section class="lecture-section" id="prim">
-<h2>Прим: растим одно дерево</h2>
-<p class="lead">Начинаем с любой вершины. Поддерживаем одно связное дерево и каждый раз добавляем самое дешёвое ребро, которое выходит из него наружу.</p>
+<h2>Алгоритм Прима</h2>
+<p class="lead">Начинаем с любой vertex и каждый раз добавляем минимальное edge из текущего tree во внешнюю vertex.</p>
 <div class="algo-compare-grid">
 <article class="algo-compare-card kruskal"><h3>Краскал</h3><p>Жадный объект: глобально самое дешёвое ребро, соединяющее две разные компоненты.</p><div class="method-state-row"><span class="method-state active">лес</span><span class="method-state">сортировка рёбер</span><span class="method-state">DSU</span></div></article>
 <article class="algo-compare-card prim"><h3>Прим</h3><p>Жадный объект: самое дешёвое ребро из текущего дерева наружу.</p><div class="method-state-row"><span class="method-state active">одно дерево</span><span class="method-state">heap</span><span class="method-state">граница</span></div></article>
@@ -94,8 +94,8 @@
 </section>
 
 <section class="lecture-section" id="boruvka">
-<h2>Борувка: все компоненты делают шаг одновременно</h2>
-<p class="lead">Краскал добавляет безопасные рёбра по одному, Прим растит одну компоненту. Алгоритм Борувки в каждом раунде позволяет каждой текущей компоненте выбрать самое дешёвое исходящее ребро.</p>
+<h2>Алгоритм Борувки</h2>
+<p class="lead">В каждом раунде каждая текущая component выбирает своё cheapest outgoing edge. Эти safe edges объединяют components до получения одного spanning tree.</p>
 <div class="algorithm-triptych">
 <article><h3>1. Один выбор на компоненту</h3><p>Для каждой компоненты текущего леса находим ребро минимального веса, ведущее наружу.</p></article>
 <article><h3>2. Добавляем все безопасные рёбра</h3><p>Каждое выбранное ребро минимально через разрез «эта компонента против остальных», поэтому свойство разреза делает его безопасным.</p></article>
@@ -106,8 +106,8 @@
 
 <!-- common-sense-round-mst -->
 <section class="lecture-section" id="data-structure">
-<h2>Proof выбирает safe edge; data structure определяет скорость</h2>
-<p class="lead">Kruskal и Prim оба greedy, но повторяют разные операции. После того как операция названа явно, выбор подходящей структуры данных становится гораздо проще.</p>
+<h2>Структуры данных для MST</h2>
+<p class="lead">Kruskal постоянно проверяет принадлежность endpoints одной component, а Prim ищет минимальное frontier edge. Поэтому используются Union-Find и priority queue.</p>
 <div class="table-wrap"><table><thead><tr><th>Algorithm</th><th>Повторяющаяся операция</th><th>Естественная структура</th><th>Типичная стоимость</th></tr></thead><tbody>
 <tr><td>Kruskal</td><td>Следующее lightest edge + «создаст ли оно cycle?»</td><td>Sorted edge list + DSU</td><td><span class="math">O(E log E)</span></td></tr>
 <tr><td>Prim, simple</td><td>Найти cheapest vertex/edge через frontier</td><td>Arrays / linear scan</td><td><span class="math">O(V²)</span></td></tr>
@@ -122,8 +122,8 @@
 
 <!-- coding-patterns-round-mst -->
 <section class="lecture-section" id="dsu">
-<h2>Interview companion для Kruskal: Union-Find</h2>
-<p class="lead">Greedy-rule говорит, какое edge рассматривать следующим. Остаётся implementation-вопрос про connectivity: находятся ли endpoints уже в одном component?</p>
+<h2>Union-Find в алгоритме Краскала</h2>
+<p class="lead">Union-Find поддерживает текущие connected components и позволяет проверить, создаст ли очередное edge cycle.</p>
 <div class="recognition-grid">
 <article class="recognition-card"><span class="signal">find(x)</span><h3>В каком component находится x?</h3><p>У каждого component есть representative. Если <code>find(u) == find(v)</code>, добавление edge <span class="math">(u,v)</span> создаст cycle, поэтому Kruskal его пропускает.</p></article>
 <article class="recognition-card"><span class="signal">union(x,y)</span><h3>Объединить два components</h3><p>Если representatives различаются, edge допустимо относительно acyclicity. Принимаем его и делаем union, чтобы будущие cycle checks видели новый component.</p></article>
@@ -141,7 +141,7 @@
 </section>
 
 <section class="lecture-section" id="implementation">
-<h2>Одно доказательство, разные структуры данных</h2>
+<h2>Реализации Краскала и Прима</h2>
 <div class="dual-code">
 <div class="dual-code-block"><h3>Краскал + DSU</h3><pre><code>def kruskal(n, edges):
     parent = list(range(n))
@@ -196,7 +196,7 @@ def prim(graph, start=0):
 </section>
 
 <section class="lecture-section" id="complexity">
-<h2>Сложность и выбор алгоритма</h2>
+<h2>Сложность</h2>
 <div class="table-wrap"><table class="graph-code-table"><thead><tr><th>Алгоритм</th><th>Главная структура</th><th>Типичная сложность</th><th>Когда удобен</th></tr></thead><tbody>
 <tr><td>Краскал</td><td>Сортировка рёбер + DSU</td><td>O(E log E)</td><td>Уже есть список рёбер; граф разреженный</td></tr>
 <tr><td>Прим с простым scan</td><td>Arrays / матрица смежности</td><td>O(V²)</td><td>Граф плотный; heap может почти ничего не дать</td></tr>
@@ -207,7 +207,7 @@ def prim(graph, start=0):
 </section>
 
 <section class="lecture-section" id="applications">
-<h2>Что ещё даёт структура MST</h2>
+<h2>Применения MST</h2>
 <div class="variant-grid">
 <article class="variant-card"><h3>Clustering</h3><p>Строим MST по точкам или объектам и удаляем самые тяжёлые рёбра. Оставшиеся connected components дают кластеры, разделённые дорогими связями.</p></article>
 <article class="variant-card"><h3>Maximum spanning tree</h3><p>Используем ту же greedy-логику, но идём по весам в обратном порядке. Эквивалентно — меняем знак весов и строим minimum spanning tree.</p></article>
@@ -218,7 +218,7 @@ def prim(graph, start=0):
 </section>
 
 <section class="lecture-section" id="properties">
-<h2>Четыре факта, которые стоит помнить</h2>
+<h2>Полезные свойства</h2>
 <div class="theory-note"><h3>MST — чистый пример матроида</h3><p>Множества рёбер без циклов образуют <em>графический матроид</em>. Остовное дерево — базис этого матроида. Поэтому Краскал является частным случаем общей greedy-теоремы для матроидов: упорядочиваем элементы по весу и добавляем элемент, пока сохраняется независимость. Свойство разреза — графовая форма того же обменного принципа.</p></div>
 <div class="decision-grid">
 <article class="decision-card greedy-signal"><h3>Разные веса ⇒ единственность</h3><p>Если веса всех рёбер различны, MST единственно.</p></article>
