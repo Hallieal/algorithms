@@ -16,6 +16,7 @@
 <link href="strategy.html" hreflang="en" rel="alternate"/><link href="strategy-ru.html" hreflang="ru" rel="alternate"/>
 </head>
 <body class="lecture-page">
+<div aria-hidden="true" class="progress-track"><div class="progress-bar" id="reading-progress"></div></div>
 <header class="topbar">
 <a class="brand" href="../index-ru.html"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name ru-brand-name"><span class="ru-brand-lines"><span>Гайд по алгоритмам</span><span class="ru-brand-presented">presented by Аллан</span></span></span></a>
 <nav aria-label="Основная навигация" class="topnav">
@@ -25,10 +26,10 @@
 </header>
 <aside aria-label="Навигация по разделу" class="sidebar">
 <div class="sidebar-title">Глава 9 · Раздел 1</div>
-<a href="#coming-soon">Скоро</a>
+<a href="#idea">Основная идея</a><a href="#anatomy">Из чего состоит алгоритм</a><a href="#example">Первый пример</a><a href="#failure">Когда greedy ошибается</a><a href="#properties">Структурные свойства</a><a href="#implementation">Реализация</a><a href="#complexity">Эффективность</a><a href="#exercises">Задачи</a>
 </aside>
 <main class="lecture">
-<section class="lecture-hero greedy-placeholder-hero">
+<section class="lecture-hero greedy-lecture-hero">
 <div>
 <div class="chapter-label">Глава 9 · Раздел 1</div>
 <h1>Жадная стратегия</h1>
@@ -36,22 +37,252 @@
 </div>
 <div class="greedy-hero-icon"><img alt="" src="assets/greedy-strategy.svg"/></div>
 </section>
-<section class="lecture-section" id="coming-soon">
-<div class="coming-soon-panel">
-<span class="coming-soon-kicker">В разработке</span>
-<h2>Страница скоро будет заполнена</h2>
-<p>Здесь появится точная схема жадного алгоритма: допустимые решения, локальный критерий выбора и необратимость решения. На небольших контрпримерах разберём, почему лучший выбор прямо сейчас ещё не гарантирует оптимальный ответ.</p>
+
+<section class="lecture-section" id="idea">
+<h2>Основная идея</h2>
+<p class="lead">Жадный алгоритм строит решение постепенно. На каждом шаге он выбирает вариант, который прямо сейчас выглядит лучшим по простому локальному правилу, принимает его, если он допустим, и затем идёт дальше, не пересматривая уже сделанные решения.</p>
+<div class="greedy-process-grid">
+<article class="greedy-process-card"><div class="greedy-process-num">1</div><h3>Смотрим на текущее состояние</h3><p>Используем информацию, которая нужна для решения именно на текущем шаге.</p></article>
+<article class="greedy-process-card"><div class="greedy-process-num">2</div><h3>Делаем локальный выбор</h3><p>Берём кандидата с лучшим приоритетом согласно жадному правилу.</p></article>
+<article class="greedy-process-card"><div class="greedy-process-num">3</div><h3>Проверяем допустимость</h3><p>Выбор не должен нарушать ограничения задачи.</p></article>
+<article class="greedy-process-card"><div class="greedy-process-num">4</div><h3>Фиксируем и продолжаем</h3><p>Не откатываемся назад. Уменьшаем задачу и повторяем шаги для остатка.</p></article>
 </div>
-<div class="placeholder-navigation">
-<a href="index-ru.html">← К содержанию главы</a>
-<a href="proofs-ru.html">Доказательства корректности →</a>
+<div class="greedy-definition"><span>Определение</span><p>Жадный алгоритм строит решение по частям, каждый раз делая локально оптимальный допустимый выбор и не пересматривая уже зафиксированные решения.</p></div>
+</section>
+
+<section class="lecture-section" id="anatomy">
+<h2>Из чего состоит жадный алгоритм</h2>
+<p class="lead">Почти любой жадный алгоритм удобно разложить на три разных вопроса. Их важно не смешивать: хорошее правило приоритета — это не то же самое, что проверка допустимости, и ни одно из них само по себе не доказывает оптимальность.</p>
+<div class="greedy-anatomy-grid">
+<article class="greedy-anatomy-card"><div class="greedy-anatomy-icon">↕</div><h3>Правило приоритета</h3><p>Какого кандидата рассматриваем первым? Например: самое раннее окончание, самое дешёвое ребро, наибольшая ценность на единицу веса.</p></article>
+<article class="greedy-anatomy-card"><div class="greedy-anatomy-icon">✓</div><h3>Проверка допустимости</h3><p>Можно ли взять кандидата, не нарушив ограничения? Если нет, пропускаем его или выбираем другого.</p></article>
+<article class="greedy-anatomy-card"><div class="greedy-anatomy-icon">→</div><h3>Необратимость решения</h3><p>После принятия выбор считается окончательным. Алгоритм не перебирает альтернативные истории.</p></article>
+</div>
+<div class="greedy-caution"><strong>Важно.</strong> «Бери самое большое», «бери самое дешёвое» или «бери ближайшее» — это только эвристика, пока мы не доказали, что такой выбор безопасен.</div>
+</section>
+
+<section class="lecture-section" id="example">
+<h2>Первый жадный пример</h2>
+<p class="lead">Пусть машина доступна 10 минут. Есть четыре независимые задачи длительностью 7, 4, 3 и 2 минуты. Нужно выполнить как можно больше задач.</p>
+<div class="greedy-job-example">
+<div class="greedy-job-head"><div><span class="example-kicker">Жадное правило</span><h3>Сначала выполняем самую короткую оставшуюся задачу</h3></div><p>Короткая задача занимает не больше времени, чем длинная, поэтому после неё остаётся не меньше места для следующих задач.</p></div>
+<div class="job-row"><span>Вход</span><div class="job-chips"><div class="job-chip">7 мин</div><div class="job-chip">4 мин</div><div class="job-chip">3 мин</div><div class="job-chip">2 мин</div></div></div>
+<div class="job-row"><span>Жадный порядок</span><div class="job-chips"><div class="job-chip chosen">2 мин</div><div class="job-chip chosen">3 мин</div><div class="job-chip chosen">4 мин</div><div class="job-chip rejected">7 мин</div></div></div>
+<div class="greedy-job-result">Первые три задачи занимают 2 + 3 + 4 = 9 минут, поэтому мы успеваем выполнить 3 задачи. Оставшаяся 7-минутная задача уже не помещается.</div>
+</div>
+<div class="subsection"><h3>Почему локальный выбор выглядит разумно</h3><p>Если в некотором решении есть более длинная задача, а более короткая не выбрана, то замена длинной задачи на короткую не увеличит суммарное время. Именно такие обменные рассуждения позволяют обосновывать жадность. На следующей странице мы разберём их систематически.</p></div>
+</section>
+
+<section class="lecture-section" id="failure">
+<h2>Локально лучшее не всегда глобально лучшее</h2>
+<p class="lead">Жадные алгоритмы привлекательны своей простотой. Но именно поэтому они опасны: очень естественное локальное правило может давать неправильный ответ.</p>
+<div class="visualizer coin-greedy-demo">
+<div class="visualizer-head"><div><h3>Размен монет: берём крупнейшую подходящую монету</h3><p>Проследите жадные шаги, а затем сравните результат с настоящим минимумом числа монет.</p></div><div class="step-nav-controls"><button class="previous-step" data-action="previous" type="button">← Предыдущий шаг</button><button class="primary-step" data-action="next" type="button">Следующий шаг →</button></div></div>
+<div class="coin-preset-row"><button class="active" data-preset="trap" type="button">Контрпример: 1, 3, 4</button><button data-preset="canonical" type="button">Здесь работает: 1, 5, 10, 25</button></div>
+<div class="coin-demo-grid">
+<div class="coin-panel"><div class="coin-panel-label">Задача</div><div class="coin-target">Сумма <span data-role="amount">6</span></div><div class="coin-bank" data-role="bank"></div></div>
+<div class="coin-panel"><div class="coin-panel-label">Жадное построение</div><div>Осталось: <strong data-role="remaining">6</strong></div><div class="coin-picks" data-role="picks"></div></div>
+</div>
+<div class="step-caption"></div>
+<div class="coin-result-grid" data-role="results" hidden>
+<div class="coin-result-card" data-role="greedy-card"><span>Жадный ответ</span><b data-role="greedy-result"></b><small data-role="greedy-count"></small></div>
+<div class="coin-result-card pass"><span>Оптимальный ответ</span><b data-role="optimal-result"></b><small data-role="optimal-count"></small></div>
+</div>
+</div>
+<p>Для суммы 6 и монет 1, 3 и 4 жадное правило выбирает 4 + 1 + 1 — три монеты. Но 3 + 3 использует только две. Локальное правило понятно и всегда даёт допустимое решение, но не гарантирует глобальный оптимум.</p>
+</section>
+
+<section class="lecture-section" id="properties">
+<h2>Когда жадность вообще может работать?</h2>
+<p class="lead">В корректных жадных задачах снова и снова появляются две структурные идеи.</p>
+<div class="greedy-properties">
+<article class="greedy-property"><h3>Свойство жадного выбора</h3><p>Существует оптимальное решение, совместимое с первым жадным выбором. То есть этот локальный шаг не уничтожает все оптимальные решения.</p></article>
+<article class="greedy-property"><h3>Оптимальная подструктура</h3><p>После фиксации первого решения оставшаяся часть оптимального ответа сама оптимальна для возникшей подзадачи.</p></article>
+</div>
+<div class="greedy-caution"><strong>Одной оптимальной подструктуры недостаточно.</strong> Динамическое программирование тоже использует оптимальную подструктуру. Для жадного алгоритма дополнительно нужно уметь безопасно зафиксировать одну локально выбранную ветвь, не сохраняя альтернативы.</div>
+</section>
+
+<section class="lecture-section" id="implementation">
+<h2>Типичный шаблон реализации</h2>
+<p class="lead">Очень многие жадные алгоритмы реализуются одинаково: один раз упорядочить кандидатов и затем пройти их от лучшего к худшему.</p>
+<div class="code-explainer">
+<div class="annotated-code">
+<div class="code-row"><span class="line-no">1</span><code>def greedy(candidates, priority, feasible):</code></div>
+<div class="code-row marked"><span class="line-no">2</span><code>    ordered = sorted(candidates, key=priority)</code></div>
+<div class="code-row"><span class="line-no">3</span><code>    solution = []</code></div>
+<div class="code-row marked"><span class="line-no">4</span><code>    for candidate in ordered:</code></div>
+<div class="code-row marked"><span class="line-no">5</span><code>        if feasible(solution, candidate):</code></div>
+<div class="code-row marked"><span class="line-no">6</span><code>            solution.append(candidate)</code></div>
+<div class="code-row"><span class="line-no">7</span><code>    return solution</code></div>
+</div>
+<div class="code-notes"><h3>Что означает этот шаблон</h3>
+<div class="code-note-item"><span>2</span><p><strong>Приоритет.</strong> Расставляем кандидатов в порядке, заданном жадным правилом.</p></div>
+<div class="code-note-item wide-note"><span>4–6</span><p><strong>Просмотр и фиксация.</strong> Каждый кандидат рассматривается один раз. Если его добавление допустимо, принимаем его окончательно.</p></div>
+<p>Это не универсальная форма: некоторые жадные алгоритмы используют кучу или постоянно обновляют приоритеты. Но концептуальная схема остаётся той же.</p>
+</div>
 </div>
 </section>
+
+<section class="lecture-section" id="complexity">
+<h2>Эффективность</h2>
+<p class="lead">Слово «жадный» описывает способ проектирования алгоритма, а не класс сложности. Но многие жадные алгоритмы быстры именно потому, что не перебирают множество альтернативных решений.</p>
+<div class="table-wrap"><table class="greedy-runtime-table"><thead><tr><th>Схема реализации</th><th>Типичная сложность</th><th>Где встречается</th></tr></thead><tbody>
+<tr><td>Одна сортировка + проход</td><td>Обычно O(n log n)</td><td>Расписания, интервалы, обработка рёбер в стиле Краскала</td></tr>
+<tr><td>Очередь с приоритетом</td><td>Часто O(n log n), а на графах O((n + m) log n)</td><td>Хаффман, Прим, Дейкстра</td></tr>
+<tr><td>Простой проход</td><td>Иногда O(n)</td><td>Если кандидаты уже приходят в нужном порядке</td></tr>
+</tbody></table></div>
+<p class="caption">Точная оценка всегда зависит от конкретной задачи и структур данных. Жадный алгоритм вполне может быть медленным, если вычисление локального выбора дорого.</p>
+</section>
+
+<section class="lecture-section" id="exercises">
+<h2>Задачи</h2>
+<div class="exercise-list">
+<article class="exercise"><div class="exercise-num">1</div><div><h3>Разберите жадные компоненты</h3><p>В примере с 10 минутами назовите правило приоритета, условие допустимости и необратимое решение.</p><button aria-expanded="false" class="reveal" data-reveal="gs-ru-1" type="button">Показать ответ</button><div class="answer-box" hidden id="gs-ru-1">Приоритет: самая короткая оставшаяся задача. Допустимость: задача должна помещаться в оставшееся время. Фиксация: выбранная задача остаётся в расписании.</div></div></article>
+<article class="exercise"><div class="exercise-num">2</div><div><h3>Сломайте правило монет</h3><p>Для монет 1, 5 и 6 и суммы 10 что выдаст правило «бери крупнейшую монету»? Каков оптимум?</p><button aria-expanded="false" class="reveal" data-reveal="gs-ru-2" type="button">Показать ответ</button><div class="answer-box" hidden id="gs-ru-2">Жадный алгоритм даст 6 + 1 + 1 + 1 + 1 — пять монет. Оптимум: 5 + 5 — две монеты.</div></div></article>
+<article class="exercise"><div class="exercise-num">3</div><div><h3>Допустимость — не оптимальность</h3><p>Почему проверка допустимости после каждого выбора не доказывает оптимальность итогового решения?</p><button aria-expanded="false" class="reveal" data-reveal="gs-ru-3" type="button">Показать ответ</button><div class="answer-box" hidden id="gs-ru-3">Допустимость говорит только о том, что частичное решение не нарушает ограничения. Она ничего не говорит о том, сохраняет ли выбор возможность прийти к глобально лучшему ответу.</div></div></article>
+<article class="exercise"><div class="exercise-num">4</div><div><h3>Сложность</h3><p>Если жадный алгоритм сортирует n кандидатов, а затем проверяет каждого за O(1), какова общая сложность?</p><button aria-expanded="false" class="reveal" data-reveal="gs-ru-4" type="button">Показать ответ</button><div class="answer-box" hidden id="gs-ru-4">O(n log n): сортировка доминирует над последующим линейным проходом O(n).</div></div></article>
+</div>
+<div class="next-part"><h3>Следующий раздел: доказательства корректности</h3><p>Теперь превратим интуитивную идею «безопасного локального выбора» в несколько стандартных схем доказательства.</p><a class="next-part-link" href="proofs-ru.html">Доказательства корректности →</a></div>
+</section>
 </main>
-<footer class="lecture-footer">
-<div>Гайд по алгоритмам · presented by Аллан</div>
-<div>© 2026 Allan Allemand</div>
-</footer>
+<footer class="lecture-footer"><div>Гайд по алгоритмам · presented by Аллан</div><div>© 2026 Allan Allemand</div></footer>
+<script src="../assets/js/lecture-core.js"></script>
+<script>
+(() => {
+  "use strict";
+  const presets = {
+    trap: { coins: [4, 3, 1], amount: 6 },
+    canonical: { coins: [25, 10, 5, 1], amount: 41 }
+  };
+  const root = document.querySelector(".coin-greedy-demo");
+  if (!root) return;
+  let preset = "trap";
+  let states = [];
+  let index = 0;
+
+  function greedyStates(config) {
+    let remaining = config.amount;
+    const picked = [];
+    const result = [{ remaining: remaining, picked: [], next: null, done: false }];
+    for (const coin of config.coins) {
+      while (coin <= remaining) {
+        result.push({ remaining: remaining, picked: picked.slice(), next: coin, done: false });
+        picked.push(coin);
+        remaining -= coin;
+        result.push({ remaining: remaining, picked: picked.slice(), next: null, done: false });
+      }
+    }
+    result.push({ remaining: remaining, picked: picked.slice(), next: null, done: true });
+    return result;
+  }
+
+  function optimalChange(amount, coins) {
+    const dp = Array(amount + 1).fill(Infinity);
+    const prev = Array(amount + 1).fill(null);
+    dp[0] = 0;
+    for (let x = 1; x <= amount; x++) {
+      for (const coin of coins) {
+        if (coin <= x && dp[x - coin] + 1 < dp[x]) {
+          dp[x] = dp[x - coin] + 1;
+          prev[x] = coin;
+        }
+      }
+    }
+    const picked = [];
+    let x = amount;
+    while (x > 0 && prev[x] !== null) {
+      picked.push(prev[x]);
+      x -= prev[x];
+    }
+    return picked;
+  }
+
+  function render() {
+    const config = presets[preset];
+    const state = states[index];
+    const ru = document.documentElement.lang.toLowerCase().startsWith("ru");
+    root.querySelector("[data-role='amount']").textContent = config.amount;
+    root.querySelector("[data-role='remaining']").textContent = state.remaining;
+
+    const bank = root.querySelector("[data-role='bank']");
+    bank.replaceChildren();
+    config.coins.forEach(coin => {
+      const el = document.createElement("span");
+      el.className = "coin-chip" + (state.next === coin ? " next" : "");
+      el.textContent = coin;
+      bank.appendChild(el);
+    });
+
+    const picks = root.querySelector("[data-role='picks']");
+    picks.replaceChildren();
+    if (!state.picked.length) {
+      const empty = document.createElement("span");
+      empty.className = "coin-empty";
+      empty.textContent = ru ? "Пока ничего не выбрано" : "No coins chosen yet";
+      picks.appendChild(empty);
+    } else {
+      state.picked.forEach(coin => {
+        const el = document.createElement("span");
+        el.className = "coin-chip";
+        el.textContent = coin;
+        picks.appendChild(el);
+      });
+    }
+
+    const caption = root.querySelector(".step-caption");
+    if (state.done) {
+      caption.textContent = ru
+        ? "Жадный алгоритм завершён. Теперь сравним результат с оптимальным."
+        : "The greedy algorithm is finished. Now compare it with the optimum.";
+    } else if (state.next !== null) {
+      caption.textContent = ru
+        ? "Самая крупная монета, не превышающая остаток " + state.remaining + ", — " + state.next + ". Берём её."
+        : "The largest coin not exceeding the remaining " + state.remaining + " is " + state.next + ". Take it.";
+    } else {
+      caption.textContent = ru ? "Осталось набрать " + state.remaining + "." : state.remaining + " remains to be paid.";
+    }
+
+    const greedy = states[states.length - 1].picked;
+    const optimal = optimalChange(config.amount, config.coins);
+    const resultWrap = root.querySelector("[data-role='results']");
+    resultWrap.hidden = !state.done;
+    root.querySelector("[data-role='greedy-result']").textContent = greedy.join(" + ");
+    root.querySelector("[data-role='greedy-count']").textContent = ru ? greedy.length + " монет" : greedy.length + " coins";
+    root.querySelector("[data-role='optimal-result']").textContent = optimal.join(" + ");
+    root.querySelector("[data-role='optimal-count']").textContent = ru ? optimal.length + " монет" : optimal.length + " coins";
+    const greedyCard = root.querySelector("[data-role='greedy-card']");
+    greedyCard.classList.toggle("fail", greedy.length > optimal.length);
+    greedyCard.classList.toggle("pass", greedy.length === optimal.length);
+    root.querySelector("[data-action='previous']").disabled = index === 0;
+    root.querySelector("[data-action='next']").disabled = index === states.length - 1;
+  }
+
+  function reset(name) {
+    preset = name;
+    states = greedyStates(presets[preset]);
+    index = 0;
+    root.querySelectorAll("[data-preset]").forEach(button => {
+      button.classList.toggle("active", button.dataset.preset === preset);
+    });
+    render();
+  }
+
+  root.addEventListener("click", event => {
+    const presetButton = event.target.closest("[data-preset]");
+    if (presetButton) {
+      reset(presetButton.dataset.preset);
+      return;
+    }
+    const button = event.target.closest("[data-action]");
+    if (!button) return;
+    if (button.dataset.action === "next") index = Math.min(index + 1, states.length - 1);
+    if (button.dataset.action === "previous") index = Math.max(index - 1, 0);
+    render();
+  });
+
+  reset("trap");
+})();
+</script>
 <script src="../assets/js/language-switch.js"></script>
 </body>
 </html>
