@@ -6,7 +6,7 @@
 </head>
 <body class="lecture-page"><div aria-hidden="true" class="progress-track"><div class="progress-bar" id="reading-progress"></div></div>
 <header class="topbar"><a class="brand" href="../index-ru.html"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name ru-brand-name"><span class="ru-brand-lines"><span>Гайд по алгоритмам</span><span class="ru-brand-presented">presented by Аллан</span></span></span></a><nav aria-label="Основная навигация" class="topnav"><a href="index-ru.html">Жадные алгоритмы</a><div aria-label="Язык" class="language-switch"><a href="greedy-vs-dp.html">EN</a><span class="language-separator">·</span><span class="current">RU</span></div></nav></header>
-<aside aria-label="Навигация по разделу" class="sidebar"><div class="sidebar-title">Глава 9 · Раздел 3</div><a href="#difference">Главное отличие</a><a href="#structure">Общая структура</a><a href="#coins">Размен монет</a><a href="#knapsack">Рюкзак 0/1</a><a href="#knapsack-ladder">Knapsack: три уровня</a><a href="#weighted">Взвешенные интервалы</a><a href="#state">Что должно помнить будущее?</a><a href="#compressed-dp">Когда DP сжимается в одно state</a><a href="#signals">Как выбрать метод?</a><a href="#code">Сравнение кода</a><a href="#spectrum">Спектр методов</a><a href="#comparison">Итоговая таблица</a><a href="#exercises">Задачи</a></aside>
+<aside aria-label="Навигация по разделу" class="sidebar"><div class="sidebar-title">Глава 9 · Раздел 3</div><a href="#difference">Главное отличие</a><a href="#structure">Общая структура</a><a href="#coins">Размен монет</a><a href="#knapsack">Рюкзак 0/1</a><a href="#knapsack-ladder">Knapsack: три уровня</a><a href="#weighted">Взвешенные интервалы</a><a href="#state">Что должно помнить будущее?</a><a href="#compressed-dp">Когда DP сжимается в одно state</a><a href="#branch-test">Можно ли удалить одну ветку?</a><a href="#signals">Как выбрать метод?</a><a href="#code">Сравнение кода</a><a href="#spectrum">Спектр методов</a><a href="#comparison">Итоговая таблица</a><a href="#exercises">Задачи</a></aside>
 <main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Глава 9 · Раздел 3</div><h1>Жадные алгоритмы и динамическое программирование</h1><p class="chapter-topics">Greedy оставляет одно будущее. Динамическое программирование хранит несколько состояний, пока не станет ясно, какое из них победит.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-vs-dp.svg"/></div></section>
 <section class="lecture-section" id="difference">
 <h2>Один путь или несколько состояний?</h2>
@@ -116,6 +116,18 @@
 <article><code>discard rule</code><p>Отрицательный running prefix dominated вариантом начать после него.</p></article>
 </div>
 <div class="one-line"><strong>Более глубокая граница — сколько state должно выжить.</strong> Некоторые DP recurrences сжимаются до constant state; некоторые greedy arguments можно записать маленькой recurrence. Название техники менее важно, чем понимание того, что реально нужно будущему.</div>
+</section>
+
+<!-- coding-patterns-round-gvdp -->
+<section class="lecture-section" id="branch-test">
+<h2>Полезный interview-test: можно ли одну ветку удалить навсегда?</h2>
+<p class="lead">Greedy и DP оба могут начинаться с «есть несколько choices». Разница в том, доминирует ли один выбор остальные доказанно или несколько будущих вариантов обязаны остаться живыми.</p>
+<div class="recognition-grid">
+<article class="recognition-card"><span class="signal">Jump to the End</span><h3>Выживает один frontier</h3><p>Как только index <span class="math">j</span> умеет достигать старого destination, перенос destination в <span class="math">j</span> не теряет ранних решений: любой более ранний index, достигавший старую цель, достигнет и <span class="math">j</span>.</p></article>
+<article class="recognition-card"><span class="signal">Gas Stations</span><h3>Failed segment убивает кандидатов</h3><p>Если start <span class="math">a</span> впервые провалился у <span class="math">b</span>, весь блок стартов можно выбросить сразу. Нет смысла отдельно branching/test каждого кандидата.</p></article>
+<article class="recognition-card"><span class="signal">0/1 Knapsack</span><h3>Include и exclude оба могут понадобиться</h3><p>Если item помещается, ветки «взять» и «не взять» могут приводить к optimum при разных remaining capacities. В общем случае ни одна не доминирует, поэтому DP сохраняет обе через recurrence.</p></article>
+</div>
+<div class="interview-answer"><h3>Вопрос, который стоит проговорить вслух</h3><p>«Могу ли я доказать, что после этого local choice каждая выброшенная альтернатива не лучше при любом future continuation?» Если да — greedy правдоподобен. Если нет — ищите state, который обязан хранить конкурирующие futures.</p></div>
 </section>
 
 <section class="lecture-section" id="signals">
