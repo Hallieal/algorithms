@@ -8,7 +8,7 @@
 <body class="lecture-page"><div aria-hidden="true" class="progress-track"><div class="progress-bar" id="reading-progress"></div></div>
 <header class="topbar"><a class="brand" href="../"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name">Allan's Handbook of Algorithms</span></a>
 <nav aria-label="Primary navigation" class="topnav"><a href="./">Greedy overview</a><div aria-label="Language" class="language-switch"><span class="current">EN</span><span class="language-separator">·</span><a href="dijkstra-ru.html">RU</a></div></nav></header>
-<aside aria-label="Section navigation" class="sidebar"><div class="sidebar-title">Chapter 9 · Section 10</div><a href="#problem">Problem</a><a href="#idea">Greedy idea</a><a href="#mental-model">Four-step mental model</a><a href="#demo">Step-by-step</a><a href="#bfs-link">From BFS to Dijkstra</a><a href="#proof">Correctness</a><a href="#negative">Negative edges</a><a href="#implementation">Implementation</a><a href="#paths">Recover paths</a><a href="#comparison">MST comparison</a><a href="#choice-guide">Which shortest-path tool?</a><a href="#exercises">Exercises</a></aside>
+<aside aria-label="Section navigation" class="sidebar"><div class="sidebar-title">Chapter 9 · Section 10</div><a href="#problem">Problem</a><a href="#idea">Greedy idea</a><a href="#fewest-cheapest">Fewest edges vs cheapest path</a><a href="#mental-model">Four-step mental model</a><a href="#demo">Step-by-step</a><a href="#bfs-link">From BFS to Dijkstra</a><a href="#state-table">Costs, parents, processed</a><a href="#proof">Correctness</a><a href="#negative">Negative edges</a><a href="#implementation">Implementation</a><a href="#paths">Recover paths</a><a href="#comparison">MST comparison</a><a href="#choice-guide">Which shortest-path tool?</a><a href="#exercises">Exercises</a></aside>
 <main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Chapter 9 · Section 10</div><h1>Dijkstra’s Algorithm</h1><p class="chapter-topics">For nonnegative edge weights, the smallest tentative distance is safe to finalize. That single greedy step is Dijkstra’s algorithm.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-dijkstra.svg"/></div></section>
 <section class="lecture-section" id="problem">
 <h2>Shortest paths from one source</h2>
@@ -34,6 +34,17 @@
 </section>
 
 <!-- book-synthesis-dijkstra -->
+<!-- grokking-pass-dijkstra -->
+<section class="lecture-section" id="fewest-cheapest">
+<h2>“Shortest” can mean two different things</h2>
+<p class="lead">The easiest way to understand why Dijkstra is not just BFS is to compare a path with fewer edges against a path with lower total weight.</p>
+<div class="path-choice">
+<article class="bad"><h3>Two edges, total cost 11</h3><p><span class="math">S → X → T</span> uses fewer segments. An unweighted BFS would prefer it because BFS measures distance in number of edges.</p></article>
+<article class="good"><h3>Three edges, total cost 7</h3><p><span class="math">S → A → B → T</span> uses more segments but less total weight. Dijkstra prefers this path because the objective is accumulated cost.</p></article>
+</div>
+<div class="one-line"><strong>Choose the algorithm from the meaning of distance.</strong> Fewest edges → BFS. Minimum sum of nonnegative weights → Dijkstra.</div>
+</section>
+
 <section class="lecture-section" id="mental-model">
 <h2>The four-step mental model</h2>
 <p class="lead">The implementation can look busy because of heaps and stale entries. The algorithmic idea is much smaller. Repeat the same four moves until no reachable tentative vertex remains.</p>
@@ -69,6 +80,19 @@
 <tr><td>Nonnegative weighted graph</td><td>Min-priority queue</td><td>The next safe vertex is the one with smallest <em>accumulated</em> tentative cost, not the one discovered earliest.</td></tr>
 </tbody></table></div>
 <div class="one-line"><strong>Useful reduction.</strong> If every edge weight is 1, Dijkstra’s priority order collapses to BFS layers. Use BFS: it is simpler and runs in <span class="math">O(V+E)</span>.</div>
+</section>
+
+<section class="lecture-section" id="state-table">
+<h2>Three pieces of state tell the whole story</h2>
+<p class="lead">A very readable way to trace Dijkstra is to maintain tentative costs, a parent for path reconstruction, and whether the vertex has been finalized.</p>
+<div class="table-wrap state-table"><table><thead><tr><th>Vertex</th><th>Final distance from S</th><th>Parent</th><th>Status</th></tr></thead><tbody>
+<tr><td>S</td><td>0</td><td>—</td><td>final</td></tr>
+<tr><td>B</td><td>1</td><td>S</td><td>final</td></tr>
+<tr><td>A</td><td>3</td><td>B</td><td>final</td></tr>
+<tr><td>C</td><td>4</td><td>A</td><td>final</td></tr>
+<tr><td>D</td><td>7</td><td>C</td><td>final</td></tr>
+</tbody></table></div>
+<div class="predict-card"><span class="predict-kicker">Recover the path to D</span><h3>Follow parents backward: D ← C ← A ← B ← S</h3><p>Reverse that chain to obtain <span class="math">S → B → A → C → D</span>. Distances answer “how cheap?”; parents answer “which path?”.</p></div>
 </section>
 
 <section class="lecture-section" id="proof">
