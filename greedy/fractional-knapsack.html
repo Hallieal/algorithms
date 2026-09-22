@@ -8,7 +8,7 @@
 <body class="lecture-page"><div aria-hidden="true" class="progress-track"><div class="progress-bar" id="reading-progress"></div></div>
 <header class="topbar"><a class="brand" href="../"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name">Allan's Handbook of Algorithms</span></a>
 <nav aria-label="Primary navigation" class="topnav"><a href="./">Greedy overview</a><div aria-label="Language" class="language-switch"><span class="current">EN</span><span class="language-separator">·</span><a href="fractional-knapsack-ru.html">RU</a></div></nav></header>
-<aside aria-label="Section navigation" class="sidebar"><div class="sidebar-title">Chapter 9 · Section 7</div><a href="#problem">Problem</a><a href="#density">Value density</a><a href="#algorithm">Algorithm</a><a href="#proof">Correctness</a><a href="#lp-view">Why only one fraction?</a><a href="#boundary">0/1 boundary</a><a href="#implementation-choice">Sort or heap?</a><a href="#implementation">Implementation</a><a href="#exercises">Exercises</a></aside>
+<aside aria-label="Section navigation" class="sidebar"><div class="sidebar-title">Chapter 9 · Section 7</div><a href="#problem">Problem</a><a href="#density">Value density</a><a href="#algorithm">Algorithm</a><a href="#proof">Correctness</a><a href="#lp-view">Why only one fraction?</a><a href="#divisibility">One assumption changes everything</a><a href="#boundary">0/1 boundary</a><a href="#implementation-choice">Sort or heap?</a><a href="#implementation">Implementation</a><a href="#exercises">Exercises</a></aside>
 <main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Chapter 9 · Section 7</div><h1>Fractional Knapsack</h1><p class="chapter-topics">When items are divisible, every unit of capacity should go to the item that pays the most per unit of weight.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-fractional-knapsack.svg"/></div></section>
 <section class="lecture-section" id="problem">
 <h2>Spend capacity where it pays most</h2>
@@ -84,6 +84,17 @@
 <div class="clean-step"><span>3</span><p>After all such exchanges, items form a density-sorted full prefix, possibly one fractional boundary item, then zeros. With tied densities, choose an equivalent optimum of this form.</p></div>
 </div>
 <div class="rule-formula">marginal value of one more unit of capacity = value / weight</div>
+</section>
+
+<!-- grokking-pass-fractional -->
+<section class="lecture-section" id="divisibility">
+<h2>One assumption changes the entire knapsack problem</h2>
+<p class="lead">The classic “greedy knapsack fails” example uses indivisible objects. This page changes exactly one modeling assumption: an item may be split. That is enough to make density-greedy exact.</p>
+<div class="path-choice">
+<article class="bad"><h3>0/1: whole items only</h3><p>After choosing an item, the leftover capacity may have the wrong shape for the remaining items. You cannot exchange “a little bit” of one object for another, so local density need not preserve OPT.</p></article>
+<article class="good"><h3>Fractional: weight is divisible</h3><p>If lower-density weight is present while higher-density weight is still available, move a small amount of capacity from the former to the latter. Value can only increase.</p></article>
+</div>
+<div class="predict-card"><span class="predict-kicker">Modeling lesson</span><h3>Before asking “which greedy rule?”, ask “what operations are legal?”</h3><p>The proof succeeds here because fractions are legal. Remove that permission and the exact same local priority stops being safe.</p></div>
 </section>
 
 <section class="lecture-section" id="boundary">
