@@ -27,7 +27,7 @@
 </header>
 <aside aria-label="Навигация по разделу" class="sidebar">
 <div class="sidebar-title">Глава 9 · Раздел 1</div>
-<a href="#idea">Основная идея</a><a href="#guarantees">Алгоритм или эвристика?</a><a href="#anatomy">Из чего состоит алгоритм</a><a href="#example">Первый пример</a><a href="#failure">Когда greedy ошибается</a><a href="#design-loop">Как находят greedy</a><a href="#properties">Структурные свойства</a><a href="#implementation">Реализация</a><a href="#complexity">Эффективность</a><a href="#recognition">Паттерны распознавания</a><a href="#exercises">Задачи</a>
+<a href="#idea">Основная идея</a><a href="#guarantees">Алгоритм или эвристика?</a><a href="#anatomy">Из чего состоит алгоритм</a><a href="#example">Первый пример</a><a href="#grokking-outcomes">Три исхода greedy</a><a href="#failure">Когда greedy ошибается</a><a href="#design-loop">Как находят greedy</a><a href="#properties">Структурные свойства</a><a href="#implementation">Реализация</a><a href="#complexity">Эффективность</a><a href="#recognition">Паттерны распознавания</a><a href="#exercises">Задачи</a>
 </aside>
 <main class="lecture">
 <section class="lecture-hero greedy-lecture-hero">
@@ -88,6 +88,18 @@
 <div class="greedy-job-result">Первые три задачи занимают 2 + 3 + 4 = 9 минут, поэтому мы успеваем выполнить 3 задачи. Оставшаяся 7-минутная задача уже не помещается.</div>
 </div>
 <div class="subsection"><h3>Почему локальный выбор выглядит разумно</h3><p>Если в некотором решении есть более длинная задача, а более короткая не выбрана, то замена длинной задачи на короткую не увеличит суммарное время. Именно такие обменные рассуждения позволяют обосновывать жадность. На следующей странице мы разберём их систематически.</p></div>
+</section>
+
+<!-- grokking-pass-strategy -->
+<section class="lecture-section" id="grokking-outcomes">
+<h2>Одна и та же greedy-интуиция может привести к трём разным результатам</h2>
+<p class="lead">Greedy особенно хорошо понимается на сравнении задач, которые сначала выглядят одинаково простыми. Локальный выбор может быть точно оптимальным, просто полезным или лишь приближённым.</p>
+<div class="grokking-contrast">
+<article class="grokking-card good"><span>Exact</span><h3>Classroom scheduling</h3><p>Берём совместимую пару, которая заканчивается раньше всех. Здесь можно доказать, что локальный выбор сохраняет optimum.</p></article>
+<article class="grokking-card warn"><span>Не exact</span><h3>0/1 Knapsack</h3><p>Локально привлекательный целый предмет может заблокировать более выгодную комбинацию. Естественный greedy-rule ещё не равен OPT.</p></article>
+<article class="grokking-card approx"><span>Approximation</span><h3>Set Cover</h3><p>Когда exact search слишком дорог, каждый раз покрываем максимум ещё не покрытых элементов и получаем быстрое решение с доказанной гарантией качества.</p></article>
+</div>
+<div class="predict-card"><span class="predict-kicker">Два вопроса сразу</span><h3>Сохраняет ли локальный выбор optimum? Если нет — какая гарантия остаётся?</h3><p>Эта пара вопросов полезнее списка «greedy-задач»: она разделяет exact greedy, heuristic и approximation algorithms.</p></div>
 </section>
 
 <section class="lecture-section" id="failure">
