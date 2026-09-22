@@ -8,7 +8,7 @@
 <body class="lecture-page"><div aria-hidden="true" class="progress-track"><div class="progress-bar" id="reading-progress"></div></div>
 <header class="topbar"><a class="brand" href="../index-ru.html"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name ru-brand-name"><span class="ru-brand-lines"><span>Гайд по алгоритмам</span><span class="ru-brand-presented">presented by Аллан</span></span></span></a>
 <nav aria-label="Основная навигация" class="topnav"><a href="index-ru.html">Жадные алгоритмы</a><div aria-label="Язык" class="language-switch"><a href="mst.html">EN</a><span class="language-separator">·</span><span class="current">RU</span></div></nav></header>
-<aside aria-label="Навигация по разделу" class="sidebar"><div class="sidebar-title">Глава 9 · Раздел 9</div><a href="#problem">Постановка</a><a href="#cut">Свойство разреза</a><a href="#first-bad">Доказательство через первую ошибку</a><a href="#kruskal">Краскал</a><a href="#prim">Прим</a><a href="#boruvka">Борувка</a><a href="#implementation">Реализации</a><a href="#complexity">Сложность</a><a href="#applications">Применения и варианты</a><a href="#properties">Полезные факты</a><a href="#exercises">Задачи</a></aside>
+<aside aria-label="Навигация по разделу" class="sidebar"><div class="sidebar-title">Глава 9 · Раздел 9</div><a href="#problem">Постановка</a><a href="#model-story">Сначала смоделируйте сюжет</a><a href="#cut">Свойство разреза</a><a href="#first-bad">Доказательство через первую ошибку</a><a href="#kruskal">Краскал</a><a href="#prim">Прим</a><a href="#boruvka">Борувка</a><a href="#implementation">Реализации</a><a href="#complexity">Сложность</a><a href="#applications">Применения и варианты</a><a href="#properties">Полезные факты</a><a href="#exercises">Задачи</a></aside>
 <main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Глава 9 · Раздел 9</div><h1>Минимальные остовные деревья</h1><p class="chapter-topics">Нужно соединить все вершины с минимальным суммарным весом. Краскал и Прим выглядят по-разному, но оба основаны на свойстве разреза.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-mst.svg"/></div></section>
 <section class="lecture-section" id="problem">
 <h2>Соединить всё как можно дешевле</h2>
@@ -19,6 +19,18 @@
 </div>
 <div class="greedy-definition"><span>Минимальное остовное дерево</span><p>Остовное дерево содержит все вершины, связно, не имеет циклов и поэтому содержит ровно <span class="math">|V|−1</span> рёбер. MST — остовное дерево минимального суммарного веса.</p></div>
 <div class="greedy-caution"><strong>MST — не дерево кратчайших путей.</strong> Оно минимизирует сумму весов всех выбранных рёбер, а не расстояние от одной исходной вершины до остальных.</div>
+</section>
+
+<!-- grokking-pass-mst -->
+<section class="lecture-section" id="model-story">
+<h2>До выбора алгоритма превратите сюжет в граф</h2>
+<p class="lead">Конкретная история делает objective видимым. Пусть несколько офисов нужно соединить новой оптоволоконной сетью, а для каждой возможной линии известна стоимость строительства.</p>
+<div class="grokking-contrast">
+<article class="grokking-card good"><span>Vertices</span><h3>Объекты, которые надо соединить</h3><p>Каждый офис становится вершиной.</p></article>
+<article class="grokking-card warn"><span>Edges</span><h3>Возможные прямые линии</h3><p>Edge означает, что линию можно построить; weight — её стоимость.</p></article>
+<article class="grokking-card approx"><span>Objective</span><h3>Соединить всё как можно дешевле</h3><p>Минимизируем сумму выбранных weights при условии connected graph.</p></article>
+</div>
+<div class="one-line"><strong>Не путайте сюжет с shortest paths.</strong> MST минимизирует стоимость всей сети, Dijkstra — маршрут от одного source до каждой destination.</div>
 </section>
 
 <section class="lecture-section" id="cut">
