@@ -1,57 +1,104 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1" name="viewport"/>
-<meta content="Задача о расписании, в которой правильный жадный порядок задаётся дедлайнами." name="description"/>
-<meta content="Минимизация максимального опоздания | Гайд по алгоритмам — presented by Аллан" property="og:title"/>
-<meta content="Задача о расписании, в которой правильный жадный порядок задаётся дедлайнами." property="og:description"/>
-<meta content="article" property="og:type"/>
+<!DOCTYPE html><html lang="ru"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="Как упорядочить задачи по возрастанию дедлайнов, чтобы минимизировать максимальное опоздание на одной машине." name="description"/><meta content="Минимизация максимального опоздания | Гайд по алгоритмам — presented by Аллан" property="og:title"/><meta content="Как упорядочить задачи по возрастанию дедлайнов, чтобы минимизировать максимальное опоздание на одной машине." property="og:description"/><meta content="article" property="og:type"/>
 <title>Минимизация максимального опоздания | Гайд по алгоритмам — presented by Аллан</title>
-<link href="../assets/css/styles.css" rel="stylesheet"/>
-<link href="assets/greedy.css" rel="stylesheet"/>
-<link href="../assets/images/favicon-32.png" rel="icon" sizes="32x32" type="image/png"/>
-<link href="../assets/images/favicon.png" rel="icon" sizes="64x64" type="image/png"/>
-<link href="../assets/images/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180"/>
-<link href="minimizing-lateness.html" hreflang="en" rel="alternate"/><link href="minimizing-lateness-ru.html" hreflang="ru" rel="alternate"/>
-</head>
-<body class="lecture-page">
-<header class="topbar">
-<a class="brand" href="../index-ru.html"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name ru-brand-name"><span class="ru-brand-lines"><span>Гайд по алгоритмам</span><span class="ru-brand-presented">presented by Аллан</span></span></span></a>
-<nav aria-label="Основная навигация" class="topnav">
-<a href="index-ru.html">Жадные алгоритмы</a>
-<div aria-label="Язык" class="language-switch"><a href="minimizing-lateness.html">EN</a><span class="language-separator">·</span><span class="current">RU</span></div>
-</nav>
-</header>
-<aside aria-label="Навигация по разделу" class="sidebar">
-<div class="sidebar-title">Глава 9 · Раздел 6</div>
-<a href="#coming-soon">Скоро</a>
-</aside>
-<main class="lecture">
-<section class="lecture-hero greedy-placeholder-hero">
-<div>
-<div class="chapter-label">Глава 9 · Раздел 6</div>
-<h1>Минимизация максимального опоздания</h1>
-<p class="chapter-topics">Задача о расписании, в которой правильный жадный порядок задаётся дедлайнами.</p>
-</div>
-<div class="greedy-hero-icon"><img alt="" src="assets/greedy-lateness.svg"/></div>
+<link href="../assets/css/styles.css" rel="stylesheet"/><link href="assets/greedy.css" rel="stylesheet"/>
+<link href="../assets/images/favicon-32.png" rel="icon" sizes="32x32" type="image/png"/><link href="../assets/images/favicon.png" rel="icon" sizes="64x64" type="image/png"/><link href="../assets/images/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180"/>
+<link href="minimizing-lateness.html" hreflang="en" rel="alternate"/><link href="minimizing-lateness-ru.html" hreflang="ru" rel="alternate"/></head>
+<body class="lecture-page"><div aria-hidden="true" class="progress-track"><div class="progress-bar" id="reading-progress"></div></div>
+<header class="topbar"><a class="brand" href="../index-ru.html"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name ru-brand-name"><span class="ru-brand-lines"><span>Гайд по алгоритмам</span><span class="ru-brand-presented">presented by Аллан</span></span></span></a>
+<nav aria-label="Основная навигация" class="topnav"><a href="index-ru.html">Жадные алгоритмы</a><div aria-label="Язык" class="language-switch"><a href="minimizing-lateness.html">EN</a><span class="language-separator">·</span><span class="current">RU</span></div></nav></header>
+<aside aria-label="Навигация по разделу" class="sidebar"><div class="sidebar-title">Глава 9 · Раздел 6</div><a href="#problem">Постановка</a><a href="#example">Пример</a><a href="#algorithm">Алгоритм EDF</a><a href="#proof">Корректность</a><a href="#implementation">Реализация</a><a href="#boundaries">Границы модели</a><a href="#exercises">Задачи</a></aside>
+<main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Глава 9 · Раздел 6</div><h1>Минимизация максимального опоздания</h1><p class="chapter-topics">Как упорядочить задачи по возрастанию дедлайнов, чтобы минимизировать максимальное опоздание на одной машине.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-lateness.svg"/></div></section>
+<section class="lecture-section" id="problem">
+<h2>Постановка задачи</h2>
+<p class="lead">Есть одна машина и несколько задач. Задача <span class="math">j</span> требует время обработки <span class="math">pⱼ</span> и имеет дедлайн <span class="math">dⱼ</span>. Все задачи доступны с момента 0, а машина выполняет их по одной.</p>
+<div class="greedy-definition"><span>Цель</span><p>Если задача <span class="math">j</span> заканчивается в момент <span class="math">Cⱼ</span>, её опоздание равно <span class="math">Lⱼ = Cⱼ − dⱼ</span>. Нужно упорядочить все задачи так, чтобы минимизировать <span class="math">L<sub>max</sub> = maxⱼ Lⱼ</span>.</p></div>
+<div class="greedy-caution"><strong>Опоздание может быть отрицательным.</strong> Если задача закончилась до дедлайна, её lateness отрицателен. Нас интересует худшее значение среди всех задач.</div>
 </section>
-<section class="lecture-section" id="coming-soon">
-<div class="coming-soon-panel">
-<span class="coming-soon-kicker">В разработке</span>
-<h2>Страница скоро будет заполнена</h2>
-<p>Здесь разберём правило Earliest Deadline First для задач с длительностями и дедлайнами, точно определим опоздание и докажем, что сортировка по возрастанию дедлайнов минимизирует максимальное опоздание.</p>
+
+<section class="lecture-section" id="example">
+<h2>Небольшой пример</h2>
+<p class="lead">Рассмотрим четыре задачи. Ниже указаны длительности и дедлайны.</p>
+<div class="table-wrap"><table class="lateness-table"><thead><tr><th>Задача</th><th>Длительность</th><th>Дедлайн</th><th>Окончание в EDF</th><th>Опоздание</th></tr></thead><tbody>
+<tr><td>A</td><td>3</td><td>4</td><td>3</td><td>−1</td></tr>
+<tr><td>B</td><td>2</td><td>6</td><td>5</td><td>−1</td></tr>
+<tr><td>C</td><td>4</td><td>9</td><td>9</td><td>0</td></tr>
+<tr><td>D</td><td>2</td><td>12</td><td>11</td><td>−1</td></tr>
+</tbody></table></div>
+<div class="lateness-sequence">
+<div class="lateness-job ontime"><span>Задача A</span><b>p=3 · d=4</b><small>конец 3</small></div>
+<div class="lateness-job ontime"><span>Задача B</span><b>p=2 · d=6</b><small>конец 5</small></div>
+<div class="lateness-job ontime"><span>Задача C</span><b>p=4 · d=9</b><small>конец 9</small></div>
+<div class="lateness-job ontime"><span>Задача D</span><b>p=2 · d=12</b><small>конец 11</small></div>
 </div>
-<div class="placeholder-navigation">
-<a href="interval-partitioning-ru.html">← Разбиение интервалов по ресурсам</a>
-<a href="fractional-knapsack-ru.html">Дробная задача о рюкзаке →</a>
+<div class="lateness-formula">L<sub>max</sub> = max(−1, −1, 0, −1) = 0</div>
+</section>
+
+<section class="lecture-section" id="algorithm">
+<h2>Самый ранний дедлайн сначала</h2>
+<p class="lead">Оптимальное жадное правило простое: сортируем задачи по неубыванию дедлайна и выполняем в этом порядке. Это правило называют Earliest Deadline First (EDF) или Earliest Due Date (EDD).</p>
+<div class="step-flow">
+<article class="step-item"><div class="step-number">1</div><div><h3>Сортируем по дедлайну</h3><p>Получаем <span class="math">d₁ ≤ d₂ ≤ ··· ≤ dₙ</span>.</p></div></article>
+<article class="step-item"><div class="step-number">2</div><div><h3>Работаем без простоя</h3><p>Следующая задача начинается сразу после завершения текущей.</p></div></article>
+<article class="step-item"><div class="step-number">3</div><div><h3>Считаем время окончания</h3><p>Накопленная сумма длительностей после задачи и есть её <span class="math">Cⱼ</span>.</p></div></article>
+<article class="step-item"><div class="step-number">4</div><div><h3>Находим худшее опоздание</h3><p>Для каждой задачи вычисляем <span class="math">Cⱼ-dⱼ</span> и берём максимум.</p></div></article>
+</div>
+<div class="greedy-caution"><strong>Почему без простоя?</strong> Все задачи уже доступны. Любая пауза только сдвигает вперёд времена окончания одной или нескольких задач и не может уменьшить максимальное опоздание.</div>
+</section>
+
+<section class="lecture-section" id="proof">
+<h2>Доказательство перестановкой инверсий</h2>
+<p class="lead">Пусть в расписании две соседние задачи идут как <span class="math">i</span>, затем <span class="math">j</span>, причём <span class="math">dᵢ &gt; dⱼ</span>. Их дедлайны стоят в неправильном порядке. Покажем, что перестановка этих задач не увеличит максимальное опоздание.</p>
+<div class="swap-proof">
+<div class="swap-order"><span>До</span><div class="swap-jobs"><div class="swap-job">i · более поздний дедлайн</div><div class="swap-job">j · более ранний дедлайн</div></div></div>
+<div class="swap-arrow">→</div>
+<div class="swap-order"><span>После</span><div class="swap-jobs"><div class="swap-job good">j · ранний дедлайн</div><div class="swap-job good">i · поздний дедлайн</div></div></div>
+</div>
+<p>Пусть обе задачи начинаются после уже фиксированного префикса, заканчивающегося в момент <span class="math">S</span>. До перестановки задача <span class="math">j</span> заканчивается в <span class="math">S+pᵢ+pⱼ</span>. После перестановки задача <span class="math">i</span> заканчивается ровно в тот же момент, а <span class="math">j</span> — раньше.</p>
+<div class="two-column-block">
+<div class="text-panel"><h3>После перестановки: задача j</h3><p><span class="math">L'ⱼ = S+pⱼ-dⱼ ≤ S+pᵢ+pⱼ-dⱼ = Lⱼ</span>.</p><p>Задача с ранним дедлайном не становится более опоздавшей, чем раньше.</p></div>
+<div class="proof-panel"><h3>После перестановки: задача i</h3><p><span class="math">L'ᵢ = S+pⱼ+pᵢ-dᵢ ≤ S+pᵢ+pⱼ-dⱼ = Lⱼ</span>, потому что <span class="math">dᵢ &gt; dⱼ</span>.</p><p>Ни одна из двух задач не создаёт опоздание больше старого опоздания задачи <span class="math">j</span>.</p></div>
+</div>
+<div class="proof-goal"><h3>Завершение доказательства</h3><p>Последовательно меняем местами соседние инверсии дедлайнов. Максимальное опоздание ни разу не увеличивается, а в конце задачи отсортированы по дедлайну. Значит, EDF оптимален.</p></div>
+</section>
+
+<section class="lecture-section" id="implementation">
+<h2>Реализация на Python</h2>
+<div class="code-explainer">
+<div class="annotated-code">
+<div class="code-row"><span class="line-no">1</span><code>def minimize_max_lateness(jobs):</code></div>
+<div class="code-row marked"><span class="line-no">2</span><code>    jobs = sorted(jobs, key=lambda job: job[1])</code></div>
+<div class="code-row"><span class="line-no">3</span><code>    time = 0</code></div>
+<div class="code-row"><span class="line-no">4</span><code>    max_lateness = float("-inf")</code></div>
+<div class="code-row marked"><span class="line-no">5</span><code>    for processing, deadline in jobs:</code></div>
+<div class="code-row"><span class="line-no">6</span><code>        time += processing</code></div>
+<div class="code-row marked"><span class="line-no">7</span><code>        lateness = time - deadline</code></div>
+<div class="code-row"><span class="line-no">8</span><code>        max_lateness = max(max_lateness, lateness)</code></div>
+<div class="code-row"><span class="line-no">9</span><code>    return max_lateness</code></div>
+</div>
+<div class="code-notes"><h3>Комментарии</h3>
+<div class="code-note-item"><span>2</span><p>Весь жадный выбор содержится в сортировке по дедлайну.</p></div>
+<div class="code-note-item wide-note"><span>5–8</span><p>Одним проходом накапливаем время окончания и обновляем максимальное опоздание.</p></div>
+</div></div>
+<div class="complexity-strip"><div><span>Сортировка</span><b>O(n log n)</b><small>по дедлайну</small></div><div><span>Проход</span><b>O(n)</b><small>все задачи</small></div><div><span>Итого</span><b>O(n log n)</b><small>доминирует сортировка</small></div><div><span>Доп. состояние</span><b>O(1)</b><small>кроме сортировки</small></div></div>
+</section>
+
+<section class="lecture-section" id="boundaries">
+<h2>Где заканчивается теорема</h2>
+<p class="lead">EDF оптимален именно для этой модели. Небольшие изменения постановки могут потребовать совсем других алгоритмов.</p>
+<div class="decision-grid">
+<article class="decision-card greedy-signal"><h3>Разные моменты появления</h3><p>Если задачи становятся доступны в разные моменты времени, простая одноразовая сортировка по дедлайну уже не решает общую задачу.</p></article>
+<article class="decision-card greedy-signal"><h3>Другая целевая функция</h3><p>Минимизация суммарного времени завершения, суммарного взвешенного опоздания или числа просроченных задач — это другие задачи с другими правилами или более сложными алгоритмами.</p></article>
 </div>
 </section>
-</main>
-<footer class="lecture-footer">
-<div>Гайд по алгоритмам · presented by Аллан</div>
-<div>© 2026 Allan Allemand</div>
-</footer>
-<script src="../assets/js/language-switch.js"></script>
-</body>
-</html>
+
+<section class="lecture-section" id="exercises">
+<h2>Задачи</h2>
+<div class="exercise-list">
+<article class="exercise"><div class="exercise-num">1</div><div><h3>Вычислите lateness</h3><p>Дедлайн задачи равен 8, а завершилась она в момент 11. Чему равно опоздание?</p><button class="reveal" data-reveal="ml-ru-1" type="button">Показать ответ</button><div class="answer-box" hidden id="ml-ru-1">11 − 8 = 3.</div></div></article>
+<article class="exercise"><div class="exercise-num">2</div><div><h3>Раннее завершение</h3><p>Дедлайн равен 10, задача завершилась в момент 7. Равно ли её опоздание нулю?</p><button class="reveal" data-reveal="ml-ru-2" type="button">Показать ответ</button><div class="answer-box" hidden id="ml-ru-2">Нет. Lateness равен 7 − 10 = −3. Tardiness был бы max(0,L)=0, но lateness может быть отрицательным.</div></div></article>
+<article class="exercise"><div class="exercise-num">3</div><div><h3>Перестановка</h3><p>Почему перестановка двух соседних задач не меняет времена завершения всех задач после этой пары?</p><button class="reveal" data-reveal="ml-ru-3" type="button">Показать ответ</button><div class="answer-box" hidden id="ml-ru-3">Суммарная длительность двух задач одинакова в любом порядке, поэтому момент окончания пары не меняется. Все последующие задачи начинаются в тот же момент, что и раньше.</div></div></article>
+</div>
+<div class="next-part"><h3>Следующий блок: выбор и построение</h3><p>Подсекция про интервалы и расписания закончена. Дальше — дробный рюкзак и кодирование Хаффмана.</p><a class="next-part-link" href="fractional-knapsack-ru.html">Дробная задача о рюкзаке →</a></div>
+</section></main>
+<footer class="lecture-footer"><div>Гайд по алгоритмам · presented by Аллан</div><div>© 2026 Allan Allemand</div></footer><script src="../assets/js/lecture-core.js"></script><script src="../assets/js/language-switch.js"></script></body></html>
