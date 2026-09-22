@@ -8,7 +8,7 @@
 <body class="lecture-page"><div aria-hidden="true" class="progress-track"><div class="progress-bar" id="reading-progress"></div></div>
 <header class="topbar"><a class="brand" href="../index-ru.html"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name ru-brand-name"><span class="ru-brand-lines"><span>Гайд по алгоритмам</span><span class="ru-brand-presented">presented by Аллан</span></span></span></a>
 <nav aria-label="Основная навигация" class="topnav"><a href="index-ru.html">Жадные алгоритмы</a><div aria-label="Язык" class="language-switch"><a href="interval-partitioning.html">EN</a><span class="language-separator">·</span><span class="current">RU</span></div></nav></header>
-<aside aria-label="Навигация по разделу" class="sidebar"><div class="sidebar-title">Глава 9 · Раздел 5</div><a href="#problem">Постановка</a><a href="#depth">Depth</a><a href="#same-input">Те же интервалы, другая задача</a><a href="#algorithm">Алгоритм</a><a href="#sweep">Только число комнат: sweep line</a><a href="#two-array-sweep">Two-array sweep</a><a href="#proof">Корректность</a><a href="#data-structure">Почему нужен heap</a><a href="#implementation">Реализация</a><a href="#comparison">Сравнение</a><a href="#exercises">Задачи</a></aside>
+<aside aria-label="Навигация по разделу" class="sidebar"><div class="sidebar-title">Глава 9 · Раздел 5</div><a href="#problem">Постановка</a><a href="#depth">Depth</a><a href="#same-input">Те же интервалы, другая задача</a><a href="#algorithm">Алгоритм</a><a href="#sweep">Только число комнат: sweep line</a><a href="#railway">Та же задача: railway platforms</a><a href="#two-array-sweep">Two-array sweep</a><a href="#proof">Корректность</a><a href="#data-structure">Почему нужен heap</a><a href="#implementation">Реализация</a><a href="#comparison">Сравнение</a><a href="#exercises">Задачи</a></aside>
 <main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Глава 9 · Раздел 5</div><h1>Разбиение интервалов по ресурсам</h1><p class="chapter-topics">Нужно разместить все интервалы в минимальном числе аудиторий. Переиспользуем ту, которая освобождается раньше всех.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-interval-partitioning.svg"/></div></section>
 <section class="lecture-section" id="problem">
 <h2>Использовать как можно меньше аудиторий</h2>
@@ -84,6 +84,19 @@
 </section>
 
 <!-- coding-patterns-round-partition -->
+<!-- karumanchi-round-partition -->
+<section class="lecture-section" id="railway">
+<h2>Та же математика, другая история: railway platforms</h2>
+<p class="lead">Заменим classes на trains, а rooms на platforms. Минимальное число platforms снова равно максимальному числу одновременно active intervals.</p>
+<div class="concept-strip">
+<article class="concept-cell rule"><span>Arrival</span><b>+1 active train</b><p>Может понадобиться новая platform.</p></article>
+<article class="concept-cell proof"><span>Departure</span><b>−1 active train</b><p>Platform освобождается и может быть переиспользована.</p></article>
+<article class="concept-cell cost"><span>Answer</span><b>Maximum prefix sum</b><p>Peak числа active trains — минимальное количество platforms.</p></article>
+</div>
+<div class="greedy-caution"><strong>Tie rule важен.</strong> Если departure и arrival имеют один timestamp и уходящий train успевает освободить platform, departure надо обработать первым. Иначе sweep создаст несуществующий overlap.</div>
+<div class="bridge-note"><h3>Чем полезен этот пример</h3><p>Lower-bound proof становится почти физическим: если три trains одновременно стоят на станции, никакой scheduling trick не разместит их на двух platforms.</p></div>
+</section>
+
 <section class="lecture-section" id="two-array-sweep">
 <h2>Interview variant: разделяем starts и finishes на два sorted arrays</h2>
 <p class="lead">Sweep line можно реализовать без tagged events. Храним отдельно sorted starts и sorted finishes и двигаем pointer того события, которое происходит раньше.</p>
