@@ -6,7 +6,7 @@
 </head>
 <body class="lecture-page"><div aria-hidden="true" class="progress-track"><div class="progress-bar" id="reading-progress"></div></div>
 <header class="topbar"><a class="brand" href="../"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name">Allan's Handbook of Algorithms</span></a><nav aria-label="Primary navigation" class="topnav"><a href="./">Greedy overview</a><div aria-label="Language" class="language-switch"><span class="current">EN</span><span class="language-separator">·</span><a href="greedy-vs-dp-ru.html">RU</a></div></nav></header>
-<aside aria-label="Section navigation" class="sidebar"><div class="sidebar-title">Chapter 9 · Section 3</div><a href="#difference">Core difference</a><a href="#structure">Shared structure</a><a href="#coins">Coin change</a><a href="#knapsack">0/1 Knapsack</a><a href="#weighted">Weighted intervals</a><a href="#signals">Which technique?</a><a href="#code">Code comparison</a><a href="#comparison">Summary table</a><a href="#exercises">Exercises</a></aside>
+<aside aria-label="Section navigation" class="sidebar"><div class="sidebar-title">Chapter 9 · Section 3</div><a href="#difference">Core difference</a><a href="#structure">Shared structure</a><a href="#coins">Coin change</a><a href="#knapsack">0/1 Knapsack</a><a href="#weighted">Weighted intervals</a><a href="#state">What must the future remember?</a><a href="#signals">Which technique?</a><a href="#code">Code comparison</a><a href="#spectrum">Exactness spectrum</a><a href="#comparison">Summary table</a><a href="#exercises">Exercises</a></aside>
 <main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Chapter 9 · Section 3</div><h1>Greedy vs Dynamic Programming</h1><p class="chapter-topics">Greedy keeps one future. Dynamic programming keeps several states alive until it knows which future wins.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-vs-dp.svg"/></div></section>
 <section class="lecture-section" id="difference">
 <h2>One path or many states?</h2>
@@ -68,6 +68,18 @@
 <div class="source-note"><h3>Why the sort still matters</h3><p>This is a hybrid pattern: sorting by finish time does not solve the problem, but it makes the DP state clean. <span class="math">p(j)</span> is the last interval finishing before <span class="math">j</span> starts. Weighted Interval Scheduling does not yet have its own page in this handbook.</p></div>
 </section>
 
+<!-- book-synthesis-gvdp -->
+<section class="lecture-section" id="state">
+<h2>Ask what the future still needs to remember</h2>
+<p class="lead">A very practical way to distinguish greedy from DP is to ask how much information about the past must survive. Greedy works when many partial histories can be safely collapsed into one dominant summary.</p>
+<div class="pattern-lenses">
+<article class="pattern-lens"><span class="pattern-tag">One frontier</span><h3>Jump Game</h3><p>A backward scan only needs the leftmost index already known to reach the end. Every successful suffix behind that frontier is dominated by the frontier itself.</p></article>
+<article class="pattern-lens"><span class="pattern-tag">One candidate</span><h3>Gas Station</h3><p>When a running deficit first appears, an entire block of starting points can be discarded. The algorithm keeps one surviving candidate rather than a state for every start.</p></article>
+<article class="pattern-lens"><span class="pattern-tag">Many capacities</span><h3>0/1 Knapsack</h3><p>Two partial packings with different used capacities may both matter later. Neither necessarily dominates the other, so DP preserves a table of alternatives.</p></article>
+</div>
+<div class="rule-formula">Greedy question: can many histories be replaced by one dominant state?</div>
+</section>
+
 <section class="lecture-section" id="signals">
 <h2>A practical test</h2>
 <p class="lead">Ask what information a future decision may still need. If two partial solutions can trade off different resources, keeping only one is usually unsafe.</p>
@@ -108,6 +120,17 @@
     return dp[amount]</code></pre></div>
 </div>
 <p>The greedy function has almost no memory of alternative histories. The DP function stores one best answer for every amount from 0 to the target.</p>
+</section>
+
+<section class="lecture-section" id="spectrum">
+<h2>Greedy and DP are part of a larger spectrum</h2>
+<div class="table-wrap"><table><thead><tr><th>Situation</th><th>What to keep</th><th>Typical method</th><th>Example</th></tr></thead><tbody>
+<tr><td>One state dominates all competitors</td><td>One frontier / candidate</td><td>Exact greedy</td><td>Interval Scheduling, Jump Game</td></tr>
+<tr><td>Several incomparable states survive</td><td>A state table or memo</td><td>Dynamic programming</td><td>0/1 Knapsack, weighted intervals</td></tr>
+<tr><td>Exact optimization is too expensive</td><td>A cheap locally good solution</td><td>Approximation</td><td>Greedy Set Cover</td></tr>
+<tr><td>No useful guarantee is known</td><td>A practical candidate</td><td>Heuristic</td><td>Problem-dependent local search / greedy rule</td></tr>
+</tbody></table></div>
+<div class="bridge-note"><h3>Do not use “DP vs greedy” as a naming contest</h3><p>The important question is structural: which alternatives can be proved irrelevant? Sorting, heaps, and local choices can appear inside either method.</p></div>
 </section>
 
 <section class="lecture-section" id="comparison">
