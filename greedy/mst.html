@@ -212,14 +212,12 @@ def prim(graph, start=0):
 <article class="variant-card"><h3>Clustering</h3><p>Build an MST of points or objects, then remove the largest edges. What remains are connected clusters separated by expensive links—a simple way to turn connectivity into a hierarchy.</p></article>
 <article class="variant-card"><h3>Maximum spanning tree</h3><p>Run the same greedy logic with weights in the opposite order. Equivalently, negate weights and compute a minimum spanning tree.</p></article>
 <article class="variant-card"><h3>Minimum bottleneck</h3><p>Every MST minimizes the largest edge used among all spanning trees. The objective “minimize the worst link” comes for free from the same structure.</p></article>
-<article class="variant-card"><h3>Approximation scaffold</h3><p>An MST is also a cheap lower-bound structure for harder network and routing problems. In metric TSP, doubling an MST walk and shortcutting repeats yields a tour within a factor of 2 of optimum; the full argument appears in <a href="greedy-beyond.html#metric-tsp">Matroids & Beyond</a>.</p></article>
 </div>
 <div class="practice-note"><h3>Representation is part of the algorithm</h3><p>Kruskal naturally wants an edge list plus DSU. Prim naturally wants adjacency by vertex. The mathematical greedy choice may be the same quality while the best data structure changes with graph density.</p></div>
 </section>
 
 <section class="lecture-section" id="properties">
 <h2>Useful properties</h2>
-<div class="theory-note"><h3>MST is the clean matroid example</h3><p>The edge sets that contain no cycle form the <em>graphic matroid</em>. A spanning tree is a basis of this matroid. Kruskal is therefore an instance of the general matroid greedy theorem: order elements by weight and keep an element whenever independence is preserved. The cut-property proof is the graph-specific form of that exchange theorem.</p></div>
 <div class="decision-grid">
 <article class="decision-card greedy-signal"><h3>Distinct weights imply uniqueness</h3><p>If every edge weight is different, the graph has a unique MST.</p></article>
 <article class="decision-card greedy-signal"><h3>Ties may give several MSTs</h3><p>Different safe choices of equal weight can lead to different spanning trees with the same minimum total weight.</p></article>
