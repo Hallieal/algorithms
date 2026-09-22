@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="ru"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1" name="viewport"/>
-<meta content="Обменные аргументы, принцип «жадный не отстаёт», индукция и другие техники доказательства корректности жадных алгоритмов." name="description"/><meta content="Доказательства корректности | Гайд по алгоритмам — presented by Аллан" property="og:title"/><meta content="Обменные аргументы, принцип «жадный не отстаёт», индукция и другие техники доказательства корректности жадных алгоритмов." property="og:description"/><meta content="article" property="og:type"/>
+<meta content="У доказательства greedy одна главная задача: показать, что локальный выбор можно зафиксировать, не потеряв оптимальность." name="description"/><meta content="Доказательства корректности | Гайд по алгоритмам — presented by Аллан" property="og:title"/><meta content="У доказательства greedy одна главная задача: показать, что локальный выбор можно зафиксировать, не потеряв оптимальность." property="og:description"/><meta content="article" property="og:type"/>
 <title>Доказательства корректности | Гайд по алгоритмам — presented by Аллан</title>
 <link href="../assets/css/styles.css" rel="stylesheet"/><link href="assets/greedy.css" rel="stylesheet"/>
 <link href="../assets/images/favicon-32.png" rel="icon" sizes="32x32" type="image/png"/><link href="../assets/images/favicon.png" rel="icon" sizes="64x64" type="image/png"/><link href="../assets/images/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180"/>
@@ -9,10 +9,14 @@
 <header class="topbar"><a class="brand" href="../index-ru.html"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name ru-brand-name"><span class="ru-brand-lines"><span>Гайд по алгоритмам</span><span class="ru-brand-presented">presented by Аллан</span></span></span></a>
 <nav aria-label="Основная навигация" class="topnav"><a href="index-ru.html">Жадные алгоритмы</a><div aria-label="Язык" class="language-switch"><a href="proofs.html">EN</a><span class="language-separator">·</span><span class="current">RU</span></div></nav></header>
 <aside aria-label="Навигация по разделу" class="sidebar"><div class="sidebar-title">Глава 9 · Раздел 2</div><a href="#goal">Что нужно доказать?</a><a href="#patterns">Схемы доказательств</a><a href="#exchange">Обменный аргумент</a><a href="#worked">Полное доказательство</a><a href="#ahead">«Жадный не отстаёт»</a><a href="#induction">Индукция</a><a href="#mistakes">Типичные ошибки</a><a href="#exercises">Задачи</a></aside>
-<main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Глава 9 · Раздел 2</div><h1>Доказательства корректности</h1><p class="chapter-topics">Обменные аргументы, принцип «жадный не отстаёт», индукция и другие техники доказательства корректности жадных алгоритмов.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-proofs.svg"/></div></section>
+<main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Глава 9 · Раздел 2</div><h1>Доказательства корректности</h1><p class="chapter-topics">У доказательства greedy одна главная задача: показать, что локальный выбор можно зафиксировать, не потеряв оптимальность.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-proofs.svg"/></div></section>
 <section class="lecture-section" id="goal">
-<h2>Что именно нужно доказать?</h2>
-<p class="lead">После того как мы увидели жадный алгоритм, он часто кажется очевидным. Сложность заключается в доказательстве: нужно показать, что один локальный выбор не заставит нас навсегда уйти от всех глобально оптимальных решений.</p>
+<h2>Что должно доказать жадное доказательство</h2>
+<p class="lead">Код может состоять из одного цикла. Доказательство должно объяснить, почему этот цикл имеет право навсегда отбрасывать альтернативы. После каждого шага должно оставаться хотя бы одно оптимальное решение, совместимое с уже сделанными выборами.</p><div class="concept-strip">
+<article class="concept-cell rule"><span>Что доказать</span><b>Следующий жадный выбор безопасен</b><p>Некоторое оптимальное решение можно заставить его содержать.</p></article>
+<article class="concept-cell proof"><span>Дальше</span><b>Свести задачу к меньшей</b><p>После фиксации шага должна остаться та же структура.</p></article>
+<article class="concept-cell cost"><span>Основные приёмы</span><b>Обмен, «не отстаёт», разрез</b><p>Выбираем доказательство под форму конкретной задачи.</p></article>
+</div>
 <div class="proof-goal"><h3>Главное утверждение</h3><p>После очередного жадного шага должно по-прежнему существовать хотя бы одно оптимальное решение, совместимое со всеми уже сделанными выборами.</p></div>
 <div class="greedy-properties">
 <article class="greedy-property"><h3>Безопасность выбора</h3><p>Следующий жадный шаг можно включить хотя бы в одно оптимальное решение.</p></article>
@@ -21,8 +25,8 @@
 </section>
 
 <section class="lecture-section" id="patterns">
-<h2>Основные схемы доказательства</h2>
-<p class="lead">Единого универсального доказательства для всех жадных алгоритмов нет, но несколько приёмов покрывают большую часть учебных и олимпиадных задач.</p>
+<h2>Четыре полезные схемы доказательства</h2>
+<p class="lead">Большинство доказательств сводится к нескольким ходам: обменять выбор, сравнить частичный прогресс, уменьшить задачу или воспользоваться разрезом.</p>
 <div class="proof-pattern-grid">
 <article class="proof-pattern-card"><div class="proof-pattern-mark">↔</div><h3>Обменный аргумент</h3><p>Берём оптимальное решение. Если в нём нет жадного выбора, преобразуем его так, чтобы жадный выбор появился, не ухудшая целевую функцию.</p></article>
 <article class="proof-pattern-card"><div class="proof-pattern-mark">≥</div><h3>«Жадный не отстаёт»</h3><p>После каждого шага сравниваем частичное жадное решение с произвольным оптимальным и показываем, что жадный вариант не хуже.</p></article>
@@ -32,8 +36,8 @@
 </section>
 
 <section class="lecture-section" id="exchange">
-<h2>Обменный аргумент</h2>
-<p class="lead">Это самый характерный тип доказательства жадности. Мы не пытаемся описать все оптимальные решения. Достаточно показать, что хотя бы одно оптимальное решение можно преобразовать так, чтобы оно согласовывалось с жадным алгоритмом.</p>
+<h2>1. Обменный аргумент</h2>
+<p class="lead">Берём оптимальное решение, которое может не совпадать с greedy. Меняем только первый конфликтующий выбор, сохраняем допустимость и показываем, что целевая функция не ухудшилась. После этого одно оптимальное решение согласуется с greedy ещё на один шаг.</p>
 <div class="exchange-demo">
 <div class="exchange-side"><span>Некоторое оптимальное решение</span><div class="exchange-set"><div class="exchange-item">другой выбор</div><div class="exchange-item">...</div><div class="exchange-item">...</div></div></div>
 <div class="exchange-arrow">→</div>
@@ -48,7 +52,7 @@
 </section>
 
 <section class="lecture-section" id="worked">
-<h2>Полное доказательство: короткие задачи сначала</h2>
+<h2>Полный пример: короткие задачи сначала</h2>
 <p class="lead">Вернёмся к задаче с предыдущей страницы: есть бюджет времени T, независимые задачи положительной длительности, и нужно выполнить как можно больше задач. Жадный алгоритм сортирует их по возрастанию длительности и берёт, пока хватает времени.</p>
 <div class="two-column-block">
 <div class="text-panel"><h3>Жадный ответ</h3><p>Пусть после сортировки <span class="math">d₁ ≤ d₂ ≤ ··· ≤ dₙ</span>. Предположим, жадный алгоритм взял первые <span class="math">k</span> задач:</p><div class="formula-line">d₁ + ··· + dₖ ≤ T</div><p>а добавление <span class="math">dₖ₊₁</span> уже превышает T.</p></div>
@@ -58,14 +62,14 @@
 </section>
 
 <section class="lecture-section" id="ahead">
-<h2>«Жадный не отстаёт»</h2>
+<h2>2. «Жадный не отстаёт»</h2>
 <p class="lead">Иногда удобнее сравнивать частичные решения шаг за шагом. Мы выбираем величину, измеряющую прогресс, и доказываем, что после первого, второго и каждого следующего выбора жадный алгоритм находится не позади оптимального.</p>
 <div class="proof-goal"><h3>Типичная форма</h3><p>Если жадный алгоритм делает выборы <span class="math">g₁, g₂, ...</span>, а оптимальное решение — <span class="math">o₁, o₂, ...</span>, доказываем неравенство вида <span class="math">progress(g₁,...,gᵢ) ≥ progress(o₁,...,oᵢ)</span> для каждого i.</p></div>
 <p>Классический пример — выбор непересекающихся интервалов: после выбора первых i интервалов расписание, которое всегда берёт интервал с самым ранним окончанием, заканчивается не позже любого другого расписания из i интервалов. Поэтому для будущих интервалов остаётся не меньше места.</p>
 </section>
 
 <section class="lecture-section" id="induction">
-<h2>Безопасный выбор и индукция</h2>
+<h2>3. Безопасный выбор, затем индукция</h2>
 <p class="lead">Многие доказательства жадности имеют одну и ту же рекурсивную форму, даже если сам алгоритм записан обычным циклом.</p>
 <div class="proof-checklist">
 <div class="proof-check"><span>1</span><p><strong>Докажите безопасность следующего жадного выбора.</strong> Покажите, что существует оптимальное решение, содержащее его.</p></div>
@@ -76,9 +80,9 @@
 </section>
 
 <section class="lecture-section" id="mistakes">
-<h2>Типичные ошибки в доказательствах</h2>
+<h2>Что доказательством не является</h2>
 <div class="proof-mistakes">
-<article class="proof-mistake"><h3>«Сейчас это очевидно лучше»</h3><p>Локальное сравнение ничего не говорит о последствиях для будущих шагов. Нужен глобальный аргумент.</p></article>
+<article class="proof-mistake"><h3>«Сейчас это очевидно лучше»</h3><p>«Сейчас это лучше» — как раз то утверждение, которое нужно обосновать. Будущие шаги могут полностью перевернуть локальное преимущество.</p></article>
 <article class="proof-mistake"><h3>Проверка только примеров</h3><p>Пример может опровергнуть жадное правило, но никакое конечное число удачных примеров не доказывает корректность.</p></article>
 <article class="proof-mistake"><h3>«Есть оптимальная подструктура — значит greedy»</h3><p>Оптимальная подструктура есть и у динамического программирования. Для жадности дополнительно нужен безопасный необратимый выбор.</p></article>
 </div>
