@@ -34,14 +34,14 @@
 <div>
 <div class="chapter-label">Глава 9 · Раздел 1</div>
 <h1>Жадная стратегия</h1>
-<p class="chapter-topics">Жадный алгоритм каждый раз фиксирует один локально лучший допустимый выбор. Главная трудность — доказать, что этот выбор безопасен.</p>
+<p class="chapter-topics">Жадный алгоритм строит решение необратимыми локальными шагами. Здесь формулируется метод, различаются типы гарантий и разбирается, как проверять корректность greedy-rule.</p>
 </div>
 <div class="greedy-hero-icon"><img alt="" src="assets/greedy-strategy.svg"/></div>
 </section>
 
 <section class="lecture-section" id="idea">
-<h2>Greedy — это ранняя фиксация решения</h2>
-<p class="lead">Жадный алгоритм делает выбор, фиксирует его и больше к нему не возвращается. Это может быть очень быстро — но только если структура задачи гарантирует, что локальный шаг не уничтожит все оптимальные решения.</p><div class="concept-strip">
+<h2>Определение жадного алгоритма</h2>
+<p class="lead">Жадный алгоритм строит решение последовательно. После принятия выбора он к нему не возвращается, поэтому корректность требует доказать совместимость каждого шага хотя бы с одним оптимальным решением.</p><div class="concept-strip">
 <article class="concept-cell rule"><span>Правило</span><b>Берём лучший допустимый вариант сейчас</b><p>Правило приоритета определяет, что значит «лучший».</p></article>
 <article class="concept-cell proof"><span>Фиксация</span><b>Принятые решения не отменяем</b><p>Именно необратимость делает greedy быстрым — и опасным.</p></article>
 <article class="concept-cell cost"><span>Главный вопрос</span><b>Почему этот выбор безопасен?</b><p>Без доказательства это всего лишь эвристика.</p></article>
@@ -57,8 +57,8 @@
 
 <!-- book-synthesis-strategy -->
 <section class="lecture-section" id="guarantees">
-<h2>Greedy algorithm, heuristic или approximation?</h2>
-<p class="lead">Одинаково «локальное» правило может играть три совершенно разные роли. Их важно не смешивать: «хорошо сработало на моих примерах» ещё не означает корректность.</p>
+<h2>Точный алгоритм, приближение и эвристика</h2>
+<p class="lead">Одинаково выглядящая локальная процедура может давать точный оптимум, иметь доказанную оценку приближения или не иметь гарантии в худшем случае. Эти три случая нужно различать.</p>
 <div class="concept-strip">
 <article class="concept-cell rule"><span>Exact algorithm</span><b>Всегда возвращает optimum</b><p>Interval Scheduling, Fractional Knapsack, Huffman, MST и Dijkstra относятся сюда при выполнении их предположений.</p></article>
 <article class="concept-cell proof"><span>Heuristic</span><b>Быстрое правило без worst-case гарантии</b><p>Эвристика может быть очень хороша на практике, но её качество подтверждается экспериментом, а не доказательством.</p></article>
@@ -69,8 +69,8 @@
 
 <!-- common-sense-round-strategy -->
 <section class="lecture-section" id="optimization-lens">
-<h2>Greedy может быть способом убрать лишнюю работу</h2>
-<p class="lead">Полезная optimization-привычка — сравнить текущий runtime с самым быстрым runtime, который вообще правдоподобно позволяет input. Разрыв между ними подсказывает, что именно стоит пытаться упростить.</p>
+<h2>Сокращение пространства вариантов</h2>
+<p class="lead">Жадные алгоритмы часто ускоряют задачу тем, что доказанно отбрасывают большую часть альтернатив. Главный вопрос — какую информацию можно забыть без потери оптимума.</p>
 <div class="runtime-ladder">
 <article class="runtime-step"><span>Текущая идея</span><h3>Сравнивать каждого кандидата со всеми</h3><p>Для поиска maximum в array проверка каждого числа против всех остальных стоит <span class="math">O(n²)</span>.</p></article>
 <article class="runtime-step"><span>Лучше, но косвенно</span><h3>Отсортировать и взять последний элемент</h3><p>Comparison sort даёт <span class="math">O(n log n)</span>, но сортировка вычисляет гораздо больше информации о порядке, чем требуется ответу.</p></article>
@@ -81,8 +81,8 @@
 </section>
 
 <section class="lecture-section" id="anatomy">
-<h2>Три вещи, которые нужно определить</h2>
-<p class="lead">Перед кодом полезно разделить три вещи: кого рассматриваем первым, можно ли его взять и что после выбора становится окончательным.</p>
+<h2>Три части жадного шага</h2>
+<p class="lead">Каждый шаг включает правило приоритета, проверку допустимости и фиксацию решения. Такое разделение удобно и для кода, и для доказательства.</p>
 <div class="greedy-anatomy-grid">
 <article class="greedy-anatomy-card"><div class="greedy-anatomy-icon">↕</div><h3>Правило приоритета</h3><p>Какого кандидата рассматриваем первым? Например: самое раннее окончание, самое дешёвое ребро, наибольшая ценность на единицу веса.</p></article>
 <article class="greedy-anatomy-card"><div class="greedy-anatomy-icon">✓</div><h3>Проверка допустимости</h3><p>Можно ли взять кандидата, не нарушив ограничения? Если нет, пропускаем его или выбираем другого.</p></article>
@@ -92,8 +92,8 @@
 </section>
 
 <section class="lecture-section" id="example">
-<h2>Пример: выполнить как можно больше задач</h2>
-<p class="lead">Пусть машина доступна 10 минут. Есть четыре независимые задачи длительностью 7, 4, 3 и 2 минуты. Нужно выполнить как можно больше задач.</p>
+<h2>Пример: задачи при ограниченном времени</h2>
+<p class="lead">Машина доступна 10 минут. Есть четыре независимые задачи длительностью 7, 4, 3 и 2 минуты. Нужно выполнить максимальное число задач.</p>
 <div class="greedy-job-example">
 <div class="greedy-job-head"><div><span class="example-kicker">Жадное правило</span><h3>Сначала выполняем самую короткую оставшуюся задачу</h3></div><p>Короткая задача занимает не больше времени, чем длинная, поэтому после неё остаётся не меньше места для следующих задач.</p></div>
 <div class="job-row"><span>Вход</span><div class="job-chips"><div class="job-chip">7 мин</div><div class="job-chip">4 мин</div><div class="job-chip">3 мин</div><div class="job-chip">2 мин</div></div></div>
@@ -105,8 +105,8 @@
 
 <!-- grokking-pass-strategy -->
 <section class="lecture-section" id="grokking-outcomes">
-<h2>Один greedy-инстинкт — три совершенно разные гарантии</h2>
-<p class="lead">Самый быстрый способ понять greedy — сравнить три задачи, в которых хочется сделать одно и то же: «возьми лучший вариант прямо сейчас». Отличается не форма цикла, а то, что мы умеем про него доказать.</p>
+<h2>Одинаковая форма не означает одинаковую гарантию</h2>
+<p class="lead">Interval Scheduling, 0/1 Knapsack и Set Cover допускают естественные локальные правила, но математические гарантии у них разные. По одному виду цикла нельзя понять, точен ли greedy.</p>
 <div class="grokking-contrast">
 <article class="grokking-card good"><span>Exact</span><h3>Classroom scheduling</h3><p>Берём совместимую пару, которая заканчивается раньше всех. Она оставляет не меньше места для будущих пар, поэтому правило можно доказать оптимальным.</p></article>
 <article class="grokking-card warn"><span>Greedy guess</span><h3>0/1 Knapsack</h3><p>Берём самый привлекательный целый предмет. Правило выглядит естественно, но может проиграть комбинации нескольких меньших предметов. Без отдельной гарантии это лишь heuristic.</p></article>
@@ -120,8 +120,8 @@
 </section>
 
 <section class="lecture-section" id="failure">
-<h2>Естественное правило всё равно может быть неверным</h2>
-<p class="lead">Правило может быть простым, однозначным и всегда давать допустимое решение — и всё равно не находить оптимум. Хороший пример — размен монет.</p>
+<h2>Контрпример: жадный размен монет</h2>
+<p class="lead">Для некоторых наборов номиналов правило «брать крупнейшую подходящую монету» не минимизирует число монет. Допустимость каждого шага сама по себе не доказывает оптимальность.</p>
 <div class="visualizer coin-greedy-demo">
 <div class="visualizer-head"><div><h3>Размен монет: берём крупнейшую подходящую монету</h3><p>Проследите жадные шаги, а затем сравните результат с настоящим минимумом числа монет.</p></div><div class="step-nav-controls"><button class="previous-step" data-action="previous" type="button">← Предыдущий шаг</button><button class="primary-step" data-action="next" type="button">Следующий шаг →</button></div></div>
 <div class="coin-preset-row"><button class="active" data-preset="trap" type="button">Контрпример: 1, 3, 4</button><button data-preset="canonical" type="button">Здесь работает: 1, 5, 10, 25</button></div>
@@ -140,8 +140,8 @@
 
 <!-- skiena-round-strategy -->
 <section class="lecture-section" id="problem-first">
-<h2>Сначала problem, потом rule</h2>
-<p class="lead">Greedy rule может быть корректен только для точно сформулированной задачи. До выбора local choice надо зафиксировать и допустимый класс inputs, и то, что именно output должен оптимизировать.</p>
+<h2>Сначала формулировка задачи</h2>
+<p class="lead">До выбора greedy-rule нужно зафиксировать допустимые inputs и целевую функцию. Небольшое изменение модели может полностью разрушить доказательство.</p>
 <div class="recognition-grid">
 <article class="recognition-card"><span class="signal">Input class</span><h3>Какие instances допустимы?</h3><p>Jobs — это один interval или несколько кусочков с gaps? Graph weighted или unweighted? Edge weights неотрицательны? Похожая story может стать другой задачей после маленького изменения input class.</p></article>
 <article class="recognition-card"><span class="signal">Objective</span><h3>Что значит “best”?</h3><p>Shortest route, fastest route, fewest turns, maximum number of jobs, minimum lateness и minimum total network cost — разные optimization problems.</p></article>
@@ -151,8 +151,8 @@
 </section>
 
 <section class="lecture-section" id="design-loop">
-<h2>Как на самом деле находят greedy-алгоритмы</h2>
-<p class="lead">Хорошее жадное правило редко появляется сразу. Рабочий процесс — предложить естественный локальный выбор, попытаться его сломать и сохранить только тот структурный инвариант, который пережил контрпримеры.</p>
+<h2>Как проектировать жадный алгоритм</h2>
+<p class="lead">Практический процесс: предложить локальное правило, проверить его на маленьких контрпримерах, сформулировать сохраняющийся инвариант и затем доказать безопасность выбора.</p>
 <div class="design-loop-grid">
 <article class="design-loop-card"><span>1</span><h3>Зафиксируйте модель</h3><p>Точно сформулируйте допустимость и целевую функцию. Маленькое изменение модели может полностью уничтожить greedy-rule.</p></article>
 <article class="design-loop-card"><span>2</span><h3>Предложите локальный выбор</h3><p>Самое раннее окончание? Максимальная плотность? Самое дешёвое ребро? Минимальная временная метка?</p></article>
@@ -165,8 +165,8 @@
 
 <!-- karumanchi-round-strategy -->
 <section class="lecture-section" id="reduce">
-<h2>Каждый greedy-step должен уменьшать оставшуюся задачу</h2>
-<p class="lead">Удобно описывать greedy как цикл из трёх действий: выбрать локально лучший допустимый вариант, зафиксировать его без пересмотра, затем уменьшить instance и повторить.</p>
+<h2>Уменьшение задачи после выбора</h2>
+<p class="lead">После фиксации жадного шага удаляются варианты, которые стали недопустимыми или заведомо не нужны. Остаток должен быть задачей того же типа.</p>
 <div class="interview-flow">
 <article><span>1</span><h3>Choose</h3><p>Среди feasible options выбираем candidate по greedy key: earliest finish, largest density, lightest safe edge, smallest frequency и т. д.</p></article>
 <article><span>2</span><h3>Commit</h3><p>Choice становится частью partial solution. Корректный greedy algorithm не возвращается позже, чтобы заменить его.</p></article>
@@ -181,8 +181,8 @@
 </section>
 
 <section class="lecture-section" id="properties">
-<h2>Что именно нужно доказать</h2>
-<p class="lead">Обычно доказательство должно установить две вещи: текущий локальный выбор безопасен, а после его фиксации остаётся задача того же типа.</p>
+<h2>Что нужно доказать</h2>
+<p class="lead">Для точного greedy нужно обосновать безопасность текущего выбора и корректность перехода к уменьшенному instance.</p>
 <div class="greedy-properties">
 <article class="greedy-property"><h3>Свойство жадного выбора</h3><p>Существует оптимальное решение, совместимое с первым жадным выбором. То есть этот локальный шаг не уничтожает все оптимальные решения.</p></article>
 <article class="greedy-property"><h3>Оптимальная подструктура</h3><p>После фиксации первого решения оставшаяся часть оптимального ответа сама оптимальна для возникшей подзадачи.</p></article>
@@ -191,8 +191,8 @@
 </section>
 
 <section class="lecture-section" id="implementation">
-<h2>Код обычно проще доказательства</h2>
-<p class="lead">Когда правило приоритета уже найдено, реализация часто сводится к четырём действиям: сортировка, проход, проверка, принятие.</p>
+<h2>Схема реализации</h2>
+<p class="lead">После определения порядка и условия допустимости код часто сводится к сортировке и одному проходу либо к priority queue, которая выдаёт следующего кандидата.</p>
 <div class="code-explainer">
 <div class="annotated-code">
 <div class="code-row"><span class="line-no">1</span><code>def greedy(candidates, priority, feasible):</code></div>
@@ -212,8 +212,8 @@
 </section>
 
 <section class="lecture-section" id="complexity">
-<h2>Типичная сложность</h2>
-<p class="lead">Слово «жадный» описывает способ проектирования алгоритма, а не класс сложности. Но многие жадные алгоритмы быстры именно потому, что не перебирают множество альтернативных решений.</p>
+<h2>Сложность</h2>
+<p class="lead">Greedy — это способ проектирования, а не класс сложности. Время работы определяется сортировкой, проверкой допустимости и поддержанием состояния.</p>
 <div class="table-wrap"><table class="greedy-runtime-table"><thead><tr><th>Схема реализации</th><th>Типичная сложность</th><th>Где встречается</th></tr></thead><tbody>
 <tr><td>Одна сортировка + проход</td><td>Обычно O(n log n)</td><td>Расписания, интервалы, обработка рёбер в стиле Краскала</td></tr>
 <tr><td>Очередь с приоритетом</td><td>Часто O(n log n), а на графах O((n + m) log n)</td><td>Хаффман, Прим, Дейкстра</td></tr>
@@ -224,8 +224,8 @@
 </section>
 
 <section class="lecture-section" id="streaming">
-<h2>Иногда greedy-объект — это крошечное состояние</h2>
-<p class="lead">Не всякий greedy алгоритм сортирует объекты и выбирает их по одному. Некоторые one-pass алгоритмы жадно поддерживают наиболее перспективное summary уже просмотренного prefix.</p>
+<h2>Жадное состояние в однопроходных алгоритмах</h2>
+<p class="lead">Не каждый greedy выбирает элементы из отсортированного списка. Иногда достаточно хранить небольшое summary префикса и отбрасывать состояния, которые уже не могут улучшить ответ.</p>
 <div class="stream-state">
 <article><code>best_so_far</code><p>Array maximum хранит только наибольшее увиденное значение. Все меньшие прошлые кандидаты навсегда доминируются.</p></article>
 <article><code>current_sum</code><p>В maximum subarray, как только running sum становится отрицательной, переносить её дальше вредно для любого будущего продолжения. Reset выбрасывает dominated prefix.</p></article>
@@ -236,8 +236,8 @@
 
 <!-- coding-patterns-round-strategy -->
 <section class="lecture-section" id="interview-workflow">
-<h2>Практичный interview workflow для greedy-задач</h2>
-<p class="lead">У greedy нет одного шаблона, который решает всё. Гораздо полезнее сначала распознать форму решения, а затем сформулировать один факт, делающий необратимый выбор безопасным.</p>
+<h2>Разбор новой greedy-задачи</h2>
+<p class="lead">Сначала выпишите objective и constraints. Затем определите порядок кандидатов, необходимое состояние и утверждение, которое сделает выбор необратимым.</p>
 <div class="interview-flow">
 <article><span>1</span><h3>Назовите objective</h3><p>Что именно нужно максимизировать, минимизировать, достичь или распределить? Похожие inputs могут требовать разных greedy keys.</p></article>
 <article><span>2</span><h3>Назовите local choice</h3><p>Что фиксируется сейчас: destination frontier, surviving start, directional constraint или следующий priority item?</p></article>
@@ -248,8 +248,8 @@
 </section>
 
 <section class="lecture-section" id="recognition">
-<h2>Три greedy-формы, которые стоит узнавать</h2>
-<p class="lead">Полезнее запомнить не строку кода, а структурную причину, по которой множество альтернатив схлопывается в одно surviving state.</p>
+<h2>Типичные структуры</h2>
+<p class="lead">Greedy обычно работает, когда одно частичное состояние доминирует остальные, когда безопасность даёт exchange/cut argument или когда следующий допустимый кандидат естественно поддерживается priority queue.</p>
 <div class="recognition-grid">
 <article class="recognition-card"><span class="signal">Reaching a destination</span><h3>Двигайте цель назад</h3><p>В Jump to the End храним самый левый index, из которого уже достижим текущий destination. Если <span class="math">i + nums[i] ≥ destination</span>, index <span class="math">i</span> становится новой целью. Весь suffix сжимается в один frontier.</p></article>
 <article class="recognition-card"><span class="signal">Circular feasibility</span><h3>Выбрасывайте блок стартов</h3><p>В Gas Stations, если выбранный start впервые ломается у station <span class="math">b</span>, все станции между start и <span class="math">b</span> можно исключить сразу. Следующий кандидат — <span class="math">b+1</span>.</p></article>
