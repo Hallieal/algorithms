@@ -38,7 +38,7 @@
 <div class="bit-side good"><h3>Frequency-aware code</h3><p>One valid Huffman code is <code>t=1</code>, <code>i=00</code>, <code>l=01</code>. Then <code>tilt</code> becomes <code>1 00 01 1</code>: only <strong>6 payload bits</strong>.</p></div>
 </div>
 <div class="source-note"><h3>What this toy count ignores</h3><p>A real compressed file must also communicate metadata such as the code description, and modern text is normally encoded with Unicode/UTF-8 rather than one fixed 8-bit alphabet. The example isolates the core idea: frequent symbols deserve shorter codewords.</p></div>
-<div class="predict-card"><span class="predict-kicker">Predict the tree</span><h3>Which symbol should be closest to the root?</h3><p><code>t</code> appears twice, while <code>i</code> and <code>l</code> appear once each. If path length is code length, the frequent symbol should pay for fewer edges.</p></div>
+<div class="predict-card"><span class="predict-kicker">Frequency comparison</span><h3>Which symbol should be closest to the root?</h3><p><code>t</code> appears twice, while <code>i</code> and <code>l</code> appear once each. If path length is code length, the frequent symbol should pay for fewer edges.</p></div>
 </section>
 
 <section class="lecture-section" id="prefix">
@@ -119,7 +119,7 @@
 <div class="text-panel"><h3>Contiguous merge order</h3><p>For file sizes <span class="math">{10,5,100,50,20,15}</span>, repeatedly merge the current result with the next file. The merge costs are</p><div class="formula-line">15 + 115 + 165 + 185 + 200 = 680</div><p>Feasible—but far from optimal.</p></div>
 <div class="proof-panel"><h3>Two-smallest-first</h3><p>Use a min-priority queue and repeatedly merge the two smallest current files:</p><div class="formula-line">15 + 30 + 50 + 100 + 200 = 395</div><p>The total work drops dramatically.</p></div>
 </div>
-<div class="bridge-note"><h3>Why this is Huffman in disguise</h3><p>Every leaf weight is paid once for each merge level above it. The total merge cost is therefore a weighted external path length—the same objective <span class="math">∑wᵢ·depthᵢ</span> minimized by a Huffman tree.</p></div>
+<div class="bridge-note"><h3>Equivalent objective</h3><p>Every leaf weight is paid once for each merge level above it. The total merge cost is therefore a weighted external path length—the same objective <span class="math">∑wᵢ·depthᵢ</span> minimized by a Huffman tree.</p></div>
 <div class="one-line"><strong>Same priority-queue skeleton, different story.</strong> Extract two minima → combine them → reinsert the sum → repeat.</div>
 </section>
 
@@ -155,7 +155,7 @@
 <article class="recognition-card"><span class="signal">Data structure</span><h3>Min-heap</h3><p><code>pop</code> exposes the current minimum, and <code>push</code> restores the collection after inserting the merged weight. No global re-sort is necessary.</p></article>
 <article class="recognition-card"><span class="signal">Greedy rule</span><h3>Merge, reinsert, repeat</h3><p>The algorithmic pattern becomes almost literal code: pop twice, add the weights, push the sum, and continue until one tree remains.</p></article>
 </div>
-<div class="interview-answer"><h3>Generalization to remember</h3><p>If the problem repeatedly asks for the current min/max while the candidate set changes, think priority queue before thinking “sort after every update”.</p></div>
+<div class="interview-answer"><h3>Generalization</h3><p>If the problem repeatedly asks for the current min/max while the candidate set changes, think priority queue before thinking “sort after every update”.</p></div>
 </section>
 
 <section class="lecture-section" id="heap-optimization">
