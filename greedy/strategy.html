@@ -77,7 +77,7 @@
 <article class="runtime-step best"><span>Best imaginable</span><h3>Keep only the best seen so far</h3><p>One scan is enough: update the current maximum whenever a larger value appears. That is <span class="math">O(n)</span>, and every input item must be inspected anyway.</p></article>
 </div>
 <div class="optimization-gap"><b>Optimization question</b><p>What information is the slower algorithm computing that the final answer never uses? Greedy often becomes possible when that extra work can be replaced by one safe running summary.</p></div>
-<div class="source-note"><h3>Terminology</h3><p>Scanning for a maximum is not usually presented as a “greedy algorithm” in formal optimization courses. It is still a useful mental model for greedy state compression: after each prefix, keep the best fact that can safely summarize everything seen so far.</p></div>
+<div class="source-note"><h3>Terminology</h3><p>Scanning for a maximum is not usually classified as a greedy optimization algorithm. It is included here only as an example of state compression: after each prefix, one retained value summarizes all earlier candidates.</p></div>
 </section>
 
 <section class="lecture-section" id="anatomy">
