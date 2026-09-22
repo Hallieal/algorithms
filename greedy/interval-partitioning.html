@@ -8,7 +8,7 @@
 <body class="lecture-page"><div aria-hidden="true" class="progress-track"><div class="progress-bar" id="reading-progress"></div></div>
 <header class="topbar"><a class="brand" href="../"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name">Allan's Handbook of Algorithms</span></a>
 <nav aria-label="Primary navigation" class="topnav"><a href="./">Greedy overview</a><div aria-label="Language" class="language-switch"><span class="current">EN</span><span class="language-separator">·</span><a href="interval-partitioning-ru.html">RU</a></div></nav></header>
-<aside aria-label="Section navigation" class="sidebar"><div class="sidebar-title">Chapter 9 · Section 5</div><a href="#problem">Problem</a><a href="#depth">Depth</a><a href="#same-input">Same intervals, different question</a><a href="#algorithm">Algorithm</a><a href="#sweep">Count only: sweep line</a><a href="#railway">Same problem: railway platforms</a><a href="#two-array-sweep">Two-array sweep</a><a href="#proof">Correctness</a><a href="#data-structure">Why a heap matters</a><a href="#implementation">Implementation</a><a href="#comparison">Comparison</a><a href="#exercises">Exercises</a></aside>
+<aside aria-label="Section navigation" class="sidebar"><div class="sidebar-title">Chapter 9 · Section 5</div><a href="#problem">Problem</a><a href="#depth">Depth</a><a href="#same-input">Same intervals, different question</a><a href="#algorithm">Algorithm</a><a href="#sweep">Count only: sweep line</a><a href="#railway">Same problem: railway platforms</a><a href="#two-array-sweep">Two-array sweep</a><a href="#proof">Correctness</a><a href="#data-structure">Why a heap matters</a><a href="#implementation">Implementation</a><a href="#interval-structure">Why interval structure makes coloring easy</a><a href="#comparison">Comparison</a><a href="#exercises">Exercises</a></aside>
 <main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Chapter 9 · Section 5</div><h1>Interval Partitioning</h1><p class="chapter-topics">Schedule every interval while using as few rooms as possible. Reuse the room that becomes free first.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-interval-partitioning.svg"/></div></section>
 <section class="lecture-section" id="problem">
 <h2>Use as few rooms as possible</h2>
@@ -164,6 +164,18 @@
 <div class="code-note-item wide-note"><span>10–13</span><p>If the minimum finish time is still too late, all rooms are occupied, so a new room is necessary.</p></div>
 </div></div>
 <div class="complexity-strip"><div><span>Sorting</span><b>O(n log n)</b><small>by start</small></div><div><span>Heap operation</span><b>O(log n)</b><small>per interval</small></div><div><span>Total</span><b>O(n log n)</b><small>all intervals</small></div><div><span>Heap size</span><b>O(d)</b><small>d = rooms</small></div></div>
+</section>
+
+<!-- skiena-round-partition -->
+<section class="lecture-section" id="interval-structure">
+<h2>Why the interval representation is doing real algorithmic work</h2>
+<p class="lead">Room assignment can be viewed as graph coloring, but the input is not an arbitrary conflict graph. Every conflict comes from overlap on a line, and that extra structure is exactly what makes the greedy schedule possible.</p>
+<div class="recognition-grid">
+<article class="recognition-card"><span class="signal">Arbitrary conflicts</span><h3>Only a graph is given</h3><p>Knowing that A conflicts with B and C does not tell us where those conflicts occur or provide a natural chronological sweep.</p></article>
+<article class="recognition-card"><span class="signal">Interval conflicts</span><h3>Every vertex has a start and finish</h3><p>Sorting by start creates a meaningful left-to-right order, while the current finish times summarize when each room becomes reusable.</p></article>
+<article class="recognition-card"><span class="signal">Certificate</span><h3>Maximum overlap is visible</h3><p>A point covered by <span class="math">d</span> intervals simultaneously certifies that at least <span class="math">d</span> colors/rooms are unavoidable.</p></article>
+</div>
+<div class="one-line"><strong>Special structure is not a technicality.</strong> Often the difference between a hard general problem and a simple greedy algorithm is exactly the representation you are allowed to exploit.</div>
 </section>
 
 <section class="lecture-section" id="comparison">
