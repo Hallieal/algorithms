@@ -8,7 +8,7 @@
 <body class="lecture-page"><div aria-hidden="true" class="progress-track"><div class="progress-bar" id="reading-progress"></div></div>
 <header class="topbar"><a class="brand" href="../"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name">Allan's Handbook of Algorithms</span></a>
 <nav aria-label="Primary navigation" class="topnav"><a href="./">Greedy overview</a><div aria-label="Language" class="language-switch"><span class="current">EN</span><span class="language-separator">·</span><a href="dijkstra-ru.html">RU</a></div></nav></header>
-<aside aria-label="Section navigation" class="sidebar"><div class="sidebar-title">Chapter 9 · Section 10</div><a href="#problem">Problem</a><a href="#idea">Greedy idea</a><a href="#demo">Step-by-step</a><a href="#proof">Correctness</a><a href="#negative">Negative edges</a><a href="#implementation">Implementation</a><a href="#paths">Recover paths</a><a href="#comparison">MST comparison</a><a href="#exercises">Exercises</a></aside>
+<aside aria-label="Section navigation" class="sidebar"><div class="sidebar-title">Chapter 9 · Section 10</div><a href="#problem">Problem</a><a href="#idea">Greedy idea</a><a href="#mental-model">Four-step mental model</a><a href="#demo">Step-by-step</a><a href="#bfs-link">From BFS to Dijkstra</a><a href="#proof">Correctness</a><a href="#negative">Negative edges</a><a href="#implementation">Implementation</a><a href="#paths">Recover paths</a><a href="#comparison">MST comparison</a><a href="#choice-guide">Which shortest-path tool?</a><a href="#exercises">Exercises</a></aside>
 <main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Chapter 9 · Section 10</div><h1>Dijkstra’s Algorithm</h1><p class="chapter-topics">For nonnegative edge weights, the smallest tentative distance is safe to finalize. That single greedy step is Dijkstra’s algorithm.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-dijkstra.svg"/></div></section>
 <section class="lecture-section" id="problem">
 <h2>Shortest paths from one source</h2>
@@ -33,6 +33,19 @@
 <div class="greedy-definition"><span>Relaxation</span><p>For an edge <span class="math">(u,v)</span> of weight <span class="math">w</span>, replace <span class="math">dist[v]</span> by <span class="math">min(dist[v], dist[u]+w)</span>.</p></div>
 </section>
 
+<!-- book-synthesis-dijkstra -->
+<section class="lecture-section" id="mental-model">
+<h2>The four-step mental model</h2>
+<p class="lead">The implementation can look busy because of heaps and stale entries. The algorithmic idea is much smaller. Repeat the same four moves until no reachable tentative vertex remains.</p>
+<div class="proof-template">
+<article><b>1. Pick</b><p>Choose the unfinalized vertex with the smallest tentative distance.</p></article>
+<article><b>2. Finalize</b><p>Declare that distance permanent. Nonnegative edges are what make this commitment safe.</p></article>
+<article><b>3. Relax</b><p>Try every outgoing edge and improve neighbors through the newly finalized vertex.</p></article>
+<article><b>4. Repeat</b><p>The frontier moves outward in nondecreasing distance from the source.</p></article>
+</div>
+<div class="rule-formula">new candidate distance to v = dist[u] + w(u,v)</div>
+</section>
+
 <section class="lecture-section" id="demo">
 <h2>Watch the labels settle</h2>
 <p class="lead">Use the undirected graph with edges S—A=4, S—B=1, B—A=2, B—C=5, A—C=1, A—D=7, C—D=3, and B—D=8.</p>
@@ -46,6 +59,16 @@
 <div class="secondary-controls"><button data-action="reset" type="button">Reset</button></div>
 </div>
 <div class="path-chip-row"><span class="path-chip fixed">S = 0</span><span class="path-chip fixed">B = 1</span><span class="path-chip fixed">A = 3</span><span class="path-chip fixed">C = 4</span><span class="path-chip fixed">D = 7</span></div>
+</section>
+
+<section class="lecture-section" id="bfs-link">
+<h2>Dijkstra is BFS with a more informative frontier</h2>
+<p class="lead">BFS and Dijkstra solve the same conceptual problem—expand the next vertex whose shortest distance is known—but they use different data structures because their edge models differ.</p>
+<div class="table-wrap"><table><thead><tr><th>Graph</th><th>Frontier structure</th><th>Why it works</th></tr></thead><tbody>
+<tr><td>Unweighted or all edges have equal weight</td><td>FIFO queue</td><td>Vertices discovered one layer later are exactly one edge farther away.</td></tr>
+<tr><td>Nonnegative weighted graph</td><td>Min-priority queue</td><td>The next safe vertex is the one with smallest <em>accumulated</em> tentative cost, not the one discovered earliest.</td></tr>
+</tbody></table></div>
+<div class="one-line"><strong>Useful reduction.</strong> If every edge weight is 1, Dijkstra’s priority order collapses to BFS layers. Use BFS: it is simpler and runs in <span class="math">O(V+E)</span>.</div>
 </section>
 
 <section class="lecture-section" id="proof">
@@ -129,6 +152,16 @@
 <tr><td>Negative weights</td><td>Allowed</td><td>Not allowed</td></tr>
 </tbody></table></div>
 <div class="bridge-note"><h3>Same control flow, different invariant</h3><p>Both algorithms can look like “pop a minimum, inspect neighbors, push updates”. Prim measures the price of attaching a vertex to a tree. Dijkstra measures the full price of reaching that vertex from the source.</p></div>
+</section>
+
+<section class="lecture-section" id="choice-guide">
+<h2>Which shortest-path tool should you reach for?</h2>
+<div class="table-wrap"><table><thead><tr><th>Input</th><th>Natural method</th><th>Main reason</th></tr></thead><tbody>
+<tr><td>Unweighted / unit weights</td><td>BFS</td><td>No heap is needed; distance is measured in edges.</td></tr>
+<tr><td>Nonnegative weights</td><td>Dijkstra</td><td>Minimum tentative distance can be finalized greedily.</td></tr>
+<tr><td>Negative edges, no reachable negative cycle</td><td>Bellman–Ford</td><td>Distances may improve after a vertex would have been finalized by Dijkstra.</td></tr>
+<tr><td>One target + admissible heuristic</td><td>A*</td><td>Uses goal information to prioritize promising vertices while preserving optimality under the heuristic conditions.</td></tr>
+</tbody></table></div>
 </section>
 
 <section class="lecture-section" id="exercises">
