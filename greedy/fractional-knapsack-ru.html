@@ -1,5 +1,5 @@
 <!DOCTYPE html><html lang="ru"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1" name="viewport"/>
-<meta content="Как максимизировать ценность при ограничении на вместимость, выбирая предметы по убыванию ценности на единицу веса." name="description"/><meta content="Дробная задача о рюкзаке | Гайд по алгоритмам — presented by Аллан" property="og:title"/><meta content="Как максимизировать ценность при ограничении на вместимость, выбирая предметы по убыванию ценности на единицу веса." property="og:description"/><meta content="article" property="og:type"/>
+<meta content="Если предметы делимы, каждую единицу вместимости выгодно отдавать предмету с максимальной ценностью на единицу веса." name="description"/><meta content="Дробная задача о рюкзаке | Гайд по алгоритмам — presented by Аллан" property="og:title"/><meta content="Если предметы делимы, каждую единицу вместимости выгодно отдавать предмету с максимальной ценностью на единицу веса." property="og:description"/><meta content="article" property="og:type"/>
 <title>Дробная задача о рюкзаке | Гайд по алгоритмам — presented by Аллан</title>
 <link href="../assets/css/styles.css" rel="stylesheet"/><link href="assets/greedy.css" rel="stylesheet"/>
 <link href="../assets/images/favicon-32.png" rel="icon" sizes="32x32" type="image/png"/><link href="../assets/images/favicon.png" rel="icon" sizes="64x64" type="image/png"/><link href="../assets/images/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180"/>
@@ -8,16 +8,20 @@
 <header class="topbar"><a class="brand" href="../index-ru.html"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name ru-brand-name"><span class="ru-brand-lines"><span>Гайд по алгоритмам</span><span class="ru-brand-presented">presented by Аллан</span></span></span></a>
 <nav aria-label="Основная навигация" class="topnav"><a href="index-ru.html">Жадные алгоритмы</a><div aria-label="Язык" class="language-switch"><a href="fractional-knapsack.html">EN</a><span class="language-separator">·</span><span class="current">RU</span></div></nav></header>
 <aside aria-label="Навигация по разделу" class="sidebar"><div class="sidebar-title">Глава 9 · Раздел 7</div><a href="#problem">Постановка</a><a href="#density">Плотность ценности</a><a href="#algorithm">Алгоритм</a><a href="#proof">Корректность</a><a href="#boundary">Граница с 0/1</a><a href="#implementation">Реализация</a><a href="#exercises">Задачи</a></aside>
-<main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Глава 9 · Раздел 7</div><h1>Дробная задача о рюкзаке</h1><p class="chapter-topics">Как максимизировать ценность при ограничении на вместимость, выбирая предметы по убыванию ценности на единицу веса.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-fractional-knapsack.svg"/></div></section>
+<main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Глава 9 · Раздел 7</div><h1>Дробная задача о рюкзаке</h1><p class="chapter-topics">Если предметы делимы, каждую единицу вместимости выгодно отдавать предмету с максимальной ценностью на единицу веса.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-fractional-knapsack.svg"/></div></section>
 <section class="lecture-section" id="problem">
-<h2>Постановка задачи</h2>
-<p class="lead">Есть рюкзак вместимости <span class="math">W</span>. Предмет <span class="math">i</span> имеет вес <span class="math">wᵢ</span> и ценность <span class="math">vᵢ</span>. В отличие от задачи о рюкзаке 0/1, здесь можно взять любую долю предмета.</p>
+<h2>Тратим вместимость там, где она приносит больше всего</h2>
+<p class="lead">Вместимость рюкзака ограничена, но предметы можно делить. Поэтому задача уже не про выбор целых объектов: каждую следующую единицу веса можно отдать тому предмету, который приносит за неё больше ценности.</p><div class="concept-strip">
+<article class="concept-cell rule"><span>Правило</span><b>Сначала берём максимальную ценность на единицу веса</b><p>Идём по убыванию отношения <span class="math">vᵢ/wᵢ</span>.</p></article>
+<article class="concept-cell proof"><span>Почему работает</span><b>Одинаковый вес выгоднее держать в более плотном предмете</b><p>Перенос веса с меньшей плотности на большую не уменьшает ценность.</p></article>
+<article class="concept-cell cost"><span>Сложность</span><b>O(n log n)</b><p>Посчитать отношения, отсортировать, пройти один раз.</p></article>
+</div>
 <div class="greedy-definition"><span>Дробный рюкзак</span><p>Нужно выбрать доли <span class="math">0 ≤ xᵢ ≤ 1</span>, максимизируя <span class="math">∑ xᵢvᵢ</span> при ограничении <span class="math">∑ xᵢwᵢ ≤ W</span>.</p></div>
 </section>
 
 <section class="lecture-section" id="density">
-<h2>Правильный локальный критерий: ценность на единицу веса</h2>
-<p class="lead">Если от предмета можно взять произвольный кусок, сравнивать нужно не полную ценность и не полный вес, а то, сколько ценности даёт одна единица вместимости.</p>
+<h2>Сравниваем ценность на единицу веса</h2>
+<p class="lead">Полная ценность сама по себе ничего не решает: дорогой предмет может быть слишком тяжёлым. Нужна плотность <span class="math">vᵢ/wᵢ</span> — сколько ценности приносит одна единица вместимости.</p>
 <div class="table-wrap"><table class="density-table"><thead><tr><th>Предмет</th><th>Вес</th><th>Ценность</th><th>Ценность / вес</th></tr></thead><tbody>
 <tr><td>A</td><td>10</td><td>60</td><td><span class="density-pill">6.0</span></td></tr>
 <tr><td>B</td><td>20</td><td>100</td><td><span class="density-pill">5.0</span></td></tr>
@@ -27,7 +31,7 @@
 </section>
 
 <section class="lecture-section" id="algorithm">
-<h2>Жадный алгоритм</h2>
+<h2>Алгоритм: сортируем по плотности и заполняем</h2>
 <div class="step-flow">
 <article class="step-item"><div class="step-number">1</div><div><h3>Считаем плотности</h3><p>Для каждого предмета вычисляем <span class="math">vᵢ/wᵢ</span>.</p></div></article>
 <article class="step-item"><div class="step-number">2</div><div><h3>Сортируем по убыванию</h3><p>Сначала рассматриваем предметы с максимальной ценностью на единицу веса.</p></div></article>
@@ -51,8 +55,8 @@
 </section>
 
 <section class="lecture-section" id="proof">
-<h2>Почему сортировка по плотности оптимальна</h2>
-<p class="lead">Доказательство — обменный аргумент на уровне маленьких порций веса.</p>
+<h2>Перенесём одну порцию веса</h2>
+<p class="lead">Предположим, решение использует часть предмета меньшей плотности, оставляя неиспользованной часть предмета большей плотности. Перенесём одинаковый вес с худшего предмета на лучший.</p>
 <div class="exchange-density">
 <div class="density-side"><h3>Пусть оптимум устроен «не по порядку»</h3><div class="density-bars">
 <div class="density-bar"><span>высокая плотность</span><div class="density-track"><span style="--fill:40%"></span></div><b>не весь взят</b></div>
@@ -69,8 +73,8 @@
 </section>
 
 <section class="lecture-section" id="boundary">
-<h2>Почему рюкзак 0/1 — другая задача</h2>
-<p class="lead">Предыдущее доказательство полностью опирается на делимость предметов. Если предметы неделимы, переносить произвольно малый одинаковый вес между ними нельзя.</p>
+<h2>В рюкзаке 0/1 это доказательство ломается</h2>
+<p class="lead">Всё доказательство держится на возможности перенести произвольную порцию веса. Для неделимых предметов такой обмен может быть просто недопустим.</p>
 <div class="boundary-example">
 <article class="boundary-card good"><h3>Дробная версия</h3><p>Вместимость 50, A=(10,60), B=(20,100), C=(30,120). Greedy по плотности даёт 240: A, B и 2/3 C. Это оптимум.</p></article>
 <article class="boundary-card bad"><h3>Версия 0/1</h3><p>Тот же порядок по плотности берёт A и B и получает 160. Но B+C помещаются ровно и дают 220. Первый жадный выбор A блокирует оптимум.</p></article>
