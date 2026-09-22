@@ -1,57 +1,192 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1" name="viewport"/>
-<meta content="Нужно разместить все интервалы, используя как можно меньше аудиторий, машин или других ресурсов." name="description"/>
-<meta content="Разбиение интервалов по ресурсам | Гайд по алгоритмам — presented by Аллан" property="og:title"/>
-<meta content="Нужно разместить все интервалы, используя как можно меньше аудиторий, машин или других ресурсов." property="og:description"/>
-<meta content="article" property="og:type"/>
+<!DOCTYPE html><html lang="ru"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="Как распределить все интервалы по минимальному числу аудиторий, используя min-heap по времени освобождения." name="description"/><meta content="Разбиение интервалов по ресурсам | Гайд по алгоритмам — presented by Аллан" property="og:title"/><meta content="Как распределить все интервалы по минимальному числу аудиторий, используя min-heap по времени освобождения." property="og:description"/><meta content="article" property="og:type"/>
 <title>Разбиение интервалов по ресурсам | Гайд по алгоритмам — presented by Аллан</title>
-<link href="../assets/css/styles.css" rel="stylesheet"/>
-<link href="assets/greedy.css" rel="stylesheet"/>
-<link href="../assets/images/favicon-32.png" rel="icon" sizes="32x32" type="image/png"/>
-<link href="../assets/images/favicon.png" rel="icon" sizes="64x64" type="image/png"/>
-<link href="../assets/images/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180"/>
-<link href="interval-partitioning.html" hreflang="en" rel="alternate"/><link href="interval-partitioning-ru.html" hreflang="ru" rel="alternate"/>
-</head>
-<body class="lecture-page">
-<header class="topbar">
-<a class="brand" href="../index-ru.html"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name ru-brand-name"><span class="ru-brand-lines"><span>Гайд по алгоритмам</span><span class="ru-brand-presented">presented by Аллан</span></span></span></a>
-<nav aria-label="Основная навигация" class="topnav">
-<a href="index-ru.html">Жадные алгоритмы</a>
-<div aria-label="Язык" class="language-switch"><a href="interval-partitioning.html">EN</a><span class="language-separator">·</span><span class="current">RU</span></div>
-</nav>
-</header>
-<aside aria-label="Навигация по разделу" class="sidebar">
-<div class="sidebar-title">Глава 9 · Раздел 5</div>
-<a href="#coming-soon">Скоро</a>
-</aside>
-<main class="lecture">
-<section class="lecture-hero greedy-placeholder-hero">
-<div>
-<div class="chapter-label">Глава 9 · Раздел 5</div>
-<h1>Разбиение интервалов по ресурсам</h1>
-<p class="chapter-topics">Нужно разместить все интервалы, используя как можно меньше аудиторий, машин или других ресурсов.</p>
-</div>
-<div class="greedy-hero-icon"><img alt="" src="assets/greedy-interval-partitioning.svg"/></div>
+<link href="../assets/css/styles.css" rel="stylesheet"/><link href="assets/greedy.css" rel="stylesheet"/>
+<link href="../assets/images/favicon-32.png" rel="icon" sizes="32x32" type="image/png"/><link href="../assets/images/favicon.png" rel="icon" sizes="64x64" type="image/png"/><link href="../assets/images/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180"/>
+<link href="interval-partitioning.html" hreflang="en" rel="alternate"/><link href="interval-partitioning-ru.html" hreflang="ru" rel="alternate"/></head>
+<body class="lecture-page"><div aria-hidden="true" class="progress-track"><div class="progress-bar" id="reading-progress"></div></div>
+<header class="topbar"><a class="brand" href="../index-ru.html"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name ru-brand-name"><span class="ru-brand-lines"><span>Гайд по алгоритмам</span><span class="ru-brand-presented">presented by Аллан</span></span></span></a>
+<nav aria-label="Основная навигация" class="topnav"><a href="index-ru.html">Жадные алгоритмы</a><div aria-label="Язык" class="language-switch"><a href="interval-partitioning.html">EN</a><span class="language-separator">·</span><span class="current">RU</span></div></nav></header>
+<aside aria-label="Навигация по разделу" class="sidebar"><div class="sidebar-title">Глава 9 · Раздел 5</div><a href="#problem">Постановка</a><a href="#depth">Depth</a><a href="#algorithm">Алгоритм</a><a href="#proof">Корректность</a><a href="#implementation">Реализация</a><a href="#comparison">Сравнение</a><a href="#exercises">Задачи</a></aside>
+<main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Глава 9 · Раздел 5</div><h1>Разбиение интервалов по ресурсам</h1><p class="chapter-topics">Как распределить все интервалы по минимальному числу аудиторий, используя min-heap по времени освобождения.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-interval-partitioning.svg"/></div></section>
+<section class="lecture-section" id="problem">
+<h2>Постановка задачи</h2>
+<p class="lead">Теперь интервалы нельзя выбрасывать. Каждую лекцию, встречу или задачу на машине нужно назначить на ресурс, причём пересекающиеся интервалы не могут использовать один и тот же ресурс.</p>
+<div class="greedy-definition"><span>Разбиение интервалов</span><p>Нужно назначить каждый интервал в аудиторию так, чтобы пересекающиеся интервалы находились в разных аудиториях, и минимизировать общее число аудиторий.</p></div>
+<div class="greedy-caution"><strong>Не путайте с Interval Scheduling.</strong> Там мы максимизировали число оставленных интервалов. Здесь все интервалы обязательны, а минимизируется число параллельных ресурсов.</div>
 </section>
-<section class="lecture-section" id="coming-soon">
-<div class="coming-soon-panel">
-<span class="coming-soon-kicker">В разработке</span>
-<h2>Страница скоро будет заполнена</h2>
-<p>Здесь будем обрабатывать интервалы по времени начала и каждый раз переиспользовать ресурс, который освободится раньше всех. Очередь с приоритетом даст эффективную реализацию, а максимальное число одновременно активных интервалов — нижнюю границу на ответ.</p>
-</div>
-<div class="placeholder-navigation">
-<a href="interval-scheduling-ru.html">← Выбор непересекающихся интервалов</a>
-<a href="minimizing-lateness-ru.html">Минимизация максимального опоздания →</a>
+
+<section class="lecture-section" id="depth">
+<h2>Неизбежная нижняя граница: depth</h2>
+<p class="lead">Если в некоторый момент одновременно активны <span class="math">d</span> интервалов, они обязаны занимать <span class="math">d</span> разных аудиторий. Поэтому никакой алгоритм не сможет использовать меньше, чем максимальное число одновременно пересекающихся интервалов.</p>
+<div class="depth-illustration">
+<div class="depth-card"><h3>Depth</h3><div class="depth-number">3</div><p>В нашем примере A, B и C пересекаются около момента 2. Значит, нужны как минимум 3 аудитории.</p></div>
+<div class="depth-card"><h3>Что достаточно доказать</h3><p>Если жадный алгоритм никогда не использует больше аудиторий, чем depth, он оптимален: он достигает нижней границы, обязательной для любого расписания.</p></div>
 </div>
 </section>
-</main>
-<footer class="lecture-footer">
-<div>Гайд по алгоритмам · presented by Аллан</div>
-<div>© 2026 Allan Allemand</div>
-</footer>
-<script src="../assets/js/language-switch.js"></script>
-</body>
-</html>
+
+<section class="lecture-section" id="algorithm">
+<h2>Жадное правило</h2>
+<p class="lead">Обрабатываем интервалы по возрастанию времени начала. Для каждого нового интервала пытаемся переиспользовать уже свободную аудиторию. Лучше всего смотреть на аудиторию, текущая встреча в которой заканчивается раньше всех.</p>
+<div class="step-flow">
+<article class="step-item"><div class="step-number">1</div><div><h3>Сортируем по началу</h3><p>Когда рассматриваем интервал, все более ранние по началу уже распределены.</p></div></article>
+<article class="step-item"><div class="step-number">2</div><div><h3>Берём самое раннее освобождение</h3><p>Min-heap позволяет мгновенно найти аудиторию, которая освободится первой.</p></div></article>
+<article class="step-item"><div class="step-number">3</div><div><h3>Переиспользуем, если можно</h3><p>Если эта аудитория освобождается не позже начала нового интервала, назначаем его туда.</p></div></article>
+<article class="step-item"><div class="step-number">4</div><div><h3>Иначе открываем новую</h3><p>Если даже самая ранняя аудитория ещё занята, значит заняты все существующие.</p></div></article>
+</div>
+<div class="visualizer room-demo">
+<div class="visualizer-head"><div><h3>Распределим интервалы по аудиториям</h3><p>Оранжевым показан только что добавленный интервал. Зелёные уже закреплены.</p></div><div class="step-nav-controls"><button class="previous-step" data-action="previous" type="button">← Назад</button><button class="primary-step" data-action="next" type="button">Дальше →</button></div></div>
+<div class="room-board" data-role="rooms"></div><div class="step-caption"></div>
+<div class="greedy-job-result">Использовано аудиторий: <strong data-role="count">0</strong></div>
+<div class="secondary-controls"><button data-action="reset" type="button">Сбросить</button></div>
+</div>
+</section>
+
+<section class="lecture-section" id="proof">
+<h2>Почему алгоритм оптимален</h2>
+<p class="lead">Ключевой момент — когда алгоритм вынужден открыть новую аудиторию для интервала <span class="math">j</span>, начинающегося в <span class="math">sⱼ</span>.</p>
+<div class="proof-checklist">
+<div class="proof-check"><span>1</span><p>Аудитория с самым ранним временем освобождения всё ещё занята после <span class="math">sⱼ</span>.</p></div>
+<div class="proof-check"><span>2</span><p>Значит, в каждой существующей аудитории есть интервал, пересекающийся с <span class="math">j</span> в момент <span class="math">sⱼ</span>.</p></div>
+<div class="proof-check"><span>3</span><p>Если уже было <span class="math">d</span> аудиторий, то одновременно пересекаются <span class="math">d+1</span> интервалов: по одному в каждой аудитории плюс <span class="math">j</span>.</p></div>
+<div class="proof-check"><span>4</span><p>Следовательно, depth не меньше <span class="math">d+1</span>. Любое расписание требует столько же аудиторий. Новая аудитория неизбежна.</p></div>
+</div>
+<div class="proof-goal"><h3>Оптимальность</h3><p>Каждая новая аудитория открывается только тогда, когда её наличие вынуждено одновременным пересечением. Поэтому число аудиторий у greedy равно depth, и лучше сделать невозможно.</p></div>
+</section>
+
+<section class="lecture-section" id="implementation">
+<h2>Python и очередь с приоритетом</h2>
+<p class="lead">В куче храним пары <code>(finish_time, room_id)</code>. В вершине всегда находится аудитория, которая освободится раньше всех.</p>
+<div class="code-explainer">
+<div class="annotated-code">
+<div class="code-row"><span class="line-no">1</span><code>import heapq</code></div>
+<div class="code-row"><span class="line-no">2</span><code></code></div>
+<div class="code-row"><span class="line-no">3</span><code>def partition_intervals(intervals):</code></div>
+<div class="code-row marked"><span class="line-no">4</span><code>    intervals = sorted(intervals)</code></div>
+<div class="code-row"><span class="line-no">5</span><code>    heap = []</code></div>
+<div class="code-row"><span class="line-no">6</span><code>    room_count = 0</code></div>
+<div class="code-row marked"><span class="line-no">7</span><code>    for start, finish in intervals:</code></div>
+<div class="code-row marked"><span class="line-no">8</span><code>        if heap and heap[0][0] <= start:</code></div>
+<div class="code-row"><span class="line-no">9</span><code>            _, room = heapq.heappop(heap)</code></div>
+<div class="code-row marked"><span class="line-no">10</span><code>        else:</code></div>
+<div class="code-row"><span class="line-no">11</span><code>            room = room_count</code></div>
+<div class="code-row"><span class="line-no">12</span><code>            room_count += 1</code></div>
+<div class="code-row marked"><span class="line-no">13</span><code>        heapq.heappush(heap, (finish, room))</code></div>
+<div class="code-row"><span class="line-no">14</span><code>    return room_count</code></div>
+</div>
+<div class="code-notes"><h3>Почему работает heap</h3>
+<div class="code-note-item"><span>4</span><p>Интервалы идут по времени начала.</p></div>
+<div class="code-note-item wide-note"><span>8–9</span><p>Если самая ранняя аудитория свободна, переиспользуем её. Для корректности подошла бы любая свободная аудитория, но heap делает проверку быстрой.</p></div>
+<div class="code-note-item wide-note"><span>10–13</span><p>Если минимальное время окончания всё ещё позже старта нового интервала, заняты все аудитории и нужна новая.</p></div>
+</div></div>
+<div class="complexity-strip"><div><span>Сортировка</span><b>O(n log n)</b><small>по началу</small></div><div><span>Операция heap</span><b>O(log n)</b><small>на интервал</small></div><div><span>Итого</span><b>O(n log n)</b><small>все интервалы</small></div><div><span>Размер heap</span><b>O(d)</b><small>d = аудитории</small></div></div>
+</section>
+
+<section class="lecture-section" id="comparison">
+<h2>Scheduling и Partitioning</h2>
+<div class="table-wrap"><table><thead><tr><th>Вопрос</th><th>Interval Scheduling</th><th>Interval Partitioning</th></tr></thead><tbody>
+<tr><td>Можно выбрасывать интервалы?</td><td>Да</td><td>Нет</td></tr>
+<tr><td>Цель</td><td>Максимизировать число выбранных</td><td>Минимизировать число аудиторий</td></tr>
+<tr><td>Сортировка</td><td>По окончанию</td><td>По началу</td></tr>
+<tr><td>Главная структура данных</td><td>Кроме сортировки не нужна</td><td>Min-heap времён освобождения</td></tr>
+<tr><td>Идея доказательства</td><td>Обменный аргумент</td><td>Нижняя граница через depth</td></tr>
+</tbody></table></div>
+</section>
+
+<section class="lecture-section" id="exercises">
+<h2>Задачи</h2>
+<div class="exercise-list">
+<article class="exercise"><div class="exercise-num">1</div><div><h3>Depth</h3><p>Если в 10:30 одновременно пересекаются пять встреч, какую нижнюю границу это даёт на число аудиторий?</p><button class="reveal" data-reveal="ip-ru-1" type="button">Показать ответ</button><div class="answer-box" hidden id="ip-ru-1">Нужно как минимум 5 аудиторий, потому что никакие две пересекающиеся встречи не могут находиться в одной аудитории.</div></div></article>
+<article class="exercise"><div class="exercise-num">2</div><div><h3>Почему самая ранняя аудитория?</h3><p>Если аудитория с самым ранним временем освобождения ещё занята, почему мы знаем, что свободных аудиторий вообще нет?</p><button class="reveal" data-reveal="ip-ru-2" type="button">Показать ответ</button><div class="answer-box" hidden id="ip-ru-2">Её время окончания минимально среди всех аудиторий. Если даже этот минимум позже начала нового интервала, все остальные заканчиваются ещё позже.</div></div></article>
+<article class="exercise"><div class="exercise-num">3</div><div><h3>Сложность</h3><p>Почему не искать свободную аудиторию простым линейным проходом?</p><button class="reveal" data-reveal="ip-ru-3" type="button">Показать ответ</button><div class="answer-box" hidden id="ip-ru-3">Это может занимать O(n) на каждый интервал и O(n²) суммарно. Min-heap находит и обновляет самое раннее окончание за O(log n).</div></div></article>
+</div>
+<div class="next-part"><h3>Дальше: минимизация максимального опоздания</h3><p>В следующей задаче будет одна машина, дедлайны и новое жадное правило — самый ранний дедлайн сначала.</p><a class="next-part-link" href="minimizing-lateness-ru.html">Минимизация максимального опоздания →</a></div>
+</section></main>
+<footer class="lecture-footer"><div>Гайд по алгоритмам · presented by Аллан</div><div>© 2026 Allan Allemand</div></footer>
+<script src="../assets/js/lecture-core.js"></script><script>
+(() => {
+  "use strict";
+  const intervals=[
+    {name:"A",start:0,finish:4},
+    {name:"B",start:1,finish:3},
+    {name:"C",start:2,finish:7},
+    {name:"D",start:4,finish:6},
+    {name:"E",start:5,finish:9},
+    {name:"F",start:8,finish:10}
+  ];
+  const states=[{assignments:[],current:null,rooms:[]}];
+  const rooms=[];
+  const assignments=[];
+  intervals.forEach(it=>{
+    let roomIndex=-1;
+    let earliest=Infinity;
+    for(let r=0;r<rooms.length;r++){
+      if(rooms[r]<=it.start && rooms[r]<earliest){
+        earliest=rooms[r];
+        roomIndex=r;
+      }
+    }
+    let created=false;
+    if(roomIndex===-1){
+      roomIndex=rooms.length;
+      rooms.push(it.finish);
+      created=true;
+    }else{
+      rooms[roomIndex]=it.finish;
+    }
+    assignments.push({name:it.name,start:it.start,finish:it.finish,room:roomIndex,created:created});
+    states.push({assignments:assignments.slice(),current:it.name,rooms:rooms.slice(),created:created});
+  });
+  let index=0;
+  const root=document.querySelector(".room-demo");
+  if(!root) return;
+
+  function render(){
+    const state=states[index];
+    const ru=document.documentElement.lang.toLowerCase().startsWith("ru");
+    const board=root.querySelector("[data-role='rooms']");
+    board.replaceChildren();
+    const roomCount=Math.max(1,state.rooms.length);
+    for(let r=0;r<roomCount;r++){
+      const row=document.createElement("div");
+      row.className="room-row";
+      const label=document.createElement("div");
+      label.className="room-name";
+      label.textContent=(ru?"Комната ":"Room ")+(r+1);
+      const track=document.createElement("div");
+      track.className="room-track";
+      state.assignments.filter(a=>a.room===r).forEach(a=>{
+        const block=document.createElement("div");
+        block.className="room-block"+(a.name===state.current?" active":" done");
+        block.style.setProperty("--start",(a.start/10*100)+"%");
+        block.style.setProperty("--width",((a.finish-a.start)/10*100)+"%");
+        block.textContent=a.name+" "+a.start+"–"+a.finish;
+        track.appendChild(block);
+      });
+      row.append(label,track);
+      board.appendChild(row);
+    }
+    const caption=root.querySelector(".step-caption");
+    if(index===0){
+      caption.textContent=ru?"Интервалы отсортированы по времени начала. Начинаем без комнат.":"Intervals are sorted by start time. We begin with no rooms.";
+    }else{
+      const a=state.assignments[state.assignments.length-1];
+      caption.textContent=state.created
+        ? (ru?"Для "+a.name+" нет свободной комнаты — открываем комнату "+(a.room+1)+".":"No room is free for "+a.name+", so open Room "+(a.room+1)+".")
+        : (ru?"Для "+a.name+" переиспользуем комнату "+(a.room+1)+", которая освободилась раньше всех.":"Reuse Room "+(a.room+1)+" for "+a.name+"; it is the earliest room that is free.");
+    }
+    root.querySelector("[data-role='count']").textContent=state.rooms.length;
+    root.querySelector("[data-action='previous']").disabled=index===0;
+    root.querySelector("[data-action='next']").disabled=index===states.length-1;
+  }
+  root.addEventListener("click",e=>{
+    const b=e.target.closest("[data-action]");
+    if(!b) return;
+    if(b.dataset.action==="next") index=Math.min(index+1,states.length-1);
+    if(b.dataset.action==="previous") index=Math.max(index-1,0);
+    if(b.dataset.action==="reset") index=0;
+    render();
+  });
+  render();
+})();
+</script><script src="../assets/js/language-switch.js"></script></body></html>
