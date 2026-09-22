@@ -62,14 +62,24 @@
 
 <!-- grokking-pass-gvdp -->
 <section class="lecture-section" id="knapsack-ladder">
-<h2>Knapsack показывает весь спектр методов на одной задаче</h2>
-<p class="lead">Одну и ту же optimization problem можно решать на трёх уровнях. Если увидеть их подряд, граница между greedy и DP становится гораздо яснее.</p>
-<div class="knapsack-ladder">
-<article class="knapsack-rung"><div class="rung-no">1</div><h3>Перебрать все subsets</h3><p>Проверяем все комбинации и оставляем лучшую допустимую.</p><small>Exact, но экспоненциально: O(2ⁿ) subsets.</small></article>
-<article class="knapsack-rung"><div class="rung-no">2</div><h3>Сделать greedy-ставку</h3><p>Берём items в некотором локально привлекательном порядке. Это быстро, но для неделимых предметов rule может промахнуться мимо лучшей комбинации.</p><small>Быстро, но не автоматически exact.</small></article>
-<article class="knapsack-rung"><div class="rung-no">3</div><h3>Хранить ответы подзадач</h3><p>DP хранит best value для меньших capacities и переиспользует их, решая, добавлять ли очередной item.</p><small>Exact для целочисленных capacities; pseudo-polynomial по capacity.</small></article>
+<h2>Knapsack показывает весь спектр на одной задаче</h2>
+<p class="lead">Это особенно наглядное место, где видно: «быстрый локальный выбор» и «точная оптимизация» — разные цели.</p>
+<div class="mini-example-grid">
+<article class="mini-example bad"><h3>Естественная greedy-ошибка</h3><p>В классическом примере с вором выбор самого дорогого отдельного предмета даёт value 3000, тогда как другая пара стоит 3500. Первый локально привлекательный выбор блокирует лучшую комбинацию.</p></article>
+<article class="mini-example good"><h3>Что сохраняет DP</h3><p>Вместо commitment к одному packing DP хранит лучший value для нескольких меньших capacities. Состояние, которое сейчас выглядит хуже, может лучше соединиться с будущим item.</p></article>
 </div>
-<div class="predict-card"><span class="predict-kicker">Что изменилось между шагами 2 и 3?</span><h3>DP не выбрасывает альтернативные capacities слишком рано.</h3><p>Greedy сжимает будущее в один путь. Knapsack требует нескольких partial solutions: локально более слабое состояние может лучше соединиться с последующими items.</p></div>
+<div class="knapsack-ladder">
+<article class="knapsack-rung"><div class="rung-no">1</div><h3>Перебрать все subsets</h3><p>Проверить все комбинации и выбрать лучшую допустимую.</p><small>Exact, но экспоненциально: 2ⁿ subsets.</small></article>
+<article class="knapsack-rung"><div class="rung-no">2</div><h3>Сделать greedy guess</h3><p>Идти по локально привлекательному порядку и не пересматривать решения.</p><small>Быстро, но не exact для 0/1 Knapsack.</small></article>
+<article class="knapsack-rung"><div class="rung-no">3</div><h3>Строить из sub-knapsacks</h3><p>Для каждой меньшей capacity хранить лучший найденный value и переиспользовать его при добавлении нового item.</p><small>Exact для integer capacities; pseudo-polynomial по capacity.</small></article>
+</div>
+<div class="table-wrap state-table"><table><thead><tr><th>Capacity</th><th>Зачем её хранить?</th></tr></thead><tbody>
+<tr><td>1</td><td>Будущий item веса 3 может соединиться с лучшим 1-unit solution.</td></tr>
+<tr><td>2</td><td>Сейчас это не итоговый optimum, но это другой budget для будущих комбинаций.</td></tr>
+<tr><td>3</td><td>Новый item веса 1 может превратить это состояние в лучший ответ для capacity 4.</td></tr>
+<tr><td>4</td><td>Финальная цель строится из меньших ответов.</td></tr>
+</tbody></table></div>
+<div class="predict-card"><span class="predict-kicker">Настоящая разница</span><h3>Greedy выбрасывает альтернативные будущие; DP хранит те, которые ещё могут понадобиться.</h3><p>Именно этот структурный вопрос полезно задавать до выбора техники.</p></div>
 </section>
 
 <section class="lecture-section" id="weighted">
