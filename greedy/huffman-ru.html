@@ -113,13 +113,14 @@
 
 <!-- book-synthesis-huffman -->
 <section class="lecture-section" id="merge">
-<h2>Та же greedy-структура: оптимальное слияние файлов</h2>
-<p class="lead">Правило Хаффмана «объединять два минимальных веса» работает не только для символов. Тот же priority-queue pattern минимизирует суммарную работу при последовательном слиянии файлов, если стоимость merge равна сумме размеров.</p>
+<h2>Та же greedy-структура: optimal file merging</h2>
+<p class="lead">Rule Huffman «объединяй два минимальных веса» решает и optimal merge pattern: merge двух files стоит сумму их sizes, поэтому ранние merge choices оплачиваются снова на следующих уровнях.</p>
 <div class="two-column-block">
-<div class="text-panel"><h3>Плохой порядок</h3><p>Размеры файлов: 4, 50, 5, 6. Если каждый раз объединять текущий результат со следующим в этом порядке, стоимости равны 54, затем 59, затем 65.</p><div class="formula-line">54 + 59 + 65 = 178</div></div>
-<div class="proof-panel"><h3>Сначала два минимальных</h3><p>Объединяем 4+5=9, затем 6+9=15, затем 15+50=65.</p><div class="formula-line">9 + 15 + 65 = 89</div></div>
+<div class="text-panel"><h3>Contiguous merge order</h3><p>Для file sizes <span class="math">{10,5,100,50,20,15}</span> каждый раз merge текущий результат со следующим file. Получаем costs</p><div class="formula-line">15 + 115 + 165 + 185 + 200 = 680</div><p>Feasible, но далеко от optimum.</p></div>
+<div class="proof-panel"><h3>Two-smallest-first</h3><p>Используем min-priority queue и всегда merge два минимальных текущих files:</p><div class="formula-line">15 + 30 + 50 + 100 + 200 = 395</div><p>Total work резко уменьшается.</p></div>
 </div>
-<div class="bridge-note"><h3>Почему это Huffman под другим именем</h3><p>Каждый раз после merge вес объекта снова оплачивается уровнем выше. Поэтому маленькие веса выгодно отправлять глубже в merge-tree. Для частот символов Huffman делает ровно это.</p></div>
+<div class="bridge-note"><h3>Почему это Huffman в другой одежде</h3><p>Каждый leaf weight оплачивается один раз за каждый merge-level над ним. Значит total merge cost — это weighted external path length, тот же objective <span class="math">∑wᵢ·depthᵢ</span>, который минимизирует Huffman tree.</p></div>
+<div class="one-line"><strong>Один priority-queue skeleton, разные истории.</strong> Extract two minima → combine → reinsert sum → repeat.</div>
 </section>
 
 <section class="lecture-section" id="entropy">
