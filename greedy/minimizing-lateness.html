@@ -9,10 +9,10 @@
 <header class="topbar"><a class="brand" href="../"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name">Allan's Handbook of Algorithms</span></a>
 <nav aria-label="Primary navigation" class="topnav"><a href="./">Greedy overview</a><div aria-label="Language" class="language-switch"><span class="current">EN</span><span class="language-separator">·</span><a href="minimizing-lateness-ru.html">RU</a></div></nav></header>
 <aside aria-label="Section navigation" class="sidebar"><div class="sidebar-title">Chapter 9 · Section 6</div><a href="#problem">Problem</a><a href="#example">Example</a><a href="#same-looking">Same-looking schedule, new objective</a><a href="#spt">Another scheduling objective: SPT</a><a href="#model">Model the scheduling problem</a><a href="#scheduling-map">Scheduling is a family of models</a><a href="#algorithm">EDF algorithm</a><a href="#proof">Correctness</a><a href="#runtime">Choose once, then scan</a><a href="#implementation">Implementation</a><a href="#interview-recognition">Recognition checklist</a><a href="#boundaries">Model boundaries</a><a href="#exercises">Exercises</a></aside>
-<main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Chapter 9 · Section 6</div><h1>Minimizing Maximum Lateness</h1><p class="chapter-topics">On one machine, minimizing the worst lateness has a crisp greedy rule: do the earliest deadline first.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-lateness.svg"/></div></section>
+<main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Chapter 9 · Section 6</div><h1>Minimizing Maximum Lateness</h1><p class="chapter-topics">For a single machine with no release times, ordering jobs by nondecreasing deadline minimizes maximum lateness. This page states the model and proves the exchange argument.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-lateness.svg"/></div></section>
 <section class="lecture-section" id="problem">
-<h2>Put the most urgent deadline first</h2>
-<p class="lead">Every job has a processing time and a deadline. We must run all jobs on one machine. The objective is not to finish everything as early as possible; it is to make the worst deadline miss as small as possible.</p><div class="concept-strip">
+<h2>Problem statement</h2>
+<p class="lead">Each job has a processing time and a deadline, all jobs run on one machine, and the objective is to minimize the maximum lateness.</p><div class="concept-strip">
 <article class="concept-cell rule"><span>Rule</span><b>Earliest deadline first</b><p>Sort by deadline and never idle while work is available.</p></article>
 <article class="concept-cell proof"><span>Why it works</span><b>Swap every deadline inversion</b><p>Putting the earlier deadline first cannot increase the worst lateness.</p></article>
 <article class="concept-cell cost"><span>Cost</span><b>O(n log n)</b><p>The sort dominates the final linear scan.</p></article>
@@ -22,8 +22,8 @@
 </section>
 
 <section class="lecture-section" id="example">
-<h2>Example: four jobs, four deadlines</h2>
-<p class="lead">Consider four jobs. Processing times and deadlines are shown below.</p>
+<h2>Example</h2>
+<p class="lead">The table below gives four jobs with processing times and deadlines. Their order determines the completion time and lateness of each job.</p>
 <div class="table-wrap"><table class="lateness-table"><thead><tr><th>Job</th><th>Processing time</th><th>Deadline</th><th>Slack d−p</th><th>Completion in EDF order</th><th>Lateness</th></tr></thead><tbody>
 <tr><td>A</td><td>3</td><td>4</td><td>1</td><td>3</td><td>−1</td></tr>
 <tr><td>B</td><td>2</td><td>6</td><td>4</td><td>5</td><td>−1</td></tr>
@@ -43,8 +43,8 @@
 <!-- book-synthesis-lateness -->
 <!-- grokking-pass-lateness -->
 <section class="lecture-section" id="same-looking">
-<h2>Same schedule, different question, different greedy key</h2>
-<p class="lead">A useful greedy habit is to separate the picture of the input from the objective. Intervals and jobs can look almost identical on a timeline while asking for a completely different optimization.</p>
+<h2>The objective determines the ordering rule</h2>
+<p class="lead">Scheduling inputs can look identical while representing different optimization goals. Maximum lateness, total waiting time, and interval selection require different orderings.</p>
 <div class="objective-swap">
 <article><h3>Interval Scheduling</h3><p>Some jobs may be rejected. We maximize how many survive, so finishing early protects future compatibility.</p></article>
 <div class="objective-arrow">→</div>
@@ -56,8 +56,8 @@
 
 <!-- karumanchi-round-lateness -->
 <section class="lecture-section" id="spt">
-<h2>Another correct greedy rule lives next door: Shortest Processing Time first</h2>
-<p class="lead">Karumanchi’s tape and customer-service examples are a useful contrast. If the objective is total waiting time rather than maximum lateness, sorting by processing time—not deadline—is the natural greedy rule.</p>
+<h2>Shortest Processing Time for total waiting time</h2>
+<p class="lead">If the objective is the sum of waiting or completion times, sorting by processing time is the relevant greedy rule. This is a different objective from maximum lateness.</p>
 <div class="objective-swap">
 <article><h3>Minimize total waiting time</h3><p>Serve shorter jobs first. A long job placed early delays every job behind it, so swapping an inversion with <span class="math">p_i&gt;p_j</span> reduces the waiting time contributed by that pair.</p></article>
 <div class="objective-arrow">≠</div>
@@ -71,8 +71,8 @@
 </section>
 
 <section class="lecture-section" id="model">
-<h2>Scheduling notation makes the assumptions visible</h2>
-<p class="lead">Scheduling rules are unusually sensitive to tiny changes in the model. A useful habit is to name the machine environment, extra constraints, and objective before choosing an ordering.</p>
+<h2>Scheduling model and notation</h2>
+<p class="lead">Before choosing an ordering rule, state the machine environment, release or precedence constraints, whether preemption is allowed, and the objective being minimized.</p>
 <div class="model-card">
 <div class="model-notation">1 || L<sub>max</sub></div>
 <p><strong>1</strong> means one machine; the empty middle field means all jobs are available at time 0 with no extra processing constraints; <strong>L<sub>max</sub></strong> means minimize the maximum lateness. For exactly this model, ordering by nondecreasing deadline is optimal.</p>
@@ -86,8 +86,8 @@
 
 <!-- skiena-round-lateness -->
 <section class="lecture-section" id="scheduling-map">
-<h2>“Scheduling” is a family of problems, not one algorithm</h2>
-<p class="lead">The word scheduling describes the application domain. The mathematical model comes from the constraints and objective, and different models can lead to completely different algorithmic tools.</p>
+<h2>Related scheduling models</h2>
+<p class="lead">Different scheduling constraints lead to different algorithmic problems. Precedence constraints suggest topological ordering, worker compatibility suggests matching, and pairwise conflicts can lead to coloring.</p>
 <div class="sort-key-grid">
 <article><code>precedence constraints</code><h3>Topological ordering</h3><p>If edges mean “task u must finish before task v begins”, the first question is whether the constraints form a DAG and which topological orders are feasible.</p></article>
 <article><code>jobs ↔ qualified workers</code><h3>Matching</h3><p>If the issue is assigning jobs to people who can perform them, the structure is bipartite compatibility rather than a timeline ordering rule.</p></article>
@@ -98,8 +98,8 @@
 </section>
 
 <section class="lecture-section" id="algorithm">
-<h2>Algorithm: Earliest Deadline First</h2>
-<p class="lead">Sort jobs by nondecreasing deadline and run them back-to-back. This rule is usually called Earliest Deadline First (EDF) or Earliest Due Date (EDD).</p>
+<h2>Earliest Deadline First</h2>
+<p class="lead">Sort jobs by nondecreasing deadline and run them consecutively. For this model, the resulting schedule minimizes maximum lateness.</p>
 <div class="step-flow">
 <article class="step-item"><div class="step-number">1</div><div><h3>Sort by deadline</h3><p>Arrange jobs so that <span class="math">d₁ ≤ d₂ ≤ ··· ≤ dₙ</span>.</p></div></article>
 <article class="step-item"><div class="step-number">2</div><div><h3>Process without idle time</h3><p>Start the next job immediately when the current one finishes.</p></div></article>
@@ -110,8 +110,8 @@
 </section>
 
 <section class="lecture-section" id="proof">
-<h2>Why sorting by deadline is safe</h2>
-<p class="lead">If two consecutive jobs appear in the wrong deadline order—<span class="math">i</span> before <span class="math">j</span> but <span class="math">dᵢ &gt; dⱼ</span>—swap them. The pair finishes at the same time as before, while the earlier-deadline job finishes sooner.</p>
+<h2>Exchange proof</h2>
+<p class="lead">If two consecutive jobs are ordered i then j with d_i > d_j, swapping them does not increase the maximum lateness of the pair. Repeating such swaps produces deadline order.</p>
 <div class="swap-proof">
 <div class="swap-order"><span>Before</span><div class="swap-jobs"><div class="swap-job">i · later deadline</div><div class="swap-job">j · earlier deadline</div></div></div>
 <div class="swap-arrow">→</div>
@@ -127,8 +127,8 @@
 
 <!-- common-sense-round-lateness -->
 <section class="lecture-section" id="runtime">
-<h2>Turn repeated choice into one preprocessing step</h2>
-<p class="lead">The rule “run the remaining job with the earliest deadline” could be implemented by searching from scratch after every completion. That is correct—but unnecessarily slow.</p>
+<h2>Running time</h2>
+<p class="lead">Sorting once by deadline is sufficient. The schedule can then be produced in one linear scan, for total time O(n log n).</p>
 <div class="runtime-ladder">
 <article class="runtime-step"><span>Repeated search</span><h3>Find the minimum deadline again and again</h3><p>If we scan all remaining jobs for the next deadline at every step, selection alone can take <span class="math">O(n²)</span>.</p></article>
 <article class="runtime-step best"><span>Sort once</span><h3>Put deadlines in the required order up front</h3><p>Sorting costs <span class="math">O(n log n)</span>. After that, completion times and lateness are computed in one linear scan.</p></article>
@@ -160,8 +160,8 @@
 
 <!-- coding-patterns-round-lateness -->
 <section class="lecture-section" id="interview-recognition">
-<h2>Interview recognition: verify the model before reusing EDF</h2>
-<p class="lead">Greedy interview mistakes often come from recognizing a familiar story too early. Before saying “sort by deadline”, confirm that the exact assumptions behind the exchange argument are still present.</p>
+<h2>Check the model before applying EDF</h2>
+<p class="lead">The exchange proof depends on the exact scheduling assumptions. Release times, precedence constraints, preemption, or a different objective can invalidate the rule.</p>
 <div class="recognition-grid">
 <article class="recognition-card"><span class="signal">Good match</span><h3>One machine, all jobs ready now</h3><p>Every job must be processed exactly once, there are no release times, and the objective is maximum lateness. This is the clean <span class="math">1||L_{max}</span> setting.</p></article>
 <article class="recognition-card"><span class="signal">Objective changed</span><h3>Average completion or waiting time</h3><p>The same list of jobs may need a different ordering rule. Do not keep EDF just because deadlines still appear in the input.</p></article>
@@ -171,8 +171,8 @@
 </section>
 
 <section class="lecture-section" id="boundaries">
-<h2>Change the model, change the algorithm</h2>
-<p class="lead">EDF is optimal for this exact objective and assumptions. Add release times or change what is being minimized, and the proof no longer applies automatically.</p>
+<h2>Model variants</h2>
+<p class="lead">Earliest Deadline First is optimal for the single-machine maximum-lateness model described here. Changes to the constraints or objective require a new analysis.</p>
 <div class="decision-grid">
 <article class="decision-card greedy-signal"><h3>Release times make the problem fundamentally harder</h3><p>With release dates, <span class="math">1|r_j|L_max</span> is strongly NP-hard in general. This is not a matter of finding a slightly smarter deadline sort.</p></article>
 <article class="decision-card greedy-signal"><h3>Different objective</h3><p>Minimizing total completion time, total weighted tardiness, or the number of late jobs are different scheduling problems with different optimal rules or harder algorithms.</p></article>
