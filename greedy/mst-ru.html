@@ -8,7 +8,7 @@
 <body class="lecture-page"><div aria-hidden="true" class="progress-track"><div class="progress-bar" id="reading-progress"></div></div>
 <header class="topbar"><a class="brand" href="../index-ru.html"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name ru-brand-name"><span class="ru-brand-lines"><span>Гайд по алгоритмам</span><span class="ru-brand-presented">presented by Аллан</span></span></span></a>
 <nav aria-label="Основная навигация" class="topnav"><a href="index-ru.html">Жадные алгоритмы</a><div aria-label="Язык" class="language-switch"><a href="mst.html">EN</a><span class="language-separator">·</span><span class="current">RU</span></div></nav></header>
-<aside aria-label="Навигация по разделу" class="sidebar"><div class="sidebar-title">Глава 9 · Раздел 9</div><a href="#problem">Постановка</a><a href="#model-story">Сначала смоделируйте сюжет</a><a href="#network-vs-route">Network и route</a><a href="#cut">Свойство разреза</a><a href="#first-bad">Доказательство через первую ошибку</a><a href="#kruskal">Краскал</a><a href="#prim">Прим</a><a href="#boruvka">Борувка</a><a href="#data-structure">Один proof, разные implementations</a><a href="#implementation">Реализации</a><a href="#complexity">Сложность</a><a href="#applications">Применения и варианты</a><a href="#properties">Полезные факты</a><a href="#exercises">Задачи</a></aside>
+<aside aria-label="Навигация по разделу" class="sidebar"><div class="sidebar-title">Глава 9 · Раздел 9</div><a href="#problem">Постановка</a><a href="#model-story">Сначала смоделируйте сюжет</a><a href="#network-vs-route">Network и route</a><a href="#cut">Свойство разреза</a><a href="#first-bad">Доказательство через первую ошибку</a><a href="#kruskal">Краскал</a><a href="#prim">Прим</a><a href="#boruvka">Борувка</a><a href="#data-structure">Один proof, разные implementations</a><a href="#dsu">Kruskal + Union-Find</a><a href="#implementation">Реализации</a><a href="#complexity">Сложность</a><a href="#applications">Применения и варианты</a><a href="#properties">Полезные факты</a><a href="#exercises">Задачи</a></aside>
 <main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Глава 9 · Раздел 9</div><h1>Минимальные остовные деревья</h1><p class="chapter-topics">Нужно соединить все вершины с минимальным суммарным весом. Краскал и Прим выглядят по-разному, но оба основаны на свойстве разреза.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-mst.svg"/></div></section>
 <section class="lecture-section" id="problem">
 <h2>Соединить всё как можно дешевле</h2>
@@ -118,6 +118,26 @@
 <article class="good"><h3>Weak ordering достаточно</h3><p>Heap держит minimum доступным и позволяет обновления без поддержки глобально отсортированного списка. Именно такой operation profile нужен Prim.</p></article>
 </div>
 <div class="one-line"><strong>У algorithm design два слоя.</strong> Сначала докажите, какой local edge безопасен; затем выберите representation, которое быстро этот edge показывает.</div>
+</section>
+
+<!-- coding-patterns-round-mst -->
+<section class="lecture-section" id="dsu">
+<h2>Interview companion для Kruskal: Union-Find</h2>
+<p class="lead">Greedy-rule говорит, какое edge рассматривать следующим. Остаётся implementation-вопрос про connectivity: находятся ли endpoints уже в одном component?</p>
+<div class="recognition-grid">
+<article class="recognition-card"><span class="signal">find(x)</span><h3>В каком component находится x?</h3><p>У каждого component есть representative. Если <code>find(u) == find(v)</code>, добавление edge <span class="math">(u,v)</span> создаст cycle, поэтому Kruskal его пропускает.</p></article>
+<article class="recognition-card"><span class="signal">union(x,y)</span><h3>Объединить два components</h3><p>Если representatives различаются, edge допустимо относительно acyclicity. Принимаем его и делаем union, чтобы будущие cycle checks видели новый component.</p></article>
+<article class="recognition-card"><span class="signal">Optimization</span><h3>Union by size + path compression</h3><p>Подвешиваем меньшее tree к большему representative и сжимаем parent chains во время <code>find</code>. Operations становятся практически constant amortized time.</p></article>
+</div>
+<div class="code-explainer">
+<div class="annotated-code">
+<div class="code-row"><span class="line-no">1</span><code>for w, u, v in sorted(edges):</code></div>
+<div class="code-row marked"><span class="line-no">2</span><code>    if find(u) != find(v):</code></div>
+<div class="code-row"><span class="line-no">3</span><code>        take(u, v, w)</code></div>
+<div class="code-row"><span class="line-no">4</span><code>        union(u, v)</code></div>
+</div>
+<div class="code-notes"><h3>Разделяйте две идеи</h3><p>Sorting задаёт greedy priority rule. Union-Find не доказывает оптимальность; он быстро поддерживает feasibility constraint «не создавать cycles».</p></div>
+</div>
 </section>
 
 <section class="lecture-section" id="implementation">
