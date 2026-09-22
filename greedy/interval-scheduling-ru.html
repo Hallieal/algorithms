@@ -8,7 +8,7 @@
 <body class="lecture-page"><div aria-hidden="true" class="progress-track"><div class="progress-bar" id="reading-progress"></div></div>
 <header class="topbar"><a class="brand" href="../index-ru.html"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name ru-brand-name"><span class="ru-brand-lines"><span>Гайд по алгоритмам</span><span class="ru-brand-presented">presented by Аллан</span></span></span></a>
 <nav aria-label="Основная навигация" class="topnav"><a href="index-ru.html">Жадные алгоритмы</a><div aria-label="Язык" class="language-switch"><a href="interval-scheduling.html">EN</a><span class="language-separator">·</span><span class="current">RU</span></div></nav></header>
-<aside aria-label="Навигация по разделу" class="sidebar"><div class="sidebar-title">Глава 9 · Раздел 4</div><a href="#problem">Постановка</a><a href="#choices">Выбор правила</a><a href="#algorithm">Алгоритм</a><a href="#proof">Корректность</a><a href="#implementation">Реализация</a><a href="#variants">Варианты задачи</a><a href="#exercises">Задачи</a></aside>
+<aside aria-label="Навигация по разделу" class="sidebar"><div class="sidebar-title">Глава 9 · Раздел 4</div><a href="#problem">Постановка</a><a href="#choices">Выбор правила</a><a href="#frontier">Почему earliest finish доминирует</a><a href="#algorithm">Алгоритм</a><a href="#proof">Корректность</a><a href="#implementation">Реализация</a><a href="#recognition">Как распознать задачу</a><a href="#variants">Варианты задачи</a><a href="#exercises">Задачи</a></aside>
 <main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Глава 9 · Раздел 4</div><h1>Выбор непересекающихся интервалов</h1><p class="chapter-topics">Нужно выбрать как можно больше непересекающихся интервалов. Правильный жадный ход — освободить время как можно раньше.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-interval-scheduling.svg"/></div></section>
 <section class="lecture-section" id="problem">
 <h2>Выбрать как можно больше интервалов</h2>
@@ -38,6 +38,17 @@
 <article class="greedy-rule-option good"><h3>Самое раннее окончание</h3><p>Оставляет максимально возможное количество времени для будущих интервалов.</p></article>
 </div>
 <div class="greedy-caution"><strong>Контрпример для самого раннего начала.</strong> Возьмём [0,10), [1,2), [2,3) и [3,4). Правило раннего начала выберет [0,10) и получит один интервал, хотя три остальных совместимы друг с другом. Добавляя короткие интервалы, разрыв можно сделать сколь угодно большим.</div>
+</section>
+
+<!-- book-synthesis-is -->
+<section class="lecture-section" id="frontier">
+<h2>Earliest finish — это правило доминирования</h2>
+<p class="lead">Правильное greedy-rule — не «возьми что-нибудь короткое», а «сдвинь занятую границу как можно меньше». Среди всех следующих кандидатов самый ранний finish оставляет остаточную задачу, содержащую все варианты, которые оставил бы более поздний finish, а иногда и дополнительные.</p>
+<div class="inline-contrast">
+<div class="no"><h3>Duration задаёт неправильный вопрос</h3><p>Короткий интервал в неудачном месте может заблокировать два полезных. Длина описывает сам выбранный объект, а не будущее после него.</p></div>
+<div class="yes"><h3>Finish time описывает остаточную задачу</h3><p>Если <span class="math">f(g) ≤ f(o)</span>, то любой интервал, доступный после <span class="math">o</span>, доступен и после <span class="math">g</span>. Это ровно то dominance-утверждение, которое нужно доказательству.</p></div>
+</div>
+<div class="one-line"><strong>Урок дизайна.</strong> Ищите правило, которое непосредственно улучшает форму оставшейся задачи, а не просто делает выбранный объект локально привлекательным.</div>
 </section>
 
 <section class="lecture-section" id="algorithm">
@@ -86,6 +97,17 @@
 <div class="code-note-item wide-note"><span>5–8</span><p>После сортировки достаточно одного прохода. Принимаем ровно те интервалы, которые совместимы с последним выбранным.</p></div>
 </div></div>
 <div class="complexity-strip"><div><span>Сортировка</span><b>O(n log n)</b><small>по окончанию</small></div><div><span>Проход</span><b>O(n)</b><small>один раз</small></div><div><span>Итого</span><b>O(n log n)</b><small>доминирует сортировка</small></div><div><span>Доп. память</span><b>O(n)</b><small>для ответа</small></div></div>
+</section>
+
+<section class="lecture-section" id="recognition">
+<h2>Как распознать Interval Scheduling</h2>
+<div class="proof-checklist">
+<div class="proof-check"><span>1</span><p><strong>Цель:</strong> максимизировать <em>число</em> выбранных интервалов, а не суммарную прибыль.</p></div>
+<div class="proof-check"><span>2</span><p><strong>Ограничение:</strong> выбранные интервалы попарно не пересекаются на одном ресурсе.</p></div>
+<div class="proof-check"><span>3</span><p><strong>Safe frontier:</strong> после выбора для совместимости с будущим важен только finish.</p></div>
+<div class="proof-check"><span>4</span><p><strong>Rule:</strong> сортируем по окончанию и берём следующий совместимый интервал.</p></div>
+</div>
+<div class="practice-note"><h3>Типичная interview-ловушка</h3><p>Если «maximum number of intervals» заменили на «maximum total value», earliest finish больше нельзя переносить. Одно слово value превращает задачу в weighted interval scheduling с DP-state.</p></div>
 </section>
 
 <section class="lecture-section" id="variants">
