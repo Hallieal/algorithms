@@ -8,7 +8,7 @@
 <body class="lecture-page"><div aria-hidden="true" class="progress-track"><div class="progress-bar" id="reading-progress"></div></div>
 <header class="topbar"><a class="brand" href="../"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name">Allan's Handbook of Algorithms</span></a>
 <nav aria-label="Primary navigation" class="topnav"><a href="./">Greedy overview</a><div aria-label="Language" class="language-switch"><span class="current">EN</span><span class="language-separator">·</span><a href="minimizing-lateness-ru.html">RU</a></div></nav></header>
-<aside aria-label="Section navigation" class="sidebar"><div class="sidebar-title">Chapter 9 · Section 6</div><a href="#problem">Problem</a><a href="#example">Example</a><a href="#same-looking">Same-looking schedule, new objective</a><a href="#spt">Another scheduling objective: SPT</a><a href="#model">Model the scheduling problem</a><a href="#algorithm">EDF algorithm</a><a href="#proof">Correctness</a><a href="#runtime">Choose once, then scan</a><a href="#implementation">Implementation</a><a href="#interview-recognition">Recognition checklist</a><a href="#boundaries">Model boundaries</a><a href="#exercises">Exercises</a></aside>
+<aside aria-label="Section navigation" class="sidebar"><div class="sidebar-title">Chapter 9 · Section 6</div><a href="#problem">Problem</a><a href="#example">Example</a><a href="#same-looking">Same-looking schedule, new objective</a><a href="#spt">Another scheduling objective: SPT</a><a href="#model">Model the scheduling problem</a><a href="#scheduling-map">Scheduling is a family of models</a><a href="#algorithm">EDF algorithm</a><a href="#proof">Correctness</a><a href="#runtime">Choose once, then scan</a><a href="#implementation">Implementation</a><a href="#interview-recognition">Recognition checklist</a><a href="#boundaries">Model boundaries</a><a href="#exercises">Exercises</a></aside>
 <main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Chapter 9 · Section 6</div><h1>Minimizing Maximum Lateness</h1><p class="chapter-topics">On one machine, minimizing the worst lateness has a crisp greedy rule: do the earliest deadline first.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-lateness.svg"/></div></section>
 <section class="lecture-section" id="problem">
 <h2>Put the most urgent deadline first</h2>
@@ -82,6 +82,19 @@
 <article class="variant-card"><h3>Change job availability</h3><p>Adding release times changes the notation to <span class="math">1|r_j|L_max</span> and changes the computational problem itself. A rule proved for <span class="math">1||L_max</span> cannot simply be carried over.</p></article>
 </div>
 <div class="one-line"><strong>Model first, rule second.</strong> In scheduling, the same jobs can require entirely different algorithms when you change preemption, release times, machine count, or objective.</div>
+</section>
+
+<!-- skiena-round-lateness -->
+<section class="lecture-section" id="scheduling-map">
+<h2>“Scheduling” is a family of problems, not one algorithm</h2>
+<p class="lead">The word scheduling describes the application domain. The mathematical model comes from the constraints and objective, and different models can lead to completely different algorithmic tools.</p>
+<div class="sort-key-grid">
+<article><code>precedence constraints</code><h3>Topological ordering</h3><p>If edges mean “task u must finish before task v begins”, the first question is whether the constraints form a DAG and which topological orders are feasible.</p></article>
+<article><code>jobs ↔ qualified workers</code><h3>Matching</h3><p>If the issue is assigning jobs to people who can perform them, the structure is bipartite compatibility rather than a timeline ordering rule.</p></article>
+<article><code>pairwise conflicts</code><h3>Graph coloring</h3><p>If conflicting jobs cannot share a time slot, coloring captures the constraint. Interval structure may make special cases easier.</p></article>
+</div>
+<div class="candidate-elimination"><h3>Preemption can change the difficulty</h3><p>Whether a job may be interrupted, split across processors, or resumed later is not an implementation detail. Those freedoms can transform the underlying optimization problem, so they belong in the model before any greedy key is proposed.</p></div>
+<div class="one-line"><strong>Translate the story before sorting anything.</strong> EDF is a theorem for a particular scheduling model; it is not a generic response to seeing jobs and deadlines.</div>
 </section>
 
 <section class="lecture-section" id="algorithm">
