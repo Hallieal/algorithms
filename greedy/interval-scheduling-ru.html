@@ -74,7 +74,7 @@
 <h2>Доминирование остаточной задачи</h2>
 <p class="lead">После выбора interval допустимыми остаются только intervals, начинающиеся после его finish. Earliest finish сдвигает эту границу минимально.</p>
 <div class="inline-contrast">
-<div class="no"><h3>Duration задаёт неправильный вопрос</h3><p>Короткий интервал в неудачном месте может заблокировать два полезных. Длина описывает сам выбранный объект, а не будущее после него.</p></div>
+<div class="no"><h3>Почему duration недостаточно</h3><p>Короткий интервал в неудачном месте может заблокировать два полезных. Длина описывает сам выбранный объект, а не будущее после него.</p></div>
 <div class="yes"><h3>Finish time описывает остаточную задачу</h3><p>Если <span class="math">f(g) ≤ f(o)</span>, то любой интервал, доступный после <span class="math">o</span>, доступен и после <span class="math">g</span>. Это ровно то dominance-утверждение, которое нужно доказательству.</p></div>
 </div>
 <div class="one-line"><strong>Урок дизайна.</strong> Ищите правило, которое непосредственно улучшает форму оставшейся задачи, а не просто делает выбранный объект локально привлекательным.</div>
@@ -161,7 +161,7 @@
 <div class="proof-check"><span>3</span><p><strong>Safe frontier:</strong> после выбора для совместимости с будущим важен только finish.</p></div>
 <div class="proof-check"><span>4</span><p><strong>Rule:</strong> сортируем по окончанию и берём следующий совместимый интервал.</p></div>
 </div>
-<div class="practice-note"><h3>Типичная interview-ловушка</h3><p>Если «maximum number of intervals» заменили на «maximum total value», earliest finish больше нельзя переносить. Одно слово value превращает задачу в weighted interval scheduling с DP-state.</p></div>
+<div class="practice-note"><h3>Weighted variant</h3><p>Если «maximum number of intervals» заменили на «maximum total value», earliest finish больше нельзя переносить. Одно слово value превращает задачу в weighted interval scheduling с DP-state.</p></div>
 </section>
 
 <!-- skiena-round-interval -->
