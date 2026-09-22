@@ -99,7 +99,7 @@
 <div class="code-note-item wide-note"><span>9–11</span><p>Ignore stale heap entries whose stored distance is no longer current.</p></div>
 <div class="code-note-item wide-note"><span>12–16</span><p>Relax every outgoing edge. If a shorter path is found, update the label and push the new pair into the heap.</p></div>
 </div></div>
-<div class="complexity-strip"><div><span>Adjacency list</span><b>O(V+E)</b><small>graph storage</small></div><div><span>Heap operations</span><b>O(log V)</b><small>per useful update</small></div><div><span>Total</span><b>O((V+E) log V)</b><small>binary heap</small></div><div><span>Distances</span><b>O(V)</b><small>plus heap entries</small></div></div>
+<div class="complexity-strip"><div><span>Adjacency list</span><b>O(V+E)</b><small>graph storage</small></div><div><span>Heap operation</span><b>O(log E)</b><small>lazy heapq entries</small></div><div><span>Total</span><b>O((V+E) log E)</b><small>= O((V+E) log V) for simple graphs</small></div><div><span>Heap size</span><b>O(E)</b><small>stale entries may remain</small></div></div>
 </section>
 
 <section class="lecture-section" id="paths">
