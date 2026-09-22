@@ -1,57 +1,209 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1" name="viewport"/>
-<meta content="A first complete greedy algorithm: maximize the number of compatible intervals." name="description"/>
-<meta content="Interval Scheduling | Allan's Handbook of Algorithms" property="og:title"/>
-<meta content="A first complete greedy algorithm: maximize the number of compatible intervals." property="og:description"/>
-<meta content="article" property="og:type"/>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="Select the largest possible set of non-overlapping intervals by repeatedly taking the compatible interval that finishes first." name="description"/><meta content="Interval Scheduling | Allan's Handbook of Algorithms" property="og:title"/><meta content="Select the largest possible set of non-overlapping intervals by repeatedly taking the compatible interval that finishes first." property="og:description"/><meta content="article" property="og:type"/>
 <title>Interval Scheduling | Allan's Handbook of Algorithms</title>
-<link href="../assets/css/styles.css" rel="stylesheet"/>
-<link href="assets/greedy.css" rel="stylesheet"/>
-<link href="../assets/images/favicon-32.png" rel="icon" sizes="32x32" type="image/png"/>
-<link href="../assets/images/favicon.png" rel="icon" sizes="64x64" type="image/png"/>
-<link href="../assets/images/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180"/>
-<link href="interval-scheduling.html" hreflang="en" rel="alternate"/><link href="interval-scheduling-ru.html" hreflang="ru" rel="alternate"/>
-</head>
-<body class="lecture-page">
-<header class="topbar">
-<a class="brand" href="../"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name">Allan's Handbook of Algorithms</span></a>
-<nav aria-label="Primary navigation" class="topnav">
-<a href="./">Greedy overview</a>
-<div aria-label="Language" class="language-switch"><span class="current">EN</span><span class="language-separator">·</span><a href="interval-scheduling-ru.html">RU</a></div>
-</nav>
-</header>
-<aside aria-label="Section navigation" class="sidebar">
-<div class="sidebar-title">Chapter 9 · Section 4</div>
-<a href="#coming-soon">Coming soon</a>
-</aside>
-<main class="lecture">
-<section class="lecture-hero greedy-placeholder-hero">
-<div>
-<div class="chapter-label">Chapter 9 · Section 4</div>
-<h1>Interval Scheduling</h1>
-<p class="chapter-topics">A first complete greedy algorithm: maximize the number of compatible intervals.</p>
-</div>
-<div class="greedy-hero-icon"><img alt="" src="assets/greedy-interval-scheduling.svg"/></div>
-</section>
-<section class="lecture-section" id="coming-soon">
-<div class="coming-soon-panel">
-<span class="coming-soon-kicker">In development</span>
-<h2>This page will be filled soon</h2>
-<p>We will sort intervals by finishing time, repeatedly take the earliest-finishing compatible interval, and prove optimality with an exchange argument. This will be the chapter’s first full example of designing and proving a greedy algorithm.</p>
-</div>
-<div class="placeholder-navigation">
-<a href="greedy-vs-dp.html">← Greedy vs Dynamic Programming</a>
-<a href="interval-partitioning.html">Interval Partitioning →</a>
+<link href="../assets/css/styles.css" rel="stylesheet"/><link href="assets/greedy.css" rel="stylesheet"/>
+<link href="../assets/images/favicon-32.png" rel="icon" sizes="32x32" type="image/png"/><link href="../assets/images/favicon.png" rel="icon" sizes="64x64" type="image/png"/><link href="../assets/images/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180"/>
+<link href="interval-scheduling.html" hreflang="en" rel="alternate"/><link href="interval-scheduling-ru.html" hreflang="ru" rel="alternate"/></head>
+<body class="lecture-page"><div aria-hidden="true" class="progress-track"><div class="progress-bar" id="reading-progress"></div></div>
+<header class="topbar"><a class="brand" href="../"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name">Allan's Handbook of Algorithms</span></a>
+<nav aria-label="Primary navigation" class="topnav"><a href="./">Greedy overview</a><div aria-label="Language" class="language-switch"><span class="current">EN</span><span class="language-separator">·</span><a href="interval-scheduling-ru.html">RU</a></div></nav></header>
+<aside aria-label="Section navigation" class="sidebar"><div class="sidebar-title">Chapter 9 · Section 4</div><a href="#problem">Problem</a><a href="#choices">Choosing the rule</a><a href="#algorithm">Algorithm</a><a href="#proof">Correctness</a><a href="#implementation">Implementation</a><a href="#variants">Variants</a><a href="#exercises">Exercises</a></aside>
+<main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Chapter 9 · Section 4</div><h1>Interval Scheduling</h1><p class="chapter-topics">Select the largest possible set of non-overlapping intervals by repeatedly taking the compatible interval that finishes first.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-interval-scheduling.svg"/></div></section>
+<section class="lecture-section" id="problem">
+<h2>The problem</h2>
+<p class="lead">We are given activities represented by time intervals. Two activities are compatible if they do not overlap. The goal is to select as many mutually compatible activities as possible.</p>
+<div class="greedy-definition"><span>Interval Scheduling</span><p>Given intervals <span class="math">[sᵢ,fᵢ)</span>, choose a largest-cardinality subset in which no two chosen intervals overlap.</p></div>
+<div class="interval-figure">
+<div class="interval-axis"><span>time</span><span>0</span><span>2</span><span>4</span><span>6</span><span>8</span><span>10</span><span>12</span><span>14</span><span>16</span><span>18</span></div>
+<div class="interval-row"><span class="interval-label">A</span><span class="interval-bar selected" style="grid-column:2 / span 2">1–4</span></div>
+<div class="interval-row"><span class="interval-label">B</span><span class="interval-bar" style="grid-column:3 / span 2">3–5</span></div>
+<div class="interval-row"><span class="interval-label">D</span><span class="interval-bar selected" style="grid-column:4 / span 2">5–7</span></div>
+<div class="interval-row"><span class="interval-label">H</span><span class="interval-bar selected" style="grid-column:6 / span 2">8–11</span></div>
+<div class="interval-row"><span class="interval-label">K</span><span class="interval-bar selected" style="grid-column:8 / span 3">12–16</span></div>
 </div>
 </section>
-</main>
-<footer class="lecture-footer">
-<div>Allan's Handbook of Algorithms</div>
-<div>© 2026 Allan Allemand</div>
-</footer>
-<script src="../assets/js/language-switch.js"></script>
-</body>
-</html>
+
+<section class="lecture-section" id="choices">
+<h2>Which greedy rule should we try?</h2>
+<p class="lead">Several local rules sound plausible. Most are wrong. The correct one is surprisingly specific: always take the compatible interval that finishes first.</p>
+<div class="greedy-rule-strip">
+<article class="greedy-rule-option bad"><h3>Earliest start</h3><p>Can choose one very long interval and block many short ones.</p></article>
+<article class="greedy-rule-option bad"><h3>Shortest duration</h3><p>A short interval can be placed badly and still destroy useful choices.</p></article>
+<article class="greedy-rule-option bad"><h3>Fewest conflicts</h3><p>Looks globally informed, but does not produce a universally correct greedy rule.</p></article>
+<article class="greedy-rule-option good"><h3>Earliest finish</h3><p>Leaves the largest possible amount of time for all future activities.</p></article>
+</div>
+<div class="greedy-caution"><strong>Counterexample to earliest start.</strong> One interval may start first and last almost the whole day, while several later short intervals fit together. Choosing by start time can therefore be arbitrarily bad.</div>
+</section>
+
+<section class="lecture-section" id="algorithm">
+<h2>The greedy algorithm</h2>
+<div class="step-flow">
+<article class="step-item"><div class="step-number">1</div><div><h3>Sort by finishing time</h3><p>Process intervals from earliest finish to latest finish.</p></div></article>
+<article class="step-item"><div class="step-number">2</div><div><h3>Take the first interval</h3><p>It has the earliest finishing time among all remaining candidates.</p></div></article>
+<article class="step-item"><div class="step-number">3</div><div><h3>Skip conflicts</h3><p>Ignore every interval whose start is earlier than the finish of the last selected interval.</p></div></article>
+<article class="step-item"><div class="step-number">4</div><div><h3>Repeat</h3><p>The next compatible interval with the earliest finish becomes the next selected activity.</p></div></article>
+</div>
+<div class="visualizer interval-schedule-demo">
+<div class="visualizer-head"><div><h3>Run the algorithm step by step</h3><p>Intervals are already sorted by finishing time. Green means accepted; faded intervals conflict with the current schedule.</p></div><div class="step-nav-controls"><button class="previous-step" data-action="previous" type="button">← Previous</button><button class="primary-step" data-action="next" type="button">Next →</button></div></div>
+<div class="interval-demo-stage" data-role="stage"></div>
+<div class="step-caption"></div>
+<div class="secondary-controls"><button data-action="reset" type="button">Reset</button></div>
+</div>
+</section>
+
+<section class="lecture-section" id="proof">
+<h2>Why earliest finish is optimal</h2>
+<p class="lead">The proof is a clean exchange argument. Let <span class="math">g</span> be the interval with the earliest finish time. Consider any optimal solution <span class="math">O</span>.</p>
+<div class="timeline-proof">
+<div class="timeline-proof-card"><h3>Optimal solution O</h3><p>Suppose its first selected interval is <span class="math">o</span>. It may differ from <span class="math">g</span>.</p></div>
+<div class="timeline-proof-arrow">→</div>
+<div class="timeline-proof-card"><h3>Replace o by g</h3><p>Because <span class="math">f(g) ≤ f(o)</span>, every interval that starts after <span class="math">o</span> finishes also starts after <span class="math">g</span> finishes. The rest of O still fits.</p></div>
+</div>
+<div class="proof-goal"><h3>Conclusion</h3><p>There is an optimal solution whose first interval is exactly the greedy choice <span class="math">g</span>. After choosing it, the remaining problem consists only of intervals that start after <span class="math">f(g)</span>, so the same argument applies again.</p></div>
+</section>
+
+<section class="lecture-section" id="implementation">
+<h2>Python implementation</h2>
+<div class="code-explainer">
+<div class="annotated-code">
+<div class="code-row"><span class="line-no">1</span><code>def interval_scheduling(intervals):</code></div>
+<div class="code-row marked"><span class="line-no">2</span><code>    intervals = sorted(intervals, key=lambda x: x[1])</code></div>
+<div class="code-row"><span class="line-no">3</span><code>    chosen = []</code></div>
+<div class="code-row"><span class="line-no">4</span><code>    last_finish = float("-inf")</code></div>
+<div class="code-row marked"><span class="line-no">5</span><code>    for start, finish in intervals:</code></div>
+<div class="code-row marked"><span class="line-no">6</span><code>        if start >= last_finish:</code></div>
+<div class="code-row marked"><span class="line-no">7</span><code>            chosen.append((start, finish))</code></div>
+<div class="code-row marked"><span class="line-no">8</span><code>            last_finish = finish</code></div>
+<div class="code-row"><span class="line-no">9</span><code>    return chosen</code></div>
+</div>
+<div class="code-notes"><h3>Implementation notes</h3>
+<div class="code-note-item"><span>2</span><p>Sorting by finishing time is the greedy priority rule.</p></div>
+<div class="code-note-item wide-note"><span>5–8</span><p>After sorting, a single scan is enough. We accept exactly the intervals compatible with the last selected one.</p></div>
+</div></div>
+<div class="complexity-strip"><div><span>Sorting</span><b>O(n log n)</b><small>by finish</small></div><div><span>Scan</span><b>O(n)</b><small>one pass</small></div><div><span>Total</span><b>O(n log n)</b><small>dominant sort</small></div><div><span>Extra memory</span><b>O(n)</b><small>for output</small></div></div>
+</section>
+
+<section class="lecture-section" id="variants">
+<h2>What changes in nearby problems?</h2>
+<div class="decision-grid">
+<article class="decision-card greedy-signal"><h3>Weighted intervals</h3><p>If intervals have different profits and we want maximum total profit, earliest finish is no longer enough. The standard solution becomes dynamic programming.</p></article>
+<article class="decision-card greedy-signal"><h3>Need all intervals?</h3><p>If every interval must be scheduled and we minimize the number of rooms, the objective changes completely. That is the next section: Interval Partitioning.</p></article>
+</div>
+</section>
+
+<section class="lecture-section" id="exercises">
+<h2>Exercises</h2>
+<div class="exercise-list">
+<article class="exercise"><div class="exercise-num">1</div><div><h3>Compatibility</h3><p>Are intervals [2,5) and [5,8) compatible under the half-open convention?</p><button class="reveal" data-reveal="is-en-1" type="button">Show answer</button><div class="answer-box" hidden id="is-en-1">Yes. The first interval ends exactly when the second begins, so they do not overlap.</div></div></article>
+<article class="exercise"><div class="exercise-num">2</div><div><h3>Why not earliest start?</h3><p>Construct a small instance where the earliest-starting interval is not part of a maximum-cardinality schedule.</p><button class="reveal" data-reveal="is-en-2" type="button">Show answer</button><div class="answer-box" hidden id="is-en-2">For example, [0,10), [1,2), [2,3), [3,4). Earliest start chooses [0,10) and gets one interval; the other three are mutually compatible.</div></div></article>
+<article class="exercise"><div class="exercise-num">3</div><div><h3>Proof step</h3><p>In the exchange proof, why can replacing the first optimal interval by the greedy one never invalidate later intervals?</p><button class="reveal" data-reveal="is-en-3" type="button">Show answer</button><div class="answer-box" hidden id="is-en-3">Because the greedy interval finishes no later. Any later interval that started after the original first interval finished also starts after the greedy interval finishes.</div></div></article>
+</div>
+<div class="next-part"><h3>Next: Interval Partitioning</h3><p>Now every interval must be kept. The greedy question becomes how to reuse resources while using as few of them as possible.</p><a class="next-part-link" href="interval-partitioning.html">Interval Partitioning →</a></div>
+</section></main>
+<footer class="lecture-footer"><div>Allan's Handbook of Algorithms</div><div>© 2026 Allan Allemand</div></footer>
+<script src="../assets/js/lecture-core.js"></script><script>
+(() => {
+  "use strict";
+  const intervals = [
+    {name:"A", start:1, finish:4},
+    {name:"B", start:3, finish:5},
+    {name:"C", start:0, finish:6},
+    {name:"D", start:5, finish:7},
+    {name:"E", start:3, finish:9},
+    {name:"F", start:5, finish:9},
+    {name:"G", start:6, finish:10},
+    {name:"H", start:8, finish:11},
+    {name:"I", start:8, finish:12},
+    {name:"J", start:2, finish:14},
+    {name:"K", start:12, finish:16}
+  ].sort((a,b) => a.finish - b.finish || a.start - b.start);
+
+  const root=document.querySelector(".interval-schedule-demo");
+  if(!root) return;
+
+  const states=[];
+  const accepted=[];
+  let lastFinish=-Infinity;
+  states.push({index:-1, accepted:[], rejected:[], lastFinish:lastFinish});
+  const rejected=[];
+  intervals.forEach((it,i)=>{
+    states.push({index:i, accepted:accepted.slice(), rejected:rejected.slice(), lastFinish:lastFinish, current:"consider"});
+    if(it.start>=lastFinish){
+      accepted.push(it.name);
+      lastFinish=it.finish;
+      states.push({index:i, accepted:accepted.slice(), rejected:rejected.slice(), lastFinish:lastFinish, current:"accept"});
+    }else{
+      rejected.push(it.name);
+      states.push({index:i, accepted:accepted.slice(), rejected:rejected.slice(), lastFinish:lastFinish, current:"reject"});
+    }
+  });
+  states.push({index:intervals.length, accepted:accepted.slice(), rejected:rejected.slice(), lastFinish:lastFinish, done:true});
+
+  let index=0;
+  function render(){
+    const state=states[index];
+    const stage=root.querySelector("[data-role='stage']");
+    const ru=document.documentElement.lang.toLowerCase().startsWith("ru");
+    stage.replaceChildren();
+    intervals.forEach((it,i)=>{
+      const row=document.createElement("div");
+      let cls="interval-demo-item";
+      if(state.accepted.includes(it.name)) cls+=" accepted";
+      if(state.rejected.includes(it.name)) cls+=" rejected";
+      if(i===state.index && state.current==="consider") cls+=" current";
+      row.className=cls;
+      const label=document.createElement("b");
+      label.textContent=it.name+" ["+it.start+", "+it.finish+")";
+      const track=document.createElement("div");
+      track.className="interval-demo-track";
+      const bar=document.createElement("span");
+      bar.style.setProperty("--start",(it.start/16*100)+"%");
+      bar.style.setProperty("--width",((it.finish-it.start)/16*100)+"%");
+      track.appendChild(bar);
+      const status=document.createElement("div");
+      status.className="interval-demo-status";
+      if(state.accepted.includes(it.name)) status.textContent=ru?"выбран":"selected";
+      else if(state.rejected.includes(it.name)) status.textContent=ru?"конфликт":"conflict";
+      else if(i===state.index) status.textContent=ru?"рассматриваем":"consider";
+      else status.textContent="";
+      row.append(label,track,status);
+      stage.appendChild(row);
+    });
+
+    const caption=root.querySelector(".step-caption");
+    if(state.done){
+      caption.textContent=ru
+        ? "Готово: выбраны "+state.accepted.join(", ")+". Всего "+state.accepted.length+" интервала."
+        : "Done: selected "+state.accepted.join(", ")+". Total: "+state.accepted.length+" intervals.";
+    }else if(state.index<0){
+      caption.textContent=ru
+        ? "Сначала сортируем интервалы по времени окончания."
+        : "First sort the intervals by finishing time.";
+    }else{
+      const it=intervals[state.index];
+      if(state.current==="consider"){
+        caption.textContent=ru
+          ? "Рассматриваем "+it.name+". Он начинается в "+it.start+", последний выбранный интервал закончился в "+(state.lastFinish===-Infinity?"−∞":state.lastFinish)+"."
+          : "Consider "+it.name+". It starts at "+it.start+"; the last selected interval finished at "+(state.lastFinish===-Infinity?"−∞":state.lastFinish)+".";
+      }else if(state.current==="accept"){
+        caption.textContent=ru ? it.name+" совместим — выбираем его." : it.name+" is compatible, so accept it.";
+      }else{
+        caption.textContent=ru ? it.name+" пересекается с последним выбранным интервалом — пропускаем." : it.name+" overlaps the last selected interval, so skip it.";
+      }
+    }
+
+    root.querySelector("[data-action='previous']").disabled=index===0;
+    root.querySelector("[data-action='next']").disabled=index===states.length-1;
+  }
+
+  root.addEventListener("click",e=>{
+    const b=e.target.closest("[data-action]");
+    if(!b) return;
+    if(b.dataset.action==="next") index=Math.min(index+1,states.length-1);
+    if(b.dataset.action==="previous") index=Math.max(index-1,0);
+    if(b.dataset.action==="reset") index=0;
+    render();
+  });
+  render();
+})();
+</script><script src="../assets/js/language-switch.js"></script></body></html>
