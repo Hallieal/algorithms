@@ -3,11 +3,12 @@
 <title>Минимальные остовные деревья | Гайд по алгоритмам — presented by Аллан</title>
 <link href="../assets/css/styles.css" rel="stylesheet"/><link href="assets/greedy.css" rel="stylesheet"/>
 <link href="../assets/images/favicon-32.png" rel="icon" sizes="32x32" type="image/png"/><link href="../assets/images/favicon.png" rel="icon" sizes="64x64" type="image/png"/><link href="../assets/images/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180"/>
-<link href="mst.html" hreflang="en" rel="alternate"/><link href="mst-ru.html" hreflang="ru" rel="alternate"/></head>
+<link href="mst.html" hreflang="en" rel="alternate"/><link href="mst-ru.html" hreflang="ru" rel="alternate"/><noscript><style>.answer-box[hidden]{display:block!important}.reveal{display:none!important}</style></noscript>
+</head>
 <body class="lecture-page"><div aria-hidden="true" class="progress-track"><div class="progress-bar" id="reading-progress"></div></div>
 <header class="topbar"><a class="brand" href="../index-ru.html"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name ru-brand-name"><span class="ru-brand-lines"><span>Гайд по алгоритмам</span><span class="ru-brand-presented">presented by Аллан</span></span></span></a>
 <nav aria-label="Основная навигация" class="topnav"><a href="index-ru.html">Жадные алгоритмы</a><div aria-label="Язык" class="language-switch"><a href="mst.html">EN</a><span class="language-separator">·</span><span class="current">RU</span></div></nav></header>
-<aside aria-label="Навигация по разделу" class="sidebar"><div class="sidebar-title">Глава 9 · Раздел 9</div><a href="#problem">Постановка</a><a href="#cut">Свойство разреза</a><a href="#kruskal">Краскал</a><a href="#prim">Прим</a><a href="#implementation">Реализации</a><a href="#complexity">Сложность</a><a href="#properties">Полезные факты</a><a href="#exercises">Задачи</a></aside>
+<aside aria-label="Навигация по разделу" class="sidebar"><div class="sidebar-title">Глава 9 · Раздел 9</div><a href="#problem">Постановка</a><a href="#cut">Свойство разреза</a><a href="#kruskal">Краскал</a><a href="#prim">Прим</a><a href="#boruvka">Борувка</a><a href="#implementation">Реализации</a><a href="#complexity">Сложность</a><a href="#properties">Полезные факты</a><a href="#exercises">Задачи</a></aside>
 <main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Глава 9 · Раздел 9</div><h1>Минимальные остовные деревья</h1><p class="chapter-topics">Нужно соединить все вершины с минимальным суммарным весом. Краскал и Прим выглядят по-разному, но оба основаны на свойстве разреза.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-mst.svg"/></div></section>
 <section class="lecture-section" id="problem">
 <h2>Соединить всё как можно дешевле</h2>
@@ -53,6 +54,17 @@
 <article class="algo-compare-card prim"><h3>Прим</h3><p>Жадный объект: самое дешёвое ребро из текущего дерева наружу.</p><div class="method-state-row"><span class="method-state active">одно дерево</span><span class="method-state">heap</span><span class="method-state">граница</span></div></article>
 </div>
 <p>Корректность Прима почти буквально следует из свойства разреза: берём разрез «вершины уже в дереве» против «вершины ещё вне дерева». Самое лёгкое пересекающее ребро безопасно.</p>
+</section>
+
+<section class="lecture-section" id="boruvka">
+<h2>Борувка: все компоненты делают шаг одновременно</h2>
+<p class="lead">Краскал добавляет безопасные рёбра по одному, Прим растит одну компоненту. Алгоритм Борувки в каждом раунде позволяет каждой текущей компоненте выбрать самое дешёвое исходящее ребро.</p>
+<div class="algorithm-triptych">
+<article><h3>1. Один выбор на компоненту</h3><p>Для каждой компоненты текущего леса находим ребро минимального веса, ведущее наружу.</p></article>
+<article><h3>2. Добавляем все безопасные рёбра</h3><p>Каждое выбранное ребро минимально через разрез «эта компонента против остальных», поэтому свойство разреза делает его безопасным.</p></article>
+<article><h3>3. Сжимаем компоненты</h3><p>Объединяем связанные выбранными рёбрами компоненты и повторяем. За раунд число компонент уменьшается как минимум вдвое.</p></article>
+</div>
+<div class="practice-note"><h3>Зачем нужен Борувка</h3><p>Выборы для разных компонент можно искать одновременно, поэтому алгоритм естественно параллелизуется и используется как основа распределённых MST-алгоритмов. Простая последовательная версия просматривает все рёбра в каждом из <span class="math">O(log V)</span> раундов и работает за <span class="math">O(E log V)</span>.</p></div>
 </section>
 
 <section class="lecture-section" id="implementation">
@@ -115,12 +127,14 @@ def prim(graph, start=0):
 <div class="table-wrap"><table class="graph-code-table"><thead><tr><th>Алгоритм</th><th>Главная структура</th><th>Типичная сложность</th><th>Когда удобен</th></tr></thead><tbody>
 <tr><td>Краскал</td><td>Сортировка рёбер + DSU</td><td>O(E log E)</td><td>Уже есть список рёбер; граф разреженный</td></tr>
 <tr><td>Прим с binary heap</td><td>Списки смежности + heap</td><td>O(E log V)</td><td>Граф естественно хранится по соседям вершин</td></tr>
+<tr><td>Борувка</td><td>Компоненты + минимальное исходящее ребро</td><td>O(E log V)</td><td>Параллельная обработка и сжатие компонент</td></tr>
 </tbody></table></div>
 <p class="caption">Так как <span class="math">E ≤ V²</span>, логарифмические множители близки. На практике часто важнее формат хранения графа и окружающий код.</p>
 </section>
 
 <section class="lecture-section" id="properties">
 <h2>Четыре факта, которые стоит помнить</h2>
+<div class="theory-note"><h3>MST — чистый пример матроида</h3><p>Множества рёбер без циклов образуют <em>графический матроид</em>. Остовное дерево — базис этого матроида. Поэтому Краскал является частным случаем общей greedy-теоремы для матроидов: упорядочиваем элементы по весу и добавляем элемент, пока сохраняется независимость. Свойство разреза — графовая форма того же обменного принципа.</p></div>
 <div class="decision-grid">
 <article class="decision-card greedy-signal"><h3>Разные веса ⇒ единственность</h3><p>Если веса всех рёбер различны, MST единственно.</p></article>
 <article class="decision-card greedy-signal"><h3>При равных весах MST может быть несколько</h3><p>Разные безопасные рёбра одинакового веса могут привести к разным остовным деревьям с одной и той же минимальной стоимостью.</p></article>
@@ -134,7 +148,7 @@ def prim(graph, start=0):
 <div class="exercise-list">
 <article class="exercise"><div class="exercise-num">1</div><div><h3>Число рёбер</h3><p>Сколько рёбер должно быть в остовном дереве на 17 вершинах?</p><button class="reveal" data-reveal="mst-ru-1" type="button">Показать ответ</button><div class="answer-box" hidden id="mst-ru-1">Ровно 16.</div></div></article>
 <article class="exercise"><div class="exercise-num">2</div><div><h3>Решение Краскала</h3><p>Почему Краскал отклоняет ребро, концы которого уже находятся в одной DSU-компоненте?</p><button class="reveal" data-reveal="mst-ru-2" type="button">Показать ответ</button><div class="answer-box" hidden id="mst-ru-2">Между концами уже существует путь. Добавление ребра создаст цикл, поэтому текущий лес перестанет быть лесом.</div></div></article>
-<article class="exercise"><div class="exercise-num">3</div><div><h3>Свойство разреза</h3><p>Если через один разрез проходят несколько рёбер одинакового минимального веса, обязано ли каждое MST содержать их все?</p><button class="reveal" data-reveal="mst-ru-3" type="button">Показать ответ</button><div class="answer-box" hidden id="mst-ru-3">Нет. Каждое такое лёгкое ребро безопасно в смысле существования некоторого MST, содержащего его, но разные MST могут выбирать разные рёбра при равенстве весов.</div></div></article>
+<article class="exercise"><div class="exercise-num">3</div><div><h3>Равные веса и несколько MST</h3><p>Возьмите треугольник, у которого все три ребра имеют вес 1. Сколько у него различных MST и что это говорит о «безопасном» ребре?</p><button class="reveal" data-reveal="mst-ru-3" type="button">Показать ответ</button><div class="answer-box" hidden id="mst-ru-3">Любые два из трёх рёбер образуют MST, значит всего три MST. Ребро может быть безопасным — входить в некоторое MST — но не обязано входить во все MST.</div></div></article>
 </div>
 <div class="next-part"><h3>Дальше: алгоритм Дейкстры</h3><p>MST жадно фиксирует рёбра. Дейкстра вместо этого жадно фиксирует окончательные расстояния до вершин.</p><a class="next-part-link" href="dijkstra-ru.html">Алгоритм Дейкстры →</a></div>
 </section></main>
