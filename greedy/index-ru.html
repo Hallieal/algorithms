@@ -26,7 +26,7 @@
 <section class="overview-section sorting-contents greedy-contents" id="chapter-map">
 <div class="chapter-label">Глава 9</div>
 <h1>Жадные алгоритмы</h1>
-<p class="greedy-overview-lead">В 11 статьях greedy разбирается не как набор трюков, а как метод проектирования: предложить локальное правило, атаковать его контрпримерами, найти инвариант и понять, получился exact algorithm, approximation или только heuristic.</p><div class="chapter-prereq-note">Полезно перед началом: <a href="../sorting/index-ru.html">сортировки →</a> · <a href="../data-structures/index-ru.html">кучи и очереди с приоритетом →</a></div>
+<p class="greedy-overview-lead">В 11 статьях greedy разбирается как метод design и recognition: понять objective, сжать правильное state, доказать безопасность каждого discard и узнавать recurring interview shapes без заучивания кода.</p><div class="chapter-prereq-note">Полезно перед началом: <a href="../sorting/index-ru.html">сортировки →</a> · <a href="../data-structures/index-ru.html">кучи и очереди с приоритетом →</a></div>
 <div class="sorting-part">
 <div class="sorting-part-head">
 <div>
@@ -40,7 +40,7 @@
 <div class="chapter-card-icon"><img alt="" src="assets/greedy-strategy.svg"/></div>
 <div>
 <h3>Жадная стратегия</h3>
-<p>Начинаем с exact/heuristic/approximation и добавляем optimization lens: какую работу можно удалить, когда одно running state доминирует альтернативы?</p>
+<p>Разбираем exact/heuristic/approximation, а затем учимся узнавать backward frontier, candidate elimination, directional passes и другие формы безопасного state compression.</p>
 <span class="chapter-link">Открыть раздел →</span>
 </div>
 </a>
@@ -48,7 +48,7 @@
 <div class="chapter-card-icon"><img alt="" src="assets/greedy-proofs.svg"/></div>
 <div>
 <h3>Доказательства корректности</h3>
-<p>Идём от intuition к invariant и proof, включая dominance arguments, которые разрешают удалять целые классы partial states.</p>
+<p>Идём от intuition к invariant и proof, включая Gas Station block elimination и two-pass lower-bound proofs, которые оправдывают удаление целых классов candidates.</p>
 <span class="chapter-link">Открыть раздел →</span>
 </div>
 </a>
@@ -56,7 +56,7 @@
 <div class="chapter-card-icon"><img alt="" src="assets/greedy-vs-dp.svg"/></div>
 <div>
 <h3>Жадные алгоритмы и динамическое программирование</h3>
-<p>На Knapsack и maximum subarray видим, когда DP хранит много states, когда сжимается до одного и когда тот же переход можно читать как greedy discard.</p>
+<p>На Jump Game, Gas Station, Knapsack и maximum subarray задаём главный вопрос: доминирует ли одна ветка остальные или несколько futures обязаны остаться живыми?</p>
 <span class="chapter-link">Открыть раздел →</span>
 </div>
 </a>
@@ -75,7 +75,7 @@
 <div class="chapter-card-icon"><img alt="" src="assets/greedy-interval-scheduling.svg"/></div>
 <div>
 <h3>Выбор непересекающихся интервалов</h3>
-<p>Проходим classroom schedule, доказываем earliest finish и отдельно разбираем O(n) greedy scan и O(n log n) sorting, который создаёт нужный порядок.</p>
+<p>Проходим classroom schedule, доказываем earliest finish и учимся различать sort-by-start, sort-by-finish и endpoint-sweep interval patterns.</p>
 <span class="chapter-link">Открыть раздел →</span>
 </div>
 </a>
@@ -83,7 +83,7 @@
 <div class="chapter-card-icon"><img alt="" src="assets/greedy-interval-partitioning.svg"/></div>
 <div>
 <h3>Разбиение интервалов по ресурсам</h3>
-<p>Оставляем все пары, совпадаем с overlap depth и видим, как min-heap заменяет scan комнат и ускоряет тот же greedy-rule.</p>
+<p>Оставляем все пары, совпадаем с overlap depth и реализуем sweep либо tagged events, либо двумя sorted endpoint arrays с явным tie-rule.</p>
 <span class="chapter-link">Открыть раздел →</span>
 </div>
 </a>
@@ -91,7 +91,7 @@
 <div class="chapter-card-icon"><img alt="" src="assets/greedy-lateness.svg"/></div>
 <div>
 <h3>Минимизация максимального опоздания</h3>
-<p>Deadlines задают order; затем repeated minimum selection заменяется одним sort и constant-state linear scan.</p>
+<p>Deadlines задают order; затем compact recognition checklist проверяет, что exact scheduling model действительно соответствует EDF до начала кода.</p>
 <span class="chapter-link">Открыть раздел →</span>
 </div>
 </a>
@@ -110,7 +110,7 @@
 <div class="chapter-card-icon"><img alt="" src="assets/greedy-fractional-knapsack.svg"/></div>
 <div>
 <h3>Дробная задача о рюкзаке</h3>
-<p>Начинаем с 0/1 failure, разрешаем fractions и затем оптимизируем exact density rule: repeated scan, sorting или heap.</p>
+<p>На конкретном 0/1 counterexample отделяем indivisible items от fractional, затем выводим density greedy и варианты implementation.</p>
 <span class="chapter-link">Открыть раздел →</span>
 </div>
 </a>
@@ -118,7 +118,7 @@
 <div class="chapter-card-icon"><img alt="" src="assets/greedy-huffman.svg"/></div>
 <div>
 <h3>Кодирование Хаффмана</h3>
-<p>Считаем bits, декодируем по tree и видим, почему min-heap ускоряет очевидную repeated-minimum реализацию Huffman с O(n²) до O(n log n).</p>
+<p>Считаем bits, декодируем по tree и узнаём общий heap pattern: repeatedly extract minima, merge, reinsert, repeat.</p>
 <span class="chapter-link">Открыть раздел →</span>
 </div>
 </a>
@@ -137,7 +137,7 @@
 <div class="chapter-card-icon"><img alt="" src="assets/greedy-mst.svg"/></div>
 <div>
 <h3>Минимальные остовные деревья</h3>
-<p>Разводим route и network, выводим Kruskal/Prim/Borůvka и смотрим, как DSU, arrays и heaps меняют цену поиска следующего safe edge.</p>
+<p>Разводим route и network, выводим Kruskal/Prim/Borůvka и связываем Kruskal с Union-Find, union by size и path compression.</p>
 <span class="chapter-link">Открыть раздел →</span>
 </div>
 </a>
@@ -145,7 +145,7 @@
 <div class="chapter-card-icon"><img alt="" src="assets/greedy-dijkstra.svg"/></div>
 <div>
 <h3>Алгоритм Дейкстры</h3>
-<p>Weights — любая неотрицательная cost: получаем все source distances и parent paths, затем сравниваем простой O(V²) frontier с heap implementation.</p>
+<p>Переводим story в vertices, edges, weights и restrictions, затем отличаем BFS, heap-based Dijkstra и failure case с negative edge.</p>
 <span class="chapter-link">Открыть раздел →</span>
 </div>
 </a>
@@ -165,7 +165,7 @@
 <div class="chapter-card-icon"><img alt="" src="assets/greedy-matroids.svg"/></div>
 <div>
 <h3>Матроиды и дальше</h3>
-<p>Финальная картина: matroids, approximation, Set Cover и более общий взгляд на greedy как доказанно безопасное state compression к best-imaginable runtime.</p>
+<p>Финальная картина: matroids и approximation, а затем pattern library — frontiers, elimination, directional passes, heaps, sweeps и DSU.</p>
 <span class="chapter-link">Открыть раздел →</span>
 </div>
 </a>
@@ -176,11 +176,12 @@
 <div class="sorting-part-head">
 <div>
 <span class="sorting-part-kicker">Что читать дальше</span>
-<h3>Две взаимодополняющие intuition-first книги, затем теория</h3>
+<h3>Три взаимодополняющие intuition-first книги, затем теория</h3>
 </div>
-<p>Grokking Algorithms сильнее всего визуальной интуицией и approximation; A Common-Sense Guide — выводом быстрого кода из медленного baseline. Формальные книги ниже дают более глубокую proof theory.</p>
+<p>Coding Interview Patterns сильнее всего recognition и interview-ready invariants; Grokking Algorithms — визуальной intuition и approximation; A Common-Sense Guide — выводом быстрого кода из медленного baseline. Формальные книги ниже дают более глубокую proof theory.</p>
 </div>
 <div class="reference-list">
+<div class="reference-item"><b>Alex Xu & Shaun Gunawardane — Coding Interview Patterns</b><span>Особенно Chapter 16 с Jump to the End, Gas Stations и Candies; Chapter 9 про intervals и sweep line; Chapter 15 с DP-контрастами maximum subarray и 0/1 Knapsack; а также главы про heaps и Union-Find как supporting structures.</span></div>
 <div class="reference-item"><b>Jay Wengrow — A Common-Sense Guide to Data Structures and Algorithms in Python</b><span>Особенно Chapter 20: current Big O → best-imaginable Big O → pattern/state compression, плюс Chapter 18 с подробным Dijkstra walkthrough и trade-off array vs priority queue.</span></div>
 <div class="reference-item"><b>Aditya Y. Bhargava — Grokking Algorithms, 2nd ed.</b><span>Особенно Chapter 10 про greedy, Chapter 9 про Dijkstra и Huffman в Chapter 7. Сильна визуальной интуицией, “try it yourself” моментами и переходом от exact greedy к approximation.</span></div>
 <a class="reference-item" href="https://www.pearson.com/en-us/subject-catalog/p/algorithm-design/P200000003259" target="_blank" rel="noopener"><b>Jon Kleinberg & Eva Tardos — Algorithm Design</b><span>Особенно Chapter 4: scheduling, exchange arguments, MST и shortest paths.</span></a>
