@@ -9,7 +9,7 @@
 <body class="lecture-page"><div aria-hidden="true" class="progress-track"><div class="progress-bar" id="reading-progress"></div></div>
 <header class="topbar"><a class="brand" href="../"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name">Allan's Handbook of Algorithms</span></a>
 <nav aria-label="Primary navigation" class="topnav"><a href="./">Greedy overview</a><div aria-label="Language" class="language-switch"><span class="current">EN</span><span class="language-separator">·</span><a href="proofs-ru.html">RU</a></div></nav></header>
-<aside aria-label="Section navigation" class="sidebar"><div class="sidebar-title">Chapter 9 · Section 2</div><a href="#goal">What must be proved?</a><a href="#patterns">Proof patterns</a><a href="#counterexamples">Counterexample laboratory</a><a href="#exchange">Exchange arguments</a><a href="#worked">Worked proof</a><a href="#ahead">Staying ahead</a><a href="#induction">Induction</a><a href="#discard">Prove that discarded state is useless</a><a href="#gas-proof">Candidate-elimination proof</a><a href="#template">Proof template</a><a href="#directional-proof">Two-pass proof</a><a href="#intuition-proof">Intuition vs proof</a><a href="#summary-not-witness">Summary vs witness</a><a href="#mistakes">Common mistakes</a><a href="#exercises">Exercises</a></aside>
+<aside aria-label="Section navigation" class="sidebar"><div class="sidebar-title">Chapter 9 · Section 2</div><a href="#goal">What must be proved?</a><a href="#patterns">Proof patterns</a><a href="#counterexamples">Counterexample laboratory</a><a href="#exchange">Exchange arguments</a><a href="#worked">Worked proof</a><a href="#ahead">Staying ahead</a><a href="#induction">Induction</a><a href="#discard">Prove that discarded state is useless</a><a href="#gas-proof">Candidate-elimination proof</a><a href="#bound-certificate">Match a lower bound</a><a href="#template">Proof template</a><a href="#directional-proof">Two-pass proof</a><a href="#intuition-proof">Intuition vs proof</a><a href="#summary-not-witness">Summary vs witness</a><a href="#mistakes">Common mistakes</a><a href="#exercises">Exercises</a></aside>
 <main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Chapter 9 · Section 2</div><h1>Proving Greedy Correctness</h1><p class="chapter-topics">A greedy proof has one job: show that the next local choice can be fixed without losing optimality.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-proofs.svg"/></div></section>
 <section class="lecture-section" id="goal">
 <h2>What a greedy proof must show</h2>
@@ -121,6 +121,18 @@
 <div class="clean-step"><span>3</span><p>So starting at <span class="math">j</span> also fails by station <span class="math">b</span>. Every start in the whole block can be skipped; the next possible candidate is <span class="math">b+1</span>.</p></div>
 </div>
 <div class="one-line"><strong>Interview pattern.</strong> If a failed attempt contains a monotone or nonnegative prefix invariant, ask whether the failure certifies that many neighboring candidates are impossible too.</div>
+</section>
+
+<!-- karumanchi-round-proofs -->
+<section class="lecture-section" id="bound-certificate">
+<h2>Another proof pattern: construct a solution that meets a lower bound</h2>
+<p class="lead">Some greedy proofs do not need to exchange choices with an unknown optimum. Instead, find a number that every feasible solution must pay, then show the greedy algorithm pays exactly that amount.</p>
+<div class="two-column-block">
+<div class="text-panel"><h3>Lower bound</h3><p>In interval partitioning, if <span class="math">d</span> classes overlap at one instant, any schedule needs at least <span class="math">d</span> rooms. This is unavoidable, regardless of the algorithm.</p></div>
+<div class="proof-panel"><h3>Greedy certificate</h3><p>When the start-time greedy algorithm opens its <span class="math">d</span>th room, the new class overlaps the last class already occupying each of the previous <span class="math">d−1</span> rooms. So there are <span class="math">d</span> simultaneous classes at that moment.</p></div>
+</div>
+<div class="proof-goal"><h3>Optimality in one line</h3><p>Greedy uses <span class="math">d</span> rooms, while every solution needs at least <span class="math">d</span>. Therefore greedy is optimal.</p></div>
+<div class="one-line"><strong>Reusable pattern.</strong> Lower bound + feasible construction attaining the bound = optimality certificate.</div>
 </section>
 
 <section class="lecture-section" id="template">
