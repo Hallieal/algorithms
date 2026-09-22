@@ -1,15 +1,19 @@
 <!DOCTYPE html><html lang="ru"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1" name="viewport"/>
-<meta content="Чем жадные алгоритмы отличаются от динамического программирования, когда локальный выбор безопасен и когда нужно хранить несколько состояний." name="description"/><meta content="Жадные алгоритмы и динамическое программирование | Гайд по алгоритмам — presented by Аллан" property="og:title"/><meta content="Чем жадные алгоритмы отличаются от динамического программирования, когда локальный выбор безопасен и когда нужно хранить несколько состояний." property="og:description"/><meta content="article" property="og:type"/>
+<meta content="Greedy оставляет одно будущее. Динамическое программирование хранит несколько состояний, пока не станет ясно, какое из них победит." name="description"/><meta content="Жадные алгоритмы и динамическое программирование | Гайд по алгоритмам — presented by Аллан" property="og:title"/><meta content="Greedy оставляет одно будущее. Динамическое программирование хранит несколько состояний, пока не станет ясно, какое из них победит." property="og:description"/><meta content="article" property="og:type"/>
 <title>Жадные алгоритмы и динамическое программирование | Гайд по алгоритмам — presented by Аллан</title>
 <link href="../assets/css/styles.css" rel="stylesheet"/><link href="assets/greedy.css" rel="stylesheet"/><link href="../assets/images/favicon-32.png" rel="icon" sizes="32x32" type="image/png"/><link href="../assets/images/favicon.png" rel="icon" sizes="64x64" type="image/png"/><link href="../assets/images/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180"/>
 <link href="greedy-vs-dp.html" hreflang="en" rel="alternate"/><link href="greedy-vs-dp-ru.html" hreflang="ru" rel="alternate"/></head>
 <body class="lecture-page"><div aria-hidden="true" class="progress-track"><div class="progress-bar" id="reading-progress"></div></div>
 <header class="topbar"><a class="brand" href="../index-ru.html"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name ru-brand-name"><span class="ru-brand-lines"><span>Гайд по алгоритмам</span><span class="ru-brand-presented">presented by Аллан</span></span></span></a><nav aria-label="Основная навигация" class="topnav"><a href="index-ru.html">Жадные алгоритмы</a><div aria-label="Язык" class="language-switch"><a href="greedy-vs-dp.html">EN</a><span class="language-separator">·</span><span class="current">RU</span></div></nav></header>
 <aside aria-label="Навигация по разделу" class="sidebar"><div class="sidebar-title">Глава 9 · Раздел 3</div><a href="#difference">Главное отличие</a><a href="#structure">Общая структура</a><a href="#coins">Размен монет</a><a href="#knapsack">Рюкзак 0/1</a><a href="#signals">Как выбрать метод?</a><a href="#code">Сравнение кода</a><a href="#comparison">Итоговая таблица</a><a href="#exercises">Задачи</a></aside>
-<main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Глава 9 · Раздел 3</div><h1>Жадные алгоритмы и динамическое программирование</h1><p class="chapter-topics">Чем жадные алгоритмы отличаются от динамического программирования, когда локальный выбор безопасен и когда нужно хранить несколько состояний.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-vs-dp.svg"/></div></section>
+<main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Глава 9 · Раздел 3</div><h1>Жадные алгоритмы и динамическое программирование</h1><p class="chapter-topics">Greedy оставляет одно будущее. Динамическое программирование хранит несколько состояний, пока не станет ясно, какое из них победит.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-vs-dp.svg"/></div></section>
 <section class="lecture-section" id="difference">
-<h2>Одна цель, разная степень необратимости</h2>
-<p class="lead">И жадные алгоритмы, и динамическое программирование используют структуру задачи вместо полного перебора. Главное отличие — сколько вариантов остаётся «живыми» после каждого шага.</p>
+<h2>Один путь или несколько состояний?</h2>
+<p class="lead">Оба метода используют структуру задачи вместо полного перебора. Разница в том, что они позволяют себе забыть: greedy оставляет одно продолжение, а DP хранит несколько частичных ответов, потому что будущее может по-разному использовать каждый из них.</p><div class="concept-strip">
+<article class="concept-cell rule"><span>Greedy</span><b>Оставляет одно будущее</b><p>Фиксирует выбор сразу, как только его безопасность доказана.</p></article>
+<article class="concept-cell proof"><span>DP</span><b>Хранит несколько состояний</b><p>Разные частичные решения ещё могут оказаться важны позже.</p></article>
+<article class="concept-cell cost"><span>Проверка</span><b>Одно состояние точно доминирует остальные?</b><p>Если это нельзя доказать, отбрасывать альтернативы опасно.</p></article>
+</div>
 <div class="method-compare">
 <div class="method-lane greedy-lane"><h3>Жадный алгоритм</h3><p>Выбирает одно локально лучшее продолжение и сразу отбрасывает альтернативы.</p><div class="method-state-row"><span class="method-state">A</span><span class="method-state active">B</span><span class="method-state">C</span><span class="method-state">D</span></div></div>
 <div class="method-vs">VS</div>
@@ -19,7 +23,7 @@
 </section>
 
 <section class="lecture-section" id="structure">
-<h2>Что у них общего</h2>
+<h2>Что у них общего на самом деле</h2>
 <div class="greedy-properties">
 <article class="greedy-property"><h3>Оптимальная подструктура</h3><p>Оба метода часто используют тот факт, что оптимальное решение большой задачи содержит оптимальные решения меньших подзадач.</p></article>
 <article class="greedy-property"><h3>Повторяющаяся структура</h3><p>Оба метода эксплуатируют регулярный способ свести большую задачу к меньшим.</p></article>
@@ -28,7 +32,7 @@
 </section>
 
 <section class="lecture-section" id="coins">
-<h2>Размен монет: greedy теряет информацию</h2>
+<h2>Размен монет: что именно greedy выбрасывает</h2>
 <p class="lead">Пусть есть монеты 1, 3 и 4, а сумму 6 нужно набрать минимальным числом монет.</p>
 <div class="two-column-block">
 <div class="text-panel"><h3>Жадный алгоритм</h3><p>Берём крупнейшую подходящую монету:</p><div class="formula-line">6 → 2 → 1 → 0</div><p>Монеты: 4, 1, 1. Всего 3.</p></div>
@@ -56,8 +60,8 @@
 </section>
 
 <section class="lecture-section" id="signals">
-<h2>Как понять, какой метод пробовать</h2>
-<p class="lead">Это не доказательства, а практические признаки, которые помогают выбрать направление решения.</p>
+<h2>Практический тест</h2>
+<p class="lead">Спросите, какая информация может понадобиться будущим решениям. Если два частичных ответа по-разному расходуют ресурс и ни один явно не доминирует, хранить только один опасно.</p>
 <div class="decision-grid">
 <article class="decision-card greedy-signal"><h3>Сигнал в пользу greedy: обменяемость</h3><p>Вы можете заменить выбор в оптимальном решении на жадный выбор, не ухудшая ответ.</p></article>
 <article class="decision-card greedy-signal"><h3>Сигнал в пользу greedy: безопасный фронт</h3><p>Есть очевидное следующее ребро, интервал, предмет или вершина, которые можно окончательно зафиксировать.</p></article>
@@ -67,7 +71,7 @@
 </section>
 
 <section class="lecture-section" id="code">
-<h2>Разница в коде</h2>
+<h2>Разница видна по памяти</h2>
 <p class="lead">Для одной и той же задачи о монетах жадная реализация идёт по одной траектории. DP явно хранит ответы для множества меньших сумм.</p>
 <div class="dual-code">
 <div class="dual-code-block"><h3>Жадный размен</h3><pre><code>def greedy_change(amount, coins):
@@ -97,7 +101,7 @@
 </section>
 
 <section class="lecture-section" id="comparison">
-<h2>Greedy и DP в одной таблице</h2>
+<h2>Greedy и DP рядом</h2>
 <div class="table-wrap"><table><thead><tr><th>Вопрос</th><th>Greedy</th><th>Динамическое программирование</th></tr></thead><tbody>
 <tr><td>Сколько альтернатив сохраняется?</td><td>Обычно одна</td><td>Много состояний подзадач</td></tr>
 <tr><td>Можно ли пересмотреть ранний выбор?</td><td>Нет</td><td>Косвенно — через сравнение переходов между состояниями</td></tr>
