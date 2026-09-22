@@ -27,7 +27,7 @@
 </header>
 <aside aria-label="Навигация по разделу" class="sidebar">
 <div class="sidebar-title">Глава 9 · Раздел 1</div>
-<a href="#idea">Основная идея</a><a href="#guarantees">Алгоритм или эвристика?</a><a href="#optimization-lens">Optimization lens</a><a href="#anatomy">Из чего состоит алгоритм</a><a href="#example">Первый пример</a><a href="#grokking-outcomes">Три исхода greedy</a><a href="#failure">Когда greedy ошибается</a><a href="#design-loop">Как находят greedy</a><a href="#properties">Структурные свойства</a><a href="#implementation">Реализация</a><a href="#complexity">Эффективность</a><a href="#streaming">One-pass greedy state</a><a href="#interview-workflow">Interview workflow</a><a href="#recognition">Паттерны распознавания</a><a href="#exercises">Задачи</a>
+<a href="#idea">Основная идея</a><a href="#guarantees">Алгоритм или эвристика?</a><a href="#optimization-lens">Optimization lens</a><a href="#anatomy">Из чего состоит алгоритм</a><a href="#example">Первый пример</a><a href="#grokking-outcomes">Три исхода greedy</a><a href="#failure">Когда greedy ошибается</a><a href="#design-loop">Как находят greedy</a><a href="#reduce">Choose, commit, reduce</a><a href="#properties">Структурные свойства</a><a href="#implementation">Реализация</a><a href="#complexity">Эффективность</a><a href="#streaming">One-pass greedy state</a><a href="#interview-workflow">Interview workflow</a><a href="#recognition">Паттерны распознавания</a><a href="#exercises">Задачи</a>
 </aside>
 <main class="lecture">
 <section class="lecture-hero greedy-lecture-hero">
@@ -149,6 +149,23 @@
 <article class="design-loop-card"><span>5</span><h3>Докажите или понизьте claim</h3><p>Используйте exchange, staying ahead, induction или cut. Если доказательства нет, правило может остаться heuristic/approximation — но надо так его и называть.</p></article>
 </div>
 <div class="practice-note"><h3>Контрпример — часть дизайна, а не провал</h3><p>Попробовать earliest start и shortest duration перед earliest finish полезно: неправильные правила показывают, какая информация действительно важна, и делают правильное доказательство заметнее.</p></div>
+</section>
+
+<!-- karumanchi-round-strategy -->
+<section class="lecture-section" id="reduce">
+<h2>Каждый greedy-step должен уменьшать оставшуюся задачу</h2>
+<p class="lead">Удобно описывать greedy как цикл из трёх действий: выбрать локально лучший допустимый вариант, зафиксировать его без пересмотра, затем уменьшить instance и повторить.</p>
+<div class="interview-flow">
+<article><span>1</span><h3>Choose</h3><p>Среди feasible options выбираем candidate по greedy key: earliest finish, largest density, lightest safe edge, smallest frequency и т. д.</p></article>
+<article><span>2</span><h3>Commit</h3><p>Choice становится частью partial solution. Корректный greedy algorithm не возвращается позже, чтобы заменить его.</p></article>
+<article><span>3</span><h3>Reduce</h3><p>Удаляем incompatible или dominated possibilities и рассматриваем остаток как меньший instance той же задачи.</p></article>
+<article><span>4</span><h3>Repeat</h3><p>Proof должен объяснять, почему тот же local rule безопасен на каждом reduced instance, а не только на первом шаге.</p></article>
+</div>
+<div class="two-column-block">
+<div class="text-panel"><h3>Что greedy даёт</h3><p>После доказанного safe choice алгоритму не нужно снова его пересматривать. Поэтому implementation часто короткая, а state очень маленькое.</p></div>
+<div class="proof-panel"><h3>Чем greedy рискует</h3><p>Если commitment на самом деле небезопасен, механизма восстановления нет. Локально привлекательный выбор может навсегда уничтожить global optimum.</p></div>
+</div>
+<div class="one-line"><strong>Greedy — не «не думать о будущем».</strong> Implementation может не исследовать future branches, но proof обязан объяснить, почему будущее не сможет наказать уже зафиксированный choice.</div>
 </section>
 
 <section class="lecture-section" id="properties">
