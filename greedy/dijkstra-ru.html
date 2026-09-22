@@ -8,7 +8,7 @@
 <body class="lecture-page"><div aria-hidden="true" class="progress-track"><div class="progress-bar" id="reading-progress"></div></div>
 <header class="topbar"><a class="brand" href="../index-ru.html"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name ru-brand-name"><span class="ru-brand-lines"><span>Гайд по алгоритмам</span><span class="ru-brand-presented">presented by Аллан</span></span></span></a>
 <nav aria-label="Основная навигация" class="topnav"><a href="index-ru.html">Жадные алгоритмы</a><div aria-label="Язык" class="language-switch"><a href="dijkstra.html">EN</a><span class="language-separator">·</span><span class="current">RU</span></div></nav></header>
-<aside aria-label="Навигация по разделу" class="sidebar"><div class="sidebar-title">Глава 9 · Раздел 10</div><a href="#problem">Постановка</a><a href="#all-distances">Один source — все distances</a><a href="#query-scope">Single source и all pairs</a><a href="#idea">Жадная идея</a><a href="#fewest-cheapest">Меньше рёбер vs дешевле путь</a><a href="#cost-not-distance">Cost — не обязательно distance</a><a href="#mental-model">Модель в четыре шага</a><a href="#demo">По шагам</a><a href="#bfs-link">От BFS к Dijkstra</a><a href="#state-table">Costs, parents, processed</a><a href="#proof">Корректность</a><a href="#negative">Отрицательные рёбра</a><a href="#frontier-structure">Array frontier и heap frontier</a><a href="#implementation">Реализация</a><a href="#paths">Восстановление путей</a><a href="#comparison">Сравнение с MST</a><a href="#interview-decompose">Interview decomposition</a><a href="#choice-guide">Какой shortest-path метод?</a><a href="#exercises">Задачи</a></aside>
+<aside aria-label="Навигация по разделу" class="sidebar"><div class="sidebar-title">Глава 9 · Раздел 10</div><a href="#problem">Постановка</a><a href="#all-distances">Один source — все distances</a><a href="#query-scope">Single source и all pairs</a><a href="#model-transform">Transform model, keep Dijkstra</a><a href="#idea">Жадная идея</a><a href="#fewest-cheapest">Меньше рёбер vs дешевле путь</a><a href="#cost-not-distance">Cost — не обязательно distance</a><a href="#mental-model">Модель в четыре шага</a><a href="#demo">По шагам</a><a href="#bfs-link">От BFS к Dijkstra</a><a href="#state-table">Costs, parents, processed</a><a href="#proof">Корректность</a><a href="#negative">Отрицательные рёбра</a><a href="#frontier-structure">Array frontier и heap frontier</a><a href="#implementation">Реализация</a><a href="#paths">Восстановление путей</a><a href="#comparison">Сравнение с MST</a><a href="#interview-decompose">Interview decomposition</a><a href="#choice-guide">Какой shortest-path метод?</a><a href="#exercises">Задачи</a></aside>
 <main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Глава 9 · Раздел 10</div><h1>Алгоритм Дейкстры</h1><p class="chapter-topics">При неотрицательных весах минимальную временную метку можно безопасно зафиксировать. На этом одном жадном шаге построен алгоритм Дейкстры.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-dijkstra.svg"/></div></section>
 <section class="lecture-section" id="problem">
 <h2>Кратчайшие пути из одного источника</h2>
@@ -43,6 +43,19 @@
 <tr><td>All pairs с negative edges</td><td>Использовать all-pairs method, например Floyd–Warshall</td><td>Для конечных shortest paths не должно быть relevant negative cycle</td></tr>
 </tbody></table></div>
 <div class="one-line"><strong>Не путайте output scope и greedy invariant.</strong> Повторный запуск Dijkstra меняет число решаемых экземпляров; negative edges меняют саму корректность finalization proof.</div>
+</section>
+
+<!-- skiena-round-dijkstra -->
+<section class="lecture-section" id="model-transform">
+<h2>Иногда лучшее изменение algorithm — вообще не менять algorithm</h2>
+<p class="lead">Если shortest-path story хранит costs на vertices, а не edges, хочется переписать Dijkstra. Часто чище преобразовать input в model, которую готовый algorithm уже решает.</p>
+<div class="two-column-block">
+<div class="text-panel"><h3>Original model</h3><p>У каждой vertex <span class="math">v</span> есть nonnegative cost <span class="math">c(v)</span>. Cost path — сумма costs посещённых vertices.</p></div>
+<div class="proof-panel"><h3>Edge-weighted model</h3><p>Для каждого directed edge <span class="math">(u,v)</span> задаём <span class="math">w(u,v)=c(v)</span>. Вход в <span class="math">v</span> теперь оплачивает ровно ту cost, которая раньше находилась на vertex.</p></div>
+</div>
+<div class="formula-line">u → v &nbsp;&nbsp;становится&nbsp;&nbsp; u ── c(v) ──→ v</div>
+<div class="candidate-elimination"><h3>Одна bookkeeping detail</h3><p>Если definition path включает cost самой source vertex, добавьте <span class="math">c(s)</span> один раз ко всем итоговым distances или инициализируйте <span class="math">dist[s]=c(s)</span>. Edge transformation естественно оплачивает destination vertices, но не стартовую.</p></div>
+<div class="one-line"><strong>Reduction — полноценный algorithm-design skill.</strong> До модификации проверенного algorithm спросите, нельзя ли перевести новую story в старую model, сохранив objective.</div>
 </section>
 
 <section class="lecture-section" id="idea">
