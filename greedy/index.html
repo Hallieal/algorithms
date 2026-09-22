@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="Greedy Algorithms: chapter contents, proof techniques, scheduling, coding, and graph applications." name="description"/>
+<meta content="Greedy Algorithms | Allan's Handbook of Algorithms" property="og:title"/>
+<meta content="Greedy strategy, correctness proofs, interval scheduling, Huffman coding, MSTs, and Dijkstra's algorithm." property="og:description"/>
+<meta content="article" property="og:type"/>
+<title>Greedy Algorithms | Allan's Handbook of Algorithms</title>
+<link href="../assets/css/styles.css" rel="stylesheet"/>
+<link href="assets/greedy.css" rel="stylesheet"/>
+<link href="../assets/images/favicon-32.png" rel="icon" sizes="32x32" type="image/png"/>
+<link href="../assets/images/favicon.png" rel="icon" sizes="64x64" type="image/png"/>
+<link href="../assets/images/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180"/>
+<link href="./" hreflang="en" rel="alternate"/><link href="index-ru.html" hreflang="ru" rel="alternate"/>
+</head>
+<body>
+<header class="topbar">
+<a class="brand" href="../"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name">Allan's Handbook of Algorithms</span></a>
+<nav aria-label="Primary navigation" class="topnav">
+<div aria-label="Language" class="language-switch"><span class="current">EN</span><span class="language-separator">·</span><a href="index-ru.html">RU</a></div>
+</nav>
+</header>
+<main class="chapter-overview sorting-contents-page">
+<section class="overview-section sorting-contents greedy-contents" id="chapter-map">
+<div class="chapter-label">Chapter 9</div>
+<h1>Greedy Algorithms</h1>
+<div class="chapter-prereq-note">Helpful before you start: <a href="../sorting/">Sorting →</a> · <a href="../data-structures/">Heaps and priority queues →</a></div>
+<div class="sorting-part">
+<div class="sorting-part-head">
+<div>
+<span class="sorting-part-kicker">Foundations</span>
+<h3>How Greedy Algorithms Work</h3>
+</div>
+<p>Greedy algorithms make one locally attractive choice at a time and never undo it. The central question is not how to make such a choice, but when that choice can be proved safe.</p>
+</div>
+<div class="chapter-grid section-icon-grid">
+<a class="chapter-card available icon-card" href="strategy.html">
+<div class="chapter-card-icon"><img alt="" src="assets/greedy-strategy.svg"/></div>
+<div>
+<h3>Greedy Strategy</h3>
+<p>Local choices, feasibility, objectives, and the idea of committing to a decision without revisiting it.</p>
+<span class="chapter-link">Open section →</span>
+</div>
+</a>
+<a class="chapter-card available icon-card" href="proofs.html">
+<div class="chapter-card-icon"><img alt="" src="assets/greedy-proofs.svg"/></div>
+<div>
+<h3>Proving Greedy Correctness</h3>
+<p>Exchange arguments, staying ahead, cut properties, and other ways to prove that a greedy choice is safe.</p>
+<span class="chapter-link">Open section →</span>
+</div>
+</a>
+<a class="chapter-card available icon-card" href="greedy-vs-dp.html">
+<div class="chapter-card-icon"><img alt="" src="assets/greedy-vs-dp.svg"/></div>
+<div>
+<h3>Greedy vs Dynamic Programming</h3>
+<p>How to recognize when one irreversible choice is enough — and when the problem needs a richer state.</p>
+<span class="chapter-link">Open section →</span>
+</div>
+</a>
+</div>
+</div>
+<div class="sorting-part">
+<div class="sorting-part-head">
+<div>
+<span class="sorting-part-kicker">Intervals and Scheduling</span>
+<h3>Ordering Decisions in Time</h3>
+</div>
+<p>Many scheduling problems become simple once jobs or intervals are processed in the right order: by finishing time, start time, or deadline.</p>
+</div>
+<div class="chapter-grid section-icon-grid">
+<a class="chapter-card available icon-card" href="interval-scheduling.html">
+<div class="chapter-card-icon"><img alt="" src="assets/greedy-interval-scheduling.svg"/></div>
+<div>
+<h3>Interval Scheduling</h3>
+<p>Select the largest possible set of non-overlapping intervals by choosing the activity that finishes first.</p>
+<span class="chapter-link">Open section →</span>
+</div>
+</a>
+<a class="chapter-card available icon-card" href="interval-partitioning.html">
+<div class="chapter-card-icon"><img alt="" src="assets/greedy-interval-partitioning.svg"/></div>
+<div>
+<h3>Interval Partitioning</h3>
+<p>Assign overlapping intervals to the minimum number of resources using sorting and a priority queue.</p>
+<span class="chapter-link">Open section →</span>
+</div>
+</a>
+<a class="chapter-card available icon-card" href="minimizing-lateness.html">
+<div class="chapter-card-icon"><img alt="" src="assets/greedy-lateness.svg"/></div>
+<div>
+<h3>Minimizing Maximum Lateness</h3>
+<p>Order jobs by deadlines to minimize the largest amount by which any job misses its deadline.</p>
+<span class="chapter-link">Open section →</span>
+</div>
+</a>
+</div>
+</div>
+<div class="sorting-part">
+<div class="sorting-part-head">
+<div>
+<span class="sorting-part-kicker">Choosing and Building</span>
+<h3>Value, Compression, and Repeated Choices</h3>
+</div>
+<p>Greedy rules can be driven by value density or by repeatedly combining the cheapest available pieces into a larger structure.</p>
+</div>
+<div class="chapter-grid section-icon-grid">
+<a class="chapter-card available icon-card" href="fractional-knapsack.html">
+<div class="chapter-card-icon"><img alt="" src="assets/greedy-fractional-knapsack.svg"/></div>
+<div>
+<h3>Fractional Knapsack</h3>
+<p>Take items by value density when fractions are allowed, and see exactly why the same rule fails for 0/1 Knapsack.</p>
+<span class="chapter-link">Open section →</span>
+</div>
+</a>
+<a class="chapter-card available icon-card" href="huffman.html">
+<div class="chapter-card-icon"><img alt="" src="assets/greedy-huffman.svg"/></div>
+<div>
+<h3>Huffman Coding</h3>
+<p>Build an optimal prefix code by repeatedly merging the two least frequent symbols or subtrees.</p>
+<span class="chapter-link">Open section →</span>
+</div>
+</a>
+</div>
+</div>
+<div class="sorting-part">
+<div class="sorting-part-head">
+<div>
+<span class="sorting-part-kicker">Greedy on Graphs</span>
+<h3>Growing Optimal Structures</h3>
+</div>
+<p>Some of the most important graph algorithms grow a solution step by step by adding the next edge or vertex that is guaranteed to be safe.</p>
+</div>
+<div class="chapter-grid section-icon-grid">
+<a class="chapter-card available icon-card" href="mst.html">
+<div class="chapter-card-icon"><img alt="" src="assets/greedy-mst.svg"/></div>
+<div>
+<h3>Minimum Spanning Trees</h3>
+<p>Kruskal’s and Prim’s algorithms, the cut property, disjoint sets, and priority queues.</p>
+<span class="chapter-link">Open section →</span>
+</div>
+</a>
+<a class="chapter-card available icon-card" href="dijkstra.html">
+<div class="chapter-card-icon"><img alt="" src="assets/greedy-dijkstra.svg"/></div>
+<div>
+<h3>Dijkstra’s Algorithm</h3>
+<p>Repeatedly finalize the closest unsettled vertex to find shortest paths with nonnegative edge weights.</p>
+<span class="chapter-link">Open section →</span>
+</div>
+</a>
+</div>
+</div>
+</section>
+</main>
+<footer class="overview-footer">
+<div>Allan's Handbook of Algorithms</div>
+<div>© 2026 Allan Allemand</div>
+</footer>
+<script src="../assets/js/language-switch.js"></script>
+</body>
+</html>

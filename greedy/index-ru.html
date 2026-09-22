@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="Жадные алгоритмы: структура главы, классические задачи, доказательства и применения на графах." name="description"/>
+<meta content="Жадные алгоритмы | Гайд по алгоритмам — presented by Аллан" property="og:title"/>
+<meta content="Жадная стратегия, доказательства, интервалы, расписания, кодирование Хаффмана, MST и алгоритм Дейкстры." property="og:description"/>
+<meta content="article" property="og:type"/>
+<title>Жадные алгоритмы | Гайд по алгоритмам — presented by Аллан</title>
+<link href="../assets/css/styles.css" rel="stylesheet"/>
+<link href="assets/greedy.css" rel="stylesheet"/>
+<link href="../assets/images/favicon-32.png" rel="icon" sizes="32x32" type="image/png"/>
+<link href="../assets/images/favicon.png" rel="icon" sizes="64x64" type="image/png"/>
+<link href="../assets/images/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180"/>
+<link href="./" hreflang="en" rel="alternate"/><link href="index-ru.html" hreflang="ru" rel="alternate"/>
+</head>
+<body>
+<header class="topbar">
+<a class="brand" href="../index-ru.html"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name ru-brand-name"><span class="ru-brand-lines"><span>Гайд по алгоритмам</span><span class="ru-brand-presented">presented by Аллан</span></span></span></a>
+<nav aria-label="Основная навигация" class="topnav">
+<div aria-label="Язык" class="language-switch"><a href="./">EN</a><span class="language-separator">·</span><span class="current">RU</span></div>
+</nav>
+</header>
+<main class="chapter-overview sorting-contents-page">
+<section class="overview-section sorting-contents greedy-contents" id="chapter-map">
+<div class="chapter-label">Глава 9</div>
+<h1>Жадные алгоритмы</h1>
+<div class="chapter-prereq-note">Полезно перед началом: <a href="../sorting/index-ru.html">сортировки →</a> · <a href="../data-structures/index-ru.html">кучи и очереди с приоритетом →</a></div>
+<div class="sorting-part">
+<div class="sorting-part-head">
+<div>
+<span class="sorting-part-kicker">Основы</span>
+<h3>Как работают жадные алгоритмы</h3>
+</div>
+<p>Жадный алгоритм делает локально привлекательный выбор и больше к нему не возвращается. Главный вопрос не в том, как сделать такой шаг, а в том, когда его можно доказать безопасным.</p>
+</div>
+<div class="chapter-grid section-icon-grid">
+<a class="chapter-card available icon-card" href="strategy-ru.html">
+<div class="chapter-card-icon"><img alt="" src="assets/greedy-strategy.svg"/></div>
+<div>
+<h3>Жадная стратегия</h3>
+<p>Локальный выбор, допустимость, целевая функция и решения, к которым алгоритм больше не возвращается.</p>
+<span class="chapter-link">Открыть раздел →</span>
+</div>
+</a>
+<a class="chapter-card available icon-card" href="proofs-ru.html">
+<div class="chapter-card-icon"><img alt="" src="assets/greedy-proofs.svg"/></div>
+<div>
+<h3>Доказательства корректности</h3>
+<p>Обменные аргументы, принцип «жадный не отстаёт» и другие способы доказать безопасность локального выбора.</p>
+<span class="chapter-link">Открыть раздел →</span>
+</div>
+</a>
+<a class="chapter-card available icon-card" href="greedy-vs-dp-ru.html">
+<div class="chapter-card-icon"><img alt="" src="assets/greedy-vs-dp.svg"/></div>
+<div>
+<h3>Жадные алгоритмы и динамическое программирование</h3>
+<p>Как понять, когда достаточно одного необратимого выбора, а когда задаче нужно полноценное состояние.</p>
+<span class="chapter-link">Открыть раздел →</span>
+</div>
+</a>
+</div>
+</div>
+<div class="sorting-part">
+<div class="sorting-part-head">
+<div>
+<span class="sorting-part-kicker">Интервалы и расписания</span>
+<h3>Как упорядочивать решения во времени</h3>
+</div>
+<p>Многие задачи о расписаниях становятся простыми после правильной сортировки интервалов или задач: по окончанию, началу или дедлайну.</p>
+</div>
+<div class="chapter-grid section-icon-grid">
+<a class="chapter-card available icon-card" href="interval-scheduling-ru.html">
+<div class="chapter-card-icon"><img alt="" src="assets/greedy-interval-scheduling.svg"/></div>
+<div>
+<h3>Выбор непересекающихся интервалов</h3>
+<p>Как выбрать максимальное число непересекающихся интервалов, каждый раз беря тот, который заканчивается раньше.</p>
+<span class="chapter-link">Открыть раздел →</span>
+</div>
+</a>
+<a class="chapter-card available icon-card" href="interval-partitioning-ru.html">
+<div class="chapter-card-icon"><img alt="" src="assets/greedy-interval-partitioning.svg"/></div>
+<div>
+<h3>Разбиение интервалов по ресурсам</h3>
+<p>Как распределить пересекающиеся интервалы по минимальному числу аудиторий или других ресурсов с помощью кучи.</p>
+<span class="chapter-link">Открыть раздел →</span>
+</div>
+</a>
+<a class="chapter-card available icon-card" href="minimizing-lateness-ru.html">
+<div class="chapter-card-icon"><img alt="" src="assets/greedy-lateness.svg"/></div>
+<div>
+<h3>Минимизация максимального опоздания</h3>
+<p>Как упорядочить задачи по дедлайнам так, чтобы минимизировать максимальное опоздание.</p>
+<span class="chapter-link">Открыть раздел →</span>
+</div>
+</a>
+</div>
+</div>
+<div class="sorting-part">
+<div class="sorting-part-head">
+<div>
+<span class="sorting-part-kicker">Выбор и построение</span>
+<h3>Ценность, сжатие и повторяющиеся выборы</h3>
+</div>
+<p>Жадное правило может определяться ценностью на единицу ресурса или повторным объединением самых дешёвых доступных частей в более крупную структуру.</p>
+</div>
+<div class="chapter-grid section-icon-grid">
+<a class="chapter-card available icon-card" href="fractional-knapsack-ru.html">
+<div class="chapter-card-icon"><img alt="" src="assets/greedy-fractional-knapsack.svg"/></div>
+<div>
+<h3>Дробная задача о рюкзаке</h3>
+<p>Берём предметы по ценности на единицу веса, если предметы можно делить, и сравниваем с рюкзаком 0/1.</p>
+<span class="chapter-link">Открыть раздел →</span>
+</div>
+</a>
+<a class="chapter-card available icon-card" href="huffman-ru.html">
+<div class="chapter-card-icon"><img alt="" src="assets/greedy-huffman.svg"/></div>
+<div>
+<h3>Кодирование Хаффмана</h3>
+<p>Построение оптимального префиксного кода повторным объединением двух наименее частых символов или поддеревьев.</p>
+<span class="chapter-link">Открыть раздел →</span>
+</div>
+</a>
+</div>
+</div>
+<div class="sorting-part">
+<div class="sorting-part-head">
+<div>
+<span class="sorting-part-kicker">Жадность на графах</span>
+<h3>Построение оптимальных структур</h3>
+</div>
+<p>Некоторые важнейшие алгоритмы на графах строят решение постепенно, каждый раз добавляя ребро или вершину, безопасность которых можно доказать.</p>
+</div>
+<div class="chapter-grid section-icon-grid">
+<a class="chapter-card available icon-card" href="mst-ru.html">
+<div class="chapter-card-icon"><img alt="" src="assets/greedy-mst.svg"/></div>
+<div>
+<h3>Минимальные остовные деревья</h3>
+<p>Алгоритмы Краскала и Прима, свойство разреза, система непересекающихся множеств и очереди с приоритетом.</p>
+<span class="chapter-link">Открыть раздел →</span>
+</div>
+</a>
+<a class="chapter-card available icon-card" href="dijkstra-ru.html">
+<div class="chapter-card-icon"><img alt="" src="assets/greedy-dijkstra.svg"/></div>
+<div>
+<h3>Алгоритм Дейкстры</h3>
+<p>Поочерёдно фиксируем ближайшую необработанную вершину и находим кратчайшие пути при неотрицательных весах.</p>
+<span class="chapter-link">Открыть раздел →</span>
+</div>
+</a>
+</div>
+</div>
+</section>
+</main>
+<footer class="overview-footer">
+<div>Гайд по алгоритмам · presented by Аллан</div>
+<div>© 2026 Allan Allemand</div>
+</footer>
+<script src="../assets/js/language-switch.js"></script>
+</body>
+</html>
