@@ -8,7 +8,7 @@
 <body class="lecture-page"><div aria-hidden="true" class="progress-track"><div class="progress-bar" id="reading-progress"></div></div>
 <header class="topbar"><a class="brand" href="../"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name">Allan's Handbook of Algorithms</span></a>
 <nav aria-label="Primary navigation" class="topnav"><a href="./">Greedy overview</a><div aria-label="Language" class="language-switch"><span class="current">EN</span><span class="language-separator">·</span><a href="interval-partitioning-ru.html">RU</a></div></nav></header>
-<aside aria-label="Section navigation" class="sidebar"><div class="sidebar-title">Chapter 9 · Section 5</div><a href="#problem">Problem</a><a href="#depth">Depth</a><a href="#algorithm">Algorithm</a><a href="#proof">Correctness</a><a href="#implementation">Implementation</a><a href="#comparison">Comparison</a><a href="#exercises">Exercises</a></aside>
+<aside aria-label="Section navigation" class="sidebar"><div class="sidebar-title">Chapter 9 · Section 5</div><a href="#problem">Problem</a><a href="#depth">Depth</a><a href="#algorithm">Algorithm</a><a href="#sweep">Count only: sweep line</a><a href="#proof">Correctness</a><a href="#implementation">Implementation</a><a href="#comparison">Comparison</a><a href="#exercises">Exercises</a></aside>
 <main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Chapter 9 · Section 5</div><h1>Interval Partitioning</h1><p class="chapter-topics">Schedule every interval while using as few rooms as possible. Reuse the room that becomes free first.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-interval-partitioning.svg"/></div></section>
 <section class="lecture-section" id="problem">
 <h2>Use as few rooms as possible</h2>
@@ -48,6 +48,27 @@
 <div class="greedy-job-result">Rooms currently used: <strong data-role="count">0</strong></div>
 <div class="secondary-controls"><button data-action="reset" type="button">Reset</button></div>
 </div>
+</section>
+
+<!-- book-synthesis-ip -->
+<section class="lecture-section" id="sweep">
+<h2>If you only need the number of rooms: sweep the endpoints</h2>
+<p class="lead">The heap algorithm constructs an actual room assignment. If the task asks only for the minimum number of rooms, we can compute the maximum overlap depth directly with a sweep line.</p>
+<div class="clean-steps">
+<div class="clean-step"><span>1</span><p>Create one start event <span class="math">(+1)</span> and one finish event <span class="math">(−1)</span> for every interval.</p></div>
+<div class="clean-step"><span>2</span><p>Sort events by time. Under half-open semantics <span class="math">[s,f)</span>, process a finish before a start when times are equal.</p></div>
+<div class="clean-step"><span>3</span><p>Scan the events, maintaining the number of active intervals. The maximum active count is exactly the depth and therefore the optimal number of rooms.</p></div>
+</div>
+<div class="sweep-demo">
+<div class="sweep-row event-start"><span>09:00</span><b>class starts</b><code>active + 1</code></div>
+<div class="sweep-row event-start"><span>09:30</span><b>class starts</b><code>active + 1</code></div>
+<div class="sweep-row event-end"><span>10:00</span><b>class ends</b><code>active − 1</code></div>
+<div class="sweep-row event-start"><span>10:00</span><b>next starts</b><code>active + 1</code></div>
+</div>
+<div class="table-wrap"><table><thead><tr><th>Need</th><th>Best representation</th><th>Output</th></tr></thead><tbody>
+<tr><td>Only the minimum number of rooms</td><td>Sorted start/finish events</td><td>Maximum overlap depth</td></tr>
+<tr><td>An explicit room assignment</td><td>Min-heap of room finish times</td><td>Room id for every interval</td></tr>
+</tbody></table></div>
 </section>
 
 <section class="lecture-section" id="proof">
