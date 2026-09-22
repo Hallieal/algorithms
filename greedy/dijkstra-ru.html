@@ -8,7 +8,7 @@
 <body class="lecture-page"><div aria-hidden="true" class="progress-track"><div class="progress-bar" id="reading-progress"></div></div>
 <header class="topbar"><a class="brand" href="../index-ru.html"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name ru-brand-name"><span class="ru-brand-lines"><span>Гайд по алгоритмам</span><span class="ru-brand-presented">presented by Аллан</span></span></span></a>
 <nav aria-label="Основная навигация" class="topnav"><a href="index-ru.html">Жадные алгоритмы</a><div aria-label="Язык" class="language-switch"><a href="dijkstra.html">EN</a><span class="language-separator">·</span><span class="current">RU</span></div></nav></header>
-<aside aria-label="Навигация по разделу" class="sidebar"><div class="sidebar-title">Глава 9 · Раздел 10</div><a href="#problem">Постановка</a><a href="#all-distances">Один source — все distances</a><a href="#idea">Жадная идея</a><a href="#fewest-cheapest">Меньше рёбер vs дешевле путь</a><a href="#cost-not-distance">Cost — не обязательно distance</a><a href="#mental-model">Модель в четыре шага</a><a href="#demo">По шагам</a><a href="#bfs-link">От BFS к Dijkstra</a><a href="#state-table">Costs, parents, processed</a><a href="#proof">Корректность</a><a href="#negative">Отрицательные рёбра</a><a href="#frontier-structure">Array frontier и heap frontier</a><a href="#implementation">Реализация</a><a href="#paths">Восстановление путей</a><a href="#comparison">Сравнение с MST</a><a href="#choice-guide">Какой shortest-path метод?</a><a href="#exercises">Задачи</a></aside>
+<aside aria-label="Навигация по разделу" class="sidebar"><div class="sidebar-title">Глава 9 · Раздел 10</div><a href="#problem">Постановка</a><a href="#all-distances">Один source — все distances</a><a href="#idea">Жадная идея</a><a href="#fewest-cheapest">Меньше рёбер vs дешевле путь</a><a href="#cost-not-distance">Cost — не обязательно distance</a><a href="#mental-model">Модель в четыре шага</a><a href="#demo">По шагам</a><a href="#bfs-link">От BFS к Dijkstra</a><a href="#state-table">Costs, parents, processed</a><a href="#proof">Корректность</a><a href="#negative">Отрицательные рёбра</a><a href="#frontier-structure">Array frontier и heap frontier</a><a href="#implementation">Реализация</a><a href="#paths">Восстановление путей</a><a href="#comparison">Сравнение с MST</a><a href="#interview-decompose">Interview decomposition</a><a href="#choice-guide">Какой shortest-path метод?</a><a href="#exercises">Задачи</a></aside>
 <main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Глава 9 · Раздел 10</div><h1>Алгоритм Дейкстры</h1><p class="chapter-topics">При неотрицательных весах минимальную временную метку можно безопасно зафиксировать. На этом одном жадном шаге построен алгоритм Дейкстры.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-dijkstra.svg"/></div></section>
 <section class="lecture-section" id="problem">
 <h2>Кратчайшие пути из одного источника</h2>
@@ -216,6 +216,24 @@
 <tr><td>Отрицательные веса</td><td>Разрешены</td><td>Запрещены</td></tr>
 </tbody></table></div>
 <div class="bridge-note"><h3>Одинаковый control flow, разный инвариант</h3><p>Оба алгоритма могут выглядеть как «извлечь минимум, посмотреть соседей, добавить обновления». Прим измеряет цену присоединения вершины к дереву. Дейкстра — полную цену пути до неё от источника.</p></div>
+</section>
+
+<!-- coding-patterns-round-dijkstra -->
+<section class="lecture-section" id="interview-decompose">
+<h2>Interview decomposition: переведите story в graph до выбора Dijkstra</h2>
+<p class="lead">Shortest-path задачи часто маскируются под цены, задержки, transformations или маршруты. До кода разложите story на четыре graph ingredients.</p>
+<div class="interview-flow">
+<article><span>1</span><h3>Vertices</h3><p>Что является states: города, страницы, accounts, configurations, positions или что-то ещё?</p></article>
+<article><span>2</span><h3>Edges</h3><p>Какой один transition разрешён между states? Важна ли direction?</p></article>
+<article><span>3</span><h3>Weights</h3><p>Что складывается вдоль path: distance, time, price, risk или другая additive cost?</p></article>
+<article><span>4</span><h3>Weight restriction</h3><p>Если все edge weights неотрицательны, greedy finalization правдоподобен. Negative edge — немедленный warning sign против Dijkstra.</p></article>
+</div>
+<div class="recognition-grid">
+<article class="recognition-card"><span class="signal">Unweighted</span><h3>Сначала думайте о BFS</h3><p>Если каждый move имеет одинаковую cost, level-order traversal уже обрабатывает states в nondecreasing distance.</p></article>
+<article class="recognition-card"><span class="signal">Weighted ≥ 0</span><h3>Думайте о min-priority queue</h3><p>Repeated operation: «дай unfinalized state с minimum tentative cost». Это классический heap pattern.</p></article>
+<article class="recognition-card"><span class="signal">Negative edge</span><h3>Остановитесь и смените метод</h3><p>Local finalization может стать неверной: более дешёвая route способна появиться позже благодаря negative contribution.</p></article>
+</div>
+<div class="interview-answer"><h3>Что сказать до implementation</h3><p>«Это single-source shortest-path problem с additive nonnegative edge weights, поэтому minimum tentative distance можно безопасно finalize, а min-heap быстро показывает следующую vertex».</p></div>
 </section>
 
 <section class="lecture-section" id="choice-guide">
