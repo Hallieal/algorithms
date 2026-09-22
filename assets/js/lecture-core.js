@@ -10,6 +10,15 @@
 
   function setupReveals() {
     const labels = answerLabels();
+
+    document.querySelectorAll("button[data-reveal]").forEach(button => {
+      const targetId = button.dataset.reveal;
+      if (!targetId) return;
+      button.setAttribute("aria-controls", targetId);
+      const target = document.getElementById(targetId);
+      button.setAttribute("aria-expanded", String(Boolean(target && !target.hidden)));
+    });
+
     document.addEventListener("click", event => {
       const button = event.target.closest("button[data-reveal]");
       if (!button) return;
