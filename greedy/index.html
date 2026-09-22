@@ -40,7 +40,7 @@
 <div class="chapter-card-icon"><img alt="" src="assets/greedy-strategy.svg"/></div>
 <div>
 <h3>Greedy Strategy</h3>
-<p>Learn the core guarantee types, then recognize backward frontiers, candidate elimination, directional passes, and other ways a safe local summary can replace many futures.</p>
+<p>Learn the core guarantee types, recognize common greedy shapes, and see the choose → commit → reduce loop that turns one safe local decision into a smaller instance.</p>
 <span class="chapter-link">Open section →</span>
 </div>
 </a>
@@ -48,7 +48,7 @@
 <div class="chapter-card-icon"><img alt="" src="assets/greedy-proofs.svg"/></div>
 <div>
 <h3>Proving Greedy Correctness</h3>
-<p>Move from intuition to invariant to proof, including Gas Station block elimination and two-pass lower-bound proofs that justify deleting whole classes of candidates.</p>
+<p>Move from intuition to invariant to proof, including exchange, candidate elimination, and the powerful lower-bound + matching-construction certificate.</p>
 <span class="chapter-link">Open section →</span>
 </div>
 </a>
@@ -56,7 +56,7 @@
 <div class="chapter-card-icon"><img alt="" src="assets/greedy-vs-dp.svg"/></div>
 <div>
 <h3>Greedy vs Dynamic Programming</h3>
-<p>Use Jump Game, Gas Station, Knapsack, and maximum subarray to ask the key question: can one branch dominate the others, or must several futures stay alive?</p>
+<p>Use Jump Game, Gas Station, coin change, Knapsack, and maximum subarray to ask whether one branch dominates—or whether DP must preserve competing futures.</p>
 <span class="chapter-link">Open section →</span>
 </div>
 </a>
@@ -75,7 +75,7 @@
 <div class="chapter-card-icon"><img alt="" src="assets/greedy-interval-scheduling.svg"/></div>
 <div>
 <h3>Interval Scheduling</h3>
-<p>Walk through a classroom schedule, prove earliest finish, and learn to distinguish sort-by-start, sort-by-finish, and endpoint-sweep interval patterns.</p>
+<p>Reject tempting rules, prove earliest finish by residual-set dominance, and distinguish sort-by-start, sort-by-finish, and endpoint-sweep interval patterns.</p>
 <span class="chapter-link">Open section →</span>
 </div>
 </a>
@@ -83,7 +83,7 @@
 <div class="chapter-card-icon"><img alt="" src="assets/greedy-interval-partitioning.svg"/></div>
 <div>
 <h3>Interval Partitioning</h3>
-<p>Keep every class, match overlap depth, and implement the sweep either with tagged events or two sorted endpoint arrays with the tie rule made explicit.</p>
+<p>Keep every class, match overlap depth, and connect classrooms to the railway-platform sweep: starts add demand, finishes release a resource.</p>
 <span class="chapter-link">Open section →</span>
 </div>
 </a>
@@ -91,7 +91,7 @@
 <div class="chapter-card-icon"><img alt="" src="assets/greedy-lateness.svg"/></div>
 <div>
 <h3>Minimizing Maximum Lateness</h3>
-<p>See why deadlines drive the order, then use a compact recognition checklist to verify that the exact scheduling model still matches EDF before coding.</p>
+<p>See why deadlines drive maximum lateness while shortest-processing-time drives total waiting time: same jobs, different objective, different greedy key.</p>
 <span class="chapter-link">Open section →</span>
 </div>
 </a>
@@ -110,7 +110,7 @@
 <div class="chapter-card-icon"><img alt="" src="assets/greedy-fractional-knapsack.svg"/></div>
 <div>
 <h3>Fractional Knapsack</h3>
-<p>Use a concrete 0/1 counterexample to separate indivisible from fractional items, then derive density greedy and its implementation choices.</p>
+<p>Use a concrete 0/1 counterexample to separate indivisible from fractional items, derive density greedy, and compare full sorting with lazy heap extraction.</p>
 <span class="chapter-link">Open section →</span>
 </div>
 </a>
@@ -118,7 +118,7 @@
 <div class="chapter-card-icon"><img alt="" src="assets/greedy-huffman.svg"/></div>
 <div>
 <h3>Huffman Coding</h3>
-<p>Count the bits, decode by walking the tree, and recognize the general heap pattern: repeatedly extract the current minima, merge, reinsert, repeat.</p>
+<p>Count the bits, build Huffman, then connect it to optimal file merging where two-smallest-first cuts merge cost from 680 to 395 in a worked example.</p>
 <span class="chapter-link">Open section →</span>
 </div>
 </a>
@@ -137,7 +137,7 @@
 <div class="chapter-card-icon"><img alt="" src="assets/greedy-mst.svg"/></div>
 <div>
 <h3>Minimum Spanning Trees</h3>
-<p>Separate route from network, derive Kruskal/Prim/Borůvka, then connect Kruskal to Union-Find with union by size and path compression.</p>
+<p>Separate route from network, derive Kruskal/Prim/Borůvka, connect Kruskal to DSU, and compare O(V²) Prim on dense graphs with heap-based Prim on sparse ones.</p>
 <span class="chapter-link">Open section →</span>
 </div>
 </a>
@@ -145,7 +145,7 @@
 <div class="chapter-card-icon"><img alt="" src="assets/greedy-dijkstra.svg"/></div>
 <div>
 <h3>Dijkstra’s Algorithm</h3>
-<p>Translate story problems into vertices, edges, weights, and restrictions; then distinguish BFS, heap-based Dijkstra, and the negative-edge failure case.</p>
+<p>Translate stories into graphs, distinguish BFS/Dijkstra/negative-edge cases, and separate single-source queries from all-pairs shortest paths.</p>
 <span class="chapter-link">Open section →</span>
 </div>
 </a>
@@ -165,7 +165,7 @@
 <div class="chapter-card-icon"><img alt="" src="assets/greedy-matroids.svg"/></div>
 <div>
 <h3>Matroids and Beyond</h3>
-<p>Finish with matroids and approximation, then organize the chapter as a pattern library: frontiers, elimination, directional passes, heaps, sweeps, and DSU.</p>
+<p>Finish with matroids and approximation, compare exact 1D coverage with Set Cover, and see how an MST becomes a 2-approximation scaffold for metric TSP.</p>
 <span class="chapter-link">Open section →</span>
 </div>
 </a>
@@ -176,11 +176,12 @@
 <div class="sorting-part-head">
 <div>
 <span class="sorting-part-kicker">Further Reading</span>
-<h3>Three complementary intuition-first books, then deeper theory</h3>
+<h3>Four complementary intuition-first books, then deeper theory</h3>
 </div>
-<p>Coding Interview Patterns is strongest on recognition and interview-ready invariants; Grokking Algorithms emphasizes visual intuition and approximation; A Common-Sense Guide emphasizes deriving faster code from a slower baseline. The formal texts below supply deeper proof theory.</p>
+<p>Coding Interview Patterns is strongest on recognition and interview-ready invariants; Karumanchi is strongest as a counterexample-and-problem workbook; Grokking Algorithms emphasizes visual intuition and approximation; A Common-Sense Guide emphasizes deriving faster code from a slower baseline. The formal texts below supply deeper proof theory.</p>
 </div>
 <div class="reference-list">
+<div class="reference-item"><b>Narasimha Karumanchi — Data Structures and Algorithms Made Easy</b><span>Especially Chapter 17: a problem-driven greedy chapter with optimal file merging, interval scheduling and coloring, coin-change failures, fractional knapsack, railway platforms, road coverage, and scheduling examples; the graph chapter adds practical MST and Dijkstra comparisons.</span></div>
 <div class="reference-item"><b>Alex Xu & Shaun Gunawardane — Coding Interview Patterns</b><span>Especially Chapter 16 for Jump to the End, Gas Stations, and Candies; Chapter 9 for intervals and sweep-line reasoning; Chapter 15 for DP contrasts such as maximum subarray and 0/1 Knapsack; and the heap/Union-Find chapters for supporting data structures.</span></div>
 <div class="reference-item"><b>Jay Wengrow — A Common-Sense Guide to Data Structures and Algorithms in Python</b><span>Especially Chapter 20: current Big O → best-imaginable Big O → pattern/state compression, plus Chapter 18 for a careful Dijkstra walkthrough and the array-vs-priority-queue implementation trade-off.</span></div>
 <div class="reference-item"><b>Aditya Y. Bhargava — Grokking Algorithms, 2nd ed.</b><span>Especially Chapter 10 on greedy algorithms, Chapter 9 on Dijkstra, and the Huffman discussion in Chapter 7. Strong on visual intuition, “try it yourself” moments, and the transition from exact greedy to approximation.</span></div>
