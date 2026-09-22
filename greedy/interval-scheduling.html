@@ -9,10 +9,10 @@
 <header class="topbar"><a class="brand" href="../"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name">Allan's Handbook of Algorithms</span></a>
 <nav aria-label="Primary navigation" class="topnav"><a href="./">Greedy overview</a><div aria-label="Language" class="language-switch"><span class="current">EN</span><span class="language-separator">·</span><a href="interval-scheduling-ru.html">RU</a></div></nav></header>
 <aside aria-label="Section navigation" class="sidebar"><div class="sidebar-title">Chapter 9 · Section 4</div><a href="#problem">Problem</a><a href="#choices">Choosing the rule</a><a href="#residual-set">Why earliest finish preserves options</a><a href="#classroom-walk">Classroom walkthrough</a><a href="#frontier">Why earliest finish dominates</a><a href="#algorithm">Algorithm</a><a href="#proof">Correctness</a><a href="#runtime">Where the O(n log n) comes from</a><a href="#implementation">Implementation</a><a href="#interval-pattern">Choose the right interval pattern</a><a href="#recognition">Recognition checklist</a><a href="#model-boundary">Why one contiguous interval matters</a><a href="#variants">Variants</a><a href="#exercises">Exercises</a></aside>
-<main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Chapter 9 · Section 4</div><h1>Interval Scheduling</h1><p class="chapter-topics">Choose as many non-overlapping intervals as possible. The right greedy move is simple: finish early and leave room for what comes next.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-interval-scheduling.svg"/></div></section>
+<main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Chapter 9 · Section 4</div><h1>Interval Scheduling</h1><p class="chapter-topics">Interval Scheduling asks for the largest set of non-overlapping intervals. The optimal greedy rule is to process intervals by increasing finish time.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-interval-scheduling.svg"/></div></section>
 <section class="lecture-section" id="problem">
-<h2>Choose as many intervals as possible</h2>
-<p class="lead">Each activity occupies a time interval. We want the largest set of activities that do not overlap. The key question is not which interval looks shortest or starts earliest, but which choice leaves the most room after it.</p><div class="concept-strip">
+<h2>Problem statement</h2>
+<p class="lead">Each activity occupies one time interval. The objective is to select the maximum number of pairwise non-overlapping activities.</p><div class="concept-strip">
 <article class="concept-cell rule"><span>Rule</span><b>Take the interval that finishes first</b><p>Among compatible choices, end as early as possible.</p></article>
 <article class="concept-cell proof"><span>Why it works</span><b>It never leaves less room for the future</b><p>Exchange the first interval of an optimum with the greedy one.</p></article>
 <article class="concept-cell cost"><span>Cost</span><b>O(n log n)</b><p>Sort by finish time, then scan once.</p></article>
@@ -29,8 +29,8 @@
 </section>
 
 <section class="lecture-section" id="choices">
-<h2>The tempting rules — and the one that works</h2>
-<p class="lead">Earliest start, shortest duration, and fewest conflicts all sound reasonable. None is universally correct. Earliest finish is.</p>
+<h2>Candidate ordering rules</h2>
+<p class="lead">Sorting by start time, duration, or number of conflicts can fail. Sorting by finish time gives an optimal solution.</p>
 <div class="greedy-rule-strip">
 <article class="greedy-rule-option bad"><h3>Earliest start</h3><p>Can choose one very long interval and block many short ones.</p></article>
 <article class="greedy-rule-option bad"><h3>Shortest duration</h3><p>A short interval can be placed badly and still destroy useful choices.</p></article>
@@ -44,8 +44,8 @@
 <!-- grokking-pass-interval -->
 <!-- karumanchi-round-interval -->
 <section class="lecture-section" id="residual-set">
-<h2>Earliest finish is really a statement about the residual instance</h2>
-<p class="lead">The rule is stronger than the slogan “leave more time”. It leaves a superset of the future intervals that would remain after any other possible first choice.</p>
+<h2>Why earliest finish is the correct rule</h2>
+<p class="lead">Among feasible first choices, the interval that finishes earliest leaves the largest possible set of intervals available afterward. This dominance property is the basis of the greedy proof.</p>
 <div class="two-column-block">
 <div class="text-panel"><h3>Greedy first interval</h3><p>Let <span class="math">g</span> be the interval with the earliest finish time. After choosing it, the remaining feasible intervals are those with <span class="math">start ≥ finish(g)</span>.</p></div>
 <div class="proof-panel"><h3>Any alternative first interval</h3><p>If some other interval <span class="math">o</span> is chosen first, then <span class="math">finish(g) ≤ finish(o)</span>. Therefore every interval feasible after <span class="math">o</span> is also feasible after <span class="math">g</span>.</p></div>
@@ -55,8 +55,8 @@
 </section>
 
 <section class="lecture-section" id="classroom-walk">
-<h2>See the greedy choice happen, one class at a time</h2>
-<p class="lead">The classroom version is useful because the rule can be executed almost without notation. At each step, ignore every class that now conflicts and choose the remaining class that ends first.</p>
+<h2>Worked example</h2>
+<p class="lead">Process the classes in finish-time order. Accept the next class whose start time is not earlier than the finish time of the last accepted class.</p>
 <div class="predict-card"><span class="predict-kicker">Try it before reading</span><h3>Which class would you choose first?</h3><p>Available: Algorithms 09:00–10:00, Physics 09:30–11:00, Statistics 10:00–11:00, Music 10:30–12:00, Art 11:00–12:00. Do not think about the whole schedule yet—make one local choice.</p></div>
 <div class="classroom-walk">
 <div class="classroom-step"><span>Pick 1</span><p><strong>Algorithms</strong> ends first at 10:00. Keep it. <del>Physics</del> is now impossible because it overlaps.</p></div>
@@ -71,8 +71,8 @@
 </section>
 
 <section class="lecture-section" id="frontier">
-<h2>Earliest finish is a dominance rule</h2>
-<p class="lead">The successful greedy rule is not “pick something short”. It is “push the occupied frontier as little as possible”. Among all candidates we could take next, the earliest-finishing one leaves a residual instance that contains every option left by any later-finishing choice—and sometimes more.</p>
+<h2>Residual-instance dominance</h2>
+<p class="lead">After an interval is selected, only intervals that start after its finish remain feasible. Choosing the earliest finish moves this boundary as little as possible.</p>
 <div class="inline-contrast">
 <div class="no"><h3>Duration asks the wrong question</h3><p>A 20-minute interval placed in the middle of a busy region may destroy two useful intervals. Length measures the chosen interval itself, not the future it leaves.</p></div>
 <div class="yes"><h3>Finish time measures the residual problem</h3><p>If <span class="math">f(g) ≤ f(o)</span>, then every interval available after <span class="math">o</span> is also available after <span class="math">g</span>. This is exactly the dominance statement the proof needs.</p></div>
@@ -81,7 +81,7 @@
 </section>
 
 <section class="lecture-section" id="algorithm">
-<h2>Algorithm: sort once, scan once</h2>
+<h2>Algorithm</h2>
 <div class="step-flow">
 <article class="step-item"><div class="step-number">1</div><div><h3>Sort by finishing time</h3><p>Process intervals from earliest finish to latest finish.</p></div></article>
 <article class="step-item"><div class="step-number">2</div><div><h3>Take the first interval</h3><p>It has the earliest finishing time among all remaining candidates.</p></div></article>
@@ -97,8 +97,8 @@
 </section>
 
 <section class="lecture-section" id="proof">
-<h2>Why finishing first is safe</h2>
-<p class="lead">Let <span class="math">g</span> be the interval that finishes first. Take any optimal schedule <span class="math">O</span>. We only need to show that its first interval can be replaced by <span class="math">g</span> without losing anything.</p>
+<h2>Exchange proof</h2>
+<p class="lead">Let g be the interval with the earliest finish time. Replace the first interval of any optimal schedule by g. The replacement preserves feasibility and does not reduce the number of intervals that can follow.</p>
 <div class="timeline-proof">
 <div class="timeline-proof-card"><h3>Optimal solution O</h3><p>Suppose its first selected interval is <span class="math">o</span>. It may differ from <span class="math">g</span>.</p></div>
 <div class="timeline-proof-arrow">→</div>
@@ -110,8 +110,8 @@
 
 <!-- common-sense-round-interval -->
 <section class="lecture-section" id="runtime">
-<h2>The greedy decision is linear; finding the order is the expensive part</h2>
-<p class="lead">A useful optimization habit is to separate the mathematical rule from the work needed to make that rule cheap to execute.</p>
+<h2>Running time</h2>
+<p class="lead">After sorting by finish time, the greedy scan is linear. The overall running time is therefore O(n log n), dominated by sorting.</p>
 <div class="runtime-ladder">
 <article class="runtime-step"><span>Naive selection</span><h3>Rescan for the earliest finish every time</h3><p>After each accepted interval, scan all remaining candidates to find the next compatible one with minimum finish time. In the worst case this repeats linear work many times: <span class="math">O(n²)</span>.</p></article>
 <article class="runtime-step best"><span>Preprocess once</span><h3>Sort by finish time</h3><p>Pay <span class="math">O(n log n)</span> once, then scan left-to-right and accept compatible intervals in <span class="math">O(n)</span>.</p></article>
@@ -143,8 +143,8 @@
 
 <!-- coding-patterns-round-interval -->
 <section class="lecture-section" id="interval-pattern">
-<h2>“Intervals” is not one pattern: choose the representation from the question</h2>
-<p class="lead">In interviews, interval inputs often look nearly identical. The objective tells you which ordering—or whether endpoints rather than intervals—should drive the algorithm.</p>
+<h2>Choosing the right interval formulation</h2>
+<p class="lead">Interval problems can ask for selection, partitioning, overlap counts, or weighted optimization. The objective determines whether to sort by starts, finishes, or endpoints.</p>
 <div class="sort-key-grid">
 <article><code>sort by start</code><h3>Merge overlaps</h3><p>Once intervals are chronological by start, compare each interval only with the last merged interval. The earlier-starting interval supplies the left boundary.</p></article>
 <article><code>sort by finish</code><h3>Maximum compatible subset</h3><p>For Interval Scheduling, the objective is not to merge overlaps but to preserve future room. Earliest finish is the safe greedy key.</p></article>
@@ -167,8 +167,8 @@
 
 <!-- skiena-round-interval -->
 <section class="lecture-section" id="model-boundary">
-<h2>The theorem depends on each job being one contiguous interval</h2>
-<p class="lead">The familiar picture hides an important modeling assumption: every activity occupies one uninterrupted block of time.</p>
+<h2>Why contiguity matters</h2>
+<p class="lead">The proof assumes that each job occupies one continuous interval. If one job can consist of several separated time blocks, a single finish time no longer summarizes future compatibility.</p>
 <div class="two-column-block">
 <div class="text-panel"><h3>Standard interval</h3><p>A movie films continuously from its start to its finish. Once we choose the earliest-finishing movie, every compatible future job starts after one clean frontier.</p></div>
 <div class="proof-panel"><h3>A job with gaps</h3><p>Suppose one project films in September and November but is idle in October. Another project can fit inside that gap. A single “finish time” no longer summarizes which future jobs remain compatible.</p></div>
@@ -178,7 +178,7 @@
 </section>
 
 <section class="lecture-section" id="variants">
-<h2>Small change, different algorithm</h2>
+<h2>Variants</h2>
 <div class="decision-grid">
 <article class="decision-card greedy-signal"><h3>Weighted intervals</h3><p>If intervals have different profits, earliest finish is no longer enough. The standard solution is dynamic programming after sorting by finish time. This handbook does not yet have a standalone Weighted Interval Scheduling page; the recurrence is previewed in <a href="greedy-vs-dp.html#weighted">Greedy vs Dynamic Programming</a>.</p></article>
 <article class="decision-card greedy-signal"><h3>Need all intervals?</h3><p>If every interval must be scheduled and we minimize the number of rooms, the objective changes completely. That is the next section: Interval Partitioning.</p></article>
