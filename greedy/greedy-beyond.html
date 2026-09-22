@@ -24,7 +24,7 @@
 </header>
 <aside aria-label="Section navigation" class="sidebar">
 <div class="sidebar-title">Chapter 9 · Section 11</div>
-<a href="#map">The big picture</a><a href="#matroid">Matroids</a><a href="#mst">Kruskal</a><a href="#limits">What is not a matroid</a><a href="#guarantees">Heuristic vs approximation</a><a href="#approx">Approximation</a><a href="#setcover">Set Cover worked example</a><a href="#set-code">Set Cover in code</a><a href="#decision">Decision map</a><a href="#reading">Further reading</a><a href="#exercises">Exercises</a>
+<a href="#map">The big picture</a><a href="#matroid">Matroids</a><a href="#mst">Kruskal</a><a href="#limits">What is not a matroid</a><a href="#exact-vs-fast">Exact search vs fast greedy</a><a href="#guarantees">Heuristic vs approximation</a><a href="#approx">Approximation</a><a href="#setcover">Set Cover worked example</a><a href="#set-code">Set Cover in code</a><a href="#decision">Decision map</a><a href="#reading">Further reading</a><a href="#exercises">Exercises</a>
 </aside>
 <main class="lecture">
 <section class="lecture-hero greedy-lecture-hero">
@@ -81,6 +81,21 @@
 </section>
 
 <!-- book-synthesis-beyond -->
+<!-- grokking-round-beyond -->
+<section class="lecture-section" id="exact-vs-fast">
+<h2>When exact search explodes, change the question</h2>
+<p class="lead">Set Cover is a useful turning point in the chapter because the exact formulation is easy to state but expensive to search exhaustively.</p>
+<div class="objective-swap">
+<article><h3>Exact search</h3><p>With <span class="math">m</span> candidate sets, enumerate subsets of those sets and keep the smallest cover. There are <span class="math">2^m</span> subsets before we even check whether each one covers the universe.</p></article>
+<div class="objective-arrow">→</div>
+<article><h3>Greedy approximation</h3><p>Repeatedly choose the set that covers the largest number of still-uncovered elements. We stop asking for guaranteed equality with OPT and instead ask for speed plus a provable quality bound.</p></article>
+</div>
+<div class="inline-contrast">
+<div class="yes"><h3>Criterion 1: speed</h3><p>Can the algorithm handle input sizes for which enumerating every subset is hopeless?</p></div>
+<div class="yes"><h3>Criterion 2: solution quality</h3><p>How far from OPT can the answer be in the worst case? This is what separates an approximation theorem from “seems good”.</p></div>
+</div>
+</section>
+
 <section class="lecture-section" id="guarantees">
 <h2>Heuristics and approximation algorithms are not the same thing</h2>
 <p class="lead">Both may return a non-optimal solution, but only one comes with a theorem about how bad the answer can be.</p>
@@ -100,16 +115,28 @@
 
 <section class="lecture-section" id="setcover">
 <h2>Worked approximation example: Set Cover</h2>
-<p class="lead">The greedy step is easy to execute: among the remaining sets, choose the one that covers the most elements not yet covered. The proof of the approximation ratio is harder than the algorithm.</p>
+<p class="lead">Imagine radio stations whose broadcast areas overlap. We want to cover every target region while choosing as few stations as possible.</p>
 <div class="clean-steps">
-<div class="clean-step"><span>1</span><p>Universe: <span class="math">{1,2,3,4,5,6}</span>. Suppose A covers {1,2,3}, B covers {2,4,5}, C covers {3,5,6}, and D covers {4,6}.</p></div>
-<div class="clean-step"><span>2</span><p>Greedy first takes A because it covers three uncovered elements. Remaining: {4,5,6}.</p></div>
-<div class="clean-step"><span>3</span><p>B and C each cover two remaining elements. Choose either; after B, only {6} remains, so C or D finishes the cover.</p></div>
+<div class="clean-step"><span>1</span><p>Keep a set <code>uncovered</code> of regions still needing coverage.</p></div>
+<div class="clean-step"><span>2</span><p>For each station, compute <code>uncovered & station_regions</code>. Its size is the number of <em>new</em> regions that station would add right now.</p></div>
+<div class="clean-step"><span>3</span><p>Choose the station with the largest intersection, add it to the answer, and remove those newly covered regions with set difference.</p></div>
+<div class="clean-step"><span>4</span><p>Repeat until <code>uncovered</code> is empty.</p></div>
 </div>
-<div class="practice-note"><h3>What the approximation proof measures</h3><p>At each stage, if OPT uses <span class="math">k</span> sets to cover what remains, some OPT-set must cover at least a <span class="math">1/k</span> fraction of the remaining elements. Greedy covers at least that much. Repeating this charging idea yields the harmonic bound.</p></div>
+<div class="set-cover-code"><pre><code>chosen = []
+while uncovered:
+    best = max(
+        stations,
+        key=lambda s: len(uncovered & stations[s])
+    )
+    newly_covered = uncovered & stations[best]
+    if not newly_covered:
+        raise ValueError("universe cannot be covered")
+    chosen.append(best)
+    uncovered -= newly_covered</code></pre></div>
+<div class="practice-note"><h3>Why sets fit the algorithm</h3><p>The mathematics of the greedy step is literally set intersection and set difference: intersection measures the immediate gain, and difference updates what remains. The data structure mirrors the problem statement.</p></div>
+<div class="approx-box"><h3>The stronger theorem</h3><p>The intuitive rule above is not merely “often good”. Greedy Set Cover has the harmonic approximation guarantee <span class="math">H_n ≤ ln n + 1</span>, where <span class="math">n</span> is the universe size.</p></div>
 </section>
 
-<!-- grokking-pass-beyond -->
 <section class="lecture-section" id="set-code">
 <h2>Set Cover becomes simple when the data matches the operation</h2>
 <p class="lead">The greedy rule repeatedly asks one set question: “How many still-uncovered elements would this candidate add?” Python sets make that question almost literal.</p>
