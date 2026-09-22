@@ -27,7 +27,7 @@
 </header>
 <aside aria-label="Section navigation" class="sidebar">
 <div class="sidebar-title">Chapter 9 · Section 1</div>
-<a href="#idea">The basic idea</a><a href="#guarantees">Algorithm or heuristic?</a><a href="#anatomy">Anatomy</a><a href="#example">First example</a><a href="#failure">When greedy fails</a><a href="#design-loop">Design loop</a><a href="#properties">Structural properties</a><a href="#implementation">Implementation</a><a href="#complexity">Efficiency</a><a href="#recognition">Recognition patterns</a><a href="#exercises">Exercises</a>
+<a href="#idea">The basic idea</a><a href="#guarantees">Algorithm or heuristic?</a><a href="#anatomy">Anatomy</a><a href="#example">First example</a><a href="#grokking-outcomes">What can greedy mean?</a><a href="#failure">When greedy fails</a><a href="#design-loop">Design loop</a><a href="#properties">Structural properties</a><a href="#implementation">Implementation</a><a href="#complexity">Efficiency</a><a href="#recognition">Recognition patterns</a><a href="#exercises">Exercises</a>
 </aside>
 <main class="lecture">
 <section class="lecture-hero greedy-lecture-hero">
@@ -89,6 +89,18 @@
 </div>
 <div class="subsection"><h3>Why this local choice is promising</h3><p>If a solution contains a longer job while a shorter unchosen job exists, replacing the longer job by the shorter one cannot increase the total time. This exchange idea is exactly the kind of reasoning we need to justify a greedy rule.</p></div>
 <div class="compact-proof"><h3>A complete proof in three lines</h3><p>Let <span class="math">d₁ ≤ d₂ ≤ ··· ≤ dₙ</span>, and suppose greedy fits exactly the first <span class="math">k</span> jobs. Then <span class="math">d₁+···+dₖ ≤ T</span> but <span class="math">d₁+···+dₖ₊₁ &gt; T</span>. Any set of <span class="math">k+1</span> jobs has total duration at least that of the <span class="math">k+1</span> shortest jobs, so no solution can complete <span class="math">k+1</span> jobs.</p></div>
+</section>
+
+<!-- grokking-pass-strategy -->
+<section class="lecture-section" id="grokking-outcomes">
+<h2>The same greedy instinct can lead to three different outcomes</h2>
+<p class="lead">A useful way to learn greedy is to compare problems that look equally simple at first. The local move can be exactly right, merely useful, or provably approximate.</p>
+<div class="grokking-contrast">
+<article class="grokking-card good"><span>Exact</span><h3>Classroom scheduling</h3><p>Pick the compatible class that finishes first. Here the local choice can be proved to preserve an optimum.</p></article>
+<article class="grokking-card warn"><span>Not exact</span><h3>0/1 Knapsack</h3><p>Picking the locally most attractive whole item can block a better combination. A plausible greedy rule is not automatically an algorithm for OPT.</p></article>
+<article class="grokking-card approx"><span>Approximation</span><h3>Set Cover</h3><p>When exact search is too expensive, repeatedly covering the most still-uncovered elements gives a fast solution with a provable quality bound.</p></article>
+</div>
+<div class="predict-card"><span class="predict-kicker">Two questions to ask immediately</span><h3>Does the local choice preserve an optimum? If not, what guarantee is left?</h3><p>That pair of questions is more useful than memorizing a list of “greedy problems”. It separates exact greedy algorithms from heuristics and approximation algorithms.</p></div>
 </section>
 
 <section class="lecture-section" id="failure">
