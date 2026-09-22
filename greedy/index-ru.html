@@ -26,21 +26,21 @@
 <section class="overview-section sorting-contents greedy-contents" id="chapter-map">
 <div class="chapter-label">Глава 9</div>
 <h1>Жадные алгоритмы</h1>
-<p class="greedy-overview-lead">В 11 статьях greedy разбирается как метод design и recognition: понять objective, сжать правильное state, доказать безопасность каждого discard и узнавать recurring interview shapes без заучивания кода.</p><div class="chapter-prereq-note">Полезно перед началом: <a href="../sorting/index-ru.html">сортировки →</a> · <a href="../data-structures/index-ru.html">кучи и очереди с приоритетом →</a></div>
+<p class="greedy-overview-lead">Глава состоит из 10 статей: определение greedy, доказательства корректности, interval и scheduling задачи, Knapsack, Huffman coding, minimum spanning trees и алгоритм Дейкстры.</p><div class="chapter-prereq-note">Полезно перед началом: <a href="../sorting/index-ru.html">сортировки →</a> · <a href="../data-structures/index-ru.html">кучи и очереди с приоритетом →</a></div>
 <div class="sorting-part">
 <div class="sorting-part-head">
 <div>
 <span class="sorting-part-kicker">Основы</span>
-<h3>Выбрать один раз и доказать безопасность</h3>
+<h3>Основы</h3>
 </div>
-<p>Сначала разбираем сам принцип, затем — доказательства необратимых решений и границу, после которой вместо greedy уже нужно динамическое программирование.</p>
+<p>Определение greedy, доказательства корректности, контрпримеры и граница между greedy и dynamic programming.</p>
 </div>
 <div class="chapter-grid section-icon-grid">
 <a class="chapter-card available icon-card" href="strategy-ru.html">
 <div class="chapter-card-icon"><img alt="" src="assets/greedy-strategy.svg"/></div>
 <div>
 <h3>Жадная стратегия</h3>
-<p>Начинаем с точной problem statement, затем разбираем guarantee types и цикл choose → commit → reduce, который делает irreversible local choice осмысленным.</p>
+<p>Определение greedy, типы гарантий и структура одного жадного шага.</p>
 <span class="chapter-link">Открыть раздел →</span>
 </div>
 </a>
@@ -48,7 +48,7 @@
 <div class="chapter-card-icon"><img alt="" src="assets/greedy-proofs.svg"/></div>
 <div>
 <h3>Доказательства корректности</h3>
-<p>Осваиваем proof patterns и систематическую лабораторию counterexamples: think small, force ties, seek extremes, затем переходим от failure к invariant и proof.</p>
+<p>Exchange arguments, staying-ahead proofs, индукция, cut arguments и систематический поиск контрпримеров.</p>
 <span class="chapter-link">Открыть раздел →</span>
 </div>
 </a>
@@ -56,7 +56,7 @@
 <div class="chapter-card-icon"><img alt="" src="assets/greedy-vs-dp.svg"/></div>
 <div>
 <h3>Жадные алгоритмы и динамическое программирование</h3>
-<p>На coin change, Knapsack и других boundary cases смотрим, доминирует ли одна ветка, насколько велик surviving state space и когда O(nC) DP лишь pseudo-polynomial.</p>
+<p>Coin change, Knapsack и weighted intervals показывают, когда достаточно одного state, а когда DP должен хранить несколько состояний.</p>
 <span class="chapter-link">Открыть раздел →</span>
 </div>
 </a>
@@ -66,16 +66,16 @@
 <div class="sorting-part-head">
 <div>
 <span class="sorting-part-kicker">Интервалы и расписания</span>
-<h3>Три цели — три разных порядка</h3>
+<h3>Интервалы и scheduling</h3>
 </div>
-<p>Время окончания, время начала и дедлайн решают разные задачи. Здесь важно понять не сортировку как таковую, а почему порядок меняется вместе с целью.</p>
+<p>Три scheduling objectives приводят к трём разным порядкам: по finish time, start time и deadline.</p>
 </div>
 <div class="chapter-grid section-icon-grid">
 <a class="chapter-card available icon-card" href="interval-scheduling-ru.html">
 <div class="chapter-card-icon"><img alt="" src="assets/greedy-interval-scheduling.svg"/></div>
 <div>
 <h3>Выбор непересекающихся интервалов</h3>
-<p>Отбрасываем tempting rules, доказываем earliest finish через residual-set dominance и видим, почему theorem зависит от того, что каждый job — один contiguous interval.</p>
+<p>Maximum-cardinality interval selection, правило earliest finish, exchange proof и роль непрерывности intervals.</p>
 <span class="chapter-link">Открыть раздел →</span>
 </div>
 </a>
@@ -83,7 +83,7 @@
 <div class="chapter-card-icon"><img alt="" src="assets/greedy-interval-partitioning.svg"/></div>
 <div>
 <h3>Разбиение интервалов по ресурсам</h3>
-<p>Оставляем все пары, совпадаем с overlap depth и видим, почему interval structure превращает general coloring-style conflict problem в ordered greedy sweep.</p>
+<p>Минимизация числа ресурсов, overlap depth, priority queue и sweep-line formulation.</p>
 <span class="chapter-link">Открыть раздел →</span>
 </div>
 </a>
@@ -91,7 +91,7 @@
 <div class="chapter-card-icon"><img alt="" src="assets/greedy-lateness.svg"/></div>
 <div>
 <h3>Минимизация максимального опоздания</h3>
-<p>Видим, почему deadlines управляют maximum lateness, а затем расширяем картину: precedence, matching, coloring, preemption и objective задают разные scheduling models.</p>
+<p>Earliest Deadline First для maximum lateness и точные assumptions, необходимые для exchange proof.</p>
 <span class="chapter-link">Открыть раздел →</span>
 </div>
 </a>
@@ -101,16 +101,16 @@
 <div class="sorting-part-head">
 <div>
 <span class="sorting-part-kicker">Выбор и построение</span>
-<h3>Выгодно тратить ресурс и дёшево объединять части</h3>
+<h3>Knapsack и prefix coding</h3>
 </div>
-<p>В дробном рюкзаке каждая единица вместимости уходит туда, где она ценнее. В Хаффмане каждый шаг объединяет две самые дешёвые части.</p>
+<p>Fractional Knapsack сортирует items по value density, а Huffman coding каждый раз объединяет два nodes с минимальной frequency.</p>
 </div>
 <div class="chapter-grid section-icon-grid">
 <a class="chapter-card available icon-card" href="fractional-knapsack-ru.html">
 <div class="chapter-card-icon"><img alt="" src="assets/greedy-fractional-knapsack.svg"/></div>
 <div>
 <h3>Дробная задача о рюкзаке</h3>
-<p>Строим карту knapsack variants: divisibility, equal values, equal sizes, general 0/1 structure, density greedy и capacity-indexed DP.</p>
+<p>Fractional Knapsack, value density, exchange proof и отличие от 0/1 Knapsack.</p>
 <span class="chapter-link">Открыть раздел →</span>
 </div>
 </a>
@@ -118,7 +118,7 @@
 <div class="chapter-card-icon"><img alt="" src="assets/greedy-huffman.svg"/></div>
 <div>
 <h3>Кодирование Хаффмана</h3>
-<p>Строим Huffman и optimal merge tree, затем отделяем prefix-code theorem от практического выбора compression model: static против adaptive.</p>
+<p>Optimal binary prefix codes, two-minimum merge rule, heap implementation, entropy и ограничения static coding.</p>
 <span class="chapter-link">Открыть раздел →</span>
 </div>
 </a>
@@ -128,16 +128,16 @@
 <div class="sorting-part-head">
 <div>
 <span class="sorting-part-kicker">Жадность на графах</span>
-<h3>Безопасные рёбра и окончательные расстояния</h3>
+<h3>Greedy-алгоритмы на графах</h3>
 </div>
-<p>Краскал и Прим доказывают безопасность ребра; Дейкстра — окончательность расстояния. Жадный принцип похож, инвариант разный.</p>
+<p>MST и shortest paths используют разные invariants и разные priority rules.</p>
 </div>
 <div class="chapter-grid section-icon-grid">
 <a class="chapter-card available icon-card" href="mst-ru.html">
 <div class="chapter-card-icon"><img alt="" src="assets/greedy-mst.svg"/></div>
 <div>
 <h3>Минимальные остовные деревья</h3>
-<p>Разводим route и network, выводим Kruskal/Prim/Borůvka, связываем Kruskal с DSU и смотрим на MST как reusable sparse backbone для clustering и approximation.</p>
+<p>Kruskal, Prim, Borůvka, cut property, Union-Find, heaps и стандартные применения MST.</p>
 <span class="chapter-link">Открыть раздел →</span>
 </div>
 </a>
@@ -145,52 +145,13 @@
 <div class="chapter-card-icon"><img alt="" src="assets/greedy-dijkstra.svg"/></div>
 <div>
 <h3>Алгоритм Дейкстры</h3>
-<p>Переводим story в graph, отличаем BFS/Dijkstra/negative-edge cases и тренируем reductions, например перенос vertex costs на edges без переписывания Dijkstra.</p>
+<p>Single-source shortest paths при nonnegative weights, proof Dijkstra, heap implementation, восстановление paths и стандартные reductions.</p>
 <span class="chapter-link">Открыть раздел →</span>
 </div>
 </a>
 </div>
 </div>
 
-<div class="sorting-part">
-<div class="sorting-part-head">
-<div>
-<span class="sorting-part-kicker">Объединяющий взгляд</span>
-<h3>Exact greedy, матроиды и приближения</h3>
-</div>
-<p>В конце главы разделяем три идеи, которые легко смешать: matroid greedy, специальные обменные доказательства и greedy approximation algorithms.</p>
-</div>
-<div class="chapter-grid section-icon-grid">
-<a class="chapter-card available icon-card" href="greedy-beyond-ru.html">
-<div class="chapter-card-icon"><img alt="" src="assets/greedy-matroids.svg"/></div>
-<div>
-<h3>Матроиды и дальше</h3>
-<p>Финальная картина: matroids и approximation, включая power-of-two milestone proof для greedy Set Cover и MST-based approximation для metric TSP.</p>
-<span class="chapter-link">Открыть раздел →</span>
-</div>
-</a>
-</div>
-</div>
-
-<div class="sorting-part">
-<div class="sorting-part-head">
-<div>
-<span class="sorting-part-kicker">Что читать дальше</span>
-<h3>Пять взаимодополняющих design perspectives, затем теория</h3>
-</div>
-<p>The Algorithm Design Manual сильнее всего problem formulation, counterexample hunting и умением узнавать classic problem внутри application; Coding Interview Patterns добавляет interview recognition, Karumanchi — drill-style examples, Grokking — visual intuition, A Common-Sense Guide — optimization workflow. Формальные книги ниже дают более глубокую proof theory.</p>
-</div>
-<div class="reference-list">
-<div class="reference-item"><b>Steven S. Skiena — The Algorithm Design Manual</b><span>Opening movie-scheduling case study отлично показывает discovery через failed heuristics и counterexamples; далее идут MST/shortest-path modeling, knapsack variants, scheduling taxonomy, Set Cover approximation и практические compression trade-offs.</span></div>
-<div class="reference-item"><b>Narasimha Karumanchi — Data Structures and Algorithms Made Easy</b><span>Особенно Chapter 17: problem-driven greedy chapter с optimal file merging, interval scheduling/coloring, coin-change failures, fractional knapsack, railway platforms, road coverage и scheduling examples; graph chapter добавляет практичные сравнения MST и Dijkstra.</span></div>
-<div class="reference-item"><b>Alex Xu & Shaun Gunawardane — Coding Interview Patterns</b><span>Особенно Chapter 16 с Jump to the End, Gas Stations и Candies; Chapter 9 про intervals и sweep line; Chapter 15 с DP-контрастами maximum subarray и 0/1 Knapsack; а также главы про heaps и Union-Find как supporting structures.</span></div>
-<div class="reference-item"><b>Jay Wengrow — A Common-Sense Guide to Data Structures and Algorithms in Python</b><span>Особенно Chapter 20: current Big O → best-imaginable Big O → pattern/state compression, плюс Chapter 18 с подробным Dijkstra walkthrough и trade-off array vs priority queue.</span></div>
-<div class="reference-item"><b>Aditya Y. Bhargava — Grokking Algorithms, 2nd ed.</b><span>Особенно Chapter 10 про greedy, Chapter 9 про Dijkstra и Huffman в Chapter 7. Сильна визуальной интуицией, “try it yourself” моментами и переходом от exact greedy к approximation.</span></div>
-<a class="reference-item" href="https://www.pearson.com/en-us/subject-catalog/p/algorithm-design/P200000003259" target="_blank" rel="noopener"><b>Jon Kleinberg & Eva Tardos — Algorithm Design</b><span>Особенно Chapter 4: scheduling, exchange arguments, MST и shortest paths.</span></a>
-<a class="reference-item" href="https://mitpress.mit.edu/9780262046305/introduction-to-algorithms/" target="_blank" rel="noopener"><b>Cormen, Leiserson, Rivest & Stein — Introduction to Algorithms</b><span>Greedy algorithms, Huffman coding, MST и single-source shortest paths.</span></a>
-<a class="reference-item" href="https://www.rfc-editor.org/info/rfc1951/" target="_blank" rel="noopener"><b>RFC 1951 — DEFLATE</b><span>Практический пример Huffman code lengths и deterministic code construction.</span></a>
-</div>
-</div>
 </section>
 </main>
 <footer class="overview-footer">
