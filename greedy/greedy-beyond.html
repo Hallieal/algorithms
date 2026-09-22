@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="A unifying view of greedy algorithms through matroids, exchange arguments, and approximation algorithms." name="description"/>
+<meta content="Matroids and Beyond | Allan's Handbook of Algorithms" property="og:title"/>
+<meta content="When greedy is exact because of matroid structure, when exchange arguments work without matroids, and when greedy is useful as an approximation." property="og:description"/>
+<meta content="article" property="og:type"/>
+<title>Matroids and Beyond | Allan's Handbook of Algorithms</title>
+<link href="../assets/css/styles.css" rel="stylesheet"/>
+<link href="assets/greedy.css" rel="stylesheet"/>
+<link href="../assets/images/favicon-32.png" rel="icon" sizes="32x32" type="image/png"/>
+<link href="../assets/images/favicon.png" rel="icon" sizes="64x64" type="image/png"/>
+<link href="greedy-beyond.html" hreflang="en" rel="alternate"/>
+<link href="greedy-beyond-ru.html" hreflang="ru" rel="alternate"/>
+<noscript><style>.answer-box[hidden]{display:block!important}.reveal{display:none!important}</style></noscript>
+</head>
+<body class="lecture-page">
+<div aria-hidden="true" class="progress-track"><div class="progress-bar" id="reading-progress"></div></div>
+<header class="topbar">
+<a class="brand" href="../"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name">Allan's Handbook of Algorithms</span></a>
+<nav aria-label="Primary navigation" class="topnav"><a href="./">Greedy overview</a><div aria-label="Language" class="language-switch"><span class="current">EN</span><span class="language-separator">·</span><a href="greedy-beyond-ru.html">RU</a></div></nav>
+</header>
+<aside aria-label="Section navigation" class="sidebar">
+<div class="sidebar-title">Chapter 9 · Section 11</div>
+<a href="#map">The big picture</a><a href="#matroid">Matroids</a><a href="#mst">Kruskal</a><a href="#limits">What is not a matroid</a><a href="#approx">Approximation</a><a href="#decision">Decision map</a><a href="#reading">Further reading</a><a href="#exercises">Exercises</a>
+</aside>
+<main class="lecture">
+<section class="lecture-hero greedy-lecture-hero">
+<div><div class="chapter-label">Chapter 9 · Section 11</div><h1>Matroids and Beyond</h1><p class="chapter-topics">A final map of the chapter: when a general exchange theorem guarantees greedy optimality, when greedy proofs work for other reasons, and when greedy is valuable even without an exact optimum.</p></div>
+<div class="greedy-hero-icon"><img alt="" src="assets/greedy-matroids.svg"/></div>
+</section>
+
+<section class="lecture-section" id="map">
+<h2>Three different reasons greedy can be useful</h2>
+<p class="lead">The previous ten pages all make irreversible local choices, but they are not instances of one single theorem. It is useful to separate three levels of structure.</p>
+<div class="concept-strip">
+<article class="concept-cell rule"><span>Exact + matroid</span><b>A general theorem guarantees greedy</b><p>Kruskal is the clean example: acyclic edge sets form a graphic matroid.</p></article>
+<article class="concept-cell proof"><span>Exact + problem-specific</span><b>A tailored exchange or invariant proves safety</b><p>Interval Scheduling, Huffman, Fractional Knapsack, and Dijkstra live here.</p></article>
+<article class="concept-cell cost"><span>Approximate greedy</span><b>The local rule is not exact, but has a provable ratio</b><p>Set Cover is the standard example.</p></article>
+</div>
+</section>
+
+<section class="lecture-section" id="matroid">
+<h2>Matroids: when exchange is an axiom</h2>
+<p class="lead">A matroid is a finite ground set <span class="math">E</span> together with a family <span class="math">𝓘</span> of subsets called independent sets. The definition makes “borrowing” an element from a larger independent set always possible.</p>
+<div class="matroid-axioms">
+<article class="matroid-axiom"><span>1</span><h3>Nonempty</h3><p><span class="math">∅ ∈ 𝓘</span>.</p></article>
+<article class="matroid-axiom"><span>2</span><h3>Hereditary</h3><p>If <span class="math">B ∈ 𝓘</span> and <span class="math">A ⊆ B</span>, then <span class="math">A ∈ 𝓘</span>.</p></article>
+<article class="matroid-axiom"><span>3</span><h3>Exchange</h3><p>If <span class="math">A,B ∈ 𝓘</span> and <span class="math">|A| &lt; |B|</span>, some <span class="math">x ∈ B \ A</span> satisfies <span class="math">A ∪ {x} ∈ 𝓘</span>.</p></article>
+</div>
+<div class="proof-goal"><h3>Matroid greedy theorem</h3><p>With nonnegative element weights, sort from largest weight to smallest and add an element whenever independence is preserved: this gives a maximum-weight independent set. For a minimum-weight basis, process weights from smallest to largest.</p></div>
+<div class="bridge-note"><h3>Why this is stronger than one clever proof</h3><p>Once the feasible sets are known to form a matroid, the greedy rule works for every weight assignment covered by the theorem. The exchange axiom supplies the proof globally.</p></div>
+</section>
+
+<section class="lecture-section" id="mst">
+<h2>Kruskal is matroid greedy</h2>
+<p class="lead">For a graph, take the edges as the ground set and call an edge set independent when it contains no cycle. These independent sets form the <em>graphic matroid</em>.</p>
+<div class="clean-steps">
+<div class="clean-step"><span>1</span><p>Sort edges from lightest to heaviest.</p></div>
+<div class="clean-step"><span>2</span><p>Add an edge exactly when the selected edges remain acyclic.</p></div>
+<div class="clean-step"><span>3</span><p>A maximal independent set in a connected graph is a spanning tree—a basis of the graphic matroid.</p></div>
+</div>
+<div class="one-line"><strong>Kruskal is exactly the minimum-weight basis algorithm for the graphic matroid.</strong></div>
+</section>
+
+<section class="lecture-section" id="limits">
+<h2>An exchange proof does not automatically mean “matroid”</h2>
+<p class="lead">Several algorithms in the chapter use exchanges, but their feasible objects do not satisfy the matroid axioms.</p>
+<div class="mini-example-grid">
+<article class="mini-example bad"><h3>Interval Scheduling is not a matroid</h3><p>Let <span class="math">A={[0,4)}</span> and <span class="math">B={[0,2),[2,4)}</span>. Both are feasible and <span class="math">|A|&lt;|B|</span>, but neither interval from <span class="math">B</span> can be added to <span class="math">A</span> without overlap. The exchange axiom fails.</p></article>
+<article class="mini-example good"><h3>Yet earliest finish is still optimal</h3><p>Its proof exchanges the <em>first choice in a schedule</em>, not arbitrary elements between all feasible sets. Problem-specific exchange is broader than matroid exchange.</p></article>
+</div>
+<div class="decision-grid">
+<article class="decision-card greedy-signal"><h3>Huffman</h3><p>The proof swaps leaf labels and contracts two siblings. It is a recursive merge argument, not selection of an independent subset.</p></article>
+<article class="decision-card greedy-signal"><h3>Fractional Knapsack</h3><p>The exchange happens in a continuous amount of weight, closer to a linear relaxation than a finite independence system.</p></article>
+<article class="decision-card greedy-signal"><h3>Dijkstra</h3><p>The safe object is a finalized distance. Correctness comes from nonnegative path extensions, not a matroid axiom.</p></article>
+<article class="decision-card dp-signal"><h3>0/1 Knapsack</h3><p>The capacity constraint lacks the needed exchange structure: one locally attractive item can block a better combination.</p></article>
+</div>
+</section>
+
+<section class="lecture-section" id="approx">
+<h2>Greedy can be valuable without being exact</h2>
+<p class="lead">Approximation algorithms ask a different question: if greedy misses the optimum, how far away can it ever be?</p>
+<div class="approx-box"><h3>Set Cover</h3><p>There are <span class="math">n</span> elements and a collection of sets covering them. Repeatedly choose the set containing the largest number of still-uncovered elements. The result may not use the minimum number of sets, but it uses at most <span class="math">Hₙ</span> times optimum, where <span class="math">Hₙ=1+1/2+···+1/n ≤ ln n+1</span>.</p></div>
+<div class="inline-contrast"><div class="yes"><h3>Exact greedy</h3><p>Prove every irreversible choice is safe. The approximation ratio is 1.</p></div><div class="no"><h3>Approximation greedy</h3><p>Allow local loss, then bound the total loss across all steps.</p></div></div>
+</section>
+
+<section class="lecture-section" id="decision">
+<h2>A checklist for new problems</h2>
+<div class="proof-checklist">
+<div class="proof-check"><span>1</span><p><strong>Can feasible partial solutions be viewed as an independence system?</strong> If yes, test the matroid exchange axiom.</p></div>
+<div class="proof-check"><span>2</span><p><strong>Can an optimum be locally transformed to agree with the greedy choice?</strong> A problem-specific exchange proof may be enough without a matroid.</p></div>
+<div class="proof-check"><span>3</span><p><strong>Does the future need several incomparable states?</strong> That points toward dynamic programming.</p></div>
+<div class="proof-check"><span>4</span><p><strong>If exact greedy fails, can the loss be charged or bounded?</strong> That opens the door to approximation algorithms.</p></div>
+</div>
+</section>
+
+<section class="lecture-section" id="reading">
+<h2>Further reading</h2>
+<div class="reference-list">
+<a class="reference-item" href="https://www.pearson.com/en-us/subject-catalog/p/algorithm-design/P200000003259" target="_blank" rel="noopener"><b>Jon Kleinberg & Eva Tardos — Algorithm Design</b><span>Chapter 4 is the classic development of greedy algorithms, scheduling, MSTs, and shortest paths.</span></a>
+<a class="reference-item" href="https://mitpress.mit.edu/9780262046305/introduction-to-algorithms/" target="_blank" rel="noopener"><b>Cormen, Leiserson, Rivest & Stein — Introduction to Algorithms</b><span>See the chapters on greedy algorithms, Huffman codes, minimum spanning trees, and shortest paths.</span></a>
+<a class="reference-item" href="https://www.rfc-editor.org/info/rfc1951/" target="_blank" rel="noopener"><b>RFC 1951 — DEFLATE</b><span>A practical example of Huffman code lengths and deterministic code construction inside a real compression format.</span></a>
+</div>
+</section>
+
+<section class="lecture-section" id="exercises">
+<h2>Exercises</h2>
+<div class="exercise-list">
+<article class="exercise"><div class="exercise-num">1</div><div><h3>Test the exchange axiom</h3><p>Use <span class="math">A={[0,4)}</span> and <span class="math">B={[0,2),[2,4)}</span> to explain exactly which matroid axiom interval scheduling violates.</p><button class="reveal" data-reveal="gb-en-1" type="button">Show answer</button><div class="answer-box" hidden id="gb-en-1">Both sets are feasible and |A|&lt;|B|, but no element of B\A can be added to A while preserving non-overlap. The exchange axiom fails.</div></div></article>
+<article class="exercise"><div class="exercise-num">2</div><div><h3>Uniform matroid</h3><p>Suppose any subset of at most k elements is feasible. What does matroid greedy do for maximum weight?</p><button class="reveal" data-reveal="gb-en-2" type="button">Show answer</button><div class="answer-box" hidden id="gb-en-2">It takes the k largest positive weights. These feasible sets form the uniform matroid U(k,n).</div></div></article>
+<article class="exercise"><div class="exercise-num">3</div><div><h3>Exact or approximate?</h3><p>What changes in a proof when greedy is only an approximation algorithm?</p><button class="reveal" data-reveal="gb-en-3" type="button">Show answer</button><div class="answer-box" hidden id="gb-en-3">You no longer prove each choice preserves an optimum. Instead, compare greedy with a lower or upper bound on OPT and prove the total loss stays within a factor.</div></div></article>
+</div>
+<div class="next-part"><h3>Chapter complete</h3><p>You can now separate greedy from a general exchange structure, greedy from a tailored correctness proof, and greedy as a controlled approximation.</p><a class="next-part-link" href="./">Back to Greedy Algorithms overview →</a></div>
+</section>
+</main>
+<footer class="lecture-footer"><div>Allan's Handbook of Algorithms</div><div>© 2026 Allan Allemand</div></footer>
+<script src="../assets/js/lecture-core.js"></script>
+<script src="../assets/js/language-switch.js"></script>
+</body></html>
