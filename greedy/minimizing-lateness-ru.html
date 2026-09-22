@@ -8,7 +8,7 @@
 <body class="lecture-page"><div aria-hidden="true" class="progress-track"><div class="progress-bar" id="reading-progress"></div></div>
 <header class="topbar"><a class="brand" href="../index-ru.html"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name ru-brand-name"><span class="ru-brand-lines"><span>Гайд по алгоритмам</span><span class="ru-brand-presented">presented by Аллан</span></span></span></a>
 <nav aria-label="Основная навигация" class="topnav"><a href="index-ru.html">Жадные алгоритмы</a><div aria-label="Язык" class="language-switch"><a href="minimizing-lateness.html">EN</a><span class="language-separator">·</span><span class="current">RU</span></div></nav></header>
-<aside aria-label="Навигация по разделу" class="sidebar"><div class="sidebar-title">Глава 9 · Раздел 6</div><a href="#problem">Постановка</a><a href="#example">Пример</a><a href="#same-looking">Похожий сюжет, новая цель</a><a href="#model">Сначала модель</a><a href="#algorithm">Алгоритм EDF</a><a href="#proof">Корректность</a><a href="#runtime">Один выбор порядка, затем scan</a><a href="#implementation">Реализация</a><a href="#boundaries">Границы модели</a><a href="#exercises">Задачи</a></aside>
+<aside aria-label="Навигация по разделу" class="sidebar"><div class="sidebar-title">Глава 9 · Раздел 6</div><a href="#problem">Постановка</a><a href="#example">Пример</a><a href="#same-looking">Похожий сюжет, новая цель</a><a href="#model">Сначала модель</a><a href="#algorithm">Алгоритм EDF</a><a href="#proof">Корректность</a><a href="#runtime">Один выбор порядка, затем scan</a><a href="#implementation">Реализация</a><a href="#interview-recognition">Recognition checklist</a><a href="#boundaries">Границы модели</a><a href="#exercises">Задачи</a></aside>
 <main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Глава 9 · Раздел 6</div><h1>Минимизация максимального опоздания</h1><p class="chapter-topics">На одной машине худшее опоздание минимизируется простым правилом: сначала выполняем задачу с самым ранним дедлайном.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-lateness.svg"/></div></section>
 <section class="lecture-section" id="problem">
 <h2>Сначала — самый срочный дедлайн</h2>
@@ -127,6 +127,18 @@
 <div class="code-note-item wide-note"><span>5–8</span><p>Одним проходом накапливаем время окончания и обновляем максимальное опоздание.</p></div>
 </div></div>
 <div class="complexity-strip"><div><span>Сортировка</span><b>O(n log n)</b><small>по дедлайну</small></div><div><span>Проход</span><b>O(n)</b><small>все задачи</small></div><div><span>Итого</span><b>O(n log n)</b><small>доминирует сортировка</small></div><div><span>Доп. состояние</span><b>O(1)</b><small>кроме сортировки</small></div></div>
+</section>
+
+<!-- coding-patterns-round-lateness -->
+<section class="lecture-section" id="interview-recognition">
+<h2>Interview recognition: проверьте модель до применения EDF</h2>
+<p class="lead">Типичная greedy-ошибка на интервью — слишком рано узнать знакомую историю. До фразы «sort by deadline» проверьте, что предположения exchange argument действительно сохранились.</p>
+<div class="recognition-grid">
+<article class="recognition-card"><span class="signal">Good match</span><h3>Одна machine, все jobs доступны сейчас</h3><p>Каждый job выполняется ровно один раз, release times нет, objective — maximum lateness. Это чистая модель <span class="math">1||L_{max}</span>.</p></article>
+<article class="recognition-card"><span class="signal">Objective changed</span><h3>Average completion или waiting time</h3><p>Тот же набор jobs может требовать другого ordering rule. Нельзя сохранять EDF только потому, что deadlines всё ещё присутствуют во входе.</p></article>
+<article class="recognition-card"><span class="signal">Constraints changed</span><h3>Release times, preemption или несколько machines</h3><p>Эти изменения меняют допустимые swaps и нужное state. Алгоритм надо вывести заново, а не переносить старый greedy key.</p></article>
+</div>
+<div class="interview-answer"><h3>Объяснение на тридцать секунд</h3><p>«Я устраняю deadline inversions. Если два соседних jobs стоят как later deadline перед earlier deadline, их swap не увеличивает maximum lateness. Повторяя swaps, убираем все inversions, поэтому nondecreasing deadlines оптимальны».</p></div>
 </section>
 
 <section class="lecture-section" id="boundaries">
