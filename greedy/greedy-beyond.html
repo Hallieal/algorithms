@@ -24,7 +24,7 @@
 </header>
 <aside aria-label="Section navigation" class="sidebar">
 <div class="sidebar-title">Chapter 9 · Section 11</div>
-<a href="#map">The big picture</a><a href="#matroid">Matroids</a><a href="#mst">Kruskal</a><a href="#limits">What is not a matroid</a><a href="#approx">Approximation</a><a href="#decision">Decision map</a><a href="#reading">Further reading</a><a href="#exercises">Exercises</a>
+<a href="#map">The big picture</a><a href="#matroid">Matroids</a><a href="#mst">Kruskal</a><a href="#limits">What is not a matroid</a><a href="#guarantees">Heuristic vs approximation</a><a href="#approx">Approximation</a><a href="#setcover">Set Cover worked example</a><a href="#decision">Decision map</a><a href="#book-map">Five textbook lenses</a><a href="#reading">Further reading</a><a href="#exercises">Exercises</a>
 </aside>
 <main class="lecture">
 <section class="lecture-hero greedy-lecture-hero">
@@ -80,11 +80,33 @@
 </div>
 </section>
 
+<!-- book-synthesis-beyond -->
+<section class="lecture-section" id="guarantees">
+<h2>Heuristics and approximation algorithms are not the same thing</h2>
+<p class="lead">Both may return a non-optimal solution, but only one comes with a theorem about how bad the answer can be.</p>
+<div class="inline-contrast">
+<div class="no"><h3>Heuristic</h3><p>Designed to work well or quickly in practice. Quality may be excellent on real data, but there is no general worst-case ratio unless one is separately proved.</p></div>
+<div class="yes"><h3>Approximation algorithm</h3><p>Runs efficiently and comes with a proved relationship to OPT. For a minimization problem, a ratio <span class="math">α</span> means <span class="math">ALG ≤ α·OPT</span> on every allowed input.</p></div>
+</div>
+<div class="one-line"><strong>Why the distinction matters.</strong> “Greedy is often good enough” is an engineering statement. “Greedy is within <span class="math">ln n+1</span> of optimum” is a mathematical guarantee.</div>
+</section>
+
 <section class="lecture-section" id="approx">
 <h2>Greedy can be valuable without being exact</h2>
 <p class="lead">Approximation algorithms ask a different question: if greedy misses the optimum, how far away can it ever be?</p>
 <div class="approx-box"><h3>Set Cover</h3><p>There are <span class="math">n</span> elements and a collection of sets covering them. Repeatedly choose the set containing the largest number of still-uncovered elements. The result may not use the minimum number of sets, but it uses at most <span class="math">Hₙ</span> times optimum, where <span class="math">Hₙ=1+1/2+···+1/n ≤ ln n+1</span>.</p></div>
 <div class="inline-contrast"><div class="yes"><h3>Exact greedy</h3><p>Prove every irreversible choice is safe. The approximation ratio is 1.</p></div><div class="no"><h3>Approximation greedy</h3><p>Allow local loss, then bound the total loss across all steps.</p></div></div>
+</section>
+
+<section class="lecture-section" id="setcover">
+<h2>Worked approximation example: Set Cover</h2>
+<p class="lead">The greedy step is easy to execute: among the remaining sets, choose the one that covers the most elements not yet covered. The proof of the approximation ratio is harder than the algorithm.</p>
+<div class="clean-steps">
+<div class="clean-step"><span>1</span><p>Universe: <span class="math">{1,2,3,4,5,6}</span>. Suppose A covers {1,2,3}, B covers {2,4,5}, C covers {3,5,6}, and D covers {4,6}.</p></div>
+<div class="clean-step"><span>2</span><p>Greedy first takes A because it covers three uncovered elements. Remaining: {4,5,6}.</p></div>
+<div class="clean-step"><span>3</span><p>B and C each cover two remaining elements. Choose either; after B, only {6} remains, so C or D finishes the cover.</p></div>
+</div>
+<div class="practice-note"><h3>What the approximation proof measures</h3><p>At each stage, if OPT uses <span class="math">k</span> sets to cover what remains, some OPT-set must cover at least a <span class="math">1/k</span> fraction of the remaining elements. Greedy covers at least that much. Repeating this charging idea yields the harmonic bound.</p></div>
 </section>
 
 <section class="lecture-section" id="decision">
@@ -97,12 +119,29 @@
 </div>
 </section>
 
+<section class="lecture-section" id="book-map">
+<h2>Five textbook lenses behind this chapter</h2>
+<p class="lead">The strongest version of this handbook does not imitate one textbook. It combines different teaching strengths.</p>
+<div class="book-map">
+<article class="book-card"><h3>Steven S. Skiena — The Algorithm Design Manual</h3><p>Best lens: design by false starts. Try a plausible rule, build a counterexample, then isolate the structural reason the successful rule survives. The weighted-graph chapters also emphasize exchange proofs and practical modeling.</p><small>Useful here: strategy, proofs, interval scheduling, MST, Dijkstra, heuristics vs approximation.</small></article>
+<article class="book-card"><h3>Narasimha Karumanchi — Data Structures and Algorithms Made Easy</h3><p>Best lens: breadth of variants and exercises. It connects greedy to Huffman, interval coloring, coin change, fractional knapsack, platform counting, job scheduling, Prim/Kruskal, and Dijkstra.</p><small>Useful here: edge cases, alternative implementations, sweep line, problem bank.</small></article>
+<article class="book-card"><h3>Alex Xu & Shaun Gunawardane — Coding Interview Patterns</h3><p>Best lens: recognition through invariants. Jump Game compresses a suffix to one frontier, Gas Station eliminates blocks of candidates, and Candies solves directional constraints with two passes.</p><small>Useful here: strategy recognition, Greedy vs DP, interview-style exercises.</small></article>
+<article class="book-card"><h3>Jay Wengrow — A Common-Sense Guide to Data Structures and Algorithms in Python</h3><p>Best lens: derive the fast solution from a slow one in plain language. The greedy discussion treats pattern discovery as an optimization technique rather than a bag of named algorithms.</p><small>Useful here: intuition, runtime motivation, Dijkstra walkthrough.</small></article>
+<article class="book-card"><h3>Aditya Y. Bhargava — Grokking Algorithms</h3><p>Best lens: visual intuition and memorable stories. Its scheduling, knapsack, Set Cover, Huffman, and Dijkstra explanations make the local choice tangible before formalizing it.</p><small>Useful here: pictures-in-words, approximation intuition, prefix-code and shortest-path mental models.</small></article>
+</div>
+</section>
+
 <section class="lecture-section" id="reading">
 <h2>Further reading</h2>
 <div class="reference-list">
-<a class="reference-item" href="https://www.pearson.com/en-us/subject-catalog/p/algorithm-design/P200000003259" target="_blank" rel="noopener"><b>Jon Kleinberg & Eva Tardos — Algorithm Design</b><span>Chapter 4 is the classic development of greedy algorithms, scheduling, MSTs, and shortest paths.</span></a>
-<a class="reference-item" href="https://mitpress.mit.edu/9780262046305/introduction-to-algorithms/" target="_blank" rel="noopener"><b>Cormen, Leiserson, Rivest & Stein — Introduction to Algorithms</b><span>See the chapters on greedy algorithms, Huffman codes, minimum spanning trees, and shortest paths.</span></a>
-<a class="reference-item" href="https://www.rfc-editor.org/info/rfc1951/" target="_blank" rel="noopener"><b>RFC 1951 — DEFLATE</b><span>A practical example of Huffman code lengths and deterministic code construction inside a real compression format.</span></a>
+<div class="reference-item"><b>Steven S. Skiena — The Algorithm Design Manual, 2nd ed.</b><span>Especially “Selecting the Right Jobs”, Minimum Spanning Trees, Dijkstra’s Algorithm, and the discussion of heuristics/approximation for hard problems.</span></div>
+<div class="reference-item"><b>Narasimha Karumanchi — Data Structures and Algorithms Made Easy, 5th ed.</b><span>Chapter 17 on Greedy Algorithms plus the graph-algorithm sections on Dijkstra, Prim, and Kruskal.</span></div>
+<div class="reference-item"><b>Alex Xu & Shaun Gunawardane — Coding Interview Patterns</b><span>Chapter 16 (Jump to the End, Gas Stations, Candies), Chapter 9 on intervals, and 0/1 Knapsack in the DP chapter.</span></div>
+<div class="reference-item"><b>Jay Wengrow — A Common-Sense Guide to Data Structures and Algorithms in Python, Vol. 1</b><span>The greedy optimization discussion in Chapter 20 and the Dijkstra walkthrough in the graph chapter.</span></div>
+<div class="reference-item"><b>Aditya Y. Bhargava — Grokking Algorithms, 2nd ed.</b><span>Chapter 10 on greedy and approximation, Chapter 9 on Dijkstra, and the Huffman discussion in the tree chapter.</span></div>
+<a class="reference-item" href="https://www.pearson.com/en-us/subject-catalog/p/algorithm-design/P200000003259" target="_blank" rel="noopener"><b>Jon Kleinberg & Eva Tardos — Algorithm Design</b><span>A more proof-oriented treatment of scheduling, MSTs, and greedy design.</span></a>
+<a class="reference-item" href="https://mitpress.mit.edu/9780262046305/introduction-to-algorithms/" target="_blank" rel="noopener"><b>Cormen, Leiserson, Rivest & Stein — Introduction to Algorithms</b><span>Formal reference for greedy algorithms, Huffman coding, MSTs, and shortest paths.</span></a>
+<a class="reference-item" href="https://www.rfc-editor.org/info/rfc1951/" target="_blank" rel="noopener"><b>RFC 1951 — DEFLATE</b><span>A concrete real-world use of Huffman code lengths and canonical code construction.</span></a>
 </div>
 </section>
 
