@@ -3,11 +3,12 @@
 <title>Huffman Coding | Allan's Handbook of Algorithms</title>
 <link href="../assets/css/styles.css" rel="stylesheet"/><link href="assets/greedy.css" rel="stylesheet"/>
 <link href="../assets/images/favicon-32.png" rel="icon" sizes="32x32" type="image/png"/><link href="../assets/images/favicon.png" rel="icon" sizes="64x64" type="image/png"/><link href="../assets/images/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180"/>
-<link href="huffman.html" hreflang="en" rel="alternate"/><link href="huffman-ru.html" hreflang="ru" rel="alternate"/></head>
+<link href="huffman.html" hreflang="en" rel="alternate"/><link href="huffman-ru.html" hreflang="ru" rel="alternate"/><noscript><style>.answer-box[hidden]{display:block!important}.reveal{display:none!important}</style></noscript>
+</head>
 <body class="lecture-page"><div aria-hidden="true" class="progress-track"><div class="progress-bar" id="reading-progress"></div></div>
 <header class="topbar"><a class="brand" href="../"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name">Allan's Handbook of Algorithms</span></a>
 <nav aria-label="Primary navigation" class="topnav"><a href="./">Greedy overview</a><div aria-label="Language" class="language-switch"><span class="current">EN</span><span class="language-separator">·</span><a href="huffman-ru.html">RU</a></div></nav></header>
-<aside aria-label="Section navigation" class="sidebar"><div class="sidebar-title">Chapter 9 · Section 8</div><a href="#problem">Problem</a><a href="#prefix">Prefix codes</a><a href="#algorithm">Algorithm</a><a href="#tree">Tree and codes</a><a href="#proof">Correctness</a><a href="#implementation">Implementation</a><a href="#limits">What it optimizes</a><a href="#exercises">Exercises</a></aside>
+<aside aria-label="Section navigation" class="sidebar"><div class="sidebar-title">Chapter 9 · Section 8</div><a href="#problem">Problem</a><a href="#prefix">Prefix codes</a><a href="#algorithm">Algorithm</a><a href="#tree">Tree and codes</a><a href="#entropy">Entropy</a><a href="#proof">Correctness</a><a href="#implementation">Implementation</a><a href="#limits">What it optimizes</a><a href="#exercises">Exercises</a></aside>
 <main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Chapter 9 · Section 8</div><h1>Huffman Coding</h1><p class="chapter-topics">Frequent symbols should get short codes. Huffman achieves this by repeatedly merging the two least frequent nodes.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-huffman.svg"/></div></section>
 <section class="lecture-section" id="problem">
 <h2>Frequent symbols should be cheap to encode</h2>
@@ -84,6 +85,18 @@
 <div class="bit-card"><span>Fixed-length code</span><b>300 bits</b><small>6 symbols need 3 bits each, across 100 total occurrences.</small></div>
 <div class="bit-card good"><span>Huffman code</span><b>224 bits</b><small>Weighted path length: 45·1 + 12·3 + 13·3 + 5·4 + 9·4 + 16·3.</small></div>
 </div>
+<div class="source-note"><h3>0 and 1 are conventional labels</h3><p>Swapping the left and right child of any internal node changes the literal bit strings but not any code length. Many different Huffman code tables are therefore equally optimal.</p></div>
+</section>
+
+<section class="lecture-section" id="entropy">
+<h2>How close is Huffman to the entropy limit?</h2>
+<p class="lead">Normalize the frequencies to probabilities <span class="math">pᵢ</span>. Shannon entropy <span class="math">H=-∑pᵢlog₂pᵢ</span> is a lower bound on the average length of any binary prefix code, while Huffman satisfies <span class="math">H ≤ L &lt; H+1</span>.</p>
+<div class="entropy-strip">
+<div class="entropy-cell"><span>Entropy H</span><b>≈ 2.220 bits/symbol</b><small>For probabilities 0.45, 0.13, 0.12, 0.16, 0.09, 0.05.</small></div>
+<div class="entropy-cell"><span>Huffman average L</span><b>2.24 bits/symbol</b><small>224 bits across 100 symbol occurrences.</small></div>
+<div class="entropy-cell"><span>Gap</span><b>≈ 0.020 bits/symbol</b><small>Very close to the information-theoretic lower bound in this example.</small></div>
+</div>
+<div class="theory-note"><h3>Worst-case depth</h3><p>With <span class="math">n</span> symbols, an individual Huffman codeword can be as long as <span class="math">n−1</span> bits for a sufficiently skewed frequency distribution. Optimal average length does not imply that every codeword is short.</p></div>
 </section>
 
 <section class="lecture-section" id="proof">
@@ -130,6 +143,7 @@
 
 <section class="lecture-section" id="limits">
 <h2>Optimal inside a specific model</h2>
+<div class="practice-note"><h3>Canonical Huffman codes in real formats</h3><p>A canonical Huffman code stores the code lengths and reconstructs the actual bit patterns deterministically. DEFLATE—the format underlying gzip and zlib—uses this idea for its Huffman code descriptions: code lengths are enough to regenerate the codes, which avoids transmitting an explicit tree.</p></div>
 <div class="decision-grid">
 <article class="decision-card greedy-signal"><h3>It is optimal among binary prefix codes</h3><p>Given the symbol frequencies, Huffman minimizes expected or total codeword length within this model.</p></article>
 <article class="decision-card dp-signal"><h3>It is not “the best possible compression” in every sense</h3><p>More advanced methods can exploit blocks, context, or probabilities not represented by a simple independent-symbol prefix code.</p></article>
@@ -139,7 +153,7 @@
 <section class="lecture-section" id="exercises">
 <h2>Exercises</h2>
 <div class="exercise-list">
-<article class="exercise"><div class="exercise-num">1</div><div><h3>First merge</h3><p>For frequencies 2, 3, 7, and 8, which two nodes does Huffman merge first?</p><button class="reveal" data-reveal="hf-en-1" type="button">Show answer</button><div class="answer-box" hidden id="hf-en-1">The two smallest frequencies, 2 and 3, are merged into a node of weight 5.</div></div></article>
+<article class="exercise"><div class="exercise-num">1</div><div><h3>Build the whole code</h3><p>For frequencies 2, 3, 7, and 8, perform all Huffman merges. What is the total weighted length, and how does it compare with a fixed 2-bit code?</p><button class="reveal" data-reveal="hf-en-1" type="button">Show answer</button><div class="answer-box" hidden id="hf-en-1">Merge 2+3=5, then 5+7=12, then 8+12=20. The code lengths are 1 for frequency 8, 2 for 7, and 3 for 2 and 3, so the weighted length is 8·1 + 7·2 + 2·3 + 3·3 = 37 bits. A fixed 2-bit code would use 20·2 = 40 bits.</div></div></article>
 <article class="exercise"><div class="exercise-num">2</div><div><h3>Prefix property</h3><p>Why can no leaf codeword in a binary tree be a prefix of another leaf codeword?</p><button class="reveal" data-reveal="hf-en-2" type="button">Show answer</button><div class="answer-box" hidden id="hf-en-2">A prefix would mean that one leaf lies on the root-to-leaf path to another symbol. But a leaf has no children, so that is impossible.</div></div></article>
 <article class="exercise"><div class="exercise-num">3</div><div><h3>Weighted length</h3><p>A symbol occurs 20 times and receives a codeword of length 3. How much does it contribute to the total encoded length?</p><button class="reveal" data-reveal="hf-en-3" type="button">Show answer</button><div class="answer-box" hidden id="hf-en-3">20·3 = 60 bits.</div></div></article>
 </div>
