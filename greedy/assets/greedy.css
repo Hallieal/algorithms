@@ -666,3 +666,147 @@
 @media(max-width:700px){
   .mini-example-grid{grid-template-columns:1fr}
 }
+
+
+/* =========================================================
+   Book synthesis pass — practical discovery, recognition, and variants
+   ========================================================= */
+.design-loop-grid{
+  display:grid;
+  grid-template-columns:repeat(5,minmax(0,1fr));
+  gap:10px;
+  margin-top:24px;
+}
+.design-loop-card{
+  padding:17px 16px;
+  border:1px solid var(--line);
+  border-radius:14px;
+  background:#fff;
+}
+.design-loop-card span{
+  display:grid;
+  place-items:center;
+  width:27px;height:27px;
+  margin-bottom:9px;
+  border-radius:50%;
+  background:#eef3f7;
+  color:#55708f;
+  font-size:11px;font-weight:850;
+}
+.design-loop-card h3{font-size:14px;margin-bottom:5px}
+.design-loop-card p{margin:0;color:#69737a;font-size:12px;line-height:1.55}
+.pattern-lenses{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:12px;
+  margin-top:22px;
+}
+.pattern-lens{
+  padding:18px;
+  border:1px solid var(--line);
+  border-radius:14px;
+  background:#fff;
+}
+.pattern-lens .pattern-tag{
+  display:inline-block;
+  margin-bottom:9px;
+  padding:4px 8px;
+  border-radius:999px;
+  background:#f1f3f4;
+  color:#717b82;
+  font-size:9px;
+  font-weight:850;
+  letter-spacing:.07em;
+  text-transform:uppercase;
+}
+.pattern-lens h3{font-size:15px;margin-bottom:6px}
+.pattern-lens p{margin:0;color:#69737a;font-size:12.5px;line-height:1.55}
+.pattern-lens code{font-size:11px}
+.model-card{
+  margin-top:22px;
+  padding:20px;
+  border:1px solid var(--line);
+  border-radius:15px;
+  background:#fbfbf9;
+}
+.model-notation{
+  display:inline-block;
+  margin-bottom:10px;
+  padding:6px 10px;
+  border-radius:9px;
+  background:#eee9f7;
+  color:#65577f;
+  font:700 16px/1.2 Georgia,serif;
+}
+.model-card p{margin:0;color:#626c73;font-size:13px;line-height:1.65}
+.sweep-demo{
+  display:grid;
+  gap:8px;
+  margin-top:22px;
+}
+.sweep-row{
+  display:grid;
+  grid-template-columns:70px 1fr 90px;
+  gap:10px;
+  align-items:center;
+  padding:10px 12px;
+  border:1px solid var(--line);
+  border-radius:11px;
+  background:#fff;
+}
+.sweep-row.event-start{border-left:4px solid var(--green)}
+.sweep-row.event-end{border-left:4px solid #c87979}
+.sweep-row span{font-size:11px;color:#7a838a}
+.sweep-row b{font-size:13px}
+.sweep-row code{text-align:right;font-size:11px}
+.book-map{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:12px;
+  margin-top:20px;
+}
+.book-card{
+  padding:18px 19px;
+  border:1px solid var(--line);
+  border-radius:14px;
+  background:#fff;
+}
+.book-card h3{font-size:14px;margin-bottom:5px}
+.book-card p{margin:0;color:#69737a;font-size:12.5px;line-height:1.55}
+.book-card small{display:block;margin-top:8px;color:#92999e;font-size:10px;line-height:1.45}
+.proof-template{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:10px;
+  margin-top:22px;
+}
+.proof-template article{
+  padding:17px;
+  border:1px solid var(--line);
+  border-radius:13px;
+  background:#fff;
+}
+.proof-template b{display:block;margin-bottom:5px;font-size:13px}
+.proof-template p{margin:0;color:#69737a;font-size:12px;line-height:1.5}
+.variant-grid{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:12px;
+  margin-top:22px;
+}
+.variant-card{
+  padding:18px;
+  border:1px solid var(--line);
+  border-radius:14px;
+  background:#fff;
+}
+.variant-card h3{font-size:15px;margin-bottom:6px}
+.variant-card p{margin:0;color:#69737a;font-size:12.5px;line-height:1.55}
+@media(max-width:980px){
+  .design-loop-grid{grid-template-columns:repeat(3,1fr)}
+  .proof-template{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:760px){
+  .design-loop-grid,.pattern-lenses,.proof-template,.variant-grid,.book-map{grid-template-columns:1fr}
+  .sweep-row{grid-template-columns:58px 1fr 74px}
+}
