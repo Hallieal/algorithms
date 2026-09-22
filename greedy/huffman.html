@@ -9,10 +9,10 @@
 <header class="topbar"><a class="brand" href="../"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name">Allan's Handbook of Algorithms</span></a>
 <nav aria-label="Primary navigation" class="topnav"><a href="./">Greedy overview</a><div aria-label="Language" class="language-switch"><span class="current">EN</span><span class="language-separator">·</span><a href="huffman-ru.html">RU</a></div></nav></header>
 <aside aria-label="Section navigation" class="sidebar"><div class="sidebar-title">Chapter 9 · Section 8</div><a href="#problem">Problem</a><a href="#bits-first">Why variable-length codes?</a><a href="#prefix">Prefix codes</a><a href="#decode">Decode by walking the tree</a><a href="#algorithm">Algorithm</a><a href="#tree">Tree and codes</a><a href="#merge">Optimal merge pattern</a><a href="#entropy">Entropy</a><a href="#proof">Correctness</a><a href="#heap-pattern">Heap recognition pattern</a><a href="#heap-optimization">Why the heap changes everything</a><a href="#implementation">Implementation</a><a href="#static-adaptive">Static code vs adaptive compression</a><a href="#limits">What it optimizes</a><a href="#exercises">Exercises</a></aside>
-<main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Chapter 9 · Section 8</div><h1>Huffman Coding</h1><p class="chapter-topics">Frequent symbols should get short codes. Huffman achieves this by repeatedly merging the two least frequent nodes.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-huffman.svg"/></div></section>
+<main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Chapter 9 · Section 8</div><h1>Huffman Coding</h1><p class="chapter-topics">Huffman coding constructs an optimal binary prefix code for a given set of symbol frequencies by repeatedly merging the two least frequent nodes.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-huffman.svg"/></div></section>
 <section class="lecture-section" id="problem">
-<h2>Frequent symbols should be cheap to encode</h2>
-<p class="lead">If every symbol uses the same number of bits, frequent and rare symbols cost the same. Huffman coding does better: common symbols move closer to the root, rare symbols are allowed to sit deeper.</p><div class="concept-strip">
+<h2>Problem statement</h2>
+<p class="lead">Given symbol frequencies, construct a binary prefix code that minimizes the total weighted code length. More frequent symbols should therefore receive shorter codewords.</p><div class="concept-strip">
 <article class="concept-cell rule"><span>Rule</span><b>Merge the two least frequent nodes</b><p>Repeat until only one tree remains.</p></article>
 <article class="concept-cell proof"><span>Why it works</span><b>The cheapest symbols can live deepest and as siblings</b><p>Then contract that pair into one smaller Huffman instance.</p></article>
 <article class="concept-cell cost"><span>Cost</span><b>O(n log n)</b><p>A min-heap supports every merge efficiently.</p></article>
@@ -30,8 +30,8 @@
 
 <!-- grokking-pass-huffman -->
 <section class="lecture-section" id="bits-first">
-<h2>Before the tree: see the bits you are trying to save</h2>
-<p class="lead">Huffman becomes much more intuitive once compression is visible as a bit-counting problem. Use a tiny message such as <code>tilt</code>: only three symbols appear, and one of them appears twice.</p>
+<h2>Bit cost of a variable-length code</h2>
+<p class="lead">Before building the tree, compute the total number of encoded bits as the sum of frequency times codeword length. This is the objective minimized by Huffman coding.</p>
 <div class="bit-baseline">
 <div class="bit-side"><h3>Fixed 8-bit character representation</h3><p>Four characters use <strong>32 payload bits</strong> if every character is stored with 8 bits.</p></div>
 <div class="bit-arrow">→</div>
@@ -42,8 +42,8 @@
 </section>
 
 <section class="lecture-section" id="prefix">
-<h2>Prefix-free means no separators</h2>
-<p class="lead">If no codeword begins with another complete codeword, the decoder always knows when one symbol ends. That is exactly what a binary prefix tree guarantees.</p>
+<h2>Prefix-free codes</h2>
+<p class="lead">In a prefix-free code, no complete codeword is the prefix of another. A binary tree representation therefore lets the decoder recognize each symbol without separators.</p>
 <div class="prefix-example">
 <article class="prefix-card bad"><h3>Not prefix-free</h3>
 <div class="prefix-code-row"><span>A</span><code>0</code></div>
@@ -59,8 +59,8 @@
 </section>
 
 <section class="lecture-section" id="decode">
-<h2>Variable-length codes are decoded by walking, not chunking</h2>
-<p class="lead">With fixed-width codes you can split the bit string into equal chunks. Huffman codewords have different lengths, so the decoder instead follows the tree one bit at a time and emits a symbol whenever it reaches a leaf.</p>
+<h2>Decoding a variable-length code</h2>
+<p class="lead">The decoder reads one bit at a time and follows the corresponding tree edge. Reaching a leaf completes one symbol and returns the traversal to the root.</p>
 <div class="decode-tape">
 <span class="decode-bit leaf">1</span><span class="decode-bit">0</span><span class="decode-bit leaf">0</span><span class="decode-bit">0</span><span class="decode-bit leaf">1</span><span class="decode-bit leaf">1</span>
 </div>
@@ -69,8 +69,8 @@
 </section>
 
 <section class="lecture-section" id="algorithm">
-<h2>Merge the two cheapest subtrees</h2>
-<p class="lead">Take the two smallest frequencies, make them siblings, replace them by their sum, and repeat. Each merge says: these two nodes will be one level deeper than their new parent.</p>
+<h2>Huffman construction</h2>
+<p class="lead">Repeatedly remove the two nodes of minimum frequency, make them children of a new node whose frequency is their sum, and insert the new node back into the collection.</p>
 <div class="step-flow">
 <article class="step-item"><div class="step-number">1</div><div><h3>Create one leaf per symbol</h3><p>Its weight is the symbol frequency.</p></div></article>
 <article class="step-item"><div class="step-number">2</div><div><h3>Extract the two minima</h3><p>These will become siblings deepest in the current tree.</p></div></article>
@@ -87,8 +87,8 @@
 </section>
 
 <section class="lecture-section" id="tree">
-<h2>Read codewords from root to leaves</h2>
-<p class="lead">Assign 0 to every left edge and 1 to every right edge. A symbol’s codeword is the bit sequence on the path from the root to its leaf. The left/right orientation can be swapped without changing optimality.</p>
+<h2>Recovering codewords from the tree</h2>
+<p class="lead">Label left and right edges by 0 and 1. The codeword of a symbol is the sequence of edge labels on the root-to-leaf path.</p>
 <div class="huffman-tree-simple">
 <div class="huffman-level"><div class="tree-node root">100</div></div>
 <div class="huffman-level"><div class="tree-node leaf">A · 45</div><div class="tree-node">55</div></div>
@@ -113,8 +113,8 @@
 
 <!-- book-synthesis-huffman -->
 <section class="lecture-section" id="merge">
-<h2>The same greedy structure: optimal file merging</h2>
-<p class="lead">Huffman’s “merge the two smallest weights” rule also solves the optimal merge pattern problem: repeatedly merging files costs the sum of their sizes, so early merge choices get paid again later.</p>
+<h2>Optimal merge pattern</h2>
+<p class="lead">The same two-smallest-first rule minimizes total cost when repeatedly merging files, because each early merge size is paid again in later merges.</p>
 <div class="two-column-block">
 <div class="text-panel"><h3>Contiguous merge order</h3><p>For file sizes <span class="math">{10,5,100,50,20,15}</span>, repeatedly merge the current result with the next file. The merge costs are</p><div class="formula-line">15 + 115 + 165 + 185 + 200 = 680</div><p>Feasible—but far from optimal.</p></div>
 <div class="proof-panel"><h3>Two-smallest-first</h3><p>Use a min-priority queue and repeatedly merge the two smallest current files:</p><div class="formula-line">15 + 30 + 50 + 100 + 200 = 395</div><p>The total work drops dramatically.</p></div>
@@ -124,8 +124,8 @@
 </section>
 
 <section class="lecture-section" id="entropy">
-<h2>How close is Huffman to the entropy limit?</h2>
-<p class="lead">Normalize the frequencies to probabilities <span class="math">pᵢ</span>. Shannon entropy <span class="math">H=-∑pᵢlog₂pᵢ</span> is a lower bound on the average length of any binary prefix code, while Huffman satisfies <span class="math">H ≤ L &lt; H+1</span>.</p>
+<h2>Relation to entropy</h2>
+<p class="lead">If p_i are normalized symbol probabilities, Shannon entropy H is a lower bound on average prefix-code length. Huffman coding achieves an average length L satisfying H ≤ L < H + 1.</p>
 <div class="entropy-strip">
 <div class="entropy-cell"><span>Entropy H</span><b>≈ 2.220 bits/symbol</b><small>For probabilities 0.45, 0.13, 0.12, 0.16, 0.09, 0.05.</small></div>
 <div class="entropy-cell"><span>Huffman average L</span><b>2.24 bits/symbol</b><small>224 bits across 100 symbol occurrences.</small></div>
@@ -135,8 +135,8 @@
 </section>
 
 <section class="lecture-section" id="proof">
-<h2>Why the two smallest can be siblings</h2>
-<p class="lead">The proof needs only two moves. First, push the two smallest frequencies to a deepest sibling pair without increasing cost. Then contract that pair into one pseudo-symbol and solve the smaller problem.</p>
+<h2>Optimality proof</h2>
+<p class="lead">An optimal tree can place the two least frequent symbols at a deepest sibling pair. Contracting that pair reduces the problem to a smaller Huffman instance.</p>
 <div class="huffman-proof-steps">
 <article class="huffman-proof-card"><h3>1. Deep leaves should be cheap</h3><p>In any optimal prefix tree, if a higher-frequency symbol is deeper than a lower-frequency symbol, swapping their labels cannot increase cost. Therefore small frequencies can be pushed to the greatest depths.</p></article>
 <article class="huffman-proof-card"><h3>2. Two minima can be siblings</h3><p>Take two deepest sibling leaves. By exchanging labels, we can arrange that the two globally smallest frequencies occupy those sibling positions without increasing total cost.</p></article>
@@ -148,8 +148,8 @@
 <!-- common-sense-round-huffman -->
 <!-- coding-patterns-round-huffman -->
 <section class="lecture-section" id="heap-pattern">
-<h2>Interview recognition: a changing collection with repeated min extraction suggests a heap</h2>
-<p class="lead">Huffman is a clean example of a broader priority-queue pattern. The candidate set changes after every choice, but each step only needs the one or two highest-priority elements.</p>
+<h2>Priority-queue pattern</h2>
+<p class="lead">The candidate set changes after every merge, while each step needs the two smallest current weights. A min-heap directly supports those operations.</p>
 <div class="recognition-grid">
 <article class="recognition-card"><span class="signal">Repeated query</span><h3>Which two weights are smallest now?</h3><p>The answer changes after every merge because the combined node is inserted back into the candidate set.</p></article>
 <article class="recognition-card"><span class="signal">Data structure</span><h3>Min-heap</h3><p><code>pop</code> exposes the current minimum, and <code>push</code> restores the collection after inserting the merged weight. No global re-sort is necessary.</p></article>
@@ -159,8 +159,8 @@
 </section>
 
 <section class="lecture-section" id="heap-optimization">
-<h2>The obvious Huffman implementation is quadratic</h2>
-<p class="lead">The mathematical rule says “repeatedly remove the two smallest weights”. The first implementation idea is to scan the whole collection every time—but the repeated minimum search becomes the bottleneck.</p>
+<h2>Why a plain list is inefficient</h2>
+<p class="lead">Scanning the full collection to find two minima on every iteration leads to quadratic work. A heap reduces each extraction and reinsertion to logarithmic time.</p>
 <div class="operation-profile">
 <article class="neutral"><h3>Plain list</h3><p>Find the two smallest nodes by scanning all current nodes, merge them, put the result back, and repeat. With roughly <span class="math">n</span> merges and linear searches, this is <span class="math">O(n²)</span>.</p></article>
 <article class="good"><h3>Min-heap</h3><p>The two smallest weights are always exposed at the top. Each pop or push costs <span class="math">O(log n)</span>, so all <span class="math">n−1</span> merges take <span class="math">O(n log n)</span>.</p></article>
@@ -169,8 +169,8 @@
 </section>
 
 <section class="lecture-section" id="implementation">
-<h2>The whole algorithm is a min-heap</h2>
-<p class="lead">A min-heap makes each “extract two minima and insert their sum” step efficient. A counter is included so Python never has to compare tree nodes when frequencies tie.</p>
+<h2>Min-heap implementation</h2>
+<p class="lead">Store the current tree nodes in a min-heap keyed by frequency. Each iteration extracts two nodes and inserts their merged parent.</p>
 <div class="code-explainer">
 <div class="annotated-code">
 <div class="code-row"><span class="line-no">1</span><code>import heapq</code></div>
@@ -201,8 +201,8 @@
 
 <!-- skiena-round-huffman -->
 <section class="lecture-section" id="static-adaptive">
-<h2>Huffman is a static model of the source</h2>
-<p class="lead">The tree is optimal for the symbol frequencies you give it, but a real compression system must also decide how those frequencies are learned, stored, and whether symbol-by-symbol statistics are rich enough.</p>
+<h2>Static Huffman coding and adaptive compression</h2>
+<p class="lead">Huffman is optimal for a fixed symbol-frequency model. A complete compression system must also represent the code table and decide whether independent-symbol frequencies capture enough structure in the data.</p>
 <div class="recognition-grid">
 <article class="recognition-card"><span class="signal">First pass</span><h3>Learn the frequency table</h3><p>A static Huffman encoder normally inspects the input to count symbols before it can build the code tree.</p></article>
 <article class="recognition-card"><span class="signal">Metadata</span><h3>The decoder needs the code</h3><p>The coding table—or enough information to reconstruct it—must accompany the compressed payload. On a short file, that overhead can consume much of the savings.</p></article>
@@ -216,7 +216,7 @@
 </section>
 
 <section class="lecture-section" id="limits">
-<h2>Optimal inside a specific model</h2>
+<h2>Scope of the optimality result</h2>
 <div class="practice-note"><h3>Canonical Huffman codes in real formats</h3><p>A canonical Huffman code stores the code lengths and reconstructs the actual bit patterns deterministically. DEFLATE—the format underlying gzip and zlib—uses this idea for its Huffman code descriptions: code lengths are enough to regenerate the codes, which avoids transmitting an explicit tree.</p></div>
 <div class="decision-grid">
 <article class="decision-card greedy-signal"><h3>It is optimal among binary prefix codes</h3><p>Given the symbol frequencies, Huffman minimizes expected or total codeword length within this model. Decoding needs no separators because symbols live only at leaves: reaching a leaf tells us exactly where one codeword ends.</p></article>
