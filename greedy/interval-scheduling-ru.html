@@ -1,5 +1,5 @@
 <!DOCTYPE html><html lang="ru"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1" name="viewport"/>
-<meta content="Как выбрать максимальное число непересекающихся интервалов, каждый раз беря совместимый интервал с самым ранним окончанием." name="description"/><meta content="Выбор непересекающихся интервалов | Гайд по алгоритмам — presented by Аллан" property="og:title"/><meta content="Как выбрать максимальное число непересекающихся интервалов, каждый раз беря совместимый интервал с самым ранним окончанием." property="og:description"/><meta content="article" property="og:type"/>
+<meta content="Нужно выбрать как можно больше непересекающихся интервалов. Правильный жадный ход — освободить время как можно раньше." name="description"/><meta content="Выбор непересекающихся интервалов | Гайд по алгоритмам — presented by Аллан" property="og:title"/><meta content="Нужно выбрать как можно больше непересекающихся интервалов. Правильный жадный ход — освободить время как можно раньше." property="og:description"/><meta content="article" property="og:type"/>
 <title>Выбор непересекающихся интервалов | Гайд по алгоритмам — presented by Аллан</title>
 <link href="../assets/css/styles.css" rel="stylesheet"/><link href="assets/greedy.css" rel="stylesheet"/>
 <link href="../assets/images/favicon-32.png" rel="icon" sizes="32x32" type="image/png"/><link href="../assets/images/favicon.png" rel="icon" sizes="64x64" type="image/png"/><link href="../assets/images/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180"/>
@@ -8,10 +8,14 @@
 <header class="topbar"><a class="brand" href="../index-ru.html"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name ru-brand-name"><span class="ru-brand-lines"><span>Гайд по алгоритмам</span><span class="ru-brand-presented">presented by Аллан</span></span></span></a>
 <nav aria-label="Основная навигация" class="topnav"><a href="index-ru.html">Жадные алгоритмы</a><div aria-label="Язык" class="language-switch"><a href="interval-scheduling.html">EN</a><span class="language-separator">·</span><span class="current">RU</span></div></nav></header>
 <aside aria-label="Навигация по разделу" class="sidebar"><div class="sidebar-title">Глава 9 · Раздел 4</div><a href="#problem">Постановка</a><a href="#choices">Выбор правила</a><a href="#algorithm">Алгоритм</a><a href="#proof">Корректность</a><a href="#implementation">Реализация</a><a href="#variants">Варианты задачи</a><a href="#exercises">Задачи</a></aside>
-<main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Глава 9 · Раздел 4</div><h1>Выбор непересекающихся интервалов</h1><p class="chapter-topics">Как выбрать максимальное число непересекающихся интервалов, каждый раз беря совместимый интервал с самым ранним окончанием.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-interval-scheduling.svg"/></div></section>
+<main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Глава 9 · Раздел 4</div><h1>Выбор непересекающихся интервалов</h1><p class="chapter-topics">Нужно выбрать как можно больше непересекающихся интервалов. Правильный жадный ход — освободить время как можно раньше.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-interval-scheduling.svg"/></div></section>
 <section class="lecture-section" id="problem">
-<h2>Постановка задачи</h2>
-<p class="lead">Даны активности в виде временных интервалов. Два интервала совместимы, если они не пересекаются. Нужно выбрать как можно больше попарно совместимых интервалов.</p>
+<h2>Выбрать как можно больше интервалов</h2>
+<p class="lead">Каждая активность занимает временной интервал. Нужно оставить максимальное число активностей без пересечений. Важен не самый короткий интервал и не самое раннее начало, а выбор, после которого остаётся больше всего времени.</p><div class="concept-strip">
+<article class="concept-cell rule"><span>Правило</span><b>Берём интервал, который заканчивается раньше всех</b><p>Среди совместимых вариантов освобождаем время как можно раньше.</p></article>
+<article class="concept-cell proof"><span>Почему работает</span><b>Для будущего остаётся не меньше места</b><p>Первый интервал оптимального решения можно заменить на жадный.</p></article>
+<article class="concept-cell cost"><span>Сложность</span><b>O(n log n)</b><p>Сортировка по окончанию и один проход.</p></article>
+</div>
 <div class="greedy-definition"><span>Выбор интервалов</span><p>Для интервалов <span class="math">[sᵢ,fᵢ)</span> нужно выбрать подмножество максимального размера, в котором никакие два выбранных интервала не пересекаются.</p></div>
 <div class="interval-figure">
 <div class="interval-axis"><span>время</span><span>0</span><span>2</span><span>4</span><span>6</span><span>8</span><span>10</span><span>12</span><span>14</span><span>16</span><span>18</span></div>
@@ -24,8 +28,8 @@
 </section>
 
 <section class="lecture-section" id="choices">
-<h2>Какое жадное правило выбрать?</h2>
-<p class="lead">Несколько локальных правил выглядят естественно. Почти все они неверны. Правильное правило очень конкретное: каждый раз берём совместимый интервал, который заканчивается раньше всех.</p>
+<h2>Естественные правила — и единственное правильное</h2>
+<p class="lead">Самое раннее начало, минимальная длина и минимальное число конфликтов звучат разумно. Но универсально работает только самое раннее окончание.</p>
 <div class="greedy-rule-strip">
 <article class="greedy-rule-option bad"><h3>Самое раннее начало</h3><p>Можно выбрать один очень длинный интервал и заблокировать много коротких.</p></article>
 <article class="greedy-rule-option bad"><h3>Минимальная длина</h3><p>Короткий интервал может неудачно располагаться и уничтожать полезные варианты.</p></article>
@@ -36,7 +40,7 @@
 </section>
 
 <section class="lecture-section" id="algorithm">
-<h2>Жадный алгоритм</h2>
+<h2>Алгоритм: одна сортировка, один проход</h2>
 <div class="step-flow">
 <article class="step-item"><div class="step-number">1</div><div><h3>Сортируем по окончанию</h3><p>Рассматриваем интервалы от самого раннего окончания к самому позднему.</p></div></article>
 <article class="step-item"><div class="step-number">2</div><div><h3>Берём первый интервал</h3><p>Он заканчивается раньше всех оставшихся кандидатов.</p></div></article>
@@ -51,8 +55,8 @@
 </section>
 
 <section class="lecture-section" id="proof">
-<h2>Почему самое раннее окончание оптимально</h2>
-<p class="lead">Это чистый обменный аргумент. Пусть <span class="math">g</span> — интервал с самым ранним окончанием. Возьмём произвольное оптимальное решение <span class="math">O</span>.</p>
+<h2>Почему раннее окончание безопасно</h2>
+<p class="lead">Пусть <span class="math">g</span> заканчивается раньше всех. Берём произвольное оптимальное расписание <span class="math">O</span>. Достаточно показать, что его первый интервал можно заменить на <span class="math">g</span> без потерь.</p>
 <div class="timeline-proof">
 <div class="timeline-proof-card"><h3>Оптимальное решение O</h3><p>Пусть его первый выбранный интервал — <span class="math">o</span>. Он может отличаться от <span class="math">g</span>.</p></div>
 <div class="timeline-proof-arrow">→</div>
@@ -83,7 +87,7 @@
 </section>
 
 <section class="lecture-section" id="variants">
-<h2>Что меняется в похожих задачах?</h2>
+<h2>Маленькое изменение — другой алгоритм</h2>
 <div class="decision-grid">
 <article class="decision-card greedy-signal"><h3>Взвешенные интервалы</h3><p>Если у интервалов разные прибыли и нужно максимизировать суммарную прибыль, раннего окончания уже недостаточно. Стандартное решение — динамическое программирование.</p></article>
 <article class="decision-card greedy-signal"><h3>Нужно оставить все интервалы</h3><p>Если ни один интервал нельзя выбрасывать, а нужно минимизировать число аудиторий, задача меняется полностью. Это следующая страница — Interval Partitioning.</p></article>
