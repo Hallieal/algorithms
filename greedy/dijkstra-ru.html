@@ -8,7 +8,7 @@
 <body class="lecture-page"><div aria-hidden="true" class="progress-track"><div class="progress-bar" id="reading-progress"></div></div>
 <header class="topbar"><a class="brand" href="../index-ru.html"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name ru-brand-name"><span class="ru-brand-lines"><span>Гайд по алгоритмам</span><span class="ru-brand-presented">presented by Аллан</span></span></span></a>
 <nav aria-label="Основная навигация" class="topnav"><a href="index-ru.html">Жадные алгоритмы</a><div aria-label="Язык" class="language-switch"><a href="dijkstra.html">EN</a><span class="language-separator">·</span><span class="current">RU</span></div></nav></header>
-<aside aria-label="Навигация по разделу" class="sidebar"><div class="sidebar-title">Глава 9 · Раздел 10</div><a href="#problem">Постановка</a><a href="#idea">Жадная идея</a><a href="#fewest-cheapest">Меньше рёбер vs дешевле путь</a><a href="#cost-not-distance">Cost — не обязательно distance</a><a href="#mental-model">Модель в четыре шага</a><a href="#demo">По шагам</a><a href="#bfs-link">От BFS к Dijkstra</a><a href="#state-table">Costs, parents, processed</a><a href="#proof">Корректность</a><a href="#negative">Отрицательные рёбра</a><a href="#implementation">Реализация</a><a href="#paths">Восстановление путей</a><a href="#comparison">Сравнение с MST</a><a href="#choice-guide">Какой shortest-path метод?</a><a href="#exercises">Задачи</a></aside>
+<aside aria-label="Навигация по разделу" class="sidebar"><div class="sidebar-title">Глава 9 · Раздел 10</div><a href="#problem">Постановка</a><a href="#all-distances">Один source — все distances</a><a href="#idea">Жадная идея</a><a href="#fewest-cheapest">Меньше рёбер vs дешевле путь</a><a href="#cost-not-distance">Cost — не обязательно distance</a><a href="#mental-model">Модель в четыре шага</a><a href="#demo">По шагам</a><a href="#bfs-link">От BFS к Dijkstra</a><a href="#state-table">Costs, parents, processed</a><a href="#proof">Корректность</a><a href="#negative">Отрицательные рёбра</a><a href="#frontier-structure">Array frontier и heap frontier</a><a href="#implementation">Реализация</a><a href="#paths">Восстановление путей</a><a href="#comparison">Сравнение с MST</a><a href="#choice-guide">Какой shortest-path метод?</a><a href="#exercises">Задачи</a></aside>
 <main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Глава 9 · Раздел 10</div><h1>Алгоритм Дейкстры</h1><p class="chapter-topics">При неотрицательных весах минимальную временную метку можно безопасно зафиксировать. На этом одном жадном шаге построен алгоритм Дейкстры.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-dijkstra.svg"/></div></section>
 <section class="lecture-section" id="problem">
 <h2>Кратчайшие пути из одного источника</h2>
@@ -19,6 +19,18 @@
 </div>
 <div class="greedy-definition"><span>Условия Дейкстры</span><p>Все веса рёбер должны быть неотрицательными. Граф может быть ориентированным или неориентированным. Недостижимые вершины сохраняют расстояние <span class="math">∞</span>.</p></div>
 <div class="greedy-caution"><strong>Кратчайшие пути и MST — разные задачи.</strong> Дейкстра минимизирует путь от источника до каждой вершины отдельно. MST минимизирует одну глобальную сумму выбранных рёбер.</div>
+</section>
+
+<!-- common-sense-round-dijkstra -->
+<section class="lecture-section" id="all-distances">
+<h2>Один target-query фактически даёт целую shortest-path map</h2>
+<p class="lead">Dijkstra часто формулируют как «найди cheapest route из S в T», но сам алгоритм естественно вычисляет больше: после завершения у каждой reachable вершины известно shortest distance от source.</p>
+<div class="grokking-contrast">
+<article class="grokking-card good"><span>Distance table</span><h3>Сколько стоит добраться до каждого destination?</h3><p><code>dist[v]</code> хранит cheapest known source-to-<span class="math">v</span> cost и становится final, когда <span class="math">v</span> безопасно извлечена.</p></article>
+<article class="grokking-card warn"><span>Parent table</span><h3>Как именно туда попасть?</h3><p><code>parent[v]</code> запоминает predecessor, давший лучшую cost. Backtracking по parents восстанавливает route.</p></article>
+<article class="grokking-card approx"><span>Visited/finalized</span><h3>Какие ответы уже окончательны?</h3><p>Это state отделяет tentative information от distances, которые по greedy proof больше уже не улучшатся.</p></article>
+</div>
+<div class="one-line"><strong>Полезный бонус.</strong> Если позже понадобится другой destination от того же source, distance information уже вычислена; повторный запуск single-target search не нужен.</div>
 </section>
 
 <section class="lecture-section" id="idea">
@@ -130,6 +142,16 @@
 <div class="greedy-caution"><strong>При отрицательных рёбрах используйте Bellman–Ford или другой подходящий алгоритм.</strong> Нулевые веса Дейкстре не мешают: требуется именно неотрицательность.</div>
 <div class="predict-card"><span class="predict-kicker">Диагностический red flag</span><h3>Если уже finalized вершина позже получает более дешёвое distance, greedy assumption нарушен.</h3><p>Именно это умеет сделать negative edge. В корректном запуске Dijkstra finalized distance никогда не должно уменьшаться.</p></div>
 <div class="source-note"><h3>Два соседних алгоритма</h3><p><strong>Bellman–Ford</strong> многократно релаксирует все рёбра, допускает отрицательные веса и умеет обнаруживать достижимые отрицательные циклы. <strong>A*</strong> — целевая версия поиска кратчайшего пути: приоритет равен пройденному расстоянию плюс допустимая эвристика. Отдельных страниц про эти алгоритмы в handbook пока нет.</p></div>
+</section>
+
+<section class="lecture-section" id="frontier-structure">
+<h2>Representation frontier меняет Big O Dijkstra</h2>
+<p class="lead">Abstract algorithm говорит: «выбери unfinalized vertex с минимальной tentative distance». Он не требует конкретной data structure.</p>
+<div class="operation-profile">
+<article class="neutral"><h3>Обычный array / linear search</h3><p>Чтобы найти следующий minimum, можно каждый раз сканировать все unvisited vertices. Повторение такого поиска даёт implementation порядка <span class="math">O(V²)</span>. Зато её проще трассировать вручную.</p></article>
+<article class="good"><h3>Min-priority queue</h3><p>Heap быстро показывает следующий minimum. С adjacency lists стандартная heap-реализация работает за <span class="math">O((V+E) log V)</span>, что для connected graphs обычно пишут как <span class="math">O(E log V)</span>.</p></article>
+</div>
+<div class="optimization-gap"><b>Один proof, разные engineering trade-offs</b><p>Array-version проще педагогически; heap-version лучше соответствует повторяющейся операции «дай cheapest frontier vertex». Complexity относится к реализации, а не только к имени алгоритма.</p></div>
 </section>
 
 <section class="lecture-section" id="implementation">
