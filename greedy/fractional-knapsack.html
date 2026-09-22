@@ -34,7 +34,7 @@
 <div class="bit-arrow">→</div>
 <div class="bit-side good"><h3>Fractional decision</h3><p>Take any fraction <span class="math">0≤xᵢ≤1</span>. Equal units of weight can be exchanged between items, which is exactly what makes the density proof work.</p></div>
 </div>
-<div class="predict-card"><span class="predict-kicker">Key modeling lesson</span><h3>The greedy rule did not magically improve. The feasible set changed.</h3><p>Divisibility is the assumption that turns a plausible density heuristic into an exact greedy algorithm.</p></div>
+<div class="predict-card"><span class="predict-kicker">Key modeling lesson</span><h3>The feasible set changes</h3><p>Divisibility is the assumption that turns a plausible density heuristic into an exact greedy algorithm.</p></div>
 </section>
 
 <!-- coding-patterns-round-fractional -->
@@ -49,7 +49,7 @@
 <tr><td>General 0/1, integer capacity</td><td>No simple order dominates, but capacity gives a DP state</td><td>Dynamic programming in <span class="math">O(nC)</span></td></tr>
 </tbody></table></div>
 <div class="greedy-caution"><strong>Equal density does not make general 0/1 Knapsack easy.</strong> If all items have the same value-to-weight ratio, the remaining challenge is packing sizes tightly enough to use capacity well—essentially subset-sum structure rather than a useful greedy ranking.</div>
-<div class="one-line"><strong>Look for what collapses the choice.</strong> Divisibility, equal values, or equal sizes can turn a hard combinatorial choice into a simple ordering rule; without such structure, density alone is only a heuristic for 0/1 Knapsack.</div>
+<div class="one-line"><strong>Special cases.</strong> Divisibility, equal values, or equal sizes can turn a hard combinatorial choice into a simple ordering rule; without such structure, density alone is only a heuristic for 0/1 Knapsack.</div>
 </section>
 
 <section class="lecture-section" id="interview-trap">
@@ -147,7 +147,7 @@
 <article class="boundary-card bad"><h3>0/1 version</h3><p>The same density order takes A and B for value 160. But B+C fits exactly and gives 220. The greedy first choice A blocks the optimum.</p></article>
 </div>
 <div class="greedy-caution"><strong>Lesson.</strong> A tiny modeling change can destroy the greedy-choice property. Never transfer a greedy proof from one problem variant to another without checking its key assumption.</div>
-<div class="bridge-note"><h3>Greedy is still useful around 0/1 Knapsack</h3><p>The fractional optimum is an <strong>upper bound</strong> on the 0/1 optimum: allowing fractions can only help. That bound is useful in branch-and-bound. For exact 0/1 Knapsack, a standard DP over capacity is pseudo-polynomial. A plain density-greedy choice by itself has no constant-factor guarantee; approximation needs an additional idea, such as also comparing against the best single item.</p></div>
+<div class="bridge-note"><h3>Bounds for 0/1 Knapsack</h3><p>The fractional optimum is an <strong>upper bound</strong> on the 0/1 optimum: allowing fractions can only help. That bound is useful in branch-and-bound. For exact 0/1 Knapsack, a standard DP over capacity is pseudo-polynomial. A plain density-greedy choice by itself has no constant-factor guarantee; approximation needs an additional idea, such as also comparing against the best single item.</p></div>
 </section>
 
 <!-- common-sense-round-fractional -->
