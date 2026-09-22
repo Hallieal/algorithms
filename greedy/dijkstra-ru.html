@@ -8,7 +8,7 @@
 <body class="lecture-page"><div aria-hidden="true" class="progress-track"><div class="progress-bar" id="reading-progress"></div></div>
 <header class="topbar"><a class="brand" href="../index-ru.html"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name ru-brand-name"><span class="ru-brand-lines"><span>Гайд по алгоритмам</span><span class="ru-brand-presented">presented by Аллан</span></span></span></a>
 <nav aria-label="Основная навигация" class="topnav"><a href="index-ru.html">Жадные алгоритмы</a><div aria-label="Язык" class="language-switch"><a href="dijkstra.html">EN</a><span class="language-separator">·</span><span class="current">RU</span></div></nav></header>
-<aside aria-label="Навигация по разделу" class="sidebar"><div class="sidebar-title">Глава 9 · Раздел 10</div><a href="#problem">Постановка</a><a href="#idea">Жадная идея</a><a href="#fewest-cheapest">Меньше рёбер vs дешевле путь</a><a href="#mental-model">Модель в четыре шага</a><a href="#demo">По шагам</a><a href="#bfs-link">От BFS к Dijkstra</a><a href="#state-table">Costs, parents, processed</a><a href="#proof">Корректность</a><a href="#negative">Отрицательные рёбра</a><a href="#implementation">Реализация</a><a href="#paths">Восстановление путей</a><a href="#comparison">Сравнение с MST</a><a href="#choice-guide">Какой shortest-path метод?</a><a href="#exercises">Задачи</a></aside>
+<aside aria-label="Навигация по разделу" class="sidebar"><div class="sidebar-title">Глава 9 · Раздел 10</div><a href="#problem">Постановка</a><a href="#idea">Жадная идея</a><a href="#fewest-cheapest">Меньше рёбер vs дешевле путь</a><a href="#cost-not-distance">Cost — не обязательно distance</a><a href="#mental-model">Модель в четыре шага</a><a href="#demo">По шагам</a><a href="#bfs-link">От BFS к Dijkstra</a><a href="#state-table">Costs, parents, processed</a><a href="#proof">Корректность</a><a href="#negative">Отрицательные рёбра</a><a href="#implementation">Реализация</a><a href="#paths">Восстановление путей</a><a href="#comparison">Сравнение с MST</a><a href="#choice-guide">Какой shortest-path метод?</a><a href="#exercises">Задачи</a></aside>
 <main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Глава 9 · Раздел 10</div><h1>Алгоритм Дейкстры</h1><p class="chapter-topics">При неотрицательных весах минимальную временную метку можно безопасно зафиксировать. На этом одном жадном шаге построен алгоритм Дейкстры.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-dijkstra.svg"/></div></section>
 <section class="lecture-section" id="problem">
 <h2>Кратчайшие пути из одного источника</h2>
@@ -43,6 +43,17 @@
 <article class="good"><h3>Три ребра, total cost 7</h3><p><span class="math">S → A → B → T</span> длиннее по числу segments, но дешевле по total weight. Dijkstra выбирает его, потому что objective — накопленная стоимость.</p></article>
 </div>
 <div class="one-line"><strong>Выбирайте algorithm из смысла distance.</strong> Минимум рёбер → BFS. Минимум суммы неотрицательных weights → Dijkstra.</div>
+</section>
+
+<!-- grokking-round-dijkstra -->
+<section class="lecture-section" id="cost-not-distance">
+<h2>“Shortest” может означать cheapest, fastest или least costly</h2>
+<p class="lead">Dijkstra не важно, измеряется ли edge weight в километрах. Нужна лишь аддитивная неотрицательная cost.</p>
+<div class="path-choice">
+<article class="good"><h3>Граф обменов</h3><p>Представим, что nodes — предметы, которые можно получить обменом, а edge weight — сколько денег нужно доплатить за соответствующий trade. Path становится цепочкой обменов, а его total weight — потраченной суммой.</p></article>
+<article><h3>Алгоритм не меняется</h3><p>Labels всё так же означают «лучшая найденная cost». Relaxation спрашивает, не станет ли получение предмета дешевле через текущий node.</p></article>
+</div>
+<div class="predict-card"><span class="predict-kicker">Главная intuition</span><h3>Если cheapest unfinished node стоит 2, может ли путь, который сначала приходит в node стоимостью 6, потом вернуться и победить 2?</h3><p>Не при неотрицательных дальнейших edges. Вы уже потратили как минимум 6 до следующего шага. Это бытовая версия correctness proof.</p></div>
 </section>
 
 <section class="lecture-section" id="mental-model">
@@ -117,6 +128,7 @@
 <div class="negative-side good"><h3>Но настоящий кратчайший путь</h3><p>Путь S→B→A имеет длину <span class="math">5−10 = −5</span>. Он намного короче, поэтому «окончательное» значение 2 на самом деле не было безопасным.</p></div>
 </div>
 <div class="greedy-caution"><strong>При отрицательных рёбрах используйте Bellman–Ford или другой подходящий алгоритм.</strong> Нулевые веса Дейкстре не мешают: требуется именно неотрицательность.</div>
+<div class="predict-card"><span class="predict-kicker">Диагностический red flag</span><h3>Если уже finalized вершина позже получает более дешёвое distance, greedy assumption нарушен.</h3><p>Именно это умеет сделать negative edge. В корректном запуске Dijkstra finalized distance никогда не должно уменьшаться.</p></div>
 <div class="source-note"><h3>Два соседних алгоритма</h3><p><strong>Bellman–Ford</strong> многократно релаксирует все рёбра, допускает отрицательные веса и умеет обнаруживать достижимые отрицательные циклы. <strong>A*</strong> — целевая версия поиска кратчайшего пути: приоритет равен пройденному расстоянию плюс допустимая эвристика. Отдельных страниц про эти алгоритмы в handbook пока нет.</p></div>
 </section>
 
@@ -153,17 +165,23 @@
 </section>
 
 <section class="lecture-section" id="paths">
-<h2>Расстояния — ещё не сами пути</h2>
-<p class="lead">Иногда одних расстояний недостаточно. При каждом успешном улучшении сохраняем предшественника вершины.</p>
+<h2>Distances — не сами paths: храните parents</h2>
+<p class="lead">Cost table отвечает, насколько дорог optimum. Parent table — как именно его получить.</p>
 <div class="code-explainer">
 <div class="annotated-code">
-<div class="code-row"><span class="line-no">1</span><code>if new_dist < dist[v]:</code></div>
+<div class="code-row"><span class="line-no">1</span><code>if new_dist &lt; dist[v]:</code></div>
 <div class="code-row"><span class="line-no">2</span><code>    dist[v] = new_dist</code></div>
 <div class="code-row marked"><span class="line-no">3</span><code>    parent[v] = u</code></div>
 <div class="code-row"><span class="line-no">4</span><code>    heapq.heappush(heap, (new_dist, v))</code></div>
 </div>
-<div class="code-notes"><h3>Потом идём назад</h3><p>Чтобы восстановить кратчайший путь до цели, последовательно переходим по <code>parent[target]</code> до источника, а затем разворачиваем полученный список.</p></div>
+<div class="code-notes"><h3>Каждое улучшение одновременно запоминает route</h3><p>Если путь через <code>u</code> делает <code>v</code> дешевле, <code>u</code> становится predecessor вершины <code>v</code> в лучшем известном пути.</p></div>
 </div>
+<div class="classroom-walk">
+<div class="classroom-step"><span>Target</span><p>Начинаем с destination и смотрим её parent.</p></div>
+<div class="classroom-step"><span>Backtrack</span><p>Идём по <code>parent[target]</code>, затем по parent этой вершины и так далее до source.</p></div>
+<div class="classroom-step"><span>Reverse</span><p>Parent chain хранится задом наперёд, поэтому разворачиваем её и получаем source-to-target path.</p></div>
+</div>
+<div class="one-line"><strong>Два output — две структуры.</strong> <code>dist</code> отвечает «сколько?», а <code>parent</code> — «какая последовательность решений?».</div>
 </section>
 
 <section class="lecture-section" id="comparison">
