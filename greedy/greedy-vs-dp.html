@@ -6,7 +6,7 @@
 </head>
 <body class="lecture-page"><div aria-hidden="true" class="progress-track"><div class="progress-bar" id="reading-progress"></div></div>
 <header class="topbar"><a class="brand" href="../"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name">Allan's Handbook of Algorithms</span></a><nav aria-label="Primary navigation" class="topnav"><a href="./">Greedy overview</a><div aria-label="Language" class="language-switch"><span class="current">EN</span><span class="language-separator">·</span><a href="greedy-vs-dp-ru.html">RU</a></div></nav></header>
-<aside aria-label="Section navigation" class="sidebar"><div class="sidebar-title">Chapter 9 · Section 3</div><a href="#difference">Core difference</a><a href="#structure">Shared structure</a><a href="#coins">Coin change</a><a href="#knapsack">0/1 Knapsack</a><a href="#knapsack-ladder">Knapsack: three levels</a><a href="#weighted">Weighted intervals</a><a href="#state">What must the future remember?</a><a href="#compressed-dp">When DP collapses to one state</a><a href="#branch-test">Can one branch be discarded?</a><a href="#signals">Which technique?</a><a href="#code">Code comparison</a><a href="#spectrum">Exactness spectrum</a><a href="#comparison">Summary table</a><a href="#exercises">Exercises</a></aside>
+<aside aria-label="Section navigation" class="sidebar"><div class="sidebar-title">Chapter 9 · Section 3</div><a href="#difference">Core difference</a><a href="#structure">Shared structure</a><a href="#coins">Coin change</a><a href="#coin-system">A realistic coin-system trap</a><a href="#knapsack">0/1 Knapsack</a><a href="#knapsack-ladder">Knapsack: three levels</a><a href="#weighted">Weighted intervals</a><a href="#state">What must the future remember?</a><a href="#compressed-dp">When DP collapses to one state</a><a href="#branch-test">Can one branch be discarded?</a><a href="#signals">Which technique?</a><a href="#code">Code comparison</a><a href="#spectrum">Exactness spectrum</a><a href="#comparison">Summary table</a><a href="#exercises">Exercises</a></aside>
 <main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Chapter 9 · Section 3</div><h1>Greedy vs Dynamic Programming</h1><p class="chapter-topics">Greedy keeps one future. Dynamic programming keeps several states alive until it knows which future wins.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-vs-dp.svg"/></div></section>
 <section class="lecture-section" id="difference">
 <h2>One path or many states?</h2>
@@ -40,6 +40,17 @@
 <div class="proof-panel"><h3>Dynamic programming</h3><p>For every amount x, remember the minimum number of coins needed for x:</p><div class="formula-line">dp[x] = 1 + min dp[x − c]</div><p>For x = 6, the best transition uses coin 3 twice, giving 2 coins.</p></div>
 </div>
 <p>Why does greedy fail? After taking 4, it discards the alternative partial amount 3. But that alternative combines with another 3 perfectly. DP keeps enough state to discover this.</p>
+</section>
+
+<!-- karumanchi-round-gvdp -->
+<section class="lecture-section" id="coin-system">
+<h2>Greedy can fail even when the denominations look “normal”</h2>
+<p class="lead">It is easy to dismiss the set <span class="math">{1,3,4}</span> as artificial. A second example shows that the issue is structural, not cosmetic.</p>
+<div class="two-column-block">
+<div class="text-panel"><h3>Denominations</h3><p><span class="math">{1,5,10,20,25,50}</span>, target amount <span class="math">40</span>.</p><p>Largest-coin-first chooses <span class="math">25+10+5</span>: three coins.</p></div>
+<div class="proof-panel"><h3>Better combination</h3><p><span class="math">20+20</span> reaches the same amount using only two coins.</p><p>The first greedy coin creates a remainder that is locally feasible but globally expensive.</p></div>
+</div>
+<div class="interview-answer"><h3>Lesson</h3><p>Do not infer a coin-change greedy rule from the fact that it works for one familiar currency. Exactness depends on the denomination system. When no structural proof is available, DP keeps the remainder states that greedy discards.</p></div>
 </section>
 
 <section class="lecture-section" id="knapsack">
