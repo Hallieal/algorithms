@@ -8,7 +8,7 @@
 <body class="lecture-page"><div aria-hidden="true" class="progress-track"><div class="progress-bar" id="reading-progress"></div></div>
 <header class="topbar"><a class="brand" href="../index-ru.html"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name ru-brand-name"><span class="ru-brand-lines"><span>Гайд по алгоритмам</span><span class="ru-brand-presented">presented by Аллан</span></span></span></a>
 <nav aria-label="Основная навигация" class="topnav"><a href="index-ru.html">Жадные алгоритмы</a><div aria-label="Язык" class="language-switch"><a href="interval-partitioning.html">EN</a><span class="language-separator">·</span><span class="current">RU</span></div></nav></header>
-<aside aria-label="Навигация по разделу" class="sidebar"><div class="sidebar-title">Глава 9 · Раздел 5</div><a href="#problem">Постановка</a><a href="#depth">Depth</a><a href="#same-input">Те же интервалы, другая задача</a><a href="#algorithm">Алгоритм</a><a href="#sweep">Только число комнат: sweep line</a><a href="#railway">Та же задача: railway platforms</a><a href="#two-array-sweep">Two-array sweep</a><a href="#proof">Корректность</a><a href="#data-structure">Почему нужен heap</a><a href="#implementation">Реализация</a><a href="#comparison">Сравнение</a><a href="#exercises">Задачи</a></aside>
+<aside aria-label="Навигация по разделу" class="sidebar"><div class="sidebar-title">Глава 9 · Раздел 5</div><a href="#problem">Постановка</a><a href="#depth">Depth</a><a href="#same-input">Те же интервалы, другая задача</a><a href="#algorithm">Алгоритм</a><a href="#sweep">Только число комнат: sweep line</a><a href="#railway">Та же задача: railway platforms</a><a href="#two-array-sweep">Two-array sweep</a><a href="#proof">Корректность</a><a href="#data-structure">Почему нужен heap</a><a href="#implementation">Реализация</a><a href="#interval-structure">Почему interval structure упрощает coloring</a><a href="#comparison">Сравнение</a><a href="#exercises">Задачи</a></aside>
 <main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Глава 9 · Раздел 5</div><h1>Разбиение интервалов по ресурсам</h1><p class="chapter-topics">Нужно разместить все интервалы в минимальном числе аудиторий. Переиспользуем ту, которая освобождается раньше всех.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-interval-partitioning.svg"/></div></section>
 <section class="lecture-section" id="problem">
 <h2>Использовать как можно меньше аудиторий</h2>
@@ -163,6 +163,18 @@
 <div class="code-note-item wide-note"><span>10–13</span><p>Если минимальное время окончания всё ещё позже старта нового интервала, заняты все аудитории и нужна новая.</p></div>
 </div></div>
 <div class="complexity-strip"><div><span>Сортировка</span><b>O(n log n)</b><small>по началу</small></div><div><span>Операция heap</span><b>O(log n)</b><small>на интервал</small></div><div><span>Итого</span><b>O(n log n)</b><small>все интервалы</small></div><div><span>Размер heap</span><b>O(d)</b><small>d = аудитории</small></div></div>
+</section>
+
+<!-- skiena-round-partition -->
+<section class="lecture-section" id="interval-structure">
+<h2>Почему interval representation действительно делает работу</h2>
+<p class="lead">Room assignment можно рассматривать как graph coloring, но input — не arbitrary conflict graph. Каждый conflict возникает из overlap на прямой, и именно эта extra structure делает greedy schedule возможным.</p>
+<div class="recognition-grid">
+<article class="recognition-card"><span class="signal">Arbitrary conflicts</span><h3>Дан только graph</h3><p>Из того, что A конфликтует с B и C, не видно, где происходят conflicts, и не возникает natural chronological sweep.</p></article>
+<article class="recognition-card"><span class="signal">Interval conflicts</span><h3>У каждой vertex есть start и finish</h3><p>Sorting by start создаёт meaningful left-to-right order, а current finish times полностью описывают, когда каждая room снова свободна.</p></article>
+<article class="recognition-card"><span class="signal">Certificate</span><h3>Maximum overlap виден напрямую</h3><p>Точка, одновременно покрытая <span class="math">d</span> intervals, сразу доказывает, что меньше <span class="math">d</span> colors/rooms невозможно.</p></article>
+</div>
+<div class="one-line"><strong>Special structure — не техническая мелочь.</strong> Часто разница между трудной general problem и простым greedy algorithm ровно в representation, которую разрешено использовать.</div>
 </section>
 
 <section class="lecture-section" id="comparison">
