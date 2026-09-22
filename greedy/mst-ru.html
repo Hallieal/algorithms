@@ -1,57 +1,224 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1" name="viewport"/>
-<meta content="Два классических жадных алгоритма для соединения всех вершин с минимальным суммарным весом рёбер." name="description"/>
-<meta content="Минимальные остовные деревья | Гайд по алгоритмам — presented by Аллан" property="og:title"/>
-<meta content="Два классических жадных алгоритма для соединения всех вершин с минимальным суммарным весом рёбер." property="og:description"/>
-<meta content="article" property="og:type"/>
+<!DOCTYPE html><html lang="ru"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="Как строить остов минимального веса с помощью свойства разреза, алгоритмов Краскала и Прима, DSU и очереди с приоритетом." name="description"/><meta content="Минимальные остовные деревья | Гайд по алгоритмам — presented by Аллан" property="og:title"/><meta content="Как строить остов минимального веса с помощью свойства разреза, алгоритмов Краскала и Прима, DSU и очереди с приоритетом." property="og:description"/><meta content="article" property="og:type"/>
 <title>Минимальные остовные деревья | Гайд по алгоритмам — presented by Аллан</title>
-<link href="../assets/css/styles.css" rel="stylesheet"/>
-<link href="assets/greedy.css" rel="stylesheet"/>
-<link href="../assets/images/favicon-32.png" rel="icon" sizes="32x32" type="image/png"/>
-<link href="../assets/images/favicon.png" rel="icon" sizes="64x64" type="image/png"/>
-<link href="../assets/images/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180"/>
-<link href="mst.html" hreflang="en" rel="alternate"/><link href="mst-ru.html" hreflang="ru" rel="alternate"/>
-</head>
-<body class="lecture-page">
-<header class="topbar">
-<a class="brand" href="../index-ru.html"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name ru-brand-name"><span class="ru-brand-lines"><span>Гайд по алгоритмам</span><span class="ru-brand-presented">presented by Аллан</span></span></span></a>
-<nav aria-label="Основная навигация" class="topnav">
-<a href="index-ru.html">Жадные алгоритмы</a>
-<div aria-label="Язык" class="language-switch"><a href="mst.html">EN</a><span class="language-separator">·</span><span class="current">RU</span></div>
-</nav>
-</header>
-<aside aria-label="Навигация по разделу" class="sidebar">
-<div class="sidebar-title">Глава 9 · Раздел 9</div>
-<a href="#coming-soon">Скоро</a>
-</aside>
-<main class="lecture">
-<section class="lecture-hero greedy-placeholder-hero">
-<div>
-<div class="chapter-label">Глава 9 · Раздел 9</div>
-<h1>Минимальные остовные деревья</h1>
-<p class="chapter-topics">Два классических жадных алгоритма для соединения всех вершин с минимальным суммарным весом рёбер.</p>
-</div>
-<div class="greedy-hero-icon"><img alt="" src="assets/greedy-mst.svg"/></div>
+<link href="../assets/css/styles.css" rel="stylesheet"/><link href="assets/greedy.css" rel="stylesheet"/>
+<link href="../assets/images/favicon-32.png" rel="icon" sizes="32x32" type="image/png"/><link href="../assets/images/favicon.png" rel="icon" sizes="64x64" type="image/png"/><link href="../assets/images/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180"/>
+<link href="mst.html" hreflang="en" rel="alternate"/><link href="mst-ru.html" hreflang="ru" rel="alternate"/></head>
+<body class="lecture-page"><div aria-hidden="true" class="progress-track"><div class="progress-bar" id="reading-progress"></div></div>
+<header class="topbar"><a class="brand" href="../index-ru.html"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name ru-brand-name"><span class="ru-brand-lines"><span>Гайд по алгоритмам</span><span class="ru-brand-presented">presented by Аллан</span></span></span></a>
+<nav aria-label="Основная навигация" class="topnav"><a href="index-ru.html">Жадные алгоритмы</a><div aria-label="Язык" class="language-switch"><a href="mst.html">EN</a><span class="language-separator">·</span><span class="current">RU</span></div></nav></header>
+<aside aria-label="Навигация по разделу" class="sidebar"><div class="sidebar-title">Глава 9 · Раздел 9</div><a href="#problem">Постановка</a><a href="#cut">Свойство разреза</a><a href="#kruskal">Краскал</a><a href="#prim">Прим</a><a href="#implementation">Реализации</a><a href="#complexity">Сложность</a><a href="#properties">Полезные факты</a><a href="#exercises">Задачи</a></aside>
+<main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Глава 9 · Раздел 9</div><h1>Минимальные остовные деревья</h1><p class="chapter-topics">Как строить остов минимального веса с помощью свойства разреза, алгоритмов Краскала и Прима, DSU и очереди с приоритетом.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-mst.svg"/></div></section>
+<section class="lecture-section" id="problem">
+<h2>Постановка задачи</h2>
+<p class="lead">Дан связный неориентированный взвешенный граф. Нужно соединить все вершины, минимизируя суммарный вес выбранных рёбер.</p>
+<div class="greedy-definition"><span>Минимальное остовное дерево</span><p>Остовное дерево содержит все вершины, связно, не имеет циклов и поэтому содержит ровно <span class="math">|V|−1</span> рёбер. MST — остовное дерево минимального суммарного веса.</p></div>
+<div class="greedy-caution"><strong>MST — не дерево кратчайших путей.</strong> Оно минимизирует сумму весов всех выбранных рёбер, а не расстояние от одной исходной вершины до остальных.</div>
 </section>
-<section class="lecture-section" id="coming-soon">
-<div class="coming-soon-panel">
-<span class="coming-soon-kicker">В разработке</span>
-<h2>Страница скоро будет заполнена</h2>
-<p>Здесь сформулируем задачу минимального остовного дерева, докажем свойство разреза и выведем алгоритмы Краскала и Прима. Реализации свяжут жадное доказательство с DSU и кучами.</p>
+
+<section class="lecture-section" id="cut">
+<h2>Свойство разреза</h2>
+<p class="lead">Главный жадный факт, стоящий и за Краскалом, и за Примом, связан с разрезами. Разрез делит вершины на два непустых множества <span class="math">S</span> и <span class="math">V\S</span>. Ребро пересекает разрез, если его концы лежат по разные стороны.</p>
+<div class="cut-diagram">
+<div class="cut-side"><h3>Сторона S</h3><p>Часть вершин и уже зафиксированные безопасные рёбра.</p></div>
+<div class="cut-bridge">самое лёгкое ребро<br/>через разрез</div>
+<div class="cut-side"><h3>Сторона V \ S</h3><p>Оставшиеся вершины с другой стороны разбиения.</p></div>
 </div>
-<div class="placeholder-navigation">
-<a href="huffman-ru.html">← Кодирование Хаффмана</a>
-<a href="dijkstra-ru.html">Алгоритм Дейкстры →</a>
+<div class="proof-goal"><h3>Свойство разреза</h3><p>Если разрез согласован с уже выбранными рёбрами, то ребро минимального веса, пересекающее этот разрез, безопасно: существует MST, содержащее все прежние выбранные рёбра и это ребро.</p></div>
+<div class="subsection"><h3>Почему это верно</h3><p>Берём MST <span class="math">T</span>, согласованное с текущими выборами. Если лёгкое ребро <span class="math">e</span> уже входит в <span class="math">T</span>, всё готово. Иначе добавим <span class="math">e</span>: появится цикл. В этом цикле обязательно есть другое ребро <span class="math">f</span>, пересекающее тот же разрез. Так как <span class="math">e</span> — минимальное среди пересекающих, <span class="math">w(e) ≤ w(f)</span>. Удаляем <span class="math">f</span>; дерево остаётся остовным, а его вес не увеличивается.</p></div>
+</section>
+
+<section class="lecture-section" id="kruskal">
+<h2>Алгоритм Краскала</h2>
+<p class="lead">Краскал рассматривает рёбра глобально от самых лёгких к самым тяжёлым. Ребро добавляется только тогда, когда оно соединяет две разные текущие компоненты.</p>
+<div class="visualizer kruskal-demo">
+<div class="visualizer-head"><div><h3>Краскал по шагам</h3><p>Список рёбер уже отсортирован по весу. Зелёные рёбра входят в лес, бледные отклонены из-за цикла.</p></div><div class="step-nav-controls"><button class="previous-step" data-action="previous" type="button">← Назад</button><button class="primary-step" data-action="next" type="button">Дальше →</button></div></div>
+<div class="edge-list" data-role="edges"></div>
+<div class="coin-panel-label">Текущие компоненты</div><div class="component-chips" data-role="components"></div>
+<div class="greedy-job-result">Вес текущего леса: <strong data-role="weight">0</strong></div>
+<div class="step-caption"></div><div class="secondary-controls"><button data-action="reset" type="button">Сбросить</button></div>
+</div>
+<div class="subsection"><h3>Почему очередное принятое ребро безопасно</h3><p>Перед добавлением ребра <span class="math">(u,v)</span> вершины <span class="math">u</span> и <span class="math">v</span> лежат в разных компонентах. Берём разрез: одна из этих компонент против всех остальных вершин. Выбранное ребро является одним из самых лёгких доступных рёбер, пересекающих разрез, согласованный с текущим лесом, поэтому работает свойство разреза.</p></div>
+</section>
+
+<section class="lecture-section" id="prim">
+<h2>Алгоритм Прима</h2>
+<p class="lead">Прим растит одно дерево, а не несколько компонент. Начинаем с произвольной вершины и каждый раз добавляем самое дешёвое ребро, ведущее из текущего дерева в ещё не посещённую вершину.</p>
+<div class="algo-compare-grid">
+<article class="algo-compare-card kruskal"><h3>Краскал</h3><p>Жадный объект: глобально самое дешёвое ребро, соединяющее две разные компоненты.</p><div class="method-state-row"><span class="method-state active">лес</span><span class="method-state">сортировка рёбер</span><span class="method-state">DSU</span></div></article>
+<article class="algo-compare-card prim"><h3>Прим</h3><p>Жадный объект: самое дешёвое ребро из текущего дерева наружу.</p><div class="method-state-row"><span class="method-state active">одно дерево</span><span class="method-state">heap</span><span class="method-state">граница</span></div></article>
+</div>
+<p>Корректность Прима почти буквально следует из свойства разреза: берём разрез «вершины уже в дереве» против «вершины ещё вне дерева». Самое лёгкое пересекающее ребро безопасно.</p>
+</section>
+
+<section class="lecture-section" id="implementation">
+<h2>Реализации на Python</h2>
+<div class="dual-code">
+<div class="dual-code-block"><h3>Краскал + DSU</h3><pre><code>def kruskal(n, edges):
+    parent = list(range(n))
+    rank = [0] * n
+
+    def find(x):
+        while parent[x] != x:
+            parent[x] = parent[parent[x]]
+            x = parent[x]
+        return x
+
+    def union(a, b):
+        a, b = find(a), find(b)
+        if a == b:
+            return False
+        if rank[a] < rank[b]:
+            a, b = b, a
+        parent[b] = a
+        if rank[a] == rank[b]:
+            rank[a] += 1
+        return True
+
+    mst = []
+    for w, u, v in sorted(edges):
+        if union(u, v):
+            mst.append((u, v, w))
+    return mst</code></pre></div>
+<div class="dual-code-block"><h3>Прим + heap</h3><pre><code>import heapq
+
+def prim(graph, start=0):
+    seen = {start}
+    heap = []
+
+    for v, w in graph[start]:
+        heapq.heappush(heap, (w, start, v))
+
+    mst = []
+    while heap and len(seen) < len(graph):
+        w, u, v = heapq.heappop(heap)
+        if v in seen:
+            continue
+
+        seen.add(v)
+        mst.append((u, v, w))
+
+        for to, weight in graph[v]:
+            if to not in seen:
+                heapq.heappush(heap, (weight, v, to))
+
+    return mst</code></pre></div>
 </div>
 </section>
-</main>
-<footer class="lecture-footer">
-<div>Гайд по алгоритмам · presented by Аллан</div>
-<div>© 2026 Allan Allemand</div>
-</footer>
-<script src="../assets/js/language-switch.js"></script>
-</body>
-</html>
+
+<section class="lecture-section" id="complexity">
+<h2>Сложность и выбор алгоритма</h2>
+<div class="table-wrap"><table class="graph-code-table"><thead><tr><th>Алгоритм</th><th>Главная структура</th><th>Типичная сложность</th><th>Когда удобен</th></tr></thead><tbody>
+<tr><td>Краскал</td><td>Сортировка рёбер + DSU</td><td>O(E log E)</td><td>Уже есть список рёбер; граф разреженный</td></tr>
+<tr><td>Прим с binary heap</td><td>Списки смежности + heap</td><td>O(E log V)</td><td>Граф естественно хранится по соседям вершин</td></tr>
+</tbody></table></div>
+<p class="caption">Так как <span class="math">E ≤ V²</span>, логарифмические множители близки. На практике часто важнее формат хранения графа и окружающий код.</p>
+</section>
+
+<section class="lecture-section" id="properties">
+<h2>Полезные факты об MST</h2>
+<div class="decision-grid">
+<article class="decision-card greedy-signal"><h3>Разные веса ⇒ единственность</h3><p>Если веса всех рёбер различны, MST единственно.</p></article>
+<article class="decision-card greedy-signal"><h3>При равных весах MST может быть несколько</h3><p>Разные безопасные рёбра одинакового веса могут привести к разным остовным деревьям с одной и той же минимальной стоимостью.</p></article>
+<article class="decision-card dp-signal"><h3>Несвязный граф</h3><p>Остовного дерева нет. Краскал построит минимальный остовный лес — по дереву на каждую компоненту связности.</p></article>
+<article class="decision-card dp-signal"><h3>Отрицательные веса допустимы</h3><p>В отличие от Дейкстры, MST-алгоритмы нормально работают с отрицательными весами и просто предпочитают их, когда это безопасно.</p></article>
+</div>
+</section>
+
+<section class="lecture-section" id="exercises">
+<h2>Задачи</h2>
+<div class="exercise-list">
+<article class="exercise"><div class="exercise-num">1</div><div><h3>Число рёбер</h3><p>Сколько рёбер должно быть в остовном дереве на 17 вершинах?</p><button class="reveal" data-reveal="mst-ru-1" type="button">Показать ответ</button><div class="answer-box" hidden id="mst-ru-1">Ровно 16.</div></div></article>
+<article class="exercise"><div class="exercise-num">2</div><div><h3>Решение Краскала</h3><p>Почему Краскал отклоняет ребро, концы которого уже находятся в одной DSU-компоненте?</p><button class="reveal" data-reveal="mst-ru-2" type="button">Показать ответ</button><div class="answer-box" hidden id="mst-ru-2">Между концами уже существует путь. Добавление ребра создаст цикл, поэтому текущий лес перестанет быть лесом.</div></div></article>
+<article class="exercise"><div class="exercise-num">3</div><div><h3>Свойство разреза</h3><p>Если через один разрез проходят несколько рёбер одинакового минимального веса, обязано ли каждое MST содержать их все?</p><button class="reveal" data-reveal="mst-ru-3" type="button">Показать ответ</button><div class="answer-box" hidden id="mst-ru-3">Нет. Каждое такое лёгкое ребро безопасно в смысле существования некоторого MST, содержащего его, но разные MST могут выбирать разные рёбра при равенстве весов.</div></div></article>
+</div>
+<div class="next-part"><h3>Дальше: алгоритм Дейкстры</h3><p>MST жадно фиксирует рёбра. Дейкстра вместо этого жадно фиксирует окончательные расстояния до вершин.</p><a class="next-part-link" href="dijkstra-ru.html">Алгоритм Дейкстры →</a></div>
+</section></main>
+<footer class="lecture-footer"><div>Гайд по алгоритмам · presented by Аллан</div><div>© 2026 Allan Allemand</div></footer>
+<script src="../assets/js/lecture-core.js"></script><script>
+(() => {
+  "use strict";
+  const vertices=["A","B","C","D","E"];
+  const edges=[
+    {u:"A",v:"B",w:1},{u:"B",v:"C",w:2},{u:"A",v:"C",w:3},
+    {u:"B",v:"D",w:4},{u:"C",v:"D",w:5},{u:"C",v:"E",w:6},
+    {u:"D",v:"E",w:7},{u:"B",v:"E",w:8}
+  ];
+  const parent={}; vertices.forEach(v=>parent[v]=v);
+  function find(x){ while(parent[x]!==x){ parent[x]=parent[parent[x]]; x=parent[x]; } return x; }
+  function union(a,b){ a=find(a); b=find(b); if(a!==b) parent[b]=a; }
+  function components(){
+    const groups={};
+    vertices.forEach(v=>{ const r=find(v); (groups[r]??=[]).push(v); });
+    return Object.values(groups).map(g=>g.slice().sort());
+  }
+  const states=[{i:-1,accepted:[],rejected:[],components:components(),weight:0,phase:"start"}];
+  const accepted=[], rejected=[];
+  let total=0;
+  edges.forEach((e,i)=>{
+    states.push({i:i,accepted:accepted.slice(),rejected:rejected.slice(),components:components(),weight:total,phase:"consider"});
+    if(find(e.u)!==find(e.v)){
+      union(e.u,e.v); accepted.push(i); total+=e.w;
+      states.push({i:i,accepted:accepted.slice(),rejected:rejected.slice(),components:components(),weight:total,phase:"accept"});
+    }else{
+      rejected.push(i);
+      states.push({i:i,accepted:accepted.slice(),rejected:rejected.slice(),components:components(),weight:total,phase:"reject"});
+    }
+  });
+  states.push({i:edges.length,accepted:accepted.slice(),rejected:rejected.slice(),components:components(),weight:total,phase:"done"});
+
+  const root=document.querySelector(".kruskal-demo");
+  if(!root) return;
+  let index=0;
+  function render(){
+    const s=states[index];
+    const ru=document.documentElement.lang.toLowerCase().startsWith("ru");
+    const list=root.querySelector("[data-role='edges']");
+    list.replaceChildren();
+    edges.forEach((e,i)=>{
+      const row=document.createElement("div");
+      let cls="edge-row";
+      if(s.accepted.includes(i)) cls+=" accepted";
+      if(s.rejected.includes(i)) cls+=" rejected";
+      if(i===s.i && s.phase==="consider") cls+=" current";
+      row.className=cls;
+      const name=document.createElement("b"); name.textContent=e.u+"—"+e.v;
+      const w=document.createElement("div"); w.className="edge-weight"; w.textContent=e.w;
+      const reason=document.createElement("div"); reason.className="edge-reason";
+      if(s.accepted.includes(i)) reason.textContent=ru?"добавлено":"accepted";
+      else if(s.rejected.includes(i)) reason.textContent=ru?"цикл — пропуск":"cycle — skip";
+      else if(i===s.i) reason.textContent=ru?"рассматриваем":"consider";
+      row.append(name,w,reason); list.appendChild(row);
+    });
+    const comps=root.querySelector("[data-role='components']");
+    comps.replaceChildren();
+    s.components.forEach(g=>{
+      const el=document.createElement("span");
+      el.className="component-chip"+(g.length>1?" joined":"");
+      el.textContent="{"+g.join(", ")+"}";
+      comps.appendChild(el);
+    });
+    root.querySelector("[data-role='weight']").textContent=s.weight;
+    const caption=root.querySelector(".step-caption");
+    if(s.phase==="start") caption.textContent=ru?"Сортируем рёбра по весу и начинаем с пяти отдельных компонент.":"Sort edges by weight and start with five separate components.";
+    else if(s.phase==="done") caption.textContent=ru?"Остов готов: выбрано 4 ребра, суммарный вес "+s.weight+".":"The spanning tree is complete: 4 edges, total weight "+s.weight+".";
+    else {
+      const e=edges[s.i];
+      if(s.phase==="consider") caption.textContent=ru?"Рассматриваем самое дешёвое оставшееся ребро "+e.u+"—"+e.v+" веса "+e.w+".":"Consider the cheapest remaining edge "+e.u+"—"+e.v+" of weight "+e.w+".";
+      if(s.phase==="accept") caption.textContent=ru?"Концы лежат в разных компонентах — добавляем ребро.":"Its endpoints are in different components, so accept it.";
+      if(s.phase==="reject") caption.textContent=ru?"Концы уже соединены — ребро создало бы цикл, поэтому пропускаем.":"Its endpoints are already connected; adding it would create a cycle, so skip it.";
+    }
+    root.querySelector("[data-action='previous']").disabled=index===0;
+    root.querySelector("[data-action='next']").disabled=index===states.length-1;
+  }
+  root.addEventListener("click",e=>{
+    const b=e.target.closest("[data-action]");
+    if(!b) return;
+    if(b.dataset.action==="next") index=Math.min(index+1,states.length-1);
+    if(b.dataset.action==="previous") index=Math.max(index-1,0);
+    if(b.dataset.action==="reset") index=0;
+    render();
+  });
+  render();
+})();
+</script><script src="../assets/js/language-switch.js"></script></body></html>
