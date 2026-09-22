@@ -1,57 +1,119 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1" name="viewport"/>
-<meta content="Жадные алгоритмы и динамическое программирование используют структуру задачи по-разному и делают разные типы решений." name="description"/>
-<meta content="Жадные алгоритмы и динамическое программирование | Гайд по алгоритмам — presented by Аллан" property="og:title"/>
-<meta content="Жадные алгоритмы и динамическое программирование используют структуру задачи по-разному и делают разные типы решений." property="og:description"/>
-<meta content="article" property="og:type"/>
+<!DOCTYPE html><html lang="ru"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="Чем жадные алгоритмы отличаются от динамического программирования, когда локальный выбор безопасен и когда нужно хранить несколько состояний." name="description"/><meta content="Жадные алгоритмы и динамическое программирование | Гайд по алгоритмам — presented by Аллан" property="og:title"/><meta content="Чем жадные алгоритмы отличаются от динамического программирования, когда локальный выбор безопасен и когда нужно хранить несколько состояний." property="og:description"/><meta content="article" property="og:type"/>
 <title>Жадные алгоритмы и динамическое программирование | Гайд по алгоритмам — presented by Аллан</title>
-<link href="../assets/css/styles.css" rel="stylesheet"/>
-<link href="assets/greedy.css" rel="stylesheet"/>
-<link href="../assets/images/favicon-32.png" rel="icon" sizes="32x32" type="image/png"/>
-<link href="../assets/images/favicon.png" rel="icon" sizes="64x64" type="image/png"/>
-<link href="../assets/images/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180"/>
-<link href="greedy-vs-dp.html" hreflang="en" rel="alternate"/><link href="greedy-vs-dp-ru.html" hreflang="ru" rel="alternate"/>
-</head>
-<body class="lecture-page">
-<header class="topbar">
-<a class="brand" href="../index-ru.html"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name ru-brand-name"><span class="ru-brand-lines"><span>Гайд по алгоритмам</span><span class="ru-brand-presented">presented by Аллан</span></span></span></a>
-<nav aria-label="Основная навигация" class="topnav">
-<a href="index-ru.html">Жадные алгоритмы</a>
-<div aria-label="Язык" class="language-switch"><a href="greedy-vs-dp.html">EN</a><span class="language-separator">·</span><span class="current">RU</span></div>
-</nav>
-</header>
-<aside aria-label="Навигация по разделу" class="sidebar">
-<div class="sidebar-title">Глава 9 · Раздел 3</div>
-<a href="#coming-soon">Скоро</a>
-</aside>
-<main class="lecture">
-<section class="lecture-hero greedy-placeholder-hero">
-<div>
-<div class="chapter-label">Глава 9 · Раздел 3</div>
-<h1>Жадные алгоритмы и динамическое программирование</h1>
-<p class="chapter-topics">Жадные алгоритмы и динамическое программирование используют структуру задачи по-разному и делают разные типы решений.</p>
+<link href="../assets/css/styles.css" rel="stylesheet"/><link href="assets/greedy.css" rel="stylesheet"/><link href="../assets/images/favicon-32.png" rel="icon" sizes="32x32" type="image/png"/><link href="../assets/images/favicon.png" rel="icon" sizes="64x64" type="image/png"/><link href="../assets/images/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180"/>
+<link href="greedy-vs-dp.html" hreflang="en" rel="alternate"/><link href="greedy-vs-dp-ru.html" hreflang="ru" rel="alternate"/></head>
+<body class="lecture-page"><div aria-hidden="true" class="progress-track"><div class="progress-bar" id="reading-progress"></div></div>
+<header class="topbar"><a class="brand" href="../index-ru.html"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name ru-brand-name"><span class="ru-brand-lines"><span>Гайд по алгоритмам</span><span class="ru-brand-presented">presented by Аллан</span></span></span></a><nav aria-label="Основная навигация" class="topnav"><a href="index-ru.html">Жадные алгоритмы</a><div aria-label="Язык" class="language-switch"><a href="greedy-vs-dp.html">EN</a><span class="language-separator">·</span><span class="current">RU</span></div></nav></header>
+<aside aria-label="Навигация по разделу" class="sidebar"><div class="sidebar-title">Глава 9 · Раздел 3</div><a href="#difference">Главное отличие</a><a href="#structure">Общая структура</a><a href="#coins">Размен монет</a><a href="#knapsack">Рюкзак 0/1</a><a href="#signals">Как выбрать метод?</a><a href="#code">Сравнение кода</a><a href="#comparison">Итоговая таблица</a><a href="#exercises">Задачи</a></aside>
+<main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Глава 9 · Раздел 3</div><h1>Жадные алгоритмы и динамическое программирование</h1><p class="chapter-topics">Чем жадные алгоритмы отличаются от динамического программирования, когда локальный выбор безопасен и когда нужно хранить несколько состояний.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-vs-dp.svg"/></div></section>
+<section class="lecture-section" id="difference">
+<h2>Одна цель, разная степень необратимости</h2>
+<p class="lead">И жадные алгоритмы, и динамическое программирование используют структуру задачи вместо полного перебора. Главное отличие — сколько вариантов остаётся «живыми» после каждого шага.</p>
+<div class="method-compare">
+<div class="method-lane greedy-lane"><h3>Жадный алгоритм</h3><p>Выбирает одно локально лучшее продолжение и сразу отбрасывает альтернативы.</p><div class="method-state-row"><span class="method-state">A</span><span class="method-state active">B</span><span class="method-state">C</span><span class="method-state">D</span></div></div>
+<div class="method-vs">VS</div>
+<div class="method-lane dp-lane"><h3>Динамическое программирование</h3><p>Хранит лучшие значения для нескольких состояний подзадач, потому что разные частичные решения могут оказаться важны позже.</p><div class="method-state-row"><span class="method-state active">A</span><span class="method-state active">B</span><span class="method-state active">C</span><span class="method-state active">D</span></div></div>
 </div>
-<div class="greedy-hero-icon"><img alt="" src="assets/greedy-vs-dp.svg"/></div>
+<div class="greedy-caution"><strong>Практический вопрос:</strong> можете ли вы доказать, что один локальный выбор доминирует альтернативы? Если да, greedy может быть достаточно. Если нет, скорее всего, нужно состояние.</div>
 </section>
-<section class="lecture-section" id="coming-soon">
-<div class="coming-soon-panel">
-<span class="coming-soon-kicker">В разработке</span>
-<h2>Страница скоро будет заполнена</h2>
-<p>Здесь сравним жадный выбор с переходами динамического программирования на примерах размена монет и задачи о рюкзаке 0/1. Главный акцент будет на признаках, по которым можно понять, какой подход подходит задаче.</p>
+
+<section class="lecture-section" id="structure">
+<h2>Что у них общего</h2>
+<div class="greedy-properties">
+<article class="greedy-property"><h3>Оптимальная подструктура</h3><p>Оба метода часто используют тот факт, что оптимальное решение большой задачи содержит оптимальные решения меньших подзадач.</p></article>
+<article class="greedy-property"><h3>Повторяющаяся структура</h3><p>Оба метода эксплуатируют регулярный способ свести большую задачу к меньшим.</p></article>
 </div>
-<div class="placeholder-navigation">
-<a href="proofs-ru.html">← Доказательства корректности</a>
-<a href="interval-scheduling-ru.html">Выбор непересекающихся интервалов →</a>
+<p>Но DP обычно сравнивает несколько меньших вариантов перед решением, а greedy сразу фиксирует один. Поэтому наличие оптимальной подструктуры само по себе не оправдывает жадность.</p>
+</section>
+
+<section class="lecture-section" id="coins">
+<h2>Размен монет: greedy теряет информацию</h2>
+<p class="lead">Пусть есть монеты 1, 3 и 4, а сумму 6 нужно набрать минимальным числом монет.</p>
+<div class="two-column-block">
+<div class="text-panel"><h3>Жадный алгоритм</h3><p>Берём крупнейшую подходящую монету:</p><div class="formula-line">6 → 2 → 1 → 0</div><p>Монеты: 4, 1, 1. Всего 3.</p></div>
+<div class="proof-panel"><h3>Динамическое программирование</h3><p>Для каждой суммы x храним минимальное число монет:</p><div class="formula-line">dp[x] = 1 + min dp[x − c]</div><p>Для x = 6 лучший переход использует монету 3 дважды, поэтому ответ равен 2.</p></div>
+</div>
+<p>Почему greedy ошибается? После выбора 4 он навсегда отбрасывает альтернативное частичное состояние 3. Но именно оно идеально дополняется ещё одной тройкой. DP сохраняет достаточно состояний, чтобы это увидеть.</p>
+</section>
+
+<section class="lecture-section" id="knapsack">
+<h2>Рюкзак 0/1: классическая граница</h2>
+<p class="lead">Очень естественное жадное правило — брать предмет с максимальным отношением ценности к весу. Для дробного рюкзака, где предметы можно делить, оно работает. Если каждый предмет можно взять только целиком, правило может сломаться.</p>
+<div class="knapsack-example">
+<h3>Вместимость = 50</h3>
+<div class="knapsack-items">
+<div class="knapsack-item"><span>Предмет A</span><b>вес 10 · ценность 60</b><small>отношение 6</small></div>
+<div class="knapsack-item"><span>Предмет B</span><b>вес 20 · ценность 100</b><small>отношение 5</small></div>
+<div class="knapsack-item"><span>Предмет C</span><b>вес 30 · ценность 120</b><small>отношение 4</small></div>
+</div>
+<div class="knapsack-outcome">
+<div><strong>Greedy по отношению:</strong><br/>A + B занимают вес 30 и дают ценность 160. C после этого не помещается.</div>
+<div class="better"><strong>Оптимум для 0/1:</strong><br/>B + C занимают вес 50 и дают ценность 220.</div>
+</div>
+</div>
+<p>Первый жадный выбор A локально выглядит лучше, но блокирует глобально лучшую комбинацию. DP по оставшейся или использованной вместимости умеет сравнивать такие варианты.</p>
+</section>
+
+<section class="lecture-section" id="signals">
+<h2>Как понять, какой метод пробовать</h2>
+<p class="lead">Это не доказательства, а практические признаки, которые помогают выбрать направление решения.</p>
+<div class="decision-grid">
+<article class="decision-card greedy-signal"><h3>Сигнал в пользу greedy: обменяемость</h3><p>Вы можете заменить выбор в оптимальном решении на жадный выбор, не ухудшая ответ.</p></article>
+<article class="decision-card greedy-signal"><h3>Сигнал в пользу greedy: безопасный фронт</h3><p>Есть очевидное следующее ребро, интервал, предмет или вершина, которые можно окончательно зафиксировать.</p></article>
+<article class="decision-card dp-signal"><h3>Сигнал в пользу DP: компромисс по ресурсу</h3><p>Разные частичные решения тратят разное количество времени, вместимости, денег или другого ресурса, и ни одно явно не доминирует.</p></article>
+<article class="decision-card dp-signal"><h3>Сигнал в пользу DP: будущее зависит от прошлого</h3><p>Локально худший шаг может создать лучшую комбинацию позже, поэтому нужно сохранять несколько состояний.</p></article>
 </div>
 </section>
-</main>
-<footer class="lecture-footer">
-<div>Гайд по алгоритмам · presented by Аллан</div>
-<div>© 2026 Allan Allemand</div>
-</footer>
-<script src="../assets/js/language-switch.js"></script>
-</body>
-</html>
+
+<section class="lecture-section" id="code">
+<h2>Разница в коде</h2>
+<p class="lead">Для одной и той же задачи о монетах жадная реализация идёт по одной траектории. DP явно хранит ответы для множества меньших сумм.</p>
+<div class="dual-code">
+<div class="dual-code-block"><h3>Жадный размен</h3><pre><code>def greedy_change(amount, coins):
+    result = []
+
+    for coin in sorted(coins, reverse=True):
+        while coin <= amount:
+            result.append(coin)
+            amount -= coin
+
+    return result</code></pre></div>
+<div class="dual-code-block"><h3>Динамическое программирование</h3><pre><code>def min_coins(amount, coins):
+    dp = [float("inf")] * (amount + 1)
+    dp[0] = 0
+
+    for x in range(1, amount + 1):
+        for coin in coins:
+            if coin <= x:
+                dp[x] = min(
+                    dp[x],
+                    dp[x - coin] + 1
+                )
+
+    return dp[amount]</code></pre></div>
+</div>
+<p>Жадная функция почти не хранит альтернативную историю. DP хранит лучший ответ для каждой суммы от 0 до целевой.</p>
+</section>
+
+<section class="lecture-section" id="comparison">
+<h2>Greedy и DP в одной таблице</h2>
+<div class="table-wrap"><table><thead><tr><th>Вопрос</th><th>Greedy</th><th>Динамическое программирование</th></tr></thead><tbody>
+<tr><td>Сколько альтернатив сохраняется?</td><td>Обычно одна</td><td>Много состояний подзадач</td></tr>
+<tr><td>Можно ли пересмотреть ранний выбор?</td><td>Нет</td><td>Косвенно — через сравнение переходов между состояниями</td></tr>
+<tr><td>Основная идея доказательства</td><td>Безопасный выбор / обмен / «не отстаёт»</td><td>Корректная рекуррентность + оптимальная подструктура</td></tr>
+<tr><td>Типичная память</td><td>Небольшая</td><td>Часто пропорциональна числу состояний</td></tr>
+<tr><td>Типичная скорость</td><td>Часто очень высокая</td><td>Часто медленнее, но метод более общий</td></tr>
+</tbody></table></div>
+</section>
+
+<section class="lecture-section" id="exercises">
+<h2>Задачи</h2>
+<div class="exercise-list">
+<article class="exercise"><div class="exercise-num">1</div><div><h3>Состояние в монетах</h3><p>Для монет 1, 3, 4 почему выбор монеты 4 при сумме 6 теряет полезную информацию?</p><button class="reveal" data-reveal="gdp-ru-1" type="button">Показать ответ</button><div class="answer-box" hidden id="gdp-ru-1">Потому что частичное решение «сначала взять 3» локально выглядит хуже, чем взять 4, но именно оно позволяет получить оптимальное продолжение 3 + 3. Greedy навсегда отбрасывает это состояние.</div></div></article>
+<article class="exercise"><div class="exercise-num">2</div><div><h3>Какой метод?</h3><p>Есть ограничение по вместимости, предметы нельзя делить, и несколько частичных решений с разной использованной вместимостью остаются конкурентными. Какой метод стоит заподозрить первым?</p><button class="reveal" data-reveal="gdp-ru-2" type="button">Показать ответ</button><div class="answer-box" hidden id="gdp-ru-2">Динамическое программирование: оставшаяся вместимость — естественное состояние, а разные частичные решения могут приводить к разным возможностям в будущем.</div></div></article>
+<article class="exercise"><div class="exercise-num">3</div><div><h3>Оптимальная подструктура</h3><p>Почему наличие оптимальной подструктуры не доказывает существование жадного алгоритма?</p><button class="reveal" data-reveal="gdp-ru-3" type="button">Показать ответ</button><div class="answer-box" hidden id="gdp-ru-3">Оптимальная подструктура говорит лишь о том, что оптимальное решение содержит оптимальные подрешения. Она не говорит, какой первый выбор можно безопасно сделать без сравнения альтернатив.</div></div></article>
+</div>
+<div class="next-part"><h3>Дальше: выбор непересекающихся интервалов</h3><p>Теперь, когда фундамент готов, можно разобрать первую классическую жадную задачу целиком — от постановки до доказательства и реализации.</p><a class="next-part-link" href="interval-scheduling-ru.html">Выбор непересекающихся интервалов →</a></div>
+</section></main>
+<footer class="lecture-footer"><div>Гайд по алгоритмам · presented by Аллан</div><div>© 2026 Allan Allemand</div></footer><script src="../assets/js/lecture-core.js"></script><script src="../assets/js/language-switch.js"></script></body></html>
