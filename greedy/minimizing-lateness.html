@@ -8,7 +8,7 @@
 <body class="lecture-page"><div aria-hidden="true" class="progress-track"><div class="progress-bar" id="reading-progress"></div></div>
 <header class="topbar"><a class="brand" href="../"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name">Allan's Handbook of Algorithms</span></a>
 <nav aria-label="Primary navigation" class="topnav"><a href="./">Greedy overview</a><div aria-label="Language" class="language-switch"><span class="current">EN</span><span class="language-separator">·</span><a href="minimizing-lateness-ru.html">RU</a></div></nav></header>
-<aside aria-label="Section navigation" class="sidebar"><div class="sidebar-title">Chapter 9 · Section 6</div><a href="#problem">Problem</a><a href="#example">Example</a><a href="#model">Model the scheduling problem</a><a href="#algorithm">EDF algorithm</a><a href="#proof">Correctness</a><a href="#implementation">Implementation</a><a href="#boundaries">Model boundaries</a><a href="#exercises">Exercises</a></aside>
+<aside aria-label="Section navigation" class="sidebar"><div class="sidebar-title">Chapter 9 · Section 6</div><a href="#problem">Problem</a><a href="#example">Example</a><a href="#same-looking">Same-looking schedule, new objective</a><a href="#model">Model the scheduling problem</a><a href="#algorithm">EDF algorithm</a><a href="#proof">Correctness</a><a href="#implementation">Implementation</a><a href="#boundaries">Model boundaries</a><a href="#exercises">Exercises</a></aside>
 <main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Chapter 9 · Section 6</div><h1>Minimizing Maximum Lateness</h1><p class="chapter-topics">On one machine, minimizing the worst lateness has a crisp greedy rule: do the earliest deadline first.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-lateness.svg"/></div></section>
 <section class="lecture-section" id="problem">
 <h2>Put the most urgent deadline first</h2>
@@ -41,6 +41,18 @@
 </section>
 
 <!-- book-synthesis-lateness -->
+<!-- grokking-pass-lateness -->
+<section class="lecture-section" id="same-looking">
+<h2>A familiar scheduling story can hide a different optimization problem</h2>
+<p class="lead">“Put jobs on one machine” sounds close to classroom scheduling, but the objective has changed completely. We are not maximizing how many jobs fit; every job must run, and we care about the worst deadline violation.</p>
+<div class="objective-swap">
+<article><h3>Maximum number of compatible activities</h3><p>Some intervals may be discarded. The useful frontier is finish time, so earliest finish is the right greedy order.</p></article>
+<div class="objective-arrow">→</div>
+<article><h3>Minimum maximum lateness</h3><p>No job may be discarded. What matters is who has the earliest deadline, so the ordering key becomes the deadline instead.</p></article>
+</div>
+<div class="one-line"><strong>Transfer the question, not the rule.</strong> Reusing a familiar greedy ordering after the objective changes is one of the easiest ways to get a scheduling problem wrong.</div>
+</section>
+
 <section class="lecture-section" id="model">
 <h2>Scheduling notation makes the assumptions visible</h2>
 <p class="lead">Scheduling rules are unusually sensitive to tiny changes in the model. A useful habit is to name the machine environment, extra constraints, and objective before choosing an ordering.</p>
