@@ -8,7 +8,7 @@
 <body class="lecture-page"><div aria-hidden="true" class="progress-track"><div class="progress-bar" id="reading-progress"></div></div>
 <header class="topbar"><a class="brand" href="../index-ru.html"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name ru-brand-name"><span class="ru-brand-lines"><span>Гайд по алгоритмам</span><span class="ru-brand-presented">presented by Аллан</span></span></span></a>
 <nav aria-label="Основная навигация" class="topnav"><a href="index-ru.html">Жадные алгоритмы</a><div aria-label="Язык" class="language-switch"><a href="fractional-knapsack.html">EN</a><span class="language-separator">·</span><span class="current">RU</span></div></nav></header>
-<aside aria-label="Навигация по разделу" class="sidebar"><div class="sidebar-title">Глава 9 · Раздел 7</div><a href="#problem">Постановка</a><a href="#whole-vs-fractional">Целые предметы и дроби</a><a href="#interview-trap">0/1 interview trap</a><a href="#density">Плотность ценности</a><a href="#algorithm">Алгоритм</a><a href="#proof">Корректность</a><a href="#lp-view">Почему только одна дробь?</a><a href="#divisibility">Одно предположение меняет всё</a><a href="#boundary">Граница с 0/1</a><a href="#runtime">Не ищите max density заново</a><a href="#implementation-choice">Sort или heap?</a><a href="#implementation">Реализация</a><a href="#exercises">Задачи</a></aside>
+<aside aria-label="Навигация по разделу" class="sidebar"><div class="sidebar-title">Глава 9 · Раздел 7</div><a href="#problem">Постановка</a><a href="#whole-vs-fractional">Целые предметы и дроби</a><a href="#knapsack-landscape">Карта вариантов knapsack</a><a href="#interview-trap">0/1 interview trap</a><a href="#density">Плотность ценности</a><a href="#algorithm">Алгоритм</a><a href="#proof">Корректность</a><a href="#lp-view">Почему только одна дробь?</a><a href="#divisibility">Одно предположение меняет всё</a><a href="#boundary">Граница с 0/1</a><a href="#runtime">Не ищите max density заново</a><a href="#implementation-choice">Sort или heap?</a><a href="#implementation">Реализация</a><a href="#exercises">Задачи</a></aside>
 <main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Глава 9 · Раздел 7</div><h1>Дробная задача о рюкзаке</h1><p class="chapter-topics">Если предметы делимы, каждую единицу вместимости выгодно отдавать предмету с максимальной ценностью на единицу веса.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-fractional-knapsack.svg"/></div></section>
 <section class="lecture-section" id="problem">
 <h2>Тратим вместимость там, где она приносит больше всего</h2>
@@ -38,6 +38,20 @@
 </section>
 
 <!-- coding-patterns-round-fractional -->
+<!-- skiena-round-fractional -->
+<section class="lecture-section" id="knapsack-landscape">
+<h2>Knapsack становится простым или трудным в зависимости от того, что именно равно или делимо</h2>
+<p class="lead">Полезно менять по одному structural assumption и смотреть, как вместе с ним меняется правильный algorithm.</p>
+<div class="table-wrap"><table><thead><tr><th>Variant</th><th>Что даёт structure</th><th>Естественный method</th></tr></thead><tbody>
+<tr><td>Items divisible</td><td>Capacity можно непрерывно переносить между items</td><td>Exact greedy по убыванию <span class="math">v_i/w_i</span></td></tr>
+<tr><td>0/1, у всех items одинаковый value</td><td>Maximize value = maximize число items</td><td>Сначала smallest weights</td></tr>
+<tr><td>0/1, у всех items одинаковый weight</td><td>Каждый chosen item тратит одинаковую capacity</td><td>Сначала largest values</td></tr>
+<tr><td>General 0/1, integer capacity</td><td>Простой order не доминирует, но capacity задаёт DP state</td><td>Dynamic programming за <span class="math">O(nC)</span></td></tr>
+</tbody></table></div>
+<div class="greedy-caution"><strong>Одинаковая density не делает general 0/1 Knapsack простым.</strong> Если у всех items одинаковый value-to-weight ratio, остаётся задача плотно упаковать sizes и использовать capacity — это уже subset-sum structure, а не полезный greedy ranking.</div>
+<div class="one-line"><strong>Ищите, что схлопывает choice.</strong> Divisibility, equal values или equal sizes могут превратить трудный combinatorial choice в простой ordering rule; без такой structure density для 0/1 Knapsack остаётся лишь heuristic.</div>
+</section>
+
 <section class="lecture-section" id="interview-trap">
 <h2>Interview trap: слово “fractional” полностью меняет алгоритм</h2>
 <p class="lead">Конкретный 0/1 Knapsack пример хорошо фиксирует границу. При capacity 7, weights <code>[5, 3, 4, 1]</code> и values <code>[70, 50, 40, 10]</code> локально самый дорогой целый item не входит в optimum.</p>
