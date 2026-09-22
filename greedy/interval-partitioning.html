@@ -8,7 +8,7 @@
 <body class="lecture-page"><div aria-hidden="true" class="progress-track"><div class="progress-bar" id="reading-progress"></div></div>
 <header class="topbar"><a class="brand" href="../"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name">Allan's Handbook of Algorithms</span></a>
 <nav aria-label="Primary navigation" class="topnav"><a href="./">Greedy overview</a><div aria-label="Language" class="language-switch"><span class="current">EN</span><span class="language-separator">·</span><a href="interval-partitioning-ru.html">RU</a></div></nav></header>
-<aside aria-label="Section navigation" class="sidebar"><div class="sidebar-title">Chapter 9 · Section 5</div><a href="#problem">Problem</a><a href="#depth">Depth</a><a href="#same-input">Same intervals, different question</a><a href="#algorithm">Algorithm</a><a href="#sweep">Count only: sweep line</a><a href="#two-array-sweep">Two-array sweep</a><a href="#proof">Correctness</a><a href="#data-structure">Why a heap matters</a><a href="#implementation">Implementation</a><a href="#comparison">Comparison</a><a href="#exercises">Exercises</a></aside>
+<aside aria-label="Section navigation" class="sidebar"><div class="sidebar-title">Chapter 9 · Section 5</div><a href="#problem">Problem</a><a href="#depth">Depth</a><a href="#same-input">Same intervals, different question</a><a href="#algorithm">Algorithm</a><a href="#sweep">Count only: sweep line</a><a href="#railway">Same problem: railway platforms</a><a href="#two-array-sweep">Two-array sweep</a><a href="#proof">Correctness</a><a href="#data-structure">Why a heap matters</a><a href="#implementation">Implementation</a><a href="#comparison">Comparison</a><a href="#exercises">Exercises</a></aside>
 <main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Chapter 9 · Section 5</div><h1>Interval Partitioning</h1><p class="chapter-topics">Schedule every interval while using as few rooms as possible. Reuse the room that becomes free first.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-interval-partitioning.svg"/></div></section>
 <section class="lecture-section" id="problem">
 <h2>Use as few rooms as possible</h2>
@@ -85,6 +85,19 @@
 </section>
 
 <!-- coding-patterns-round-partition -->
+<!-- karumanchi-round-partition -->
+<section class="lecture-section" id="railway">
+<h2>Same mathematics, different story: railway platforms</h2>
+<p class="lead">Replace classes by trains and rooms by platforms. The minimum number of platforms is again the maximum number of simultaneously active intervals.</p>
+<div class="concept-strip">
+<article class="concept-cell rule"><span>Arrival</span><b>+1 active train</b><p>A new platform may be needed.</p></article>
+<article class="concept-cell proof"><span>Departure</span><b>−1 active train</b><p>A platform becomes reusable.</p></article>
+<article class="concept-cell cost"><span>Answer</span><b>Maximum prefix sum</b><p>The peak number of active trains is the minimum number of platforms.</p></article>
+</div>
+<div class="greedy-caution"><strong>Tie rule matters.</strong> If a departure and an arrival occur at the same timestamp and the departing train releases its platform in time, process the departure first. Otherwise the sweep invents an overlap that does not exist.</div>
+<div class="bridge-note"><h3>Why this example is useful</h3><p>It makes the lower-bound proof almost physical: if three trains are simultaneously at the station, no scheduling trick can serve them with only two platforms.</p></div>
+</section>
+
 <section class="lecture-section" id="two-array-sweep">
 <h2>Interview variant: split starts and finishes into two sorted arrays</h2>
 <p class="lead">The sweep-line idea can be implemented without building tagged events. Keep sorted starts and sorted finishes, then advance whichever event happens next.</p>
