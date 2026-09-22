@@ -8,7 +8,7 @@
 <body class="lecture-page"><div aria-hidden="true" class="progress-track"><div class="progress-bar" id="reading-progress"></div></div>
 <header class="topbar"><a class="brand" href="../index-ru.html"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name ru-brand-name"><span class="ru-brand-lines"><span>Гайд по алгоритмам</span><span class="ru-brand-presented">presented by Аллан</span></span></span></a>
 <nav aria-label="Основная навигация" class="topnav"><a href="index-ru.html">Жадные алгоритмы</a><div aria-label="Язык" class="language-switch"><a href="fractional-knapsack.html">EN</a><span class="language-separator">·</span><span class="current">RU</span></div></nav></header>
-<aside aria-label="Навигация по разделу" class="sidebar"><div class="sidebar-title">Глава 9 · Раздел 7</div><a href="#problem">Постановка</a><a href="#density">Плотность ценности</a><a href="#algorithm">Алгоритм</a><a href="#proof">Корректность</a><a href="#lp-view">Почему только одна дробь?</a><a href="#divisibility">Одно предположение меняет всё</a><a href="#boundary">Граница с 0/1</a><a href="#implementation-choice">Sort или heap?</a><a href="#implementation">Реализация</a><a href="#exercises">Задачи</a></aside>
+<aside aria-label="Навигация по разделу" class="sidebar"><div class="sidebar-title">Глава 9 · Раздел 7</div><a href="#problem">Постановка</a><a href="#whole-vs-fractional">Целые предметы и дроби</a><a href="#density">Плотность ценности</a><a href="#algorithm">Алгоритм</a><a href="#proof">Корректность</a><a href="#lp-view">Почему только одна дробь?</a><a href="#divisibility">Одно предположение меняет всё</a><a href="#boundary">Граница с 0/1</a><a href="#implementation-choice">Sort или heap?</a><a href="#implementation">Реализация</a><a href="#exercises">Задачи</a></aside>
 <main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Глава 9 · Раздел 7</div><h1>Дробная задача о рюкзаке</h1><p class="chapter-topics">Если предметы делимы, каждую единицу вместимости выгодно отдавать предмету с максимальной ценностью на единицу веса.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-fractional-knapsack.svg"/></div></section>
 <section class="lecture-section" id="problem">
 <h2>Тратим вместимость там, где она приносит больше всего</h2>
@@ -19,6 +19,22 @@
 </div>
 <div class="greedy-definition"><span>Дробный рюкзак</span><p>Нужно выбрать доли <span class="math">0 ≤ xᵢ ≤ 1</span>, максимизируя <span class="math">∑ xᵢvᵢ</span> при ограничении <span class="math">∑ xᵢwᵢ ≤ W</span>.</p></div>
 <div class="source-note"><h3>Стандартные предположения</h3><p>В математической постановке обычно предполагают <span class="math">wᵢ &gt; 0</span> и <span class="math">vᵢ ≥ 0</span>. Код ниже чуть устойчивее: отрицательный вес запрещён, предметы с неположительной ценностью пропускаются, а положительная ценность при нулевом весе берётся бесплатно.</p></div>
+</section>
+
+<!-- grokking-round-fractional -->
+<section class="lecture-section" id="whole-vs-fractional">
+<h2>Knapsack меняется полностью, как только предметы разрешают делить</h2>
+<p class="lead">Fractional Knapsack проще всего понять, если начать с классического провала greedy в 0/1 Knapsack и изменить ровно одно предположение.</p>
+<div class="mini-example-grid">
+<article class="mini-example bad"><h3>Только целые items</h3><p>В классическом примере с вором самый дорогой отдельный предмет даёт value 3000, тогда как другая пара стоит 3500. После первого выбора занятую capacity уже нельзя «откусить» обратно маленькими кусками.</p></article>
+<article class="mini-example good"><h3>Fractions разрешены</h3><p>Теперь capacity можно тратить непрерывно. Вопрос меняется с «какой целый объект лучший?» на «куда отдать следующую единицу веса?». Ответ — item с максимальной value density.</p></article>
+</div>
+<div class="bit-baseline">
+<div class="bit-side"><h3>0/1 decision</h3><p>Либо берём item <span class="math">i</span>, либо нет: <span class="math">xᵢ∈{0,1}</span>. Один ранний выбор может заблокировать лучшую комбинацию.</p></div>
+<div class="bit-arrow">→</div>
+<div class="bit-side good"><h3>Fractional decision</h3><p>Можно взять любую долю <span class="math">0≤xᵢ≤1</span>. Одинаковые порции веса можно переносить между items — именно это делает density-proof корректным.</p></div>
+</div>
+<div class="predict-card"><span class="predict-kicker">Главный modeling lesson</span><h3>Greedy-rule не стал магически умнее. Изменилось множество допустимых решений.</h3><p>Divisibility — то самое предположение, которое превращает естественную density-эвристику в exact greedy algorithm.</p></div>
 </section>
 
 <section class="lecture-section" id="density">
