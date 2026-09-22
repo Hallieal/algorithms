@@ -8,7 +8,7 @@
 <body class="lecture-page"><div aria-hidden="true" class="progress-track"><div class="progress-bar" id="reading-progress"></div></div>
 <header class="topbar"><a class="brand" href="../index-ru.html"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name ru-brand-name"><span class="ru-brand-lines"><span>Гайд по алгоритмам</span><span class="ru-brand-presented">presented by Аллан</span></span></span></a>
 <nav aria-label="Основная навигация" class="topnav"><a href="index-ru.html">Жадные алгоритмы</a><div aria-label="Язык" class="language-switch"><a href="interval-scheduling.html">EN</a><span class="language-separator">·</span><span class="current">RU</span></div></nav></header>
-<aside aria-label="Навигация по разделу" class="sidebar"><div class="sidebar-title">Глава 9 · Раздел 4</div><a href="#problem">Постановка</a><a href="#choices">Выбор правила</a><a href="#frontier">Почему earliest finish доминирует</a><a href="#algorithm">Алгоритм</a><a href="#proof">Корректность</a><a href="#implementation">Реализация</a><a href="#recognition">Как распознать задачу</a><a href="#variants">Варианты задачи</a><a href="#exercises">Задачи</a></aside>
+<aside aria-label="Навигация по разделу" class="sidebar"><div class="sidebar-title">Глава 9 · Раздел 4</div><a href="#problem">Постановка</a><a href="#choices">Выбор правила</a><a href="#classroom-walk">Пошаговое расписание</a><a href="#frontier">Почему earliest finish доминирует</a><a href="#algorithm">Алгоритм</a><a href="#proof">Корректность</a><a href="#implementation">Реализация</a><a href="#recognition">Как распознать задачу</a><a href="#variants">Варианты задачи</a><a href="#exercises">Задачи</a></aside>
 <main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Глава 9 · Раздел 4</div><h1>Выбор непересекающихся интервалов</h1><p class="chapter-topics">Нужно выбрать как можно больше непересекающихся интервалов. Правильный жадный ход — освободить время как можно раньше.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-interval-scheduling.svg"/></div></section>
 <section class="lecture-section" id="problem">
 <h2>Выбрать как можно больше интервалов</h2>
@@ -41,6 +41,19 @@
 </section>
 
 <!-- book-synthesis-is -->
+<!-- grokking-pass-interval -->
+<section class="lecture-section" id="classroom-walk">
+<h2>Посмотрите на greedy-choice по одной паре за раз</h2>
+<p class="lead">Простой сюжет с аудиторией делает алгоритм запоминающимся: выбираем пару, которая заканчивается раньше всех, удаляем появившиеся конфликты и повторяем.</p>
+<div class="classroom-walk">
+<div class="classroom-step"><span>Старт</span><p>Доступны: Algorithms 09:00–10:00, Physics 09:30–11:00, Statistics 10:00–11:00, Music 10:30–12:00, Art 11:00–12:00.</p></div>
+<div class="classroom-step"><span>Выбор 1</span><p><strong>Algorithms</strong> заканчивается первым в 10:00. Оставляем его. <del>Physics</del> пересекается и исчезает.</p></div>
+<div class="classroom-step"><span>Выбор 2</span><p>Среди пар, начинающихся не раньше 10:00, <strong>Statistics</strong> заканчивается первой в 11:00. Оставляем. <del>Music</del> теперь конфликтует.</p></div>
+<div class="classroom-step"><span>Выбор 3</span><p><strong>Art</strong> начинается ровно в момент окончания Statistics, поэтому при семантике <span class="math">[s,f)</span> совместима. Итого три пары.</p></div>
+</div>
+<div class="predict-card"><span class="predict-kicker">До доказательства</span><h3>Какую информацию алгоритм вообще сохранил?</h3><p>После каждого выбора почти всё прошлое забывается. Нужен только finish последней принятой пары. Такой одночисловой frontier — сильный сигнал, что возможен greedy.</p></div>
+</section>
+
 <section class="lecture-section" id="frontier">
 <h2>Earliest finish — это правило доминирования</h2>
 <p class="lead">Правильное greedy-rule — не «возьми что-нибудь короткое», а «сдвинь занятую границу как можно меньше». Среди всех следующих кандидатов самый ранний finish оставляет остаточную задачу, содержащую все варианты, которые оставил бы более поздний finish, а иногда и дополнительные.</p>
