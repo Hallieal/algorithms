@@ -26,21 +26,21 @@
 <section class="overview-section sorting-contents greedy-contents" id="chapter-map">
 <div class="chapter-label">Chapter 9</div>
 <h1>Greedy Algorithms</h1>
-<p class="greedy-overview-lead">Across 11 articles, this chapter treats greedy as a design and recognition method: identify the objective, compress the right state, justify every discarded alternative, and recognize recurring interview shapes without reducing them to memorized code.</p><div class="chapter-prereq-note">Helpful before you start: <a href="../sorting/">Sorting →</a> · <a href="../data-structures/">Heaps and priority queues →</a></div>
+<p class="greedy-overview-lead">This chapter contains 10 articles on greedy algorithms: the basic method, proof techniques, interval and scheduling problems, Knapsack, Huffman coding, minimum spanning trees, and Dijkstra's algorithm.</p><div class="chapter-prereq-note">Helpful before you start: <a href="../sorting/">Sorting →</a> · <a href="../data-structures/">Heaps and priority queues →</a></div>
 <div class="sorting-part">
 <div class="sorting-part-head">
 <div>
 <span class="sorting-part-kicker">Foundations</span>
-<h3>Choose once, prove it safe</h3>
+<h3>Foundations</h3>
 </div>
-<p>Start with the design principle, then learn the proof techniques that justify irreversible choices — and how to recognize when dynamic programming is the safer tool.</p>
+<p>Definition, correctness proofs, counterexamples, and the boundary between greedy algorithms and dynamic programming.</p>
 </div>
 <div class="chapter-grid section-icon-grid">
 <a class="chapter-card available icon-card" href="strategy.html">
 <div class="chapter-card-icon"><img alt="" src="assets/greedy-strategy.svg"/></div>
 <div>
 <h3>Greedy Strategy</h3>
-<p>Start from a precise problem statement, then learn the guarantee types and the choose → commit → reduce loop that makes an irreversible local choice meaningful.</p>
+<p>Definition of the greedy method, its guarantee types, and the structure of a single greedy step.</p>
 <span class="chapter-link">Open section →</span>
 </div>
 </a>
@@ -48,7 +48,7 @@
 <div class="chapter-card-icon"><img alt="" src="assets/greedy-proofs.svg"/></div>
 <div>
 <h3>Proving Greedy Correctness</h3>
-<p>Learn proof patterns and a systematic counterexample laboratory: think small, force ties, seek extremes, then move from failure to invariant and proof.</p>
+<p>Exchange arguments, staying-ahead proofs, induction, cut arguments, and systematic counterexample construction.</p>
 <span class="chapter-link">Open section →</span>
 </div>
 </a>
@@ -56,7 +56,7 @@
 <div class="chapter-card-icon"><img alt="" src="assets/greedy-vs-dp.svg"/></div>
 <div>
 <h3>Greedy vs Dynamic Programming</h3>
-<p>Use coin change, Knapsack, and other boundary cases to ask whether one branch dominates, how large the surviving state space is, and when O(nC) DP is only pseudo-polynomial.</p>
+<p>Coin change, Knapsack, and weighted intervals show when one state is enough and when dynamic programming must preserve several states.</p>
 <span class="chapter-link">Open section →</span>
 </div>
 </a>
@@ -66,16 +66,16 @@
 <div class="sorting-part-head">
 <div>
 <span class="sorting-part-kicker">Intervals and Scheduling</span>
-<h3>Three objectives, three different orders</h3>
+<h3>Intervals and scheduling</h3>
 </div>
-<p>Finish time, start time, and deadline each solve a different scheduling objective. The point is to understand why the ordering changes.</p>
+<p>Three scheduling objectives lead to three different ordering rules: finish time, start time, and deadline.</p>
 </div>
 <div class="chapter-grid section-icon-grid">
 <a class="chapter-card available icon-card" href="interval-scheduling.html">
 <div class="chapter-card-icon"><img alt="" src="assets/greedy-interval-scheduling.svg"/></div>
 <div>
 <h3>Interval Scheduling</h3>
-<p>Reject tempting rules, prove earliest finish by residual-set dominance, and see why the theorem relies on each job being one contiguous interval.</p>
+<p>Maximum-cardinality interval selection, the earliest-finish rule, its exchange proof, and the role of contiguous intervals.</p>
 <span class="chapter-link">Open section →</span>
 </div>
 </a>
@@ -83,7 +83,7 @@
 <div class="chapter-card-icon"><img alt="" src="assets/greedy-interval-partitioning.svg"/></div>
 <div>
 <h3>Interval Partitioning</h3>
-<p>Keep every class, match overlap depth, and see why interval structure turns a general coloring-style conflict problem into an ordered greedy sweep.</p>
+<p>Minimum-resource interval partitioning, overlap depth, priority queues, and the sweep-line formulation.</p>
 <span class="chapter-link">Open section →</span>
 </div>
 </a>
@@ -91,7 +91,7 @@
 <div class="chapter-card-icon"><img alt="" src="assets/greedy-lateness.svg"/></div>
 <div>
 <h3>Minimizing Maximum Lateness</h3>
-<p>See why deadlines drive maximum lateness, then zoom out: precedence, matching, coloring, preemption, and objectives define entirely different scheduling models.</p>
+<p>Earliest Deadline First for maximum lateness, together with the assumptions under which its exchange proof is valid.</p>
 <span class="chapter-link">Open section →</span>
 </div>
 </a>
@@ -101,16 +101,16 @@
 <div class="sorting-part-head">
 <div>
 <span class="sorting-part-kicker">Choosing and Building</span>
-<h3>Spend well, then merge cheaply</h3>
+<h3>Knapsack and prefix coding</h3>
 </div>
-<p>Fractional Knapsack spends each unit of capacity where it pays most; Huffman repeatedly merges the two cheapest subtrees.</p>
+<p>Fractional Knapsack is ordered by value density. Huffman coding repeatedly merges the two minimum-frequency nodes.</p>
 </div>
 <div class="chapter-grid section-icon-grid">
 <a class="chapter-card available icon-card" href="fractional-knapsack.html">
 <div class="chapter-card-icon"><img alt="" src="assets/greedy-fractional-knapsack.svg"/></div>
 <div>
 <h3>Fractional Knapsack</h3>
-<p>Map the knapsack variants: divisibility, equal values, equal sizes, general 0/1 structure, density greedy, and capacity-indexed DP.</p>
+<p>Fractional Knapsack, value density, the exchange proof, and the distinction from 0/1 Knapsack.</p>
 <span class="chapter-link">Open section →</span>
 </div>
 </a>
@@ -118,7 +118,7 @@
 <div class="chapter-card-icon"><img alt="" src="assets/greedy-huffman.svg"/></div>
 <div>
 <h3>Huffman Coding</h3>
-<p>Build Huffman and optimal merge trees, then separate the prefix-code theorem from real compression choices such as static versus adaptive models.</p>
+<p>Optimal binary prefix codes, the two-minimum merge rule, heap implementation, entropy, and static coding limits.</p>
 <span class="chapter-link">Open section →</span>
 </div>
 </a>
@@ -128,16 +128,16 @@
 <div class="sorting-part-head">
 <div>
 <span class="sorting-part-kicker">Greedy on Graphs</span>
-<h3>Safe edges and final distances</h3>
+<h3>Greedy graph algorithms</h3>
 </div>
-<p>Kruskal and Prim prove an edge is safe; Dijkstra proves a distance is final. The greedy pattern is the same, but the invariant is different.</p>
+<p>Minimum spanning trees and shortest paths use different invariants and different priority rules.</p>
 </div>
 <div class="chapter-grid section-icon-grid">
 <a class="chapter-card available icon-card" href="mst.html">
 <div class="chapter-card-icon"><img alt="" src="assets/greedy-mst.svg"/></div>
 <div>
 <h3>Minimum Spanning Trees</h3>
-<p>Separate route from network, derive Kruskal/Prim/Borůvka, connect Kruskal to DSU, and see how an MST becomes a reusable sparse backbone for clustering and approximation.</p>
+<p>Kruskal, Prim, Borůvka, the cut property, Union-Find, heaps, and standard MST applications.</p>
 <span class="chapter-link">Open section →</span>
 </div>
 </a>
@@ -145,52 +145,13 @@
 <div class="chapter-card-icon"><img alt="" src="assets/greedy-dijkstra.svg"/></div>
 <div>
 <h3>Dijkstra’s Algorithm</h3>
-<p>Translate stories into graphs, distinguish BFS/Dijkstra/negative-edge cases, and practice reductions such as converting vertex costs into edge weights without rewriting Dijkstra.</p>
+<p>Single-source shortest paths with nonnegative weights, Dijkstra's proof, heap implementation, path reconstruction, and common reductions.</p>
 <span class="chapter-link">Open section →</span>
 </div>
 </a>
 </div>
 </div>
 
-<div class="sorting-part">
-<div class="sorting-part-head">
-<div>
-<span class="sorting-part-kicker">Unifying View</span>
-<h3>Exact greedy, matroids, and approximation</h3>
-</div>
-<p>The chapter ends by separating three ideas that are easy to mix up: matroid greedy, problem-specific exchange proofs, and greedy approximation algorithms.</p>
-</div>
-<div class="chapter-grid section-icon-grid">
-<a class="chapter-card available icon-card" href="greedy-beyond.html">
-<div class="chapter-card-icon"><img alt="" src="assets/greedy-matroids.svg"/></div>
-<div>
-<h3>Matroids and Beyond</h3>
-<p>Finish with matroids and approximation, including a power-of-two milestone proof for greedy Set Cover and MST-based approximation for metric TSP.</p>
-<span class="chapter-link">Open section →</span>
-</div>
-</a>
-</div>
-</div>
-
-<div class="sorting-part">
-<div class="sorting-part-head">
-<div>
-<span class="sorting-part-kicker">Further Reading</span>
-<h3>Five complementary design perspectives, then deeper theory</h3>
-</div>
-<p>The Algorithm Design Manual is strongest on problem formulation, counterexample hunting, and recognizing the classic problem hiding inside an application; Coding Interview Patterns adds interview recognition, Karumanchi adds drill-style examples, Grokking adds visual intuition, and A Common-Sense Guide adds optimization workflow. The formal texts below supply deeper proof theory.</p>
-</div>
-<div class="reference-list">
-<div class="reference-item"><b>Steven S. Skiena — The Algorithm Design Manual</b><span>The opening movie-scheduling case study is a model of algorithm discovery through failed heuristics and counterexamples; later chapters add MST/shortest-path modeling, knapsack variants, scheduling taxonomy, Set Cover approximation, and practical compression trade-offs.</span></div>
-<div class="reference-item"><b>Narasimha Karumanchi — Data Structures and Algorithms Made Easy</b><span>Especially Chapter 17: a problem-driven greedy chapter with optimal file merging, interval scheduling and coloring, coin-change failures, fractional knapsack, railway platforms, road coverage, and scheduling examples; the graph chapter adds practical MST and Dijkstra comparisons.</span></div>
-<div class="reference-item"><b>Alex Xu & Shaun Gunawardane — Coding Interview Patterns</b><span>Especially Chapter 16 for Jump to the End, Gas Stations, and Candies; Chapter 9 for intervals and sweep-line reasoning; Chapter 15 for DP contrasts such as maximum subarray and 0/1 Knapsack; and the heap/Union-Find chapters for supporting data structures.</span></div>
-<div class="reference-item"><b>Jay Wengrow — A Common-Sense Guide to Data Structures and Algorithms in Python</b><span>Especially Chapter 20: current Big O → best-imaginable Big O → pattern/state compression, plus Chapter 18 for a careful Dijkstra walkthrough and the array-vs-priority-queue implementation trade-off.</span></div>
-<div class="reference-item"><b>Aditya Y. Bhargava — Grokking Algorithms, 2nd ed.</b><span>Especially Chapter 10 on greedy algorithms, Chapter 9 on Dijkstra, and the Huffman discussion in Chapter 7. Strong on visual intuition, “try it yourself” moments, and the transition from exact greedy to approximation.</span></div>
-<a class="reference-item" href="https://www.pearson.com/en-us/subject-catalog/p/algorithm-design/P200000003259" target="_blank" rel="noopener"><b>Jon Kleinberg & Eva Tardos — Algorithm Design</b><span>Especially Chapter 4: scheduling, exchange arguments, MSTs, and shortest paths.</span></a>
-<a class="reference-item" href="https://mitpress.mit.edu/9780262046305/introduction-to-algorithms/" target="_blank" rel="noopener"><b>Cormen, Leiserson, Rivest & Stein — Introduction to Algorithms</b><span>Greedy algorithms, Huffman coding, MSTs, and single-source shortest paths.</span></a>
-<a class="reference-item" href="https://www.rfc-editor.org/info/rfc1951/" target="_blank" rel="noopener"><b>RFC 1951 — DEFLATE</b><span>A concrete real-world use of Huffman code lengths and deterministic code construction.</span></a>
-</div>
-</div>
 </section>
 </main>
 <footer class="overview-footer">
