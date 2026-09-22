@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="Объединяющий взгляд на жадные алгоритмы через матроиды, обменные аргументы и аппроксимационные алгоритмы." name="description"/>
+<meta content="Матроиды и дальше | Гайд по алгоритмам — presented by Аллан" property="og:title"/>
+<meta content="Когда матроидная структура гарантирует точный greedy, когда обмен работает без матроида и когда greedy полезен как приближение." property="og:description"/>
+<meta content="article" property="og:type"/>
+<title>Матроиды и дальше | Гайд по алгоритмам — presented by Аллан</title>
+<link href="../assets/css/styles.css" rel="stylesheet"/>
+<link href="assets/greedy.css" rel="stylesheet"/>
+<link href="../assets/images/favicon-32.png" rel="icon" sizes="32x32" type="image/png"/>
+<link href="../assets/images/favicon.png" rel="icon" sizes="64x64" type="image/png"/>
+<link href="greedy-beyond.html" hreflang="en" rel="alternate"/>
+<link href="greedy-beyond-ru.html" hreflang="ru" rel="alternate"/>
+<noscript><style>.answer-box[hidden]{display:block!important}.reveal{display:none!important}</style></noscript>
+</head>
+<body class="lecture-page">
+<div aria-hidden="true" class="progress-track"><div class="progress-bar" id="reading-progress"></div></div>
+<header class="topbar">
+<a class="brand" href="../index-ru.html"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name ru-brand-name"><span class="ru-brand-lines"><span>Гайд по алгоритмам</span><span class="ru-brand-presented">presented by Аллан</span></span></span></a>
+<nav aria-label="Основная навигация" class="topnav"><a href="index-ru.html">Жадные алгоритмы</a><div aria-label="Язык" class="language-switch"><a href="greedy-beyond.html">EN</a><span class="language-separator">·</span><span class="current">RU</span></div></nav>
+</header>
+<aside aria-label="Навигация по разделу" class="sidebar">
+<div class="sidebar-title">Глава 9 · Раздел 11</div>
+<a href="#map">Общая картина</a><a href="#matroid">Матроиды</a><a href="#mst">Краскал</a><a href="#limits">Что не является матроидом</a><a href="#approx">Приближения</a><a href="#decision">Как выбирать подход</a><a href="#reading">Что читать дальше</a><a href="#exercises">Задачи</a>
+</aside>
+<main class="lecture">
+<section class="lecture-hero greedy-lecture-hero">
+<div><div class="chapter-label">Глава 9 · Раздел 11</div><h1>Матроиды и дальше</h1><p class="chapter-topics">Финальная карта главы: когда общая теорема обмена гарантирует оптимальность greedy, когда жадное доказательство работает по другой причине и когда greedy полезен даже без точного оптимума.</p></div>
+<div class="greedy-hero-icon"><img alt="" src="assets/greedy-matroids.svg"/></div>
+</section>
+
+<section class="lecture-section" id="map">
+<h2>Три разных причины, почему greedy может быть полезен</h2>
+<p class="lead">Предыдущие десять страниц используют необратимые локальные решения, но не являются частными случаями одной теоремы. Полезно различать три уровня структуры.</p>
+<div class="concept-strip">
+<article class="concept-cell rule"><span>Exact + matroid</span><b>Greedy гарантирует общая теорема</b><p>Чистый пример — Краскал: множества рёбер без циклов образуют графический матроид.</p></article>
+<article class="concept-cell proof"><span>Exact + специальное доказательство</span><b>Безопасность даёт конкретный обмен или инвариант</b><p>Сюда относятся Interval Scheduling, Huffman, Fractional Knapsack и Dijkstra.</p></article>
+<article class="concept-cell cost"><span>Approximate greedy</span><b>Правило не точное, но имеет гарантированный коэффициент</b><p>Классический пример — Set Cover.</p></article>
+</div>
+</section>
+
+<section class="lecture-section" id="matroid">
+<h2>Матроид: обмен как аксиома</h2>
+<p class="lead">Матроид — это конечное множество элементов <span class="math">E</span> и семейство <span class="math">𝓘</span> его подмножеств, называемых независимыми. Определение устроено так, чтобы из большего независимого решения всегда можно было безопасно «одолжить» элемент.</p>
+<div class="matroid-axioms">
+<article class="matroid-axiom"><span>1</span><h3>Непустота</h3><p><span class="math">∅ ∈ 𝓘</span>.</p></article>
+<article class="matroid-axiom"><span>2</span><h3>Наследственность</h3><p>Если <span class="math">B ∈ 𝓘</span> и <span class="math">A ⊆ B</span>, то <span class="math">A ∈ 𝓘</span>.</p></article>
+<article class="matroid-axiom"><span>3</span><h3>Обмен</h3><p>Если <span class="math">A,B ∈ 𝓘</span> и <span class="math">|A| &lt; |B|</span>, существует <span class="math">x ∈ B \ A</span>, для которого <span class="math">A ∪ {x} ∈ 𝓘</span>.</p></article>
+</div>
+<div class="proof-goal"><h3>Greedy-теорема для матроидов</h3><p>Пусть элементы имеют неотрицательные веса. Сортируем их по убыванию веса и добавляем элемент, пока сохраняется независимость. Получаем независимое множество максимального веса. Для базиса минимального веса идём от меньших весов к большим.</p></div>
+<div class="bridge-note"><h3>Почему это сильнее одного удачного доказательства</h3><p>Если допустимые множества образуют матроид, greedy перестаёт быть догадкой под конкретные числа: аксиома обмена даёт корректность для любой системы весов, покрываемой теоремой.</p></div>
+</section>
+
+<section class="lecture-section" id="mst">
+<h2>Краскал — буквально matroid greedy</h2>
+<p class="lead">Берём рёбра графа как ground set и называем множество рёбер независимым, если оно не содержит цикла. Получаем <em>графический матроид</em>.</p>
+<div class="clean-steps">
+<div class="clean-step"><span>1</span><p>Сортируем рёбра от меньшего веса к большему.</p></div>
+<div class="clean-step"><span>2</span><p>Добавляем ребро ровно тогда, когда выбранные рёбра остаются ацикличными.</p></div>
+<div class="clean-step"><span>3</span><p>Максимальное независимое множество в связном графе — остовное дерево, то есть базис графического матроида.</p></div>
+</div>
+<div class="one-line"><strong>Краскал — это и есть алгоритм минимального базиса для графического матроида.</strong></div>
+</section>
+
+<section class="lecture-section" id="limits">
+<h2>Обменное доказательство ещё не означает «матроид»</h2>
+<p class="lead">В нескольких задачах главы есть exchange argument, но допустимые объекты не удовлетворяют аксиомам матроида.</p>
+<div class="mini-example-grid">
+<article class="mini-example bad"><h3>Interval Scheduling — не матроид</h3><p>Пусть <span class="math">A={[0,4)}</span>, а <span class="math">B={[0,2),[2,4)}</span>. Оба множества допустимы и <span class="math">|A|&lt;|B|</span>, но ни один интервал из <span class="math">B</span> нельзя добавить к <span class="math">A</span> без пересечения. Аксиома обмена нарушена.</p></article>
+<article class="mini-example good"><h3>Но earliest finish всё равно оптимален</h3><p>Доказательство меняет <em>первый выбор расписания</em>, а не произвольные элементы между любыми допустимыми множествами. Problem-specific exchange шире matroid exchange.</p></article>
+</div>
+<div class="decision-grid">
+<article class="decision-card greedy-signal"><h3>Huffman</h3><p>Доказательство меняет метки листьев и сжимает двух соседей. Это merge-argument, а не выбор независимого подмножества.</p></article>
+<article class="decision-card greedy-signal"><h3>Fractional Knapsack</h3><p>Обмен происходит на непрерывной порции веса — структура ближе к линейной релаксации.</p></article>
+<article class="decision-card greedy-signal"><h3>Dijkstra</h3><p>Безопасный объект — окончательное расстояние; корректность следует из неотрицательности продолжений пути.</p></article>
+<article class="decision-card dp-signal"><h3>0/1 Knapsack</h3><p>Ограничение по вместимости не даёт нужной exchange-структуры: локальный выбор может заблокировать лучшую комбинацию.</p></article>
+</div>
+</section>
+
+<section class="lecture-section" id="approx">
+<h2>Greedy полезен и без точного оптимума</h2>
+<p class="lead">В approximation algorithms вопрос меняется: если greedy промахивается мимо optimum, насколько далеко он вообще может уйти?</p>
+<div class="approx-box"><h3>Set Cover</h3><p>Есть <span class="math">n</span> элементов и семейство множеств, вместе покрывающих их все. Каждый раз выбираем множество, которое покрывает максимум ещё не покрытых элементов. Greedy может быть не оптимален, но использует не более чем в <span class="math">Hₙ</span> раз больше множеств, чем optimum, где <span class="math">Hₙ=1+1/2+···+1/n ≤ ln n+1</span>.</p></div>
+<div class="inline-contrast"><div class="yes"><h3>Exact greedy</h3><p>Доказываем безопасность каждого необратимого выбора. Approximation ratio равен 1.</p></div><div class="no"><h3>Approximation greedy</h3><p>Допускаем локальную потерю, но ограничиваем суммарную потерю по всем шагам.</p></div></div>
+</section>
+
+<section class="lecture-section" id="decision">
+<h2>Чек-лист для новой задачи</h2>
+<div class="proof-checklist">
+<div class="proof-check"><span>1</span><p><strong>Можно ли смотреть на допустимые частичные решения как на independence system?</strong> Если да, проверьте matroid exchange axiom.</p></div>
+<div class="proof-check"><span>2</span><p><strong>Можно ли локально преобразовать optimum так, чтобы он согласился с greedy?</strong> Тогда problem-specific exchange может работать и без матроида.</p></div>
+<div class="proof-check"><span>3</span><p><strong>Нужно ли будущему несколько несравнимых состояний?</strong> Это сигнал в пользу DP.</p></div>
+<div class="proof-check"><span>4</span><p><strong>Если exact greedy сломан, можно ли ограничить потерю?</strong> Это путь к approximation algorithms.</p></div>
+</div>
+</section>
+
+<section class="lecture-section" id="reading">
+<h2>Что читать дальше</h2>
+<div class="reference-list">
+<a class="reference-item" href="https://www.pearson.com/en-us/subject-catalog/p/algorithm-design/P200000003259" target="_blank" rel="noopener"><b>Jon Kleinberg & Eva Tardos — Algorithm Design</b><span>Глава 4 — классическое изложение greedy, scheduling, MST и shortest paths.</span></a>
+<a class="reference-item" href="https://mitpress.mit.edu/9780262046305/introduction-to-algorithms/" target="_blank" rel="noopener"><b>Cormen, Leiserson, Rivest & Stein — Introduction to Algorithms</b><span>См. главы про greedy, Huffman, minimum spanning trees и shortest paths.</span></a>
+<a class="reference-item" href="https://www.rfc-editor.org/info/rfc1951/" target="_blank" rel="noopener"><b>RFC 1951 — DEFLATE</b><span>Практический пример Huffman code lengths и восстановления кодов в реальном формате сжатия.</span></a>
+</div>
+</section>
+
+<section class="lecture-section" id="exercises">
+<h2>Задачи</h2>
+<div class="exercise-list">
+<article class="exercise"><div class="exercise-num">1</div><div><h3>Проверьте аксиому обмена</h3><p>Используйте <span class="math">A={[0,4)}</span> и <span class="math">B={[0,2),[2,4)}</span>, чтобы показать, какую аксиому матроида нарушает Interval Scheduling.</p><button class="reveal" data-reveal="gb-ru-1" type="button">Показать ответ</button><div class="answer-box" hidden id="gb-ru-1">Оба множества допустимы и |A|&lt;|B|, но ни один элемент B\A нельзя добавить к A, сохранив непересечение. Нарушается exchange axiom.</div></div></article>
+<article class="exercise"><div class="exercise-num">2</div><div><h3>Uniform matroid</h3><p>Пусть допустимо любое подмножество размера не больше k. Что делает matroid greedy для максимального веса?</p><button class="reveal" data-reveal="gb-ru-2" type="button">Показать ответ</button><div class="answer-box" hidden id="gb-ru-2">Он берёт k наибольших положительных весов. Эти множества образуют uniform matroid U(k,n).</div></div></article>
+<article class="exercise"><div class="exercise-num">3</div><div><h3>Exact или approximation?</h3><p>Что меняется в доказательстве, если greedy является лишь approximation algorithm?</p><button class="reveal" data-reveal="gb-ru-3" type="button">Показать ответ</button><div class="answer-box" hidden id="gb-ru-3">Мы больше не доказываем, что каждый выбор сохраняет optimum. Вместо этого сравниваем greedy с границей на OPT и доказываем, что суммарная потеря ограничена коэффициентом.</div></div></article>
+</div>
+<div class="next-part"><h3>Глава закончена</h3><p>Теперь можно различать greedy из общей структуры обмена, greedy из специального доказательства и greedy как контролируемое приближение.</p><a class="next-part-link" href="index-ru.html">Вернуться к содержанию Greedy Algorithms →</a></div>
+</section>
+</main>
+<footer class="lecture-footer"><div>Гайд по алгоритмам · presented by Аллан</div><div>© 2026 Allan Allemand</div></footer>
+<script src="../assets/js/lecture-core.js"></script>
+<script src="../assets/js/language-switch.js"></script>
+</body></html>
