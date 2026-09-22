@@ -43,14 +43,15 @@
 <!-- book-synthesis-lateness -->
 <!-- grokking-pass-lateness -->
 <section class="lecture-section" id="same-looking">
-<h2>Похожий scheduling-сюжет может скрывать другую optimization problem</h2>
-<p class="lead">«Разместить jobs на одной машине» звучит похоже на classroom scheduling, но objective полностью другой. Мы не максимизируем число поместившихся jobs: выполнить надо все, а минимизируется худшее нарушение deadline.</p>
+<h2>То же расписание, другой вопрос — другой greedy-key</h2>
+<p class="lead">Полезная greedy-привычка — отделять внешний вид input от objective. Интервалы и jobs могут одинаково выглядеть на timeline, но требовать совершенно разной оптимизации.</p>
 <div class="objective-swap">
-<article><h3>Maximum number of compatible activities</h3><p>Часть интервалов можно отбросить. Полезный frontier — finish time, поэтому работает earliest finish.</p></article>
+<article><h3>Interval Scheduling</h3><p>Некоторые jobs можно выкинуть. Мы максимизируем их число, поэтому ранний finish защищает будущую совместимость.</p></article>
 <div class="objective-arrow">→</div>
-<article><h3>Minimum maximum lateness</h3><p>Нельзя отбросить ни одной job. Важнее всего ближайший deadline, поэтому ключ сортировки меняется на deadline.</p></article>
+<article><h3>Maximum lateness</h3><p>Выполнить нужно все jobs. Мы минимизируем худшее нарушение deadline, поэтому критичной информацией становится deadline, а не длина или start time.</p></article>
 </div>
-<div class="one-line"><strong>Переносите вопрос, а не rule.</strong> Механически применять знакомый greedy-order после смены objective — один из самых простых способов ошибиться в scheduling.</div>
+<div class="predict-card"><span class="predict-kicker">Попробуйте угадать rule до ответа</span><h3>Кого ставить первым: самый короткий job, самый ранний start или самый ранний deadline?</h3><p>Только один из этих приоритетов непосредственно связан с величиной, которую мы минимизируем. Дальше proof покажет, почему этого достаточно.</p></div>
+<div class="one-line"><strong>Переносите вопрос, а не старый ответ.</strong> Greedy особенно легко применить неправильно, когда две задачи рассказываются одной и той же историей, но оптимизируют разные quantities.</div>
 </section>
 
 <section class="lecture-section" id="model">
