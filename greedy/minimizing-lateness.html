@@ -8,7 +8,7 @@
 <body class="lecture-page"><div aria-hidden="true" class="progress-track"><div class="progress-bar" id="reading-progress"></div></div>
 <header class="topbar"><a class="brand" href="../"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name">Allan's Handbook of Algorithms</span></a>
 <nav aria-label="Primary navigation" class="topnav"><a href="./">Greedy overview</a><div aria-label="Language" class="language-switch"><span class="current">EN</span><span class="language-separator">·</span><a href="minimizing-lateness-ru.html">RU</a></div></nav></header>
-<aside aria-label="Section navigation" class="sidebar"><div class="sidebar-title">Chapter 9 · Section 6</div><a href="#problem">Problem</a><a href="#example">Example</a><a href="#algorithm">EDF algorithm</a><a href="#proof">Correctness</a><a href="#implementation">Implementation</a><a href="#boundaries">Model boundaries</a><a href="#exercises">Exercises</a></aside>
+<aside aria-label="Section navigation" class="sidebar"><div class="sidebar-title">Chapter 9 · Section 6</div><a href="#problem">Problem</a><a href="#example">Example</a><a href="#model">Model the scheduling problem</a><a href="#algorithm">EDF algorithm</a><a href="#proof">Correctness</a><a href="#implementation">Implementation</a><a href="#boundaries">Model boundaries</a><a href="#exercises">Exercises</a></aside>
 <main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Chapter 9 · Section 6</div><h1>Minimizing Maximum Lateness</h1><p class="chapter-topics">On one machine, minimizing the worst lateness has a crisp greedy rule: do the earliest deadline first.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-lateness.svg"/></div></section>
 <section class="lecture-section" id="problem">
 <h2>Put the most urgent deadline first</h2>
@@ -38,6 +38,21 @@
 <div class="lateness-job ontime"><span>Job D</span><b>p=2 · d=12</b><small>finish 11</small></div>
 </div>
 <div class="lateness-formula">L<sub>max</sub> = max(−1, −1, 0, −1) = 0</div>
+</section>
+
+<!-- book-synthesis-lateness -->
+<section class="lecture-section" id="model">
+<h2>Scheduling notation makes the assumptions visible</h2>
+<p class="lead">Scheduling rules are unusually sensitive to tiny changes in the model. A useful habit is to name the machine environment, extra constraints, and objective before choosing an ordering.</p>
+<div class="model-card">
+<div class="model-notation">1 || L<sub>max</sub></div>
+<p><strong>1</strong> means one machine; the empty middle field means all jobs are available at time 0 with no extra processing constraints; <strong>L<sub>max</sub></strong> means minimize the maximum lateness. For exactly this model, ordering by nondecreasing deadline is optimal.</p>
+</div>
+<div class="variant-grid">
+<article class="variant-card"><h3>Change the objective</h3><p>Shortest-processing-time first is excellent for some average waiting-time objectives, but it is not the theorem here. With jobs <span class="math">(p,d)=(1,100)</span> and <span class="math">(2,2)</span>, SPT runs the 1-unit job first and gets <span class="math">L_max=1</span>; EDF runs the deadline-2 job first and gets <span class="math">L_max=0</span>.</p></article>
+<article class="variant-card"><h3>Change job availability</h3><p>Adding release times changes the notation to <span class="math">1|r_j|L_max</span> and changes the computational problem itself. A rule proved for <span class="math">1||L_max</span> cannot simply be carried over.</p></article>
+</div>
+<div class="one-line"><strong>Model first, rule second.</strong> In scheduling, the same jobs can require entirely different algorithms when you change preemption, release times, machine count, or objective.</div>
 </section>
 
 <section class="lecture-section" id="algorithm">
