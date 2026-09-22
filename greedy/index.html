@@ -26,21 +26,21 @@
 <section class="overview-section sorting-contents greedy-contents" id="chapter-map">
 <div class="chapter-label">Chapter 9</div>
 <h1>Greedy Algorithms</h1>
-<div class="chapter-prereq-note">Helpful before you start: <a href="../sorting/">Sorting →</a> · <a href="../data-structures/">Heaps and priority queues →</a></div>
+<p class="greedy-overview-lead">Greedy algorithms are often short to write and easy to get wrong. This chapter is organized around one question: what can we decide now and prove we will never regret?</p><div class="chapter-prereq-note">Helpful before you start: <a href="../sorting/">Sorting →</a> · <a href="../data-structures/">Heaps and priority queues →</a></div>
 <div class="sorting-part">
 <div class="sorting-part-head">
 <div>
 <span class="sorting-part-kicker">Foundations</span>
-<h3>How Greedy Algorithms Work</h3>
+<h3>Choose once, prove it safe</h3>
 </div>
-<p>Greedy algorithms make one locally attractive choice at a time and never undo it. The central question is not how to make such a choice, but when that choice can be proved safe.</p>
+<p>Start with the design principle, then learn the proof techniques that justify irreversible choices — and how to recognize when dynamic programming is the safer tool.</p>
 </div>
 <div class="chapter-grid section-icon-grid">
 <a class="chapter-card available icon-card" href="strategy.html">
 <div class="chapter-card-icon"><img alt="" src="assets/greedy-strategy.svg"/></div>
 <div>
 <h3>Greedy Strategy</h3>
-<p>Local choices, feasibility, objectives, and the idea of committing to a decision without revisiting it.</p>
+<p>What a greedy choice is, what gets fixed, and why “looks best now” is not yet a proof.</p>
 <span class="chapter-link">Open section →</span>
 </div>
 </a>
@@ -48,7 +48,7 @@
 <div class="chapter-card-icon"><img alt="" src="assets/greedy-proofs.svg"/></div>
 <div>
 <h3>Proving Greedy Correctness</h3>
-<p>Exchange arguments, staying ahead, cut properties, and other ways to prove that a greedy choice is safe.</p>
+<p>Exchange arguments, staying ahead, induction, and cuts: the small set of proof moves that appear again and again.</p>
 <span class="chapter-link">Open section →</span>
 </div>
 </a>
@@ -56,7 +56,7 @@
 <div class="chapter-card-icon"><img alt="" src="assets/greedy-vs-dp.svg"/></div>
 <div>
 <h3>Greedy vs Dynamic Programming</h3>
-<p>How to recognize when one irreversible choice is enough — and when the problem needs a richer state.</p>
+<p>Greedy keeps one future; dynamic programming keeps several. Learn how to tell which information the future still needs.</p>
 <span class="chapter-link">Open section →</span>
 </div>
 </a>
@@ -66,16 +66,16 @@
 <div class="sorting-part-head">
 <div>
 <span class="sorting-part-kicker">Intervals and Scheduling</span>
-<h3>Ordering Decisions in Time</h3>
+<h3>Three objectives, three different orders</h3>
 </div>
-<p>Many scheduling problems become simple once jobs or intervals are processed in the right order: by finishing time, start time, or deadline.</p>
+<p>Finish time, start time, and deadline each solve a different scheduling objective. The point is to understand why the ordering changes.</p>
 </div>
 <div class="chapter-grid section-icon-grid">
 <a class="chapter-card available icon-card" href="interval-scheduling.html">
 <div class="chapter-card-icon"><img alt="" src="assets/greedy-interval-scheduling.svg"/></div>
 <div>
 <h3>Interval Scheduling</h3>
-<p>Select the largest possible set of non-overlapping intervals by choosing the activity that finishes first.</p>
+<p>Keep as many intervals as possible: always take the compatible interval that finishes first.</p>
 <span class="chapter-link">Open section →</span>
 </div>
 </a>
@@ -83,7 +83,7 @@
 <div class="chapter-card-icon"><img alt="" src="assets/greedy-interval-partitioning.svg"/></div>
 <div>
 <h3>Interval Partitioning</h3>
-<p>Assign overlapping intervals to the minimum number of resources using sorting and a priority queue.</p>
+<p>Keep every interval, but use as few rooms as possible by reusing the room that becomes free first.</p>
 <span class="chapter-link">Open section →</span>
 </div>
 </a>
@@ -91,7 +91,7 @@
 <div class="chapter-card-icon"><img alt="" src="assets/greedy-lateness.svg"/></div>
 <div>
 <h3>Minimizing Maximum Lateness</h3>
-<p>Order jobs by deadlines to minimize the largest amount by which any job misses its deadline.</p>
+<p>On one machine, sort by deadline to minimize the worst lateness.</p>
 <span class="chapter-link">Open section →</span>
 </div>
 </a>
@@ -101,16 +101,16 @@
 <div class="sorting-part-head">
 <div>
 <span class="sorting-part-kicker">Choosing and Building</span>
-<h3>Value, Compression, and Repeated Choices</h3>
+<h3>Spend well, then merge cheaply</h3>
 </div>
-<p>Greedy rules can be driven by value density or by repeatedly combining the cheapest available pieces into a larger structure.</p>
+<p>Fractional Knapsack spends each unit of capacity where it pays most; Huffman repeatedly merges the two cheapest subtrees.</p>
 </div>
 <div class="chapter-grid section-icon-grid">
 <a class="chapter-card available icon-card" href="fractional-knapsack.html">
 <div class="chapter-card-icon"><img alt="" src="assets/greedy-fractional-knapsack.svg"/></div>
 <div>
 <h3>Fractional Knapsack</h3>
-<p>Take items by value density when fractions are allowed, and see exactly why the same rule fails for 0/1 Knapsack.</p>
+<p>Sort by value per unit of weight, fill greedily, and see exactly where the proof fails for 0/1 Knapsack.</p>
 <span class="chapter-link">Open section →</span>
 </div>
 </a>
@@ -118,7 +118,7 @@
 <div class="chapter-card-icon"><img alt="" src="assets/greedy-huffman.svg"/></div>
 <div>
 <h3>Huffman Coding</h3>
-<p>Build an optimal prefix code by repeatedly merging the two least frequent symbols or subtrees.</p>
+<p>Give frequent symbols short codes by repeatedly merging the two least frequent nodes.</p>
 <span class="chapter-link">Open section →</span>
 </div>
 </a>
@@ -128,16 +128,16 @@
 <div class="sorting-part-head">
 <div>
 <span class="sorting-part-kicker">Greedy on Graphs</span>
-<h3>Growing Optimal Structures</h3>
+<h3>Safe edges and final distances</h3>
 </div>
-<p>Some of the most important graph algorithms grow a solution step by step by adding the next edge or vertex that is guaranteed to be safe.</p>
+<p>Kruskal and Prim prove an edge is safe; Dijkstra proves a distance is final. The greedy pattern is the same, but the invariant is different.</p>
 </div>
 <div class="chapter-grid section-icon-grid">
 <a class="chapter-card available icon-card" href="mst.html">
 <div class="chapter-card-icon"><img alt="" src="assets/greedy-mst.svg"/></div>
 <div>
 <h3>Minimum Spanning Trees</h3>
-<p>Kruskal’s and Prim’s algorithms, the cut property, disjoint sets, and priority queues.</p>
+<p>Two MST algorithms, one proof idea: the cut property. Implement with DSU or a priority queue.</p>
 <span class="chapter-link">Open section →</span>
 </div>
 </a>
@@ -145,7 +145,7 @@
 <div class="chapter-card-icon"><img alt="" src="assets/greedy-dijkstra.svg"/></div>
 <div>
 <h3>Dijkstra’s Algorithm</h3>
-<p>Repeatedly finalize the closest unsettled vertex to find shortest paths with nonnegative edge weights.</p>
+<p>Finalize the smallest tentative distance, relax its edges, and see precisely why negative weights break the argument.</p>
 <span class="chapter-link">Open section →</span>
 </div>
 </a>
