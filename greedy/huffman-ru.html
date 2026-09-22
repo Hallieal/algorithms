@@ -8,7 +8,7 @@
 <body class="lecture-page"><div aria-hidden="true" class="progress-track"><div class="progress-bar" id="reading-progress"></div></div>
 <header class="topbar"><a class="brand" href="../index-ru.html"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name ru-brand-name"><span class="ru-brand-lines"><span>Гайд по алгоритмам</span><span class="ru-brand-presented">presented by Аллан</span></span></span></a>
 <nav aria-label="Основная навигация" class="topnav"><a href="index-ru.html">Жадные алгоритмы</a><div aria-label="Язык" class="language-switch"><a href="huffman.html">EN</a><span class="language-separator">·</span><span class="current">RU</span></div></nav></header>
-<aside aria-label="Навигация по разделу" class="sidebar"><div class="sidebar-title">Глава 9 · Раздел 8</div><a href="#problem">Постановка</a><a href="#bits-first">Зачем variable-length codes?</a><a href="#prefix">Префиксные коды</a><a href="#decode">Декодирование по дереву</a><a href="#algorithm">Алгоритм</a><a href="#tree">Дерево и коды</a><a href="#merge">Optimal merge pattern</a><a href="#entropy">Энтропия</a><a href="#proof">Корректность</a><a href="#implementation">Реализация</a><a href="#limits">Что оптимизируется</a><a href="#exercises">Задачи</a></aside>
+<aside aria-label="Навигация по разделу" class="sidebar"><div class="sidebar-title">Глава 9 · Раздел 8</div><a href="#problem">Постановка</a><a href="#bits-first">Зачем variable-length codes?</a><a href="#prefix">Префиксные коды</a><a href="#decode">Декодирование по дереву</a><a href="#algorithm">Алгоритм</a><a href="#tree">Дерево и коды</a><a href="#merge">Optimal merge pattern</a><a href="#entropy">Энтропия</a><a href="#proof">Корректность</a><a href="#heap-optimization">Почему heap всё меняет</a><a href="#implementation">Реализация</a><a href="#limits">Что оптимизируется</a><a href="#exercises">Задачи</a></aside>
 <main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Глава 9 · Раздел 8</div><h1>Кодирование Хаффмана</h1><p class="chapter-topics">Частые символы должны иметь короткие коды. Хаффман добивается этого, каждый раз объединяя два узла с минимальными частотами.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-huffman.svg"/></div></section>
 <section class="lecture-section" id="problem">
 <h2>Частые символы должны кодироваться дёшево</h2>
@@ -142,6 +142,17 @@
 <article class="huffman-proof-card"><h3>3. Сжимаем пару</h3><p>Заменяем листья с частотами <span class="math">x</span> и <span class="math">y</span> одним псевдосимволом частоты <span class="math">x+y</span>. Оптимальное дерево для меньшей задачи после раскрытия пары даёт оптимальное дерево исходной задачи.</p></article>
 </div>
 <div class="proof-goal"><h3>Оптимальная подструктура</h3><p>После того как два минимальных символа зафиксированы как соседи, остаётся ровно ещё одна задача Хаффмана с меньшим числом узлов. Поэтому тот же жадный шаг можно повторять.</p></div>
+</section>
+
+<!-- common-sense-round-huffman -->
+<section class="lecture-section" id="heap-optimization">
+<h2>Очевидная реализация Huffman получается квадратичной</h2>
+<p class="lead">Математическое rule говорит: «многократно извлекай два минимальных веса». Первая implementation-идея — каждый раз сканировать всю коллекцию, но именно repeated minimum search становится bottleneck.</p>
+<div class="operation-profile">
+<article class="neutral"><h3>Обычный list</h3><p>Сканируем все текущие nodes, находим два минимальных, merge, возвращаем результат и повторяем. Примерно <span class="math">n</span> merges × linear search дают <span class="math">O(n²)</span>.</p></article>
+<article class="good"><h3>Min-heap</h3><p>Два минимальных веса всегда доступны наверху. Каждый pop или push стоит <span class="math">O(log n)</span>, поэтому все <span class="math">n−1</span> merges занимают <span class="math">O(n log n)</span>.</p></article>
+</div>
+<div class="optimization-gap"><b>Почему heap естественен</b><p>Huffman не нужна полностью отсортированная коллекция после каждого merge. Нужен только повторяющийся доступ к одному-двум minimum elements. Heap поддерживает ровно столько порядка — и не вычисляет лишнего.</p></div>
 </section>
 
 <section class="lecture-section" id="implementation">
