@@ -9,7 +9,7 @@
 <body class="lecture-page"><div aria-hidden="true" class="progress-track"><div class="progress-bar" id="reading-progress"></div></div>
 <header class="topbar"><a class="brand" href="../"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name">Allan's Handbook of Algorithms</span></a>
 <nav aria-label="Primary navigation" class="topnav"><a href="./">Greedy overview</a><div aria-label="Language" class="language-switch"><span class="current">EN</span><span class="language-separator">·</span><a href="proofs-ru.html">RU</a></div></nav></header>
-<aside aria-label="Section navigation" class="sidebar"><div class="sidebar-title">Chapter 9 · Section 2</div><a href="#goal">What must be proved?</a><a href="#patterns">Proof patterns</a><a href="#exchange">Exchange arguments</a><a href="#worked">Worked proof</a><a href="#ahead">Staying ahead</a><a href="#induction">Induction</a><a href="#mistakes">Common mistakes</a><a href="#exercises">Exercises</a></aside>
+<aside aria-label="Section navigation" class="sidebar"><div class="sidebar-title">Chapter 9 · Section 2</div><a href="#goal">What must be proved?</a><a href="#patterns">Proof patterns</a><a href="#counterexamples">Counterexample laboratory</a><a href="#exchange">Exchange arguments</a><a href="#worked">Worked proof</a><a href="#ahead">Staying ahead</a><a href="#induction">Induction</a><a href="#template">Proof template</a><a href="#mistakes">Common mistakes</a><a href="#exercises">Exercises</a></aside>
 <main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Chapter 9 · Section 2</div><h1>Proving Greedy Correctness</h1><p class="chapter-topics">A greedy proof has one job: show that the next local choice can be fixed without losing optimality.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-proofs.svg"/></div></section>
 <section class="lecture-section" id="goal">
 <h2>What a greedy proof must show</h2>
@@ -35,6 +35,19 @@
 <article class="proof-pattern-card"><div class="proof-pattern-mark">✂</div><h3>Safe edge / cut argument</h3><p>For graph problems, identify a boundary and prove that a best edge crossing it can safely be added.</p></article>
 </div>
 <div class="bridge-note"><h3>These patterns are different views of the same move</h3><p>An exchange argument proves one local replacement is safe. “Staying ahead” repeats that comparison over every prefix. Induction packages the same safe step into a proof on the reduced instance. A cut proof is an exchange argument specialized to graph structure. In practice, these techniques often appear together rather than in isolation.</p></div>
+</section>
+
+<!-- book-synthesis-proofs -->
+<section class="lecture-section" id="counterexamples">
+<h2>Counterexamples are a proof tool too</h2>
+<p class="lead">Before proving a greedy rule, actively try to falsify it. Tiny failures are often more informative than a page of successful examples because they expose the exact resource a local choice is consuming.</p>
+<div class="table-wrap"><table><thead><tr><th>Candidate rule</th><th>How to attack it</th><th>What the failure teaches</th></tr></thead><tbody>
+<tr><td>Earliest start</td><td>Make the first interval extremely long</td><td>Starting early is irrelevant if the choice blocks the whole future.</td></tr>
+<tr><td>Shortest interval</td><td>Place one short interval across the boundary of two compatible ones</td><td>Duration alone ignores <em>where</em> the interval sits.</td></tr>
+<tr><td>Fewest conflicts</td><td>Create one interval with few local conflicts but strategically bad placement</td><td>A locally global-looking statistic still may not preserve the right residual problem.</td></tr>
+<tr><td>Largest coin first</td><td>Choose denominations where one large coin leaves an expensive remainder</td><td>The remainder needs state; a local denomination need not dominate future combinations.</td></tr>
+</tbody></table></div>
+<div class="one-line"><strong>A failed greedy rule gives information.</strong> Ask what feature the counterexample exploited; the correct invariant often protects exactly that feature.</div>
 </section>
 
 <section class="lecture-section" id="exchange">
@@ -80,6 +93,18 @@
 <div class="proof-check"><span>3</span><p><strong>Show the structure remains the same.</strong> The same greedy rule must still make sense on the smaller instance.</p></div>
 <div class="proof-check"><span>4</span><p><strong>Apply induction.</strong> If greedy solves the smaller instance optimally, adding the safe first choice gives an optimal full solution.</p></div>
 </div>
+</section>
+
+<section class="lecture-section" id="template">
+<h2>A reusable greedy-proof template</h2>
+<p class="lead">The surface details change from intervals to graphs to codes, but most exact greedy proofs can be organized around the same four questions.</p>
+<div class="proof-template">
+<article><b>1. Name the choice</b><p>Specify the exact local object greedy commits to: interval, edge, item fraction, merge, or vertex distance.</p></article>
+<article><b>2. Compare with OPT</b><p>Take an optimal solution and identify where it first disagrees with greedy—or compare both solutions at the same prefix.</p></article>
+<article><b>3. Repair the disagreement</b><p>Exchange, replace, or reroute so OPT adopts the greedy choice without becoming infeasible or worse.</p></article>
+<article><b>4. Reduce and repeat</b><p>After fixing that choice, prove the remaining instance has the same form. Finish by induction or an invariant.</p></article>
+</div>
+<div class="practice-note"><h3>Stress-test assumptions before writing QED</h3><p>Check ties, zero values, equal endpoints, disconnected inputs, empty inputs, negative weights, and whether the objective changed from cardinality to weight. Many “proofs” silently use one of these assumptions.</p></div>
 </section>
 
 <section class="lecture-section" id="mistakes">
