@@ -10,10 +10,10 @@
 <header class="topbar"><a class="brand" href="../index-ru.html"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name ru-brand-name"><span class="ru-brand-lines"><span>Гайд по алгоритмам</span><span class="ru-brand-presented">presented by Аллан</span></span></span></a>
 <nav aria-label="Основная навигация" class="topnav"><a href="index-ru.html">Жадные алгоритмы</a><div aria-label="Язык" class="language-switch"><a href="proofs.html">EN</a><span class="language-separator">·</span><span class="current">RU</span></div></nav></header>
 <aside aria-label="Навигация по разделу" class="sidebar"><div class="sidebar-title">Глава 9 · Раздел 2</div><a href="#goal">Что нужно доказать?</a><a href="#patterns">Схемы доказательств</a><a href="#counterexample-lab">Лаборатория контрпримеров</a><a href="#counterexamples">Лаборатория контрпримеров</a><a href="#exchange">Обменный аргумент</a><a href="#worked">Полное доказательство</a><a href="#ahead">«Жадный не отстаёт»</a><a href="#induction">Индукция</a><a href="#discard">Как доказывать discard</a><a href="#gas-proof">Candidate-elimination proof</a><a href="#bound-certificate">Совпасть с lower bound</a><a href="#template">Шаблон доказательства</a><a href="#directional-proof">Two-pass proof</a><a href="#intuition-proof">Интуиция и proof</a><a href="#summary-not-witness">Summary и witness</a><a href="#mistakes">Типичные ошибки</a><a href="#exercises">Задачи</a></aside>
-<main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Глава 9 · Раздел 2</div><h1>Доказательства корректности</h1><p class="chapter-topics">У доказательства greedy одна главная задача: показать, что локальный выбор можно зафиксировать, не потеряв оптимальность.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-proofs.svg"/></div></section>
+<main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Глава 9 · Раздел 2</div><h1>Доказательства корректности</h1><p class="chapter-topics">Жадный алгоритм корректен только тогда, когда каждый необратимый шаг обоснован. Здесь собраны основные схемы доказательств и методы поиска контрпримеров.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-proofs.svg"/></div></section>
 <section class="lecture-section" id="goal">
-<h2>Что должно доказать жадное доказательство</h2>
-<p class="lead">Код может состоять из одного цикла. Доказательство должно объяснить, почему этот цикл имеет право навсегда отбрасывать альтернативы. После каждого шага должно оставаться хотя бы одно оптимальное решение, совместимое с уже сделанными выборами.</p><div class="concept-strip">
+<h2>Требование корректности</h2>
+<p class="lead">Жадное доказательство должно показать, что после каждого зафиксированного шага остаётся хотя бы одно оптимальное продолжение. Без этого локальное правило остаётся эвристикой.</p><div class="concept-strip">
 <article class="concept-cell rule"><span>Что доказать</span><b>Следующий жадный выбор безопасен</b><p>Некоторое оптимальное решение можно заставить его содержать.</p></article>
 <article class="concept-cell proof"><span>Дальше</span><b>Свести задачу к меньшей</b><p>После фиксации шага должна остаться та же структура.</p></article>
 <article class="concept-cell cost"><span>Основные приёмы</span><b>Обмен, «не отстаёт», разрез</b><p>Выбираем доказательство под форму конкретной задачи.</p></article>
@@ -26,8 +26,8 @@
 </section>
 
 <section class="lecture-section" id="patterns">
-<h2>Четыре полезные схемы доказательства</h2>
-<p class="lead">Большинство доказательств сводится к нескольким ходам: обменять выбор, сравнить частичный прогресс, уменьшить задачу или воспользоваться разрезом.</p>
+<h2>Основные методы доказательства</h2>
+<p class="lead">Для greedy чаще всего используют exchange argument, staying ahead, индукцию по уменьшенному instance или cut argument. Все они обосновывают безопасность необратимого шага.</p>
 <div class="proof-pattern-grid">
 <article class="proof-pattern-card"><div class="proof-pattern-mark">↔</div><h3>Обменный аргумент</h3><p>Берём оптимальное решение. Если в нём нет жадного выбора, преобразуем его так, чтобы жадный выбор появился, не ухудшая целевую функцию.</p></article>
 <article class="proof-pattern-card"><div class="proof-pattern-mark">≥</div><h3>«Жадный не отстаёт»</h3><p>После каждого шага сравниваем частичное жадное решение с произвольным оптимальным и показываем, что жадный вариант не хуже.</p></article>
@@ -40,8 +40,8 @@
 <!-- book-synthesis-proofs -->
 <!-- skiena-round-proofs -->
 <section class="lecture-section" id="counterexample-lab">
-<h2>Как целенаправленно искать counterexample</h2>
-<p class="lead">«Попробуйте несколько примеров» слишком расплывчато. Полезнее конструировать adversarial instances, которые бьют ровно по той информации, которую greedy key игнорирует.</p>
+<h2>Систематический поиск контрпримеров</h2>
+<p class="lead">Контрпримеры удобнее искать на маленьких instances, специально построенных против слабого места priority rule. Полезны ties, крайние значения и минимальные нетривиальные конфигурации.</p>
 <div class="recognition-grid">
 <article class="recognition-card"><span class="signal">Think small</span><h3>Оставьте только суть</h3><p>Три intervals часто лучше тридцати. Маленький counterexample легче проверить, и он обычно сразу показывает structural failure.</p></article>
 <article class="recognition-card"><span class="signal">Go for a tie</span><h3>Лишите heuristic информации</h3><p>Если rule выбирает «largest» или «shortest», сделайте несколько candidates равными по этому score. Затем проверьте, может ли неудачный tie заставить сделать плохой irreversible choice.</p></article>
@@ -52,8 +52,8 @@
 </section>
 
 <section class="lecture-section" id="counterexamples">
-<h2>Контрпример — тоже инструмент доказательства</h2>
-<p class="lead">До попытки доказать greedy-rule полезно целенаправленно пытаться его опровергнуть. Маленький провал часто информативнее десятков удачных примеров: он показывает, какой ресурс локальный выбор расходует неправильно.</p>
+<h2>Контрпримеры до доказательства</h2>
+<p class="lead">Проверка правила на маленьких adversarial inputs часто показывает, какой ресурс или constraint оно не учитывает. Это обычно подсказывает правильный инвариант.</p>
 <div class="table-wrap"><table><thead><tr><th>Кандидат на правило</th><th>Как атаковать</th><th>Чему учит провал</th></tr></thead><tbody>
 <tr><td>Earliest start</td><td>Сделать первый интервал очень длинным</td><td>Раннее начало бесполезно, если выбор уничтожает почти всё будущее.</td></tr>
 <tr><td>Shortest interval</td><td>Поставить короткий интервал на границе двух совместимых</td><td>Длина ничего не говорит о том, <em>где</em> интервал расположен.</td></tr>
@@ -64,8 +64,8 @@
 </section>
 
 <section class="lecture-section" id="exchange">
-<h2>1. Обменный аргумент</h2>
-<p class="lead">Берём оптимальное решение, которое может не совпадать с greedy. Меняем только первый конфликтующий выбор, сохраняем допустимость и показываем, что целевая функция не ухудшилась. После этого одно оптимальное решение согласуется с greedy ещё на один шаг.</p>
+<h2>Обменный аргумент</h2>
+<p class="lead">Берём оптимальное решение, которое не совпадает с greedy, заменяем первый конфликтующий выбор на жадный и показываем, что допустимость и качество решения не ухудшаются.</p>
 <div class="exchange-demo">
 <div class="exchange-side"><span>Некоторое оптимальное решение</span><div class="exchange-set"><div class="exchange-item">другой выбор</div><div class="exchange-item">...</div><div class="exchange-item">...</div></div></div>
 <div class="exchange-arrow">→</div>
@@ -80,8 +80,8 @@
 </section>
 
 <section class="lecture-section" id="worked">
-<h2>Полный пример: короткие задачи сначала</h2>
-<p class="lead">Вернёмся к задаче с предыдущей страницы: есть бюджет времени T, независимые задачи положительной длительности, и нужно выполнить как можно больше задач. Жадный алгоритм сортирует их по возрастанию длительности и берёт, пока хватает времени.</p>
+<h2>Пример: сначала короткие задачи</h2>
+<p class="lead">При фиксированном бюджете времени и положительных длительностях сортировка по возрастанию времени выполнения максимизирует число завершённых задач.</p>
 <div class="two-column-block">
 <div class="text-panel"><h3>Жадный ответ</h3><p>Пусть после сортировки <span class="math">d₁ ≤ d₂ ≤ ··· ≤ dₙ</span>. Предположим, жадный алгоритм взял первые <span class="math">k</span> задач:</p><div class="formula-line">d₁ + ··· + dₖ ≤ T</div><p>а добавление <span class="math">dₖ₊₁</span> уже превышает T.</p></div>
 <div class="proof-panel"><h3>Почему нельзя взять k + 1 задачу</h3><p>Среди всех наборов из <span class="math">k+1</span> задач минимальная возможная суммарная длительность — сумма <span class="math">k+1</span> самых коротких задач.</p><div class="formula-line">d₁ + ··· + dₖ₊₁ &gt; T</div><p>Значит, любой набор из <span class="math">k+1</span> задач превышает бюджет. Жадный ответ оптимален.</p></div>
@@ -91,15 +91,15 @@
 </section>
 
 <section class="lecture-section" id="ahead">
-<h2>2. «Жадный не отстаёт»</h2>
-<p class="lead">Иногда удобнее сравнивать частичные решения шаг за шагом. Мы выбираем величину, измеряющую прогресс, и доказываем, что после первого, второго и каждого следующего выбора жадный алгоритм находится не позади оптимального.</p>
+<h2>Доказательство «greedy не отстаёт»</h2>
+<p class="lead">Сравниваем частичные решения после каждого шага и поддерживаем инвариант: greedy-префикс не хуже соответствующего префикса оптимального решения.</p>
 <div class="proof-goal"><h3>Типичная форма</h3><p>Если жадный алгоритм делает выборы <span class="math">g₁, g₂, ...</span>, а оптимальное решение — <span class="math">o₁, o₂, ...</span>, доказываем неравенство вида <span class="math">progress(g₁,...,gᵢ) ≥ progress(o₁,...,oᵢ)</span> для каждого i.</p></div>
 <p>Классический пример — выбор непересекающихся интервалов: после выбора первых i интервалов расписание, которое всегда берёт интервал с самым ранним окончанием, заканчивается не позже любого другого расписания из i интервалов. Поэтому для будущих интервалов остаётся не меньше места.</p>
 </section>
 
 <section class="lecture-section" id="induction">
-<h2>3. Безопасный выбор, затем индукция</h2>
-<p class="lead">Многие доказательства жадности имеют одну и ту же рекурсивную форму, даже если сам алгоритм записан обычным циклом.</p>
+<h2>Индукция после безопасного выбора</h2>
+<p class="lead">После доказательства безопасности первого шага фиксируем его и применяем то же рассуждение к уменьшенной задаче.</p>
 <div class="proof-checklist">
 <div class="proof-check"><span>1</span><p><strong>Докажите безопасность следующего жадного выбора.</strong> Покажите, что существует оптимальное решение, содержащее его.</p></div>
 <div class="proof-check"><span>2</span><p><strong>Уменьшите задачу.</strong> После фиксации выбора точно опишите оставшийся экземпляр.</p></div>
@@ -110,8 +110,8 @@
 
 <!-- common-sense-round-proofs -->
 <section class="lecture-section" id="discard">
-<h2>Greedy-proof может оправдывать выбрасывание информации</h2>
-<p class="lead">One-pass greedy оптимизации внешне отличаются от scheduling или MST: commitment здесь не «взять этот item», а «навсегда забыть целый класс prefixes». Но proof obligation тот же — доказать, что выброшенные альтернативы уже никогда не помогут.</p>
+<h2>Почему отброшенные состояния больше не нужны</h2>
+<p class="lead">В однопроходных алгоритмах greedy может не выбирать item, а удалять целый класс partial states. Нужно доказать, что каждый отброшенный state доминируется сохранённым.</p>
 <div class="two-column-block">
 <div class="text-panel"><h3>Reset в maximum subarray</h3><p>Пусть running sum текущего prefix равна <span class="math">p&lt;0</span>. Пусть сумма некоторого будущего продолжения равна <span class="math">T</span>. Если тащить отрицательный prefix дальше, получим <span class="math">p+T</span>.</p></div>
 <div class="proof-panel"><h3>Почему reset безопасен</h3><p>Так как <span class="math">p&lt;0</span>, выполняется <span class="math">p+T&lt;T</span>. Начать будущий subarray после отрицательного prefix строго лучше, чем продолжать его.</p></div>
@@ -122,8 +122,8 @@
 
 <!-- coding-patterns-round-proofs -->
 <section class="lecture-section" id="gas-proof">
-<h2>Candidate elimination: докажите невозможность целого блока сразу</h2>
-<p class="lead">Gas Stations даёт очень полезную interview-форму доказательства: если один start провалился, полезно не просто отвергнуть его, а показать, почему вместе с ним отпадает целый interval кандидатов.</p>
+<h2>Исключение группы кандидатов</h2>
+<p class="lead">Иногда провал одного кандидата позволяет сразу исключить целый диапазон. Доказательство должно показать общий obstruction для всех этих стартов.</p>
 <div class="candidate-elimination">
 <h3>Пусть start <span class="math">a</span> впервые остаётся без топлива перед выходом со station <span class="math">b</span></h3>
 <p>Обозначим <span class="math">d_i = gas_i - cost_i</span>. Так как <span class="math">b</span> — первый failure, все prefix sums от <span class="math">a</span> до любой станции раньше <span class="math">b</span> неотрицательны, но сумма от <span class="math">a</span> до <span class="math">b</span> отрицательна.</p>
@@ -138,8 +138,8 @@
 
 <!-- karumanchi-round-proofs -->
 <section class="lecture-section" id="bound-certificate">
-<h2>Ещё одна proof-схема: построить решение, совпавшее с lower bound</h2>
-<p class="lead">Некоторым greedy proofs не нужен exchange с неизвестным optimum. Вместо этого найдите число, которое обязано заплатить любое feasible solution, а затем покажите, что greedy платит ровно столько.</p>
+<h2>Нижняя оценка и конструкция</h2>
+<p class="lead">Можно сначала получить lower bound, обязательный для любого feasible solution, а затем показать, что greedy достигает этой границы.</p>
 <div class="two-column-block">
 <div class="text-panel"><h3>Lower bound</h3><p>В interval partitioning, если в один момент пересекаются <span class="math">d</span> classes, любому schedule нужно минимум <span class="math">d</span> rooms. Это неизбежно независимо от algorithm.</p></div>
 <div class="proof-panel"><h3>Greedy certificate</h3><p>Когда start-time greedy открывает <span class="math">d</span>-ю room, новая class пересекается с последней class в каждой из предыдущих <span class="math">d−1</span> rooms. Значит, в этот момент одновременно существуют <span class="math">d</span> classes.</p></div>
@@ -149,8 +149,8 @@
 </section>
 
 <section class="lecture-section" id="template">
-<h2>Универсальный шаблон greedy-доказательства</h2>
-<p class="lead">Детали меняются от интервалов к графам и кодам, но большинство exact greedy proofs можно организовать вокруг четырёх одинаковых вопросов.</p>
+<h2>Чек-лист доказательства</h2>
+<p class="lead">Нужно явно назвать инвариант, доказать безопасность следующего шага, описать уменьшенный instance и указать, где используются предположения задачи.</p>
 <div class="proof-template">
 <article><b>1. Назовите выбор</b><p>Что именно алгоритм фиксирует локально: интервал, ребро, долю предмета, merge или расстояние до вершины?</p></article>
 <article><b>2. Сравните с OPT</b><p>Возьмите оптимальное решение и найдите первое место расхождения с greedy — либо сравнивайте одинаковые префиксы.</p></article>
@@ -162,8 +162,8 @@
 
 <!-- grokking-pass-proofs -->
 <section class="lecture-section" id="directional-proof">
-<h2>Two-pass greedy proofs: независимые направления отдельно</h2>
-<p class="lead">Candies показывает ещё одну proof-форму. Local constraint смотрит в обе стороны, поэтому одного scan мало; вместо этого каждая семья inequalities обеспечивается своим направлением.</p>
+<h2>Два прохода для двусторонних ограничений</h2>
+<p class="lead">Если constraints направлены в обе стороны, один проход может обеспечить одну группу неравенств, второй — противоположную, после чего результаты объединяются.</p>
 <div class="directional-passes">
 <article><h3>Left → right</h3><p>Если <span class="math">rating_i &gt; rating_{i-1}</span>, ставим <span class="math">candies_i = candies_{i-1}+1</span>. После pass все left-neighbor constraints выполнены с минимальными значениями, которые принудительно задаёт prefix.</p></article>
 <article><h3>Right → left</h3><p>Если <span class="math">rating_i &gt; rating_{i+1}</span>, требуется как минимум <span class="math">candies_{i+1}+1</span>. Берём <span class="math">max(current, right-required)</span>, чтобы второй pass не разрушал первый.</p></article>
@@ -172,8 +172,8 @@
 </section>
 
 <section class="lecture-section" id="intuition-proof">
-<h2>Сначала сделайте выбор почти неизбежным. Потом докажите его.</h2>
-<p class="lead">У хорошего greedy-объяснения два слоя. Первый — картинка в голове: почему этот шаг оставляет будущее в лучшем состоянии? Второй — доказательство, что скрытого контрпримера действительно нет.</p>
+<h2>От интуиции к доказательству</h2>
+<p class="lead">Интуиция должна назвать ресурс, который сохраняет локальный выбор. Формальное доказательство обязано показать, что альтернативный выбор не улучшает оптимальное продолжение.</p>
 <div class="path-choice">
 <article class="good"><h3>Classroom scheduling</h3><p>Самое раннее окончание выглядит разумно, потому что освобождает аудиторию раньше всех. Эта интуиция подсказывает инвариант: всё, что доступно после более позднего finish, доступно и после более раннего.</p></article>
 <article class="bad"><h3>0/1 Knapsack</h3><p>«Сначала возьми самый дорогой предмет» выглядит не менее естественно, но один item может занять capacity, нужную для лучшей пары. Одной картинки недостаточно, чтобы оправдать commitment.</p></article>
@@ -189,8 +189,8 @@
 </section>
 
 <section class="lecture-section" id="summary-not-witness">
-<h2>State variables не обязаны буквально составлять будущий witness</h2>
-<p class="lead">Greedy summaries могут хранить достаточно информации, чтобы доказать существование решения, не сохраняя в каждый момент одну согласованную partial solution.</p>
+<h2>Сводное состояние и явное решение</h2>
+<p class="lead">Хранимое состояние не обязано само быть финальным witness. Достаточно, чтобы оно сохраняло всю информацию, необходимую для будущих решений.</p>
 <div class="mini-example-grid">
 <article class="mini-example good"><h3>Increasing triplet</h3><p>Храним минимальный <code>low</code> и минимальный возможный <code>middle</code>, который когда-то встретился после некоторого меньшего предыдущего значения. Если позже приходит число больше <code>middle</code>, triplet существует.</p></article>
 <article class="mini-example bad"><h3>Тонкость</h3><p>После фиксации <code>middle</code> переменная <code>low</code> может обновиться на ещё меньшее значение, стоящее уже <em>после</em> этого middle. Поэтому текущая пара <code>(low, middle)</code> может сама не быть ordered pair из witness.</p></article>
@@ -200,7 +200,7 @@
 </section>
 
 <section class="lecture-section" id="mistakes">
-<h2>Что доказательством не является</h2>
+<h2>Что не является доказательством</h2>
 <div class="proof-mistakes">
 <article class="proof-mistake"><h3>«Сейчас это очевидно лучше»</h3><p>«Сейчас это лучше» — как раз то утверждение, которое нужно обосновать. Будущие шаги могут полностью перевернуть локальное преимущество.</p></article>
 <article class="proof-mistake"><h3>Проверка только примеров</h3><p>Пример может опровергнуть жадное правило, но никакое конечное число удачных примеров не доказывает корректность.</p></article>
