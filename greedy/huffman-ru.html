@@ -8,7 +8,7 @@
 <body class="lecture-page"><div aria-hidden="true" class="progress-track"><div class="progress-bar" id="reading-progress"></div></div>
 <header class="topbar"><a class="brand" href="../index-ru.html"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name ru-brand-name"><span class="ru-brand-lines"><span>Гайд по алгоритмам</span><span class="ru-brand-presented">presented by Аллан</span></span></span></a>
 <nav aria-label="Основная навигация" class="topnav"><a href="index-ru.html">Жадные алгоритмы</a><div aria-label="Язык" class="language-switch"><a href="huffman.html">EN</a><span class="language-separator">·</span><span class="current">RU</span></div></nav></header>
-<aside aria-label="Навигация по разделу" class="sidebar"><div class="sidebar-title">Глава 9 · Раздел 8</div><a href="#problem">Постановка</a><a href="#prefix">Префиксные коды</a><a href="#algorithm">Алгоритм</a><a href="#tree">Дерево и коды</a><a href="#entropy">Энтропия</a><a href="#proof">Корректность</a><a href="#implementation">Реализация</a><a href="#limits">Что оптимизируется</a><a href="#exercises">Задачи</a></aside>
+<aside aria-label="Навигация по разделу" class="sidebar"><div class="sidebar-title">Глава 9 · Раздел 8</div><a href="#problem">Постановка</a><a href="#prefix">Префиксные коды</a><a href="#algorithm">Алгоритм</a><a href="#tree">Дерево и коды</a><a href="#merge">Optimal merge pattern</a><a href="#entropy">Энтропия</a><a href="#proof">Корректность</a><a href="#implementation">Реализация</a><a href="#limits">Что оптимизируется</a><a href="#exercises">Задачи</a></aside>
 <main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Глава 9 · Раздел 8</div><h1>Кодирование Хаффмана</h1><p class="chapter-topics">Частые символы должны иметь короткие коды. Хаффман добивается этого, каждый раз объединяя два узла с минимальными частотами.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-huffman.svg"/></div></section>
 <section class="lecture-section" id="problem">
 <h2>Частые символы должны кодироваться дёшево</h2>
@@ -86,6 +86,17 @@
 <div class="bit-card good"><span>Код Хаффмана</span><b>224 бита</b><small>Взвешенная длина: 45·1 + 12·3 + 13·3 + 5·4 + 9·4 + 16·3.</small></div>
 </div>
 <div class="source-note"><h3>Метки 0 и 1 условны</h3><p>Если поменять местами левого и правого ребёнка любого внутреннего узла, сами битовые строки изменятся, но длины кодов останутся теми же. Поэтому оптимальных таблиц Хаффмана обычно много.</p></div>
+</section>
+
+<!-- book-synthesis-huffman -->
+<section class="lecture-section" id="merge">
+<h2>Та же greedy-структура: оптимальное слияние файлов</h2>
+<p class="lead">Правило Хаффмана «объединять два минимальных веса» работает не только для символов. Тот же priority-queue pattern минимизирует суммарную работу при последовательном слиянии файлов, если стоимость merge равна сумме размеров.</p>
+<div class="two-column-block">
+<div class="text-panel"><h3>Плохой порядок</h3><p>Размеры файлов: 4, 50, 5, 6. Если каждый раз объединять текущий результат со следующим в этом порядке, стоимости равны 54, затем 59, затем 65.</p><div class="formula-line">54 + 59 + 65 = 178</div></div>
+<div class="proof-panel"><h3>Сначала два минимальных</h3><p>Объединяем 4+5=9, затем 6+9=15, затем 15+50=65.</p><div class="formula-line">9 + 15 + 65 = 89</div></div>
+</div>
+<div class="bridge-note"><h3>Почему это Huffman под другим именем</h3><p>Каждый раз после merge вес объекта снова оплачивается уровнем выше. Поэтому маленькие веса выгодно отправлять глубже в merge-tree. Для частот символов Huffman делает ровно это.</p></div>
 </section>
 
 <section class="lecture-section" id="entropy">
