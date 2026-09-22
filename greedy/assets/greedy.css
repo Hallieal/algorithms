@@ -341,3 +341,48 @@
 .exchange-density{grid-template-columns:1fr}.density-arrow{transform:rotate(90deg)}
 .huffman-frequency-grid{grid-template-columns:repeat(2,1fr)}
 }
+
+/* =========================================================
+   Greedy graph lectures
+   ========================================================= */
+.graph-card{margin-top:28px;padding:24px;border:1px solid var(--line);border-radius:18px;background:#fff}
+.graph-legend{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px;color:#737c83;font-size:11px}
+.graph-legend span{display:inline-flex;align-items:center;gap:6px}
+.graph-dot{width:10px;height:10px;border-radius:50%;background:#c8c4bc}.graph-dot.selected{background:#739b2e}.graph-dot.current{background:#d49a43}
+.edge-list{display:grid;gap:9px;margin-top:16px}
+.edge-row{display:grid;grid-template-columns:86px 70px minmax(0,1fr);gap:12px;align-items:center;padding:11px 13px;border:1px solid var(--line);border-radius:12px;background:#faf9f6}
+.edge-row.current{border-color:#e3c58f;background:#fff7e7}.edge-row.accepted{border-color:#d7e5bd;background:#f8fbf2}.edge-row.rejected{opacity:.5}
+.edge-row b{font-size:12px}.edge-weight{text-align:center;font-size:12px;font-weight:850;color:#647078}
+.edge-reason{color:#727b82;font-size:11px}
+.component-chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.component-chip{padding:8px 10px;border-radius:999px;background:#eef3f7;color:#55708f;font-size:11px;font-weight:800}
+.component-chip.joined{background:#edf5df;color:#56742d}
+.cut-diagram{display:grid;grid-template-columns:1fr 80px 1fr;gap:14px;align-items:center;margin-top:28px}
+.cut-side{padding:22px;border:1px solid var(--line);border-radius:16px;background:#fff}.cut-side h3{font-size:16px}.cut-side p{margin-bottom:0;color:var(--muted);font-size:13px}
+.cut-bridge{display:grid;place-items:center;min-height:90px;border-radius:14px;background:#fff8e9;border:1px dashed #dfbd82;color:#8b6228;font-size:12px;font-weight:850;text-align:center}
+.algo-compare-grid{display:grid;grid-template-columns:1fr 1fr;gap:15px;margin-top:28px}
+.algo-compare-card{padding:22px;border:1px solid var(--line);border-radius:17px;background:#fff}
+.algo-compare-card.kruskal{border-top:4px solid var(--green)}.algo-compare-card.prim{border-top:4px solid var(--blue)}
+.algo-compare-card h3{font-size:18px}.algo-compare-card p{color:var(--muted);font-size:13px}
+.algo-compare-card .method-state-row{margin-top:12px}
+.dijkstra-demo-grid{display:grid;grid-template-columns:.9fr 1.1fr;gap:16px;margin-top:18px}
+.distance-table{display:grid;gap:8px}
+.distance-row{display:grid;grid-template-columns:48px 92px 1fr;gap:10px;align-items:center;padding:11px 13px;border:1px solid var(--line);border-radius:12px;background:#faf9f6}
+.distance-row.fixed{border-color:#d7e5bd;background:#f8fbf2}.distance-row.current{border-color:#e3c58f;background:#fff7e7}
+.distance-vertex{width:34px;height:34px;display:grid;place-items:center;border-radius:50%;background:#e8eef5;color:#55708f;font-size:12px;font-weight:850}
+.distance-row.fixed .distance-vertex{background:#dfecc9;color:#55752d}.distance-row.current .distance-vertex{background:#faead6;color:#8b612a}
+.distance-value{font-size:19px;font-weight:850}.distance-status{color:#7a838a;font-size:11px}
+.relax-panel{padding:20px;border:1px solid var(--line);border-radius:15px;background:#fff}
+.relax-panel h3{font-size:16px}.relax-list{display:grid;gap:8px;margin-top:12px}
+.relax-item{padding:10px 12px;border-radius:10px;background:#f5f3ee;color:#667078;font-size:12px}
+.relax-item.improved{background:#edf5df;color:#55752d}.relax-item.nochange{opacity:.65}
+.negative-counterexample{display:grid;grid-template-columns:1fr 56px 1fr;gap:14px;align-items:center;margin-top:28px}
+.negative-side{padding:22px;border:1px solid var(--line);border-radius:16px;background:#fff}.negative-side.bad{border-color:#eadada;background:#fff8f8}.negative-side.good{border-color:#d7e5bd;background:#f8fbf2}
+.negative-side h3{font-size:16px}.negative-side p{margin-bottom:0;color:var(--muted);font-size:13px}.negative-arrow{text-align:center;font-size:28px;color:#9ca3a8}
+.graph-code-table td:nth-child(n+2),.graph-code-table th:nth-child(n+2){text-align:center}
+.path-chip-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}.path-chip{padding:8px 10px;border-radius:999px;background:#eef3f7;color:#55708f;font-size:11px;font-weight:800}.path-chip.fixed{background:#edf5df;color:#55752d}
+@media(max-width:900px){.algo-compare-grid{grid-template-columns:1fr}.dijkstra-demo-grid{grid-template-columns:1fr}}
+@media(max-width:760px){
+.edge-row{grid-template-columns:70px 56px 1fr}.cut-diagram,.negative-counterexample{grid-template-columns:1fr}.cut-bridge{min-height:60px}.negative-arrow{transform:rotate(90deg)}
+.distance-row{grid-template-columns:42px 76px 1fr}
+}
