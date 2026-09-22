@@ -161,11 +161,11 @@
 <h2>Practical diagnostic</h2>
 <p class="lead">Look for competing resources, incomparable partial solutions, or choices whose value depends on future input. These are signs that several states may need to be preserved.</p>
 <div class="decision-grid">
-<article class="decision-card greedy-signal"><h3>Signal for greedy: exchangeability</h3><p>You can replace a choice in an optimal solution by the greedy choice without making the answer worse.</p></article>
-<article class="decision-card greedy-signal"><h3>Signal for greedy: one safe frontier</h3><p>There is a clear next edge, interval, item, or vertex that can be finalized permanently.</p></article>
-<article class="decision-card dp-signal"><h3>Signal for DP: resource trade-offs</h3><p>Different partial solutions use different amounts of time, capacity, cost, or another resource, and none obviously dominates.</p></article>
-<article class="decision-card dp-signal"><h3>Signal for DP: future-dependent choices</h3><p>A locally worse choice can create a better combination later, so several states must remain alive.</p></article>
-<article class="decision-card dp-signal"><h3>Fast counterexample test</h3><p>Try to make the locally best greedy choice lead to a globally worse answer. If you can do it quickly, stop searching for a greedy proof and look for the missing state.</p></article>
+<article class="decision-card greedy-signal"><h3>Greedy condition: exchangeability</h3><p>You can replace a choice in an optimal solution by the greedy choice without making the answer worse.</p></article>
+<article class="decision-card greedy-signal"><h3>Greedy condition: one safe frontier</h3><p>There is a clear next edge, interval, item, or vertex that can be finalized permanently.</p></article>
+<article class="decision-card dp-signal"><h3>DP condition: resource trade-offs</h3><p>Different partial solutions use different amounts of time, capacity, cost, or another resource, and none obviously dominates.</p></article>
+<article class="decision-card dp-signal"><h3>DP condition: future-dependent choices</h3><p>A locally worse choice can create a better combination later, so several states must remain alive.</p></article>
+<article class="decision-card dp-signal"><h3>Counterexample test</h3><p>Try to make the locally best greedy choice lead to a globally worse answer. If you can do it quickly, stop searching for a greedy proof and look for the missing state.</p></article>
 </div>
 </section>
 
