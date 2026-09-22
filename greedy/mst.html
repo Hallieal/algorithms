@@ -8,7 +8,7 @@
 <body class="lecture-page"><div aria-hidden="true" class="progress-track"><div class="progress-bar" id="reading-progress"></div></div>
 <header class="topbar"><a class="brand" href="../"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name">Allan's Handbook of Algorithms</span></a>
 <nav aria-label="Primary navigation" class="topnav"><a href="./">Greedy overview</a><div aria-label="Language" class="language-switch"><span class="current">EN</span><span class="language-separator">·</span><a href="mst-ru.html">RU</a></div></nav></header>
-<aside aria-label="Section navigation" class="sidebar"><div class="sidebar-title">Chapter 9 · Section 9</div><a href="#problem">Problem</a><a href="#cut">Cut property</a><a href="#kruskal">Kruskal</a><a href="#prim">Prim</a><a href="#boruvka">Borůvka</a><a href="#implementation">Implementations</a><a href="#complexity">Complexity</a><a href="#properties">Useful facts</a><a href="#exercises">Exercises</a></aside>
+<aside aria-label="Section navigation" class="sidebar"><div class="sidebar-title">Chapter 9 · Section 9</div><a href="#problem">Problem</a><a href="#cut">Cut property</a><a href="#first-bad">First-bad-edge proof</a><a href="#kruskal">Kruskal</a><a href="#prim">Prim</a><a href="#boruvka">Borůvka</a><a href="#implementation">Implementations</a><a href="#complexity">Complexity</a><a href="#applications">Applications and variants</a><a href="#properties">Useful facts</a><a href="#exercises">Exercises</a></aside>
 <main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Chapter 9 · Section 9</div><h1>Minimum Spanning Trees</h1><p class="chapter-topics">Connect every vertex with minimum total edge weight. Kruskal and Prim look different, but both are powered by the same cut property.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-mst.svg"/></div></section>
 <section class="lecture-section" id="problem">
 <h2>Connect everything as cheaply as possible</h2>
@@ -31,6 +31,19 @@
 </div>
 <div class="proof-goal"><h3>Cut property</h3><p>If a cut respects the edges already chosen, then a minimum-weight edge crossing that cut is safe: there exists an MST containing all previously chosen edges plus that edge.</p></div>
 <div class="subsection"><h3>Why it is true</h3><p>Take an MST <span class="math">T</span> consistent with the current choices. If the light edge <span class="math">e</span> is already in <span class="math">T</span>, we are done. Otherwise add <span class="math">e</span>; this creates a cycle. That cycle must contain another edge <span class="math">f</span> crossing the same cut. Because <span class="math">e</span> is the lightest crossing edge, <span class="math">w(e) ≤ w(f)</span>. Remove <span class="math">f</span>. The tree remains spanning and its weight does not increase.</p></div>
+</section>
+
+<!-- book-synthesis-mst -->
+<section class="lecture-section" id="first-bad">
+<h2>A powerful proof habit: assume the first greedy mistake</h2>
+<p class="lead">For incremental greedy algorithms, it is often easier to reason about the <em>first</em> choice that could possibly destroy optimality. Before that moment, the partial greedy solution still fits inside some optimum.</p>
+<div class="proof-template">
+<article><b>Before the mistake</b><p>Assume the current greedy forest <span class="math">F</span> is contained in some MST <span class="math">T</span>.</p></article>
+<article><b>Greedy picks e</b><p>The next edge <span class="math">e</span> is lightest across the relevant cut, but suppose <span class="math">e∉T</span>.</p></article>
+<article><b>Add e to T</b><p>A cycle appears. That cycle contains another edge <span class="math">f</span> crossing the same cut.</p></article>
+<article><b>Exchange</b><p>Because <span class="math">w(e)≤w(f)</span>, replacing <span class="math">f</span> by <span class="math">e</span> gives an MST that now contains the larger greedy forest.</p></article>
+</div>
+<div class="one-line"><strong>No first mistake can exist.</strong> This is the cut property written as a “first bad decision” contradiction, a proof style that generalizes far beyond MST.</div>
 </section>
 
 <section class="lecture-section" id="kruskal">
@@ -130,6 +143,17 @@ def prim(graph, start=0):
 <tr><td>Borůvka</td><td>Components + cheapest outgoing edge</td><td>O(E log V)</td><td>Parallel/distributed processing; component contraction</td></tr>
 </tbody></table></div>
 <p class="caption">Since <span class="math">E ≤ V²</span>, the logarithmic factors are closely related. In practice, representation and surrounding code often matter more than the asymptotic distinction.</p>
+</section>
+
+<section class="lecture-section" id="applications">
+<h2>What else the MST structure gives you</h2>
+<div class="variant-grid">
+<article class="variant-card"><h3>Clustering</h3><p>Build an MST of points or objects, then remove the largest edges. What remains are connected clusters separated by expensive links—a simple way to turn connectivity into a hierarchy.</p></article>
+<article class="variant-card"><h3>Maximum spanning tree</h3><p>Run the same greedy logic with weights in the opposite order. Equivalently, negate weights and compute a minimum spanning tree.</p></article>
+<article class="variant-card"><h3>Minimum bottleneck</h3><p>Every MST minimizes the largest edge used among all spanning trees. The objective “minimize the worst link” comes for free from the same structure.</p></article>
+<article class="variant-card"><h3>Dense vs sparse implementation</h3><p>Heap-based Prim is natural for sparse adjacency lists. A simple <span class="math">O(V²)</span> array implementation can be competitive on dense graphs because it avoids heap overhead.</p></article>
+</div>
+<div class="practice-note"><h3>Representation is part of the algorithm</h3><p>Kruskal naturally wants an edge list plus DSU. Prim naturally wants adjacency by vertex. The mathematical greedy choice may be the same quality while the best data structure changes with graph density.</p></div>
 </section>
 
 <section class="lecture-section" id="properties">
