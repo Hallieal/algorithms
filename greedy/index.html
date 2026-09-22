@@ -40,7 +40,7 @@
 <div class="chapter-card-icon"><img alt="" src="assets/greedy-strategy.svg"/></div>
 <div>
 <h3>Greedy Strategy</h3>
-<p>What a greedy choice is, what gets fixed, and why “looks best now” is not yet a proof.</p>
+<p>Start with three outcomes—exact, heuristic, approximation—and learn what an irreversible local choice is actually claiming.</p>
 <span class="chapter-link">Open section →</span>
 </div>
 </a>
@@ -48,7 +48,7 @@
 <div class="chapter-card-icon"><img alt="" src="assets/greedy-proofs.svg"/></div>
 <div>
 <h3>Proving Greedy Correctness</h3>
-<p>Exchange arguments, staying ahead, induction, and cuts: the small set of proof moves that appear again and again.</p>
+<p>Move from intuition to invariant to proof: use examples to discover the right statement, then exchange, stay ahead, induct, or cut.</p>
 <span class="chapter-link">Open section →</span>
 </div>
 </a>
@@ -56,7 +56,7 @@
 <div class="chapter-card-icon"><img alt="" src="assets/greedy-vs-dp.svg"/></div>
 <div>
 <h3>Greedy vs Dynamic Programming</h3>
-<p>Greedy keeps one future; dynamic programming keeps several. Learn how to tell which information the future still needs.</p>
+<p>Use Knapsack to see brute force, greedy, and DP side by side—and identify when the future needs several states.</p>
 <span class="chapter-link">Open section →</span>
 </div>
 </a>
@@ -75,7 +75,7 @@
 <div class="chapter-card-icon"><img alt="" src="assets/greedy-interval-scheduling.svg"/></div>
 <div>
 <h3>Interval Scheduling</h3>
-<p>Keep as many intervals as possible: always take the compatible interval that finishes first.</p>
+<p>Walk through a classroom schedule one choice at a time, then prove why earliest finish leaves the best possible future.</p>
 <span class="chapter-link">Open section →</span>
 </div>
 </a>
@@ -83,7 +83,7 @@
 <div class="chapter-card-icon"><img alt="" src="assets/greedy-interval-partitioning.svg"/></div>
 <div>
 <h3>Interval Partitioning</h3>
-<p>Keep every interval, but use as few rooms as possible by reusing the room that becomes free first.</p>
+<p>Use the same classroom picture with a different objective: keep every class, match the overlap depth, and reuse the earliest-free room.</p>
 <span class="chapter-link">Open section →</span>
 </div>
 </a>
@@ -91,7 +91,7 @@
 <div class="chapter-card-icon"><img alt="" src="assets/greedy-lateness.svg"/></div>
 <div>
 <h3>Minimizing Maximum Lateness</h3>
-<p>On one machine, sort by deadline to minimize the worst lateness.</p>
+<p>See why changing the scheduling objective changes the greedy key: every job stays, so deadlines—not interval length—drive the order.</p>
 <span class="chapter-link">Open section →</span>
 </div>
 </a>
@@ -110,7 +110,7 @@
 <div class="chapter-card-icon"><img alt="" src="assets/greedy-fractional-knapsack.svg"/></div>
 <div>
 <h3>Fractional Knapsack</h3>
-<p>Sort by marginal value per unit of weight, derive the exchange proof and LP shape, compare sort vs heap, and see exactly why 0/1 Knapsack needs more state.</p>
+<p>Start from the classic 0/1 greedy failure, allow fractions, and watch divisibility turn value density into an exact rule.</p>
 <span class="chapter-link">Open section →</span>
 </div>
 </a>
@@ -118,7 +118,7 @@
 <div class="chapter-card-icon"><img alt="" src="assets/greedy-huffman.svg"/></div>
 <div>
 <h3>Huffman Coding</h3>
-<p>Build optimal prefix codes by merging the two lightest nodes, connect the same rule to optimal file merging, entropy, and canonical Huffman codes.</p>
+<p>Count the bits first, decode by walking the tree, then derive Huffman’s two-smallest merge rule, entropy bound, and canonical codes.</p>
 <span class="chapter-link">Open section →</span>
 </div>
 </a>
@@ -137,7 +137,7 @@
 <div class="chapter-card-icon"><img alt="" src="assets/greedy-mst.svg"/></div>
 <div>
 <h3>Minimum Spanning Trees</h3>
-<p>Kruskal, Prim, and Borůvka through one proof idea: safe edges across cuts, with DSU, heaps, density trade-offs, and clustering applications.</p>
+<p>First separate “cheapest route” from “cheapest network”, then derive Kruskal, Prim, and Borůvka from safe cut edges.</p>
 <span class="chapter-link">Open section →</span>
 </div>
 </a>
@@ -145,7 +145,7 @@
 <div class="chapter-card-icon"><img alt="" src="assets/greedy-dijkstra.svg"/></div>
 <div>
 <h3>Dijkstra’s Algorithm</h3>
-<p>Think of Dijkstra as weighted BFS: finalize the cheapest frontier, relax neighbors, compare with Prim, and choose correctly among BFS, Dijkstra, Bellman–Ford, and A*.</p>
+<p>Treat edge weights as any nonnegative cost—not just distance—then finalize, relax, recover the parent chain, and see what negative edges break.</p>
 <span class="chapter-link">Open section →</span>
 </div>
 </a>
@@ -165,7 +165,7 @@
 <div class="chapter-card-icon"><img alt="" src="assets/greedy-matroids.svg"/></div>
 <div>
 <h3>Matroids and Beyond</h3>
-<p>See why Kruskal is genuine matroid greedy, why Interval Scheduling is not a matroid, and how greedy Set Cover stays useful without being exact.</p>
+<p>Finish with the bigger picture: matroid greedy, exact vs approximate guarantees, and Set Cover from exponential search to fast set-based approximation.</p>
 <span class="chapter-link">Open section →</span>
 </div>
 </a>
