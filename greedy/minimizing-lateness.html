@@ -3,7 +3,8 @@
 <title>Minimizing Maximum Lateness | Allan's Handbook of Algorithms</title>
 <link href="../assets/css/styles.css" rel="stylesheet"/><link href="assets/greedy.css" rel="stylesheet"/>
 <link href="../assets/images/favicon-32.png" rel="icon" sizes="32x32" type="image/png"/><link href="../assets/images/favicon.png" rel="icon" sizes="64x64" type="image/png"/><link href="../assets/images/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180"/>
-<link href="minimizing-lateness.html" hreflang="en" rel="alternate"/><link href="minimizing-lateness-ru.html" hreflang="ru" rel="alternate"/></head>
+<link href="minimizing-lateness.html" hreflang="en" rel="alternate"/><link href="minimizing-lateness-ru.html" hreflang="ru" rel="alternate"/><noscript><style>.answer-box[hidden]{display:block!important}.reveal{display:none!important}</style></noscript>
+</head>
 <body class="lecture-page"><div aria-hidden="true" class="progress-track"><div class="progress-bar" id="reading-progress"></div></div>
 <header class="topbar"><a class="brand" href="../"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name">Allan's Handbook of Algorithms</span></a>
 <nav aria-label="Primary navigation" class="topnav"><a href="./">Greedy overview</a><div aria-label="Language" class="language-switch"><span class="current">EN</span><span class="language-separator">·</span><a href="minimizing-lateness-ru.html">RU</a></div></nav></header>
@@ -23,12 +24,13 @@
 <section class="lecture-section" id="example">
 <h2>Example: four jobs, four deadlines</h2>
 <p class="lead">Consider four jobs. Processing times and deadlines are shown below.</p>
-<div class="table-wrap"><table class="lateness-table"><thead><tr><th>Job</th><th>Processing time</th><th>Deadline</th><th>Completion in EDF order</th><th>Lateness</th></tr></thead><tbody>
-<tr><td>A</td><td>3</td><td>4</td><td>3</td><td>−1</td></tr>
-<tr><td>B</td><td>2</td><td>6</td><td>5</td><td>−1</td></tr>
-<tr><td>C</td><td>4</td><td>9</td><td>9</td><td>0</td></tr>
-<tr><td>D</td><td>2</td><td>12</td><td>11</td><td>−1</td></tr>
+<div class="table-wrap"><table class="lateness-table"><thead><tr><th>Job</th><th>Processing time</th><th>Deadline</th><th>Slack d−p</th><th>Completion in EDF order</th><th>Lateness</th></tr></thead><tbody>
+<tr><td>A</td><td>3</td><td>4</td><td>1</td><td>3</td><td>−1</td></tr>
+<tr><td>B</td><td>2</td><td>6</td><td>4</td><td>5</td><td>−1</td></tr>
+<tr><td>C</td><td>4</td><td>9</td><td>5</td><td>9</td><td>0</td></tr>
+<tr><td>D</td><td>2</td><td>12</td><td>10</td><td>11</td><td>−1</td></tr>
 </tbody></table></div>
+<div class="source-note"><h3>Slack is tempting, but it is not the theorem</h3><p><span class="math">d−p</span> measures how much room a job has if started now. Sorting once by least slack is <em>not</em> generally optimal for <span class="math">1||L_max</span>; EDF is. For example, jobs (p,d)=(100,101) and (1,3) have slacks 1 and 2, so least-slack-first chooses the long job and creates maximum lateness 98, while EDF chooses the short job first and achieves maximum lateness 0.</p></div>
 <div class="lateness-sequence">
 <div class="lateness-job ontime"><span>Job A</span><b>p=3 · d=4</b><small>finish 3</small></div>
 <div class="lateness-job ontime"><span>Job B</span><b>p=2 · d=6</b><small>finish 5</small></div>
@@ -91,9 +93,10 @@
 <h2>Change the model, change the algorithm</h2>
 <p class="lead">EDF is optimal for this exact objective and assumptions. Add release times or change what is being minimized, and the proof no longer applies automatically.</p>
 <div class="decision-grid">
-<article class="decision-card greedy-signal"><h3>Release times</h3><p>If jobs become available at different times, the simple “sort once by deadline” rule no longer directly solves the general problem.</p></article>
+<article class="decision-card greedy-signal"><h3>Release times make the problem fundamentally harder</h3><p>With release dates, <span class="math">1|r_j|L_max</span> is strongly NP-hard in general. This is not a matter of finding a slightly smarter deadline sort.</p></article>
 <article class="decision-card greedy-signal"><h3>Different objective</h3><p>Minimizing total completion time, total weighted tardiness, or the number of late jobs are different scheduling problems with different optimal rules or harder algorithms.</p></article>
 </div>
+<div class="mini-example-grid"><article class="mini-example bad"><h3>Naive EDF among available jobs</h3><p>J₁=(r=0,p=10,d=50), J₂=(r=1,p=1,d=2), J₃=(r=0,p=1,d=100). At time 0, J₂ is unavailable, so a non-idling EDF rule starts J₁. J₂ then completes at 11 and has lateness 9.</p></article><article class="mini-example good"><h3>Better schedule</h3><p>Idle until time 1, run J₂ from 1 to 2, then J₁ and J₃. The maximum lateness is 0. With release times, deliberate idling can be necessary.</p></article></div>
 </section>
 
 <section class="lecture-section" id="exercises">
