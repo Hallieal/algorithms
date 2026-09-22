@@ -27,10 +27,10 @@
 <p class="lead">A complete run of Dijkstra computes shortest-path distances from one source to all reachable vertices. Predecessor pointers can be stored at the same time to reconstruct actual paths.</p>
 <div class="grokking-contrast">
 <article class="grokking-card good"><span>Distance table</span><h3>How cheap is each destination?</h3><p><code>dist[v]</code> stores the cheapest known source-to-<span class="math">v</span> cost and becomes final when <span class="math">v</span> is extracted safely.</p></article>
-<article class="grokking-card warn"><span>Parent table</span><h3>How do we actually get there?</h3><p><code>parent[v]</code> records the predecessor that produced the best cost. Backtracking parents reconstructs the route.</p></article>
+<article class="grokking-card warn"><span>Parent table</span><h3>Path reconstruction</h3><p><code>parent[v]</code> records the predecessor that produced the best cost. Backtracking parents reconstructs the route.</p></article>
 <article class="grokking-card approx"><span>Visited/finalized</span><h3>Which answers are settled?</h3><p>This state separates tentative information from distances that the greedy proof says can never improve again.</p></article>
 </div>
-<div class="one-line"><strong>Useful bonus.</strong> If you later ask for another destination from the same source, the distance information is already there; you do not need to rerun a single-target search from scratch.</div>
+<div class="one-line"><strong>Reuse of one-source results.</strong> If you later ask for another destination from the same source, the distance information is already there; you do not need to rerun a single-target search from scratch.</div>
 </section>
 
 <!-- karumanchi-round-dijkstra -->
@@ -127,7 +127,7 @@
 <tr><td>Unweighted or all edges have equal weight</td><td>FIFO queue</td><td>Vertices discovered one layer later are exactly one edge farther away.</td></tr>
 <tr><td>Nonnegative weighted graph</td><td>Min-priority queue</td><td>The next safe vertex is the one with smallest <em>accumulated</em> tentative cost, not the one discovered earliest.</td></tr>
 </tbody></table></div>
-<div class="one-line"><strong>Useful reduction.</strong> If every edge weight is 1, Dijkstra’s priority order collapses to BFS layers. Use BFS: it is simpler and runs in <span class="math">O(V+E)</span>.</div>
+<div class="one-line"><strong>Unit-weight reduction.</strong> If every edge weight is 1, Dijkstra’s priority order collapses to BFS layers. Use BFS: it is simpler and runs in <span class="math">O(V+E)</span>.</div>
 </section>
 
 <section class="lecture-section" id="state-table">
@@ -254,8 +254,8 @@
 <article><span>4</span><h3>Weight restriction</h3><p>If every edge weight is nonnegative, greedy finalization is plausible. Negative edges are the immediate warning sign against Dijkstra.</p></article>
 </div>
 <div class="recognition-grid">
-<article class="recognition-card"><span class="signal">Unweighted</span><h3>Think BFS first</h3><p>If every move has equal cost, level-order traversal already processes states in nondecreasing distance.</p></article>
-<article class="recognition-card"><span class="signal">Weighted ≥ 0</span><h3>Think min-priority queue</h3><p>The repeated operation is “give me the unfinalized state with minimum tentative cost”. This is the heap pattern.</p></article>
+<article class="recognition-card"><span class="signal">Unweighted</span><h3>Unit-weight graphs</h3><p>If every move has equal cost, level-order traversal already processes states in nondecreasing distance.</p></article>
+<article class="recognition-card"><span class="signal">Weighted ≥ 0</span><h3>Nonnegative weighted graphs</h3><p>The repeated operation is “give me the unfinalized state with minimum tentative cost”. This is the heap pattern.</p></article>
 <article class="recognition-card"><span class="signal">Negative edge</span><h3>Stop and change methods</h3><p>The local finalization step can become invalid because a cheaper route may arrive later through a negative contribution.</p></article>
 </div>
 <div class="interview-answer"><h3>What to say before implementation</h3><p>“I have a single-source shortest-path problem with additive nonnegative edge weights, so I can safely finalize the smallest tentative distance and use a min-heap to expose that vertex efficiently.”</p></div>
