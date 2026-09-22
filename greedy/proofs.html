@@ -9,7 +9,7 @@
 <body class="lecture-page"><div aria-hidden="true" class="progress-track"><div class="progress-bar" id="reading-progress"></div></div>
 <header class="topbar"><a class="brand" href="../"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name">Allan's Handbook of Algorithms</span></a>
 <nav aria-label="Primary navigation" class="topnav"><a href="./">Greedy overview</a><div aria-label="Language" class="language-switch"><span class="current">EN</span><span class="language-separator">·</span><a href="proofs-ru.html">RU</a></div></nav></header>
-<aside aria-label="Section navigation" class="sidebar"><div class="sidebar-title">Chapter 9 · Section 2</div><a href="#goal">What must be proved?</a><a href="#patterns">Proof patterns</a><a href="#counterexamples">Counterexample laboratory</a><a href="#exchange">Exchange arguments</a><a href="#worked">Worked proof</a><a href="#ahead">Staying ahead</a><a href="#induction">Induction</a><a href="#discard">Prove that discarded state is useless</a><a href="#template">Proof template</a><a href="#intuition-proof">Intuition vs proof</a><a href="#summary-not-witness">Summary vs witness</a><a href="#mistakes">Common mistakes</a><a href="#exercises">Exercises</a></aside>
+<aside aria-label="Section navigation" class="sidebar"><div class="sidebar-title">Chapter 9 · Section 2</div><a href="#goal">What must be proved?</a><a href="#patterns">Proof patterns</a><a href="#counterexamples">Counterexample laboratory</a><a href="#exchange">Exchange arguments</a><a href="#worked">Worked proof</a><a href="#ahead">Staying ahead</a><a href="#induction">Induction</a><a href="#discard">Prove that discarded state is useless</a><a href="#gas-proof">Candidate-elimination proof</a><a href="#template">Proof template</a><a href="#directional-proof">Two-pass proof</a><a href="#intuition-proof">Intuition vs proof</a><a href="#summary-not-witness">Summary vs witness</a><a href="#mistakes">Common mistakes</a><a href="#exercises">Exercises</a></aside>
 <main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Chapter 9 · Section 2</div><h1>Proving Greedy Correctness</h1><p class="chapter-topics">A greedy proof has one job: show that the next local choice can be fixed without losing optimality.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-proofs.svg"/></div></section>
 <section class="lecture-section" id="goal">
 <h2>What a greedy proof must show</h2>
@@ -107,6 +107,22 @@
 <div class="practice-note"><h3>This is a reusable proof shape</h3><p>To justify state compression, compare two histories under an arbitrary common future. If one history is never better after any continuation, it is dominated and does not need to survive.</p></div>
 </section>
 
+<!-- coding-patterns-round-proofs -->
+<section class="lecture-section" id="gas-proof">
+<h2>Candidate elimination: prove an entire block impossible at once</h2>
+<p class="lead">Gas Stations gives a useful proof pattern for interviews: when one attempted start fails, do not merely reject that start—show why a whole interval of candidates fails with it.</p>
+<div class="candidate-elimination">
+<h3>Suppose start <span class="math">a</span> first runs out of gas before leaving station <span class="math">b</span></h3>
+<p>Let <span class="math">d_i = gas_i - cost_i</span>. Because <span class="math">b</span> is the first failure, every prefix sum from <span class="math">a</span> through any station before <span class="math">b</span> is nonnegative, but the total from <span class="math">a</span> through <span class="math">b</span> is negative.</p>
+</div>
+<div class="clean-steps">
+<div class="clean-step"><span>1</span><p>For any candidate <span class="math">j</span> with <span class="math">a&lt;j≤b</span>, the gain accumulated from <span class="math">a</span> through <span class="math">j−1</span> is nonnegative.</p></div>
+<div class="clean-step"><span>2</span><p>Therefore <span class="math">Σ_{i=j}^{b} d_i = Σ_{i=a}^{b} d_i − Σ_{i=a}^{j−1} d_i &lt; 0</span>.</p></div>
+<div class="clean-step"><span>3</span><p>So starting at <span class="math">j</span> also fails by station <span class="math">b</span>. Every start in the whole block can be skipped; the next possible candidate is <span class="math">b+1</span>.</p></div>
+</div>
+<div class="one-line"><strong>Interview pattern.</strong> If a failed attempt contains a monotone or nonnegative prefix invariant, ask whether the failure certifies that many neighboring candidates are impossible too.</div>
+</section>
+
 <section class="lecture-section" id="template">
 <h2>A reusable greedy-proof template</h2>
 <p class="lead">The surface details change from intervals to graphs to codes, but most exact greedy proofs can be organized around the same four questions.</p>
@@ -120,6 +136,16 @@
 </section>
 
 <!-- grokking-pass-proofs -->
+<section class="lecture-section" id="directional-proof">
+<h2>Two-pass greedy proofs: satisfy independent directions separately</h2>
+<p class="lead">Candies illustrates another proof shape. A local constraint can point in both directions, so one scan is insufficient; instead, enforce one family of inequalities per direction.</p>
+<div class="directional-passes">
+<article><h3>Left → right</h3><p>If <span class="math">rating_i &gt; rating_{i-1}</span>, set <span class="math">candies_i = candies_{i-1}+1</span>. After this pass, every left-neighbor requirement is satisfied with the smallest amounts forced by the prefix.</p></article>
+<article><h3>Right → left</h3><p>If <span class="math">rating_i &gt; rating_{i+1}</span>, require at least <span class="math">candies_{i+1}+1</span>. Keep <span class="math">max(current, right-required)</span> so the first pass is never undone.</p></article>
+</div>
+<div class="proof-goal"><h3>Why the result is minimal</h3><p>Each pass imposes a lower bound forced by one neighbor direction. The final value at every position is the maximum of the two necessary lower bounds, so lowering any candy count would violate at least one required inequality.</p></div>
+</section>
+
 <section class="lecture-section" id="intuition-proof">
 <h2>First make the choice feel inevitable. Then prove it.</h2>
 <p class="lead">A good greedy explanation has two layers. The first is the picture in your head: why does this move seem to leave the future in the best shape? The second is the proof that no hidden counterexample survives.</p>
