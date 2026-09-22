@@ -8,7 +8,7 @@
 <body class="lecture-page"><div aria-hidden="true" class="progress-track"><div class="progress-bar" id="reading-progress"></div></div>
 <header class="topbar"><a class="brand" href="../"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name">Allan's Handbook of Algorithms</span></a>
 <nav aria-label="Primary navigation" class="topnav"><a href="./">Greedy overview</a><div aria-label="Language" class="language-switch"><span class="current">EN</span><span class="language-separator">·</span><a href="interval-partitioning-ru.html">RU</a></div></nav></header>
-<aside aria-label="Section navigation" class="sidebar"><div class="sidebar-title">Chapter 9 · Section 5</div><a href="#problem">Problem</a><a href="#depth">Depth</a><a href="#same-input">Same intervals, different question</a><a href="#algorithm">Algorithm</a><a href="#sweep">Count only: sweep line</a><a href="#proof">Correctness</a><a href="#implementation">Implementation</a><a href="#comparison">Comparison</a><a href="#exercises">Exercises</a></aside>
+<aside aria-label="Section navigation" class="sidebar"><div class="sidebar-title">Chapter 9 · Section 5</div><a href="#problem">Problem</a><a href="#depth">Depth</a><a href="#same-input">Same intervals, different question</a><a href="#algorithm">Algorithm</a><a href="#sweep">Count only: sweep line</a><a href="#proof">Correctness</a><a href="#data-structure">Why a heap matters</a><a href="#implementation">Implementation</a><a href="#comparison">Comparison</a><a href="#exercises">Exercises</a></aside>
 <main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Chapter 9 · Section 5</div><h1>Interval Partitioning</h1><p class="chapter-topics">Schedule every interval while using as few rooms as possible. Reuse the room that becomes free first.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-interval-partitioning.svg"/></div></section>
 <section class="lecture-section" id="problem">
 <h2>Use as few rooms as possible</h2>
@@ -94,6 +94,17 @@
 <div class="proof-check"><span>4</span><p>So the depth is at least <span class="math">d+1</span>. Any schedule needs at least that many rooms. Opening the new room is unavoidable.</p></div>
 </div>
 <div class="proof-goal"><h3>Optimality</h3><p>Every room opened by the greedy algorithm is forced by a simultaneous overlap. Hence the number of rooms used equals the depth, and no solution can do better.</p></div>
+</section>
+
+<!-- common-sense-round-partition -->
+<section class="lecture-section" id="data-structure">
+<h2>The greedy rule is easy; the data structure makes it fast</h2>
+<p class="lead">At every interval, we need one operation: find the room whose current class finishes earliest. How we represent rooms determines the runtime.</p>
+<div class="operation-profile">
+<article class="neutral"><h3>Scan all rooms</h3><p>Keep room finish times in a plain list. Finding the earliest-free room costs <span class="math">O(r)</span> for <span class="math">r</span> rooms, so assigning <span class="math">n</span> intervals can cost <span class="math">O(nr)</span> after sorting.</p></article>
+<article class="good"><h3>Use a min-heap</h3><p>The earliest finish is always at the root. Reading it is immediate, while replacing or inserting a room finish costs <span class="math">O(log r)</span>. The assignment phase becomes <span class="math">O(n log r)</span>.</p></article>
+</div>
+<div class="one-line"><strong>Choose the structure from the operation you repeat.</strong> The algorithm repeatedly asks for the minimum finish time, which is exactly the operation a min-heap is designed to expose.</div>
 </section>
 
 <section class="lecture-section" id="implementation">
