@@ -9,7 +9,7 @@
 <body class="lecture-page"><div aria-hidden="true" class="progress-track"><div class="progress-bar" id="reading-progress"></div></div>
 <header class="topbar"><a class="brand" href="../index-ru.html"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name ru-brand-name"><span class="ru-brand-lines"><span>Гайд по алгоритмам</span><span class="ru-brand-presented">presented by Аллан</span></span></span></a>
 <nav aria-label="Основная навигация" class="topnav"><a href="index-ru.html">Жадные алгоритмы</a><div aria-label="Язык" class="language-switch"><a href="proofs.html">EN</a><span class="language-separator">·</span><span class="current">RU</span></div></nav></header>
-<aside aria-label="Навигация по разделу" class="sidebar"><div class="sidebar-title">Глава 9 · Раздел 2</div><a href="#goal">Что нужно доказать?</a><a href="#patterns">Схемы доказательств</a><a href="#exchange">Обменный аргумент</a><a href="#worked">Полное доказательство</a><a href="#ahead">«Жадный не отстаёт»</a><a href="#induction">Индукция</a><a href="#mistakes">Типичные ошибки</a><a href="#exercises">Задачи</a></aside>
+<aside aria-label="Навигация по разделу" class="sidebar"><div class="sidebar-title">Глава 9 · Раздел 2</div><a href="#goal">Что нужно доказать?</a><a href="#patterns">Схемы доказательств</a><a href="#counterexamples">Лаборатория контрпримеров</a><a href="#exchange">Обменный аргумент</a><a href="#worked">Полное доказательство</a><a href="#ahead">«Жадный не отстаёт»</a><a href="#induction">Индукция</a><a href="#template">Шаблон доказательства</a><a href="#mistakes">Типичные ошибки</a><a href="#exercises">Задачи</a></aside>
 <main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Глава 9 · Раздел 2</div><h1>Доказательства корректности</h1><p class="chapter-topics">У доказательства greedy одна главная задача: показать, что локальный выбор можно зафиксировать, не потеряв оптимальность.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-proofs.svg"/></div></section>
 <section class="lecture-section" id="goal">
 <h2>Что должно доказать жадное доказательство</h2>
@@ -35,6 +35,19 @@
 <article class="proof-pattern-card"><div class="proof-pattern-mark">✂</div><h3>Безопасное ребро / разрез</h3><p>В задачах на графах выделяем границу и доказываем, что лучшее ребро, пересекающее её, можно безопасно добавить.</p></article>
 </div>
 <div class="bridge-note"><h3>Это не четыре независимых метода</h3><p>Обменный аргумент доказывает безопасность одной локальной замены. «Жадный не отстаёт» повторяет такое сравнение на каждом префиксе. Индукция упаковывает безопасный шаг в доказательство для уменьшенной задачи. Разрез — это обмен, использующий структуру графа. На практике эти схемы часто смешиваются.</p></div>
+</section>
+
+<!-- book-synthesis-proofs -->
+<section class="lecture-section" id="counterexamples">
+<h2>Контрпример — тоже инструмент доказательства</h2>
+<p class="lead">До попытки доказать greedy-rule полезно целенаправленно пытаться его опровергнуть. Маленький провал часто информативнее десятков удачных примеров: он показывает, какой ресурс локальный выбор расходует неправильно.</p>
+<div class="table-wrap"><table><thead><tr><th>Кандидат на правило</th><th>Как атаковать</th><th>Чему учит провал</th></tr></thead><tbody>
+<tr><td>Earliest start</td><td>Сделать первый интервал очень длинным</td><td>Раннее начало бесполезно, если выбор уничтожает почти всё будущее.</td></tr>
+<tr><td>Shortest interval</td><td>Поставить короткий интервал на границе двух совместимых</td><td>Длина ничего не говорит о том, <em>где</em> интервал расположен.</td></tr>
+<tr><td>Fewest conflicts</td><td>Сделать локально «удобный» интервал стратегически плохо расположенным</td><td>Даже глобально выглядящая статистика может не сохранять правильную остаточную задачу.</td></tr>
+<tr><td>Largest coin first</td><td>Подобрать номиналы, где крупная монета оставляет дорогой remainder</td><td>Будущим комбинациям требуется состояние; крупный номинал не обязан доминировать.</td></tr>
+</tbody></table></div>
+<div class="one-line"><strong>Неправильный greedy-rule всё равно полезен.</strong> Посмотрите, чем воспользовался контрпример: правильный инвариант часто должен защищать именно это свойство.</div>
 </section>
 
 <section class="lecture-section" id="exchange">
@@ -80,6 +93,18 @@
 <div class="proof-check"><span>3</span><p><strong>Проверьте, что структура сохранилась.</strong> То же жадное правило должно оставаться осмысленным.</p></div>
 <div class="proof-check"><span>4</span><p><strong>Примените индукцию.</strong> Если жадный алгоритм оптимально решает меньшую задачу, добавление безопасного первого выбора даёт оптимальный полный ответ.</p></div>
 </div>
+</section>
+
+<section class="lecture-section" id="template">
+<h2>Универсальный шаблон greedy-доказательства</h2>
+<p class="lead">Детали меняются от интервалов к графам и кодам, но большинство exact greedy proofs можно организовать вокруг четырёх одинаковых вопросов.</p>
+<div class="proof-template">
+<article><b>1. Назовите выбор</b><p>Что именно алгоритм фиксирует локально: интервал, ребро, долю предмета, merge или расстояние до вершины?</p></article>
+<article><b>2. Сравните с OPT</b><p>Возьмите оптимальное решение и найдите первое место расхождения с greedy — либо сравнивайте одинаковые префиксы.</p></article>
+<article><b>3. Исправьте расхождение</b><p>Сделайте exchange/replacement/reroute так, чтобы OPT принял greedy-choice без потери допустимости и качества.</p></article>
+<article><b>4. Уменьшите задачу</b><p>После фиксации выбора докажите, что остаток имеет ту же форму. Закончите индукцией или инвариантом.</p></article>
+</div>
+<div class="practice-note"><h3>Перед QED проверьте граничные предположения</h3><p>Ties, нули, совпадающие endpoints, disconnected input, пустой input, отрицательные веса и смена objective с cardinality на weight — именно здесь часто прячется неверное доказательство.</p></div>
 </section>
 
 <section class="lecture-section" id="mistakes">
