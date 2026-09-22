@@ -8,7 +8,7 @@
 <body class="lecture-page"><div aria-hidden="true" class="progress-track"><div class="progress-bar" id="reading-progress"></div></div>
 <header class="topbar"><a class="brand" href="../index-ru.html"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name ru-brand-name"><span class="ru-brand-lines"><span>Гайд по алгоритмам</span><span class="ru-brand-presented">presented by Аллан</span></span></span></a>
 <nav aria-label="Основная навигация" class="topnav"><a href="index-ru.html">Жадные алгоритмы</a><div aria-label="Язык" class="language-switch"><a href="minimizing-lateness.html">EN</a><span class="language-separator">·</span><span class="current">RU</span></div></nav></header>
-<aside aria-label="Навигация по разделу" class="sidebar"><div class="sidebar-title">Глава 9 · Раздел 6</div><a href="#problem">Постановка</a><a href="#example">Пример</a><a href="#same-looking">Похожий сюжет, новая цель</a><a href="#model">Сначала модель</a><a href="#algorithm">Алгоритм EDF</a><a href="#proof">Корректность</a><a href="#implementation">Реализация</a><a href="#boundaries">Границы модели</a><a href="#exercises">Задачи</a></aside>
+<aside aria-label="Навигация по разделу" class="sidebar"><div class="sidebar-title">Глава 9 · Раздел 6</div><a href="#problem">Постановка</a><a href="#example">Пример</a><a href="#same-looking">Похожий сюжет, новая цель</a><a href="#model">Сначала модель</a><a href="#algorithm">Алгоритм EDF</a><a href="#proof">Корректность</a><a href="#runtime">Один выбор порядка, затем scan</a><a href="#implementation">Реализация</a><a href="#boundaries">Границы модели</a><a href="#exercises">Задачи</a></aside>
 <main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Глава 9 · Раздел 6</div><h1>Минимизация максимального опоздания</h1><p class="chapter-topics">На одной машине худшее опоздание минимизируется простым правилом: сначала выполняем задачу с самым ранним дедлайном.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-lateness.svg"/></div></section>
 <section class="lecture-section" id="problem">
 <h2>Сначала — самый срочный дедлайн</h2>
@@ -94,6 +94,18 @@
 <div class="proof-panel"><h3>После перестановки: задача i</h3><p><span class="math">L'ᵢ = S+pⱼ+pᵢ-dᵢ ≤ S+pᵢ+pⱼ-dⱼ = Lⱼ</span>, потому что <span class="math">dᵢ &gt; dⱼ</span>.</p><p>Ни одна из двух задач не создаёт опоздание больше старого опоздания задачи <span class="math">j</span>.</p></div>
 </div>
 <div class="proof-goal"><h3>Завершение доказательства</h3><p>Последовательно меняем местами соседние инверсии дедлайнов. Максимальное опоздание ни разу не увеличивается, а в конце задачи отсортированы по дедлайну. Значит, EDF оптимален.</p></div>
+</section>
+
+<!-- common-sense-round-lateness -->
+<section class="lecture-section" id="runtime">
+<h2>Заменяем повторяющийся выбор одной preprocessing-операцией</h2>
+<p class="lead">Rule «выполни оставшийся job с самым ранним deadline» можно реализовать поиском с нуля после каждого завершения. Это корректно — но излишне медленно.</p>
+<div class="runtime-ladder">
+<article class="runtime-step"><span>Repeated search</span><h3>Снова и снова искать minimum deadline</h3><p>Если на каждом шаге сканировать все оставшиеся jobs, только selection может занять <span class="math">O(n²)</span>.</p></article>
+<article class="runtime-step best"><span>Sort once</span><h3>Заранее поставить deadlines в нужный порядок</h3><p>Sorting стоит <span class="math">O(n log n)</span>. После этого completion times и lateness считаются одним линейным scan.</p></article>
+<article class="runtime-step"><span>Уже отсортировано</span><h3>Scheduling phase — O(n)</h3><p>Если jobs уже идут по nondecreasing deadline, для самой оптимизации нужны только cumulative processing time и текущий maximum lateness.</p></article>
+</div>
+<div class="optimization-gap"><b>Какое state реально нужно в scan</b><p>Всего две running values: текущее время <span class="math">t</span> и максимальная lateness, увиденная до сих пор. После фиксации порядка остальная история schedule не нужна.</p></div>
 </section>
 
 <section class="lecture-section" id="implementation">
