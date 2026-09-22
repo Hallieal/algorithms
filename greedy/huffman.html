@@ -8,7 +8,7 @@
 <body class="lecture-page"><div aria-hidden="true" class="progress-track"><div class="progress-bar" id="reading-progress"></div></div>
 <header class="topbar"><a class="brand" href="../"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name">Allan's Handbook of Algorithms</span></a>
 <nav aria-label="Primary navigation" class="topnav"><a href="./">Greedy overview</a><div aria-label="Language" class="language-switch"><span class="current">EN</span><span class="language-separator">·</span><a href="huffman-ru.html">RU</a></div></nav></header>
-<aside aria-label="Section navigation" class="sidebar"><div class="sidebar-title">Chapter 9 · Section 8</div><a href="#problem">Problem</a><a href="#bits-first">Why variable-length codes?</a><a href="#prefix">Prefix codes</a><a href="#decode">Decode by walking the tree</a><a href="#algorithm">Algorithm</a><a href="#tree">Tree and codes</a><a href="#merge">Optimal merge pattern</a><a href="#entropy">Entropy</a><a href="#proof">Correctness</a><a href="#implementation">Implementation</a><a href="#limits">What it optimizes</a><a href="#exercises">Exercises</a></aside>
+<aside aria-label="Section navigation" class="sidebar"><div class="sidebar-title">Chapter 9 · Section 8</div><a href="#problem">Problem</a><a href="#bits-first">Why variable-length codes?</a><a href="#prefix">Prefix codes</a><a href="#decode">Decode by walking the tree</a><a href="#algorithm">Algorithm</a><a href="#tree">Tree and codes</a><a href="#merge">Optimal merge pattern</a><a href="#entropy">Entropy</a><a href="#proof">Correctness</a><a href="#heap-optimization">Why the heap changes everything</a><a href="#implementation">Implementation</a><a href="#limits">What it optimizes</a><a href="#exercises">Exercises</a></aside>
 <main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Chapter 9 · Section 8</div><h1>Huffman Coding</h1><p class="chapter-topics">Frequent symbols should get short codes. Huffman achieves this by repeatedly merging the two least frequent nodes.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-huffman.svg"/></div></section>
 <section class="lecture-section" id="problem">
 <h2>Frequent symbols should be cheap to encode</h2>
@@ -142,6 +142,17 @@
 <article class="huffman-proof-card"><h3>3. Contract the siblings</h3><p>Replace the two leaves of frequencies <span class="math">x</span> and <span class="math">y</span> by one pseudo-symbol of frequency <span class="math">x+y</span>. An optimal tree for this smaller instance expands back to an optimal tree for the original instance.</p></article>
 </div>
 <div class="proof-goal"><h3>Optimal substructure</h3><p>Once the two minimum-frequency symbols are committed as siblings, the remaining problem is exactly another Huffman problem on one fewer node. This justifies repeating the same greedy choice.</p></div>
+</section>
+
+<!-- common-sense-round-huffman -->
+<section class="lecture-section" id="heap-optimization">
+<h2>The obvious Huffman implementation is quadratic</h2>
+<p class="lead">The mathematical rule says “repeatedly remove the two smallest weights”. The first implementation idea is to scan the whole collection every time—but the repeated minimum search becomes the bottleneck.</p>
+<div class="operation-profile">
+<article class="neutral"><h3>Plain list</h3><p>Find the two smallest nodes by scanning all current nodes, merge them, put the result back, and repeat. With roughly <span class="math">n</span> merges and linear searches, this is <span class="math">O(n²)</span>.</p></article>
+<article class="good"><h3>Min-heap</h3><p>The two smallest weights are always exposed at the top. Each pop or push costs <span class="math">O(log n)</span>, so all <span class="math">n−1</span> merges take <span class="math">O(n log n)</span>.</p></article>
+</div>
+<div class="optimization-gap"><b>Why a heap is the natural structure</b><p>Huffman does not need the entire collection fully sorted after every merge. It only needs repeated access to the smallest one or two elements. A heap maintains exactly that amount of order—and no more.</p></div>
 </section>
 
 <section class="lecture-section" id="implementation">
