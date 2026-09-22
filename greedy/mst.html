@@ -199,7 +199,8 @@ def prim(graph, start=0):
 <h2>Complexity and when to use which</h2>
 <div class="table-wrap"><table class="graph-code-table"><thead><tr><th>Algorithm</th><th>Main structure</th><th>Typical complexity</th><th>Often convenient when</th></tr></thead><tbody>
 <tr><td>Kruskal</td><td>Sort edges + DSU</td><td>O(E log E)</td><td>You already have an edge list; graph may be sparse</td></tr>
-<tr><td>Prim with binary heap</td><td>Adjacency list + heap</td><td>O(E log V)</td><td>You naturally store neighbors by vertex</td></tr>
+<tr><td>Prim with simple scan</td><td>Arrays / adjacency matrix</td><td>O(V²)</td><td>The graph is dense; a heap may not buy much</td></tr>
+<tr><td>Prim with binary heap</td><td>Adjacency list + heap</td><td>O(E log V)</td><td>The graph is sparse and you naturally store neighbors by vertex</td></tr>
 <tr><td>Borůvka</td><td>Components + cheapest outgoing edge</td><td>O(E log V)</td><td>Parallel/distributed processing; component contraction</td></tr>
 </tbody></table></div>
 <p class="caption">Since <span class="math">E ≤ V²</span>, the logarithmic factors are closely related. In practice, representation and surrounding code often matter more than the asymptotic distinction.</p>
