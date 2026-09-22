@@ -8,7 +8,7 @@
 <body class="lecture-page"><div aria-hidden="true" class="progress-track"><div class="progress-bar" id="reading-progress"></div></div>
 <header class="topbar"><a class="brand" href="../"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name">Allan's Handbook of Algorithms</span></a>
 <nav aria-label="Primary navigation" class="topnav"><a href="./">Greedy overview</a><div aria-label="Language" class="language-switch"><span class="current">EN</span><span class="language-separator">·</span><a href="fractional-knapsack-ru.html">RU</a></div></nav></header>
-<aside aria-label="Section navigation" class="sidebar"><div class="sidebar-title">Chapter 9 · Section 7</div><a href="#problem">Problem</a><a href="#density">Value density</a><a href="#algorithm">Algorithm</a><a href="#proof">Correctness</a><a href="#boundary">0/1 boundary</a><a href="#implementation">Implementation</a><a href="#exercises">Exercises</a></aside>
+<aside aria-label="Section navigation" class="sidebar"><div class="sidebar-title">Chapter 9 · Section 7</div><a href="#problem">Problem</a><a href="#density">Value density</a><a href="#algorithm">Algorithm</a><a href="#proof">Correctness</a><a href="#lp-view">Why only one fraction?</a><a href="#boundary">0/1 boundary</a><a href="#implementation-choice">Sort or heap?</a><a href="#implementation">Implementation</a><a href="#exercises">Exercises</a></aside>
 <main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Chapter 9 · Section 7</div><h1>Fractional Knapsack</h1><p class="chapter-topics">When items are divisible, every unit of capacity should go to the item that pays the most per unit of weight.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-fractional-knapsack.svg"/></div></section>
 <section class="lecture-section" id="problem">
 <h2>Spend capacity where it pays most</h2>
@@ -74,6 +74,18 @@
 <div class="proof-goal"><h3>Greedy-choice property</h3><p>There exists an optimal solution that takes as much as possible from the currently highest-density remaining item. After fixing that amount, the same argument applies to the remaining capacity.</p></div>
 </section>
 
+<!-- book-synthesis-fk -->
+<section class="lecture-section" id="lp-view">
+<h2>Why the greedy solution has a simple shape</h2>
+<p class="lead">Fractional Knapsack is a linear optimization problem with one capacity constraint. That geometry explains a fact the greedy algorithm makes visible: after sorting by density, an optimal solution can fill a prefix completely and then take at most one partial item.</p>
+<div class="clean-steps">
+<div class="clean-step"><span>1</span><p>Every unit of capacity spent on density <span class="math">ρ₁</span> is at least as valuable as the same unit spent on lower density <span class="math">ρ₂</span>.</p></div>
+<div class="clean-step"><span>2</span><p>So if a lower-density item is used while a higher-density item is not full, transfer a small amount of weight upward. Value cannot decrease.</p></div>
+<div class="clean-step"><span>3</span><p>After all such exchanges, items form a density-sorted full prefix, possibly one fractional boundary item, then zeros. With tied densities, choose an equivalent optimum of this form.</p></div>
+</div>
+<div class="rule-formula">marginal value of one more unit of capacity = value / weight</div>
+</section>
+
 <section class="lecture-section" id="boundary">
 <h2>This proof breaks in 0/1 Knapsack</h2>
 <p class="lead">Everything above relies on being able to move an arbitrary amount of weight. With indivisible items, that exchange may not be legal at all.</p>
@@ -83,6 +95,16 @@
 </div>
 <div class="greedy-caution"><strong>Lesson.</strong> A tiny modeling change can destroy the greedy-choice property. Never transfer a greedy proof from one problem variant to another without checking its key assumption.</div>
 <div class="bridge-note"><h3>Greedy is still useful around 0/1 Knapsack</h3><p>The fractional optimum is an <strong>upper bound</strong> on the 0/1 optimum: allowing fractions can only help. That bound is useful in branch-and-bound. For exact 0/1 Knapsack, a standard DP over capacity is pseudo-polynomial. A plain density-greedy choice by itself has no constant-factor guarantee; approximation needs an additional idea, such as also comparing against the best single item.</p></div>
+</section>
+
+<section class="lecture-section" id="implementation-choice">
+<h2>Full sort or priority queue?</h2>
+<p class="lead">The mathematical rule is the same—take the remaining item of largest density—but the data structure can change depending on how many items you expect to consume.</p>
+<div class="table-wrap"><table><thead><tr><th>Implementation</th><th>Cost</th><th>When it is attractive</th></tr></thead><tbody>
+<tr><td>Sort all items by density</td><td>O(n log n)</td><td>Simplest code; you may inspect most items anyway.</td></tr>
+<tr><td>Build a max-heap of densities</td><td>O(n + c log n)</td><td>If only <span class="math">c</span> highest-density items are extracted before capacity fills and <span class="math">c ≪ n</span>.</td></tr>
+</tbody></table></div>
+<div class="source-note"><h3>Do not optimize the data structure before the proof</h3><p>The proof is about density order, not sorting specifically. Once the greedy order is justified, sorting and a priority queue are interchangeable implementation choices.</p></div>
 </section>
 
 <section class="lecture-section" id="implementation">
