@@ -8,7 +8,7 @@
 <body class="lecture-page"><div aria-hidden="true" class="progress-track"><div class="progress-bar" id="reading-progress"></div></div>
 <header class="topbar"><a class="brand" href="../"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name">Allan's Handbook of Algorithms</span></a>
 <nav aria-label="Primary navigation" class="topnav"><a href="./">Greedy overview</a><div aria-label="Language" class="language-switch"><span class="current">EN</span><span class="language-separator">·</span><a href="mst-ru.html">RU</a></div></nav></header>
-<aside aria-label="Section navigation" class="sidebar"><div class="sidebar-title">Chapter 9 · Section 9</div><a href="#problem">Problem</a><a href="#model-story">Model the story first</a><a href="#cut">Cut property</a><a href="#first-bad">First-bad-edge proof</a><a href="#kruskal">Kruskal</a><a href="#prim">Prim</a><a href="#boruvka">Borůvka</a><a href="#implementation">Implementations</a><a href="#complexity">Complexity</a><a href="#applications">Applications and variants</a><a href="#properties">Useful facts</a><a href="#exercises">Exercises</a></aside>
+<aside aria-label="Section navigation" class="sidebar"><div class="sidebar-title">Chapter 9 · Section 9</div><a href="#problem">Problem</a><a href="#model-story">Model the story first</a><a href="#network-vs-route">Network vs route</a><a href="#cut">Cut property</a><a href="#first-bad">First-bad-edge proof</a><a href="#kruskal">Kruskal</a><a href="#prim">Prim</a><a href="#boruvka">Borůvka</a><a href="#implementation">Implementations</a><a href="#complexity">Complexity</a><a href="#applications">Applications and variants</a><a href="#properties">Useful facts</a><a href="#exercises">Exercises</a></aside>
 <main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Chapter 9 · Section 9</div><h1>Minimum Spanning Trees</h1><p class="chapter-topics">Connect every vertex with minimum total edge weight. Kruskal and Prim look different, but both are powered by the same cut property.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-mst.svg"/></div></section>
 <section class="lecture-section" id="problem">
 <h2>Connect everything as cheaply as possible</h2>
@@ -31,6 +31,18 @@
 <article class="grokking-card approx"><span>Objective</span><h3>Connect everything as cheaply as possible</h3><p>We minimize the sum of chosen edge weights while keeping the graph connected.</p></article>
 </div>
 <div class="one-line"><strong>Do not confuse the story with shortest paths.</strong> MST minimizes the total cost of the whole network; Dijkstra minimizes a route from one source to each destination.</div>
+</section>
+
+<!-- grokking-round-mst -->
+<section class="lecture-section" id="network-vs-route">
+<h2>Connecting a network is not the same as finding cheap routes</h2>
+<p class="lead">Shortest-path stories naturally make us think about one traveler moving from a source. MST asks a different question: if we are building the infrastructure itself, which edges should exist at all?</p>
+<div class="objective-swap">
+<article><h3>Dijkstra: cheapest routes from one source</h3><p>With edges AB=2, AC=2, BC=1 and source A, the shortest-path tree may use AB and AC. Each destination gets a cheapest route from A; the selected edge total is 4.</p></article>
+<div class="objective-arrow">≠</div>
+<article><h3>MST: cheapest connected network</h3><p>The MST can use AB and BC for total weight 3. C is reached from A through B, because the objective is the cost of the whole network, not each source-to-vertex route separately.</p></article>
+</div>
+<div class="predict-card"><span class="predict-kicker">Mental model</span><h3>Are you paying for a trip, or paying to build the roads?</h3><p>Trip cost suggests shortest paths. Construction cost of a connected network suggests an MST. The graphs can be identical while the optimization objective is different.</p></div>
 </section>
 
 <section class="lecture-section" id="cut">
