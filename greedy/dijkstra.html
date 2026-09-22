@@ -1,57 +1,235 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1" name="viewport"/>
-<meta content="A greedy shortest-path algorithm whose safe choice depends critically on nonnegative edge weights." name="description"/>
-<meta content="Dijkstra’s Algorithm | Allan's Handbook of Algorithms" property="og:title"/>
-<meta content="A greedy shortest-path algorithm whose safe choice depends critically on nonnegative edge weights." property="og:description"/>
-<meta content="article" property="og:type"/>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="Find single-source shortest paths with nonnegative edge weights by repeatedly finalizing the vertex with minimum tentative distance." name="description"/><meta content="Dijkstra’s Algorithm | Allan's Handbook of Algorithms" property="og:title"/><meta content="Find single-source shortest paths with nonnegative edge weights by repeatedly finalizing the vertex with minimum tentative distance." property="og:description"/><meta content="article" property="og:type"/>
 <title>Dijkstra’s Algorithm | Allan's Handbook of Algorithms</title>
-<link href="../assets/css/styles.css" rel="stylesheet"/>
-<link href="assets/greedy.css" rel="stylesheet"/>
-<link href="../assets/images/favicon-32.png" rel="icon" sizes="32x32" type="image/png"/>
-<link href="../assets/images/favicon.png" rel="icon" sizes="64x64" type="image/png"/>
-<link href="../assets/images/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180"/>
-<link href="dijkstra.html" hreflang="en" rel="alternate"/><link href="dijkstra-ru.html" hreflang="ru" rel="alternate"/>
-</head>
-<body class="lecture-page">
-<header class="topbar">
-<a class="brand" href="../"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name">Allan's Handbook of Algorithms</span></a>
-<nav aria-label="Primary navigation" class="topnav">
-<a href="./">Greedy overview</a>
-<div aria-label="Language" class="language-switch"><span class="current">EN</span><span class="language-separator">·</span><a href="dijkstra-ru.html">RU</a></div>
-</nav>
-</header>
-<aside aria-label="Section navigation" class="sidebar">
-<div class="sidebar-title">Chapter 9 · Section 10</div>
-<a href="#coming-soon">Coming soon</a>
-</aside>
-<main class="lecture">
-<section class="lecture-hero greedy-placeholder-hero">
-<div>
-<div class="chapter-label">Chapter 9 · Section 10</div>
-<h1>Dijkstra’s Algorithm</h1>
-<p class="chapter-topics">A greedy shortest-path algorithm whose safe choice depends critically on nonnegative edge weights.</p>
-</div>
-<div class="greedy-hero-icon"><img alt="" src="assets/greedy-dijkstra.svg"/></div>
+<link href="../assets/css/styles.css" rel="stylesheet"/><link href="assets/greedy.css" rel="stylesheet"/>
+<link href="../assets/images/favicon-32.png" rel="icon" sizes="32x32" type="image/png"/><link href="../assets/images/favicon.png" rel="icon" sizes="64x64" type="image/png"/><link href="../assets/images/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180"/>
+<link href="dijkstra.html" hreflang="en" rel="alternate"/><link href="dijkstra-ru.html" hreflang="ru" rel="alternate"/></head>
+<body class="lecture-page"><div aria-hidden="true" class="progress-track"><div class="progress-bar" id="reading-progress"></div></div>
+<header class="topbar"><a class="brand" href="../"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name">Allan's Handbook of Algorithms</span></a>
+<nav aria-label="Primary navigation" class="topnav"><a href="./">Greedy overview</a><div aria-label="Language" class="language-switch"><span class="current">EN</span><span class="language-separator">·</span><a href="dijkstra-ru.html">RU</a></div></nav></header>
+<aside aria-label="Section navigation" class="sidebar"><div class="sidebar-title">Chapter 9 · Section 10</div><a href="#problem">Problem</a><a href="#idea">Greedy idea</a><a href="#demo">Step-by-step</a><a href="#proof">Correctness</a><a href="#negative">Negative edges</a><a href="#implementation">Implementation</a><a href="#paths">Recover paths</a><a href="#comparison">MST comparison</a><a href="#exercises">Exercises</a></aside>
+<main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Chapter 9 · Section 10</div><h1>Dijkstra’s Algorithm</h1><p class="chapter-topics">Find single-source shortest paths with nonnegative edge weights by repeatedly finalizing the vertex with minimum tentative distance.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-dijkstra.svg"/></div></section>
+<section class="lecture-section" id="problem">
+<h2>Single-source shortest paths</h2>
+<p class="lead">Given a weighted graph and a source vertex <span class="math">s</span>, we want the minimum total weight of a path from <span class="math">s</span> to every other vertex.</p>
+<div class="greedy-definition"><span>Dijkstra’s setting</span><p>All edge weights must be nonnegative. The graph may be directed or undirected. Unreachable vertices simply keep distance <span class="math">∞</span>.</p></div>
+<div class="greedy-caution"><strong>Shortest paths and MST are different objectives.</strong> Dijkstra minimizes each source-to-vertex path separately. An MST minimizes one global sum of selected edge weights.</div>
 </section>
-<section class="lecture-section" id="coming-soon">
-<div class="coming-soon-panel">
-<span class="coming-soon-kicker">In development</span>
-<h2>This page will be filled soon</h2>
-<p>We will derive Dijkstra’s algorithm from the idea of finalizing the currently closest vertex, implement it with a priority queue, prove correctness, and show exactly why negative edge weights invalidate the greedy step.</p>
+
+<section class="lecture-section" id="idea">
+<h2>The greedy idea</h2>
+<p class="lead">For every vertex <span class="math">v</span>, maintain a tentative distance <span class="math">dist[v]</span>: the length of the best source-to-<span class="math">v</span> path discovered so far. Repeatedly finalize the unsettled vertex with the smallest tentative distance.</p>
+<div class="greedy-process-grid">
+<article class="greedy-process-card"><div class="greedy-process-num">1</div><h3>Start at the source</h3><p>Set <span class="math">dist[s]=0</span> and all other distances to infinity.</p></article>
+<article class="greedy-process-card"><div class="greedy-process-num">2</div><h3>Extract the minimum</h3><p>Choose the unsettled vertex with the smallest current tentative distance.</p></article>
+<article class="greedy-process-card"><div class="greedy-process-num">3</div><h3>Finalize it</h3><p>Its tentative distance is now guaranteed to be the true shortest-path distance.</p></article>
+<article class="greedy-process-card"><div class="greedy-process-num">4</div><h3>Relax outgoing edges</h3><p>Try to improve each neighbor using a path through the newly finalized vertex.</p></article>
 </div>
-<div class="placeholder-navigation">
-<a href="mst.html">← Minimum Spanning Trees</a>
-<a href="./">Chapter overview →</a>
+<div class="greedy-definition"><span>Relaxation</span><p>For an edge <span class="math">(u,v)</span> of weight <span class="math">w</span>, replace <span class="math">dist[v]</span> by <span class="math">min(dist[v], dist[u]+w)</span>.</p></div>
+</section>
+
+<section class="lecture-section" id="demo">
+<h2>Dijkstra step by step</h2>
+<p class="lead">Use the undirected graph with edges S—A=4, S—B=1, B—A=2, B—C=5, A—C=1, A—D=7, C—D=3, and B—D=8.</p>
+<div class="visualizer dijkstra-demo">
+<div class="visualizer-head"><div><h3>Distances from S</h3><p>Green rows are finalized. Orange marks the vertex finalized on the current step.</p></div><div class="step-nav-controls"><button class="previous-step" data-action="previous" type="button">← Previous</button><button class="primary-step" data-action="next" type="button">Next →</button></div></div>
+<div class="dijkstra-demo-grid">
+<div class="distance-table" data-role="distances"></div>
+<div class="relax-panel"><h3>What changes on this step?</h3><div class="relax-list" data-role="relax"></div></div>
+</div>
+<div class="step-caption"></div>
+<div class="secondary-controls"><button data-action="reset" type="button">Reset</button></div>
+</div>
+<div class="path-chip-row"><span class="path-chip fixed">S = 0</span><span class="path-chip fixed">B = 1</span><span class="path-chip fixed">A = 3</span><span class="path-chip fixed">C = 4</span><span class="path-chip fixed">D = 7</span></div>
+</section>
+
+<section class="lecture-section" id="proof">
+<h2>Why the minimum tentative distance is safe</h2>
+<p class="lead">Suppose <span class="math">u</span> is the unsettled vertex with minimum tentative distance. We prove that <span class="math">dist[u]</span> is already the true shortest-path distance <span class="math">δ(s,u)</span>.</p>
+<div class="proof-checklist">
+<div class="proof-check"><span>1</span><p>Assume there is a shorter path from <span class="math">s</span> to <span class="math">u</span> than <span class="math">dist[u]</span>.</p></div>
+<div class="proof-check"><span>2</span><p>On that shortest path, let <span class="math">x</span> be the first unsettled vertex and <span class="math">y</span> its predecessor. Then <span class="math">y</span> is already finalized.</p></div>
+<div class="proof-check"><span>3</span><p>When <span class="math">y</span> was finalized, relaxing <span class="math">(y,x)</span> made <span class="math">dist[x]</span> no larger than the true path length from <span class="math">s</span> to <span class="math">x</span>.</p></div>
+<div class="proof-check"><span>4</span><p>Because all remaining edge weights are nonnegative, that prefix length is at most the full shortest-path length to <span class="math">u</span>. Thus <span class="math">dist[x] ≤ δ(s,u)</span>.</p></div>
+<div class="proof-check"><span>5</span><p>But <span class="math">u</span> has the minimum tentative distance, so <span class="math">dist[u] ≤ dist[x] ≤ δ(s,u)</span>. Since <span class="math">dist[u]</span> is itself the length of some discovered path, it cannot be below <span class="math">δ(s,u)</span>. Therefore equality holds.</p></div>
+</div>
+<div class="proof-goal"><h3>Where nonnegativity is used</h3><p>The proof needs the length of a prefix of a shortest path to be no larger than the full path length. A negative edge later on the path can destroy exactly this inequality.</p></div>
+</section>
+
+<section class="lecture-section" id="negative">
+<h2>Why negative edges break Dijkstra</h2>
+<p class="lead">Consider a directed graph with S→A of weight 2, S→B of weight 5, and B→A of weight −10.</p>
+<div class="negative-counterexample">
+<div class="negative-side bad"><h3>What Dijkstra sees first</h3><p>After processing S: <span class="math">dist[A]=2</span> and <span class="math">dist[B]=5</span>. It finalizes A because 2 is smaller.</p></div>
+<div class="negative-arrow">→</div>
+<div class="negative-side good"><h3>But the true shortest path</h3><p>The path S→B→A has length <span class="math">5−10 = −5</span>, which is much shorter. The “final” value 2 was not actually safe.</p></div>
+</div>
+<div class="greedy-caution"><strong>Use Bellman–Ford or another appropriate method when negative edges are present.</strong> Dijkstra is correct with zero-weight edges, but not with negative ones.</div>
+</section>
+
+<section class="lecture-section" id="implementation">
+<h2>Python with a priority queue</h2>
+<p class="lead">The heap stores pairs <code>(tentative_distance, vertex)</code>. Python’s <code>heapq</code> has no decrease-key operation, so the standard implementation pushes a new pair whenever a distance improves and skips stale entries later.</p>
+<div class="code-explainer">
+<div class="annotated-code">
+<div class="code-row"><span class="line-no">1</span><code>import heapq</code></div>
+<div class="code-row"><span class="line-no">2</span><code></code></div>
+<div class="code-row"><span class="line-no">3</span><code>def dijkstra(graph, source):</code></div>
+<div class="code-row"><span class="line-no">4</span><code>    dist = [float("inf")] * len(graph)</code></div>
+<div class="code-row"><span class="line-no">5</span><code>    dist[source] = 0</code></div>
+<div class="code-row"><span class="line-no">6</span><code>    heap = [(0, source)]</code></div>
+<div class="code-row"><span class="line-no">7</span><code></code></div>
+<div class="code-row marked"><span class="line-no">8</span><code>    while heap:</code></div>
+<div class="code-row"><span class="line-no">9</span><code>        d, u = heapq.heappop(heap)</code></div>
+<div class="code-row marked"><span class="line-no">10</span><code>        if d != dist[u]:</code></div>
+<div class="code-row"><span class="line-no">11</span><code>            continue</code></div>
+<div class="code-row marked"><span class="line-no">12</span><code>        for v, w in graph[u]:</code></div>
+<div class="code-row"><span class="line-no">13</span><code>            new_dist = d + w</code></div>
+<div class="code-row marked"><span class="line-no">14</span><code>            if new_dist < dist[v]:</code></div>
+<div class="code-row"><span class="line-no">15</span><code>                dist[v] = new_dist</code></div>
+<div class="code-row"><span class="line-no">16</span><code>                heapq.heappush(heap, (new_dist, v))</code></div>
+<div class="code-row"><span class="line-no">17</span><code></code></div>
+<div class="code-row"><span class="line-no">18</span><code>    return dist</code></div>
+</div>
+<div class="code-notes"><h3>Important lines</h3>
+<div class="code-note-item wide-note"><span>9–11</span><p>Ignore stale heap entries whose stored distance is no longer current.</p></div>
+<div class="code-note-item wide-note"><span>12–16</span><p>Relax every outgoing edge. If a shorter path is found, update the label and push the new pair into the heap.</p></div>
+</div></div>
+<div class="complexity-strip"><div><span>Adjacency list</span><b>O(V+E)</b><small>graph storage</small></div><div><span>Heap operations</span><b>O(log V)</b><small>per useful update</small></div><div><span>Total</span><b>O((V+E) log V)</b><small>binary heap</small></div><div><span>Distances</span><b>O(V)</b><small>plus heap entries</small></div></div>
+</section>
+
+<section class="lecture-section" id="paths">
+<h2>Recovering the actual paths</h2>
+<p class="lead">Distances alone are often not enough. Store a predecessor whenever relaxation improves a vertex.</p>
+<div class="code-explainer">
+<div class="annotated-code">
+<div class="code-row"><span class="line-no">1</span><code>if new_dist < dist[v]:</code></div>
+<div class="code-row"><span class="line-no">2</span><code>    dist[v] = new_dist</code></div>
+<div class="code-row marked"><span class="line-no">3</span><code>    parent[v] = u</code></div>
+<div class="code-row"><span class="line-no">4</span><code>    heapq.heappush(heap, (new_dist, v))</code></div>
+</div>
+<div class="code-notes"><h3>Then walk backward</h3><p>To reconstruct the shortest path to a target, repeatedly follow <code>parent[target]</code> back to the source, then reverse the resulting list.</p></div>
 </div>
 </section>
-</main>
-<footer class="lecture-footer">
-<div>Allan's Handbook of Algorithms</div>
-<div>© 2026 Allan Allemand</div>
-</footer>
-<script src="../assets/js/language-switch.js"></script>
-</body>
-</html>
+
+<section class="lecture-section" id="comparison">
+<h2>MST vs Dijkstra</h2>
+<div class="table-wrap"><table><thead><tr><th>Question</th><th>Minimum Spanning Tree</th><th>Dijkstra</th></tr></thead><tbody>
+<tr><td>Goal</td><td>Minimize total weight of a connecting tree</td><td>Minimize source-to-vertex path weights</td></tr>
+<tr><td>Greedy object</td><td>A safe edge</td><td>A safe vertex distance</td></tr>
+<tr><td>Negative weights?</td><td>Allowed</td><td>Not allowed</td></tr>
+<tr><td>Main proof</td><td>Cut/exchange property</td><td>Minimum tentative distance + nonnegativity</td></tr>
+<tr><td>Typical heap key</td><td>Edge weight</td><td>Current distance from source</td></tr>
+</tbody></table></div>
+</section>
+
+<section class="lecture-section" id="exercises">
+<h2>Exercises</h2>
+<div class="exercise-list">
+<article class="exercise"><div class="exercise-num">1</div><div><h3>Relaxation</h3><p>If <span class="math">dist[u]=7</span>, edge <span class="math">(u,v)</span> has weight 4, and <span class="math">dist[v]=15</span>, what happens?</p><button class="reveal" data-reveal="dj-en-1" type="button">Show answer</button><div class="answer-box" hidden id="dj-en-1">The path through u has length 7+4=11, so dist[v] improves from 15 to 11.</div></div></article>
+<article class="exercise"><div class="exercise-num">2</div><div><h3>Zero edge</h3><p>Does an edge of weight 0 invalidate Dijkstra’s correctness?</p><button class="reveal" data-reveal="dj-en-2" type="button">Show answer</button><div class="answer-box" hidden id="dj-en-2">No. The proof requires nonnegative weights, and zero is nonnegative.</div></div></article>
+<article class="exercise"><div class="exercise-num">3</div><div><h3>Unreachable vertex</h3><p>What distance does Dijkstra return for a vertex that cannot be reached from the source?</p><button class="reveal" data-reveal="dj-en-3" type="button">Show answer</button><div class="answer-box" hidden id="dj-en-3">Its distance remains infinity.</div></div></article>
+<article class="exercise"><div class="exercise-num">4</div><div><h3>Why skip stale entries?</h3><p>Why can the heap contain several entries for the same vertex in the Python implementation?</p><button class="reveal" data-reveal="dj-en-4" type="button">Show answer</button><div class="answer-box" hidden id="dj-en-4">Each successful relaxation pushes a new pair because heapq has no decrease-key. Older pairs remain in the heap and must be ignored when popped.</div></div></article>
+</div>
+<div class="next-part"><h3>Greedy Algorithms complete</h3><p>You have now seen greedy design, proofs, scheduling, value-density choices, Huffman merging, MSTs, and shortest paths.</p><a class="next-part-link" href="./">Back to Greedy Algorithms overview →</a></div>
+</section></main>
+<footer class="lecture-footer"><div>Allan's Handbook of Algorithms</div><div>© 2026 Allan Allemand</div></footer>
+<script src="../assets/js/lecture-core.js"></script><script>
+(() => {
+  "use strict";
+  const vertices=["S","A","B","C","D"];
+  const states=[
+    {fixed:[],current:null,dist:{S:0,A:Infinity,B:Infinity,C:Infinity,D:Infinity},relax:["Initialize dist[S] = 0; all others = ∞."]},
+    {fixed:["S"],current:"S",dist:{S:0,A:4,B:1,C:Infinity,D:Infinity},relax:["Fix S at distance 0.","Relax S—A: ∞ → 4.","Relax S—B: ∞ → 1."]},
+    {fixed:["S","B"],current:"B",dist:{S:0,A:3,B:1,C:6,D:9},relax:["Fix B at distance 1.","Relax B—A: 4 → 3.","Relax B—C: ∞ → 6.","Relax B—D: ∞ → 9."]},
+    {fixed:["S","B","A"],current:"A",dist:{S:0,A:3,B:1,C:4,D:9},relax:["Fix A at distance 3.","Relax A—C: 6 → 4.","A—D gives 10, so D stays 9."]},
+    {fixed:["S","B","A","C"],current:"C",dist:{S:0,A:3,B:1,C:4,D:7},relax:["Fix C at distance 4.","Relax C—D: 9 → 7."]},
+    {fixed:["S","B","A","C","D"],current:"D",dist:{S:0,A:3,B:1,C:4,D:7},relax:["Fix D at distance 7.","All reachable vertices are finalized."]}
+  ];
+  const translations={
+    "Initialize dist[S] = 0; all others = ∞.":"Инициализация: dist[S] = 0, остальные расстояния = ∞.",
+    "Fix S at distance 0.":"Фиксируем S с расстоянием 0.",
+    "Relax S—A: ∞ → 4.":"Релаксация S—A: ∞ → 4.",
+    "Relax S—B: ∞ → 1.":"Релаксация S—B: ∞ → 1.",
+    "Fix B at distance 1.":"Фиксируем B с расстоянием 1.",
+    "Relax B—A: 4 → 3.":"Релаксация B—A: 4 → 3.",
+    "Relax B—C: ∞ → 6.":"Релаксация B—C: ∞ → 6.",
+    "Relax B—D: ∞ → 9.":"Релаксация B—D: ∞ → 9.",
+    "Fix A at distance 3.":"Фиксируем A с расстоянием 3.",
+    "Relax A—C: 6 → 4.":"Релаксация A—C: 6 → 4.",
+    "A—D gives 10, so D stays 9.":"Через A до D получается 10, поэтому D остаётся 9.",
+    "Fix C at distance 4.":"Фиксируем C с расстоянием 4.",
+    "Relax C—D: 9 → 7.":"Релаксация C—D: 9 → 7.",
+    "Fix D at distance 7.":"Фиксируем D с расстоянием 7.",
+    "All reachable vertices are finalized.":"Все достижимые вершины зафиксированы."
+  };
+  const root=document.querySelector(".dijkstra-demo");
+  if(!root) return;
+  let index=0;
+
+  function render(){
+    const s=states[index];
+    const ru=document.documentElement.lang.toLowerCase().startsWith("ru");
+    const table=root.querySelector("[data-role='distances']");
+    table.replaceChildren();
+
+    vertices.forEach(v=>{
+      const row=document.createElement("div");
+      let cls="distance-row";
+      if(s.fixed.includes(v)) cls+=" fixed";
+      if(s.current===v) cls+=" current";
+      row.className=cls;
+
+      const vertex=document.createElement("div");
+      vertex.className="distance-vertex";
+      vertex.textContent=v;
+
+      const value=document.createElement("div");
+      value.className="distance-value";
+      value.textContent=Number.isFinite(s.dist[v]) ? s.dist[v] : "∞";
+
+      const status=document.createElement("div");
+      status.className="distance-status";
+      if(s.fixed.includes(v)) status.textContent=ru?"окончательно":"final";
+      else if(Number.isFinite(s.dist[v])) status.textContent=ru?"временная метка":"tentative";
+      else status.textContent=ru?"не достигнута":"unreached";
+
+      row.append(vertex,value,status);
+      table.appendChild(row);
+    });
+
+    const relax=root.querySelector("[data-role='relax']");
+    relax.replaceChildren();
+    s.relax.forEach((line,i)=>{
+      const el=document.createElement("div");
+      el.className="relax-item"+(i>0?" improved":"");
+      el.textContent=ru ? (translations[line] || line) : line;
+      relax.appendChild(el);
+    });
+
+    const caption=root.querySelector(".step-caption");
+    if(index===0){
+      caption.textContent=ru
+        ? "Источник S имеет расстояние 0. Пока ни одна вершина не зафиксирована."
+        : "Source S has distance 0. No vertex is finalized yet.";
+    }else{
+      caption.textContent=ru
+        ? "Следующая фиксируемая вершина — "+s.current+": у неё минимальная временная метка среди необработанных."
+        : "Finalize "+s.current+": it has the smallest tentative distance among unsettled vertices.";
+    }
+
+    root.querySelector("[data-action='previous']").disabled=index===0;
+    root.querySelector("[data-action='next']").disabled=index===states.length-1;
+  }
+
+  root.addEventListener("click",e=>{
+    const b=e.target.closest("[data-action]");
+    if(!b) return;
+    if(b.dataset.action==="next") index=Math.min(index+1,states.length-1);
+    if(b.dataset.action==="previous") index=Math.max(index-1,0);
+    if(b.dataset.action==="reset") index=0;
+    render();
+  });
+  render();
+})();
+</script><script src="../assets/js/language-switch.js"></script></body></html>
