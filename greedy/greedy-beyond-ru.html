@@ -24,7 +24,7 @@
 </header>
 <aside aria-label="Навигация по разделу" class="sidebar">
 <div class="sidebar-title">Глава 9 · Раздел 11</div>
-<a href="#map">Общая картина</a><a href="#matroid">Матроиды</a><a href="#mst">Краскал</a><a href="#limits">Что не является матроидом</a><a href="#exact-vs-fast">Exact search и fast greedy</a><a href="#guarantees">Heuristic vs approximation</a><a href="#approx">Приближения</a><a href="#setcover">Пример Set Cover</a><a href="#set-code">Set Cover в коде</a><a href="#decision">Как выбирать подход</a><a href="#reading">Что читать дальше</a><a href="#exercises">Задачи</a>
+<a href="#map">Общая картина</a><a href="#matroid">Матроиды</a><a href="#mst">Краскал</a><a href="#limits">Что не является матроидом</a><a href="#exact-vs-fast">Exact search и fast greedy</a><a href="#guarantees">Heuristic vs approximation</a><a href="#approx">Приближения</a><a href="#setcover">Пример Set Cover</a><a href="#set-code">Set Cover в коде</a><a href="#optimization">Greedy как state compression</a><a href="#decision">Как выбирать подход</a><a href="#reading">Что читать дальше</a><a href="#exercises">Задачи</a>
 </aside>
 <main class="lecture">
 <section class="lecture-hero greedy-lecture-hero">
@@ -169,6 +169,19 @@ while uncovered:
 <div class="one-line"><strong>Code повторяет идею.</strong> Intersection находит новое покрытие, set difference удаляет уже покрытое. Подходящая data structure часто делает алгоритм прозрачнее.</div>
 </section>
 
+<!-- common-sense-round-beyond -->
+<section class="lecture-section" id="optimization">
+<h2>Greedy шире, чем “sort and select”</h2>
+<p class="lead">Полезный optimization-view: greedy может сжимать огромное пространство partial possibilities в крошечное running state — если выброшенные варианты доказанно dominated.</p>
+<div class="grokking-contrast">
+<article class="grokking-card good"><span>Одна value</span><h3>Array maximum</h3><p>Все прошлые значения меньше <code>best_so_far</code> уже не имеют значения для финального maximum. Весь prefix сжимается в одно число.</p></article>
+<article class="grokking-card warn"><span>Один running prefix</span><h3>Maximum subarray</h3><p>Отрицательная accumulated sum никогда не помогает будущему continuation. Reset выбрасывает целое семейство dominated histories.</p></article>
+<article class="grokking-card approx"><span>Два thresholds</span><h3>Increasing triplet</h3><p>Храним самый низкий first value и минимальный feasible middle. Более низкие thresholds доминируют высокие: будущему третьему элементу легче их превысить.</p></article>
+</div>
+<div class="optimization-gap"><b>Best-imaginable Big O — цель дизайна, а не proof корректности</b><p>Мысль, что <span class="math">O(n)</span> выглядит достижимым, может направить поиск one-pass state compression. Но она не оправдывает discard rule. Нужен invariant, dominance argument, exchange или другое доказательство.</p></div>
+<div class="one-line"><strong>Компактное state — награда за доказательство.</strong> Сначала покажите, какие альтернативы больше никогда не понадобятся; только потом удаляйте их из алгоритма.</div>
+</section>
+
 <section class="lecture-section" id="decision">
 <h2>Чек-лист для новой задачи</h2>
 <div class="proof-checklist">
@@ -182,6 +195,7 @@ while uncovered:
 <section class="lecture-section" id="reading">
 <h2>Что читать дальше</h2>
 <div class="reference-list">
+<div class="reference-item"><b>Jay Wengrow — A Common-Sense Guide to Data Structures and Algorithms in Python</b><span>Chapter 20 строит optimization workflow от current Big O к best-imaginable Big O и показывает greedy state compression на array maximum, maximum-subarray sum и increasing triplet; Chapter 18 подробно разбирает Dijkstra и сравнивает simple array frontier с priority queue.</span></div>
 <div class="reference-item"><b>Aditya Y. Bhargava — Grokking Algorithms, 2nd ed.</b><span>Chapter 10 проводит от classroom scheduling к провалу greedy для 0/1 Knapsack и затем к greedy Set Cover как approximation; Chapters 7 и 9 дают визуальные объяснения Huffman и Dijkstra.</span></div>
 <a class="reference-item" href="https://www.pearson.com/en-us/subject-catalog/p/algorithm-design/P200000003259" target="_blank" rel="noopener"><b>Jon Kleinberg & Eva Tardos — Algorithm Design</b><span>Более proof-oriented изложение scheduling, MST и greedy design.</span></a>
 <a class="reference-item" href="https://mitpress.mit.edu/9780262046305/introduction-to-algorithms/" target="_blank" rel="noopener"><b>Cormen, Leiserson, Rivest & Stein — Introduction to Algorithms</b><span>Формальный reference для greedy, Huffman, MST и shortest paths.</span></a>
