@@ -3,7 +3,8 @@
 <title>Выбор непересекающихся интервалов | Гайд по алгоритмам — presented by Аллан</title>
 <link href="../assets/css/styles.css" rel="stylesheet"/><link href="assets/greedy.css" rel="stylesheet"/>
 <link href="../assets/images/favicon-32.png" rel="icon" sizes="32x32" type="image/png"/><link href="../assets/images/favicon.png" rel="icon" sizes="64x64" type="image/png"/><link href="../assets/images/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180"/>
-<link href="interval-scheduling.html" hreflang="en" rel="alternate"/><link href="interval-scheduling-ru.html" hreflang="ru" rel="alternate"/></head>
+<link href="interval-scheduling.html" hreflang="en" rel="alternate"/><link href="interval-scheduling-ru.html" hreflang="ru" rel="alternate"/><noscript><style>.answer-box[hidden]{display:block!important}.reveal{display:none!important}</style></noscript>
+</head>
 <body class="lecture-page"><div aria-hidden="true" class="progress-track"><div class="progress-bar" id="reading-progress"></div></div>
 <header class="topbar"><a class="brand" href="../index-ru.html"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name ru-brand-name"><span class="ru-brand-lines"><span>Гайд по алгоритмам</span><span class="ru-brand-presented">presented by Аллан</span></span></span></a>
 <nav aria-label="Основная навигация" class="topnav"><a href="index-ru.html">Жадные алгоритмы</a><div aria-label="Язык" class="language-switch"><a href="interval-scheduling.html">EN</a><span class="language-separator">·</span><span class="current">RU</span></div></nav></header>
@@ -36,7 +37,7 @@
 <article class="greedy-rule-option bad"><h3>Меньше всего конфликтов</h3><p>Правило выглядит глобальнее, но универсально корректного greedy из него не получается.</p></article>
 <article class="greedy-rule-option good"><h3>Самое раннее окончание</h3><p>Оставляет максимально возможное количество времени для будущих интервалов.</p></article>
 </div>
-<div class="greedy-caution"><strong>Контрпример для самого раннего начала.</strong> Один интервал может начаться первым и занять почти весь день, тогда как несколько более поздних коротких интервалов совместимы друг с другом.</div>
+<div class="greedy-caution"><strong>Контрпример для самого раннего начала.</strong> Возьмём [0,10), [1,2), [2,3) и [3,4). Правило раннего начала выберет [0,10) и получит один интервал, хотя три остальных совместимы друг с другом. Добавляя короткие интервалы, разрыв можно сделать сколь угодно большим.</div>
 </section>
 
 <section class="lecture-section" id="algorithm">
@@ -62,7 +63,8 @@
 <div class="timeline-proof-arrow">→</div>
 <div class="timeline-proof-card"><h3>Заменяем o на g</h3><p>Так как <span class="math">f(g) ≤ f(o)</span>, любой последующий интервал, который помещался после <span class="math">o</span>, поместится и после <span class="math">g</span>.</p></div>
 </div>
-<div class="proof-goal"><h3>Вывод</h3><p>Существует оптимальное решение, начинающееся ровно с жадного выбора <span class="math">g</span>. После него остаётся та же задача для интервалов, начинающихся после <span class="math">f(g)</span>, поэтому аргумент повторяется.</p></div>
+<div class="proof-goal"><h3>Вывод</h3><p>Существует оптимальное решение, начинающееся ровно с жадного выбора <span class="math">g</span>. После него остаётся та же задача для интервалов, начинающихся после <span class="math">f(g)</span>.</p></div>
+<div class="compact-proof"><h3>Индукция, скрытая в слове «повторяем»</h3><p>Пусть <span class="math">P(k)</span> означает: существует оптимальное решение, совпадающее с greedy на первых <span class="math">k</span> выбранных интервалах. Обмен выше доказывает <span class="math">P(1)</span>. Если верно <span class="math">P(k)</span>, удаляем первые <span class="math">k</span> интервалов и всё, что с ними конфликтует. Остаётся новая задача Interval Scheduling, к которой применим тот же обмен, значит верно <span class="math">P(k+1)</span>. Поэтому оптимальное решение можно согласовать с greedy на каждом шаге.</p></div>
 </section>
 
 <section class="lecture-section" id="implementation">
@@ -89,7 +91,7 @@
 <section class="lecture-section" id="variants">
 <h2>Маленькое изменение — другой алгоритм</h2>
 <div class="decision-grid">
-<article class="decision-card greedy-signal"><h3>Взвешенные интервалы</h3><p>Если у интервалов разные прибыли и нужно максимизировать суммарную прибыль, раннего окончания уже недостаточно. Стандартное решение — динамическое программирование.</p></article>
+<article class="decision-card greedy-signal"><h3>Взвешенные интервалы</h3><p>Если у интервалов разные прибыли, раннего окончания уже недостаточно. Стандартное решение — DP после сортировки по окончанию. Отдельной страницы Weighted Interval Scheduling в handbook пока нет; рекуррентность уже показана в <a href="greedy-vs-dp-ru.html#weighted">разделе Greedy vs DP</a>.</p></article>
 <article class="decision-card greedy-signal"><h3>Нужно оставить все интервалы</h3><p>Если ни один интервал нельзя выбрасывать, а нужно минимизировать число аудиторий, задача меняется полностью. Это следующая страница — Interval Partitioning.</p></article>
 </div>
 </section>
