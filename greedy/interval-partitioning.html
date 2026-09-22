@@ -1,57 +1,193 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1" name="viewport"/>
-<meta content="Schedule every interval while using as few rooms, machines, or other resources as possible." name="description"/>
-<meta content="Interval Partitioning | Allan's Handbook of Algorithms" property="og:title"/>
-<meta content="Schedule every interval while using as few rooms, machines, or other resources as possible." property="og:description"/>
-<meta content="article" property="og:type"/>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="Assign every interval to a resource while using the minimum possible number of rooms, with a min-heap for the earliest finishing room." name="description"/><meta content="Interval Partitioning | Allan's Handbook of Algorithms" property="og:title"/><meta content="Assign every interval to a resource while using the minimum possible number of rooms, with a min-heap for the earliest finishing room." property="og:description"/><meta content="article" property="og:type"/>
 <title>Interval Partitioning | Allan's Handbook of Algorithms</title>
-<link href="../assets/css/styles.css" rel="stylesheet"/>
-<link href="assets/greedy.css" rel="stylesheet"/>
-<link href="../assets/images/favicon-32.png" rel="icon" sizes="32x32" type="image/png"/>
-<link href="../assets/images/favicon.png" rel="icon" sizes="64x64" type="image/png"/>
-<link href="../assets/images/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180"/>
-<link href="interval-partitioning.html" hreflang="en" rel="alternate"/><link href="interval-partitioning-ru.html" hreflang="ru" rel="alternate"/>
-</head>
-<body class="lecture-page">
-<header class="topbar">
-<a class="brand" href="../"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name">Allan's Handbook of Algorithms</span></a>
-<nav aria-label="Primary navigation" class="topnav">
-<a href="./">Greedy overview</a>
-<div aria-label="Language" class="language-switch"><span class="current">EN</span><span class="language-separator">·</span><a href="interval-partitioning-ru.html">RU</a></div>
-</nav>
-</header>
-<aside aria-label="Section navigation" class="sidebar">
-<div class="sidebar-title">Chapter 9 · Section 5</div>
-<a href="#coming-soon">Coming soon</a>
-</aside>
-<main class="lecture">
-<section class="lecture-hero greedy-placeholder-hero">
-<div>
-<div class="chapter-label">Chapter 9 · Section 5</div>
-<h1>Interval Partitioning</h1>
-<p class="chapter-topics">Schedule every interval while using as few rooms, machines, or other resources as possible.</p>
-</div>
-<div class="greedy-hero-icon"><img alt="" src="assets/greedy-interval-partitioning.svg"/></div>
+<link href="../assets/css/styles.css" rel="stylesheet"/><link href="assets/greedy.css" rel="stylesheet"/>
+<link href="../assets/images/favicon-32.png" rel="icon" sizes="32x32" type="image/png"/><link href="../assets/images/favicon.png" rel="icon" sizes="64x64" type="image/png"/><link href="../assets/images/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180"/>
+<link href="interval-partitioning.html" hreflang="en" rel="alternate"/><link href="interval-partitioning-ru.html" hreflang="ru" rel="alternate"/></head>
+<body class="lecture-page"><div aria-hidden="true" class="progress-track"><div class="progress-bar" id="reading-progress"></div></div>
+<header class="topbar"><a class="brand" href="../"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name">Allan's Handbook of Algorithms</span></a>
+<nav aria-label="Primary navigation" class="topnav"><a href="./">Greedy overview</a><div aria-label="Language" class="language-switch"><span class="current">EN</span><span class="language-separator">·</span><a href="interval-partitioning-ru.html">RU</a></div></nav></header>
+<aside aria-label="Section navigation" class="sidebar"><div class="sidebar-title">Chapter 9 · Section 5</div><a href="#problem">Problem</a><a href="#depth">Depth</a><a href="#algorithm">Algorithm</a><a href="#proof">Correctness</a><a href="#implementation">Implementation</a><a href="#comparison">Comparison</a><a href="#exercises">Exercises</a></aside>
+<main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Chapter 9 · Section 5</div><h1>Interval Partitioning</h1><p class="chapter-topics">Assign every interval to a resource while using the minimum possible number of rooms, with a min-heap for the earliest finishing room.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-interval-partitioning.svg"/></div></section>
+<section class="lecture-section" id="problem">
+<h2>The problem</h2>
+<p class="lead">This time we are not allowed to discard intervals. Every lecture, meeting, or machine job must be assigned to a resource, and overlapping intervals cannot use the same resource.</p>
+<div class="greedy-definition"><span>Interval Partitioning</span><p>Assign every interval to a room so that overlapping intervals receive different rooms, while minimizing the total number of rooms.</p></div>
+<div class="greedy-caution"><strong>Do not confuse this with Interval Scheduling.</strong> There we maximized how many intervals to keep. Here every interval must remain, and we minimize the number of parallel resources.</div>
 </section>
-<section class="lecture-section" id="coming-soon">
-<div class="coming-soon-panel">
-<span class="coming-soon-kicker">In development</span>
-<h2>This page will be filled soon</h2>
-<p>We will process intervals by start time and reuse the resource that becomes free earliest. A priority queue will make the greedy rule efficient, and the maximum overlap will give a matching lower bound on the number of resources.</p>
-</div>
-<div class="placeholder-navigation">
-<a href="interval-scheduling.html">← Interval Scheduling</a>
-<a href="minimizing-lateness.html">Minimizing Maximum Lateness →</a>
+
+<section class="lecture-section" id="depth">
+<h2>The unavoidable lower bound: depth</h2>
+<p class="lead">At any moment when <span class="math">d</span> intervals overlap, those <span class="math">d</span> intervals must occupy different rooms. Therefore no algorithm can use fewer than the maximum number of simultaneously active intervals.</p>
+<div class="depth-illustration">
+<div class="depth-card"><h3>Depth</h3><div class="depth-number">3</div><p>In our example, A, B, and C overlap around time 2. Therefore at least 3 rooms are necessary.</p></div>
+<div class="depth-card"><h3>Goal of the greedy proof</h3><p>If our algorithm never uses more rooms than the depth, then it is optimal: it matches a lower bound that every schedule must obey.</p></div>
 </div>
 </section>
-</main>
-<footer class="lecture-footer">
-<div>Allan's Handbook of Algorithms</div>
-<div>© 2026 Allan Allemand</div>
-</footer>
-<script src="../assets/js/language-switch.js"></script>
-</body>
-</html>
+
+<section class="lecture-section" id="algorithm">
+<h2>The greedy rule</h2>
+<p class="lead">Process intervals by increasing start time. For each new interval, reuse a room that is already free. The best room to reuse is the one whose current interval finishes earliest.</p>
+<div class="step-flow">
+<article class="step-item"><div class="step-number">1</div><div><h3>Sort by start time</h3><p>When we process an interval, all earlier-starting intervals have already been assigned.</p></div></article>
+<article class="step-item"><div class="step-number">2</div><div><h3>Look at the earliest finishing room</h3><p>A min-heap lets us find the room that becomes free first.</p></div></article>
+<article class="step-item"><div class="step-number">3</div><div><h3>Reuse if possible</h3><p>If that room finishes by the new interval’s start, assign the interval there.</p></div></article>
+<article class="step-item"><div class="step-number">4</div><div><h3>Otherwise open a new room</h3><p>If even the earliest-finishing room is still busy, every existing room is busy.</p></div></article>
+</div>
+<div class="visualizer room-demo">
+<div class="visualizer-head"><div><h3>Assign the intervals</h3><p>Orange is the interval just placed. Green intervals are already fixed in their rooms.</p></div><div class="step-nav-controls"><button class="previous-step" data-action="previous" type="button">← Previous</button><button class="primary-step" data-action="next" type="button">Next →</button></div></div>
+<div class="room-board" data-role="rooms"></div>
+<div class="step-caption"></div>
+<div class="greedy-job-result">Rooms currently used: <strong data-role="count">0</strong></div>
+<div class="secondary-controls"><button data-action="reset" type="button">Reset</button></div>
+</div>
+</section>
+
+<section class="lecture-section" id="proof">
+<h2>Why the algorithm is optimal</h2>
+<p class="lead">The key moment is when the algorithm opens a new room for an interval <span class="math">j</span> starting at time <span class="math">sⱼ</span>.</p>
+<div class="proof-checklist">
+<div class="proof-check"><span>1</span><p>The earliest-finishing existing room is still occupied after <span class="math">sⱼ</span>.</p></div>
+<div class="proof-check"><span>2</span><p>Therefore every existing room contains an interval that overlaps <span class="math">j</span> at time <span class="math">sⱼ</span>.</p></div>
+<div class="proof-check"><span>3</span><p>If the algorithm already had <span class="math">d</span> rooms, then <span class="math">d+1</span> intervals overlap at that moment: one in every room plus <span class="math">j</span>.</p></div>
+<div class="proof-check"><span>4</span><p>So the depth is at least <span class="math">d+1</span>. Any schedule needs at least that many rooms. Opening the new room is unavoidable.</p></div>
+</div>
+<div class="proof-goal"><h3>Optimality</h3><p>Every room opened by the greedy algorithm is forced by a simultaneous overlap. Hence the number of rooms used equals the depth, and no solution can do better.</p></div>
+</section>
+
+<section class="lecture-section" id="implementation">
+<h2>Python with a priority queue</h2>
+<p class="lead">The heap stores pairs <code>(finish_time, room_id)</code>. Its minimum is always the room that becomes available first.</p>
+<div class="code-explainer">
+<div class="annotated-code">
+<div class="code-row"><span class="line-no">1</span><code>import heapq</code></div>
+<div class="code-row"><span class="line-no">2</span><code></code></div>
+<div class="code-row"><span class="line-no">3</span><code>def partition_intervals(intervals):</code></div>
+<div class="code-row marked"><span class="line-no">4</span><code>    intervals = sorted(intervals)</code></div>
+<div class="code-row"><span class="line-no">5</span><code>    heap = []</code></div>
+<div class="code-row"><span class="line-no">6</span><code>    room_count = 0</code></div>
+<div class="code-row marked"><span class="line-no">7</span><code>    for start, finish in intervals:</code></div>
+<div class="code-row marked"><span class="line-no">8</span><code>        if heap and heap[0][0] <= start:</code></div>
+<div class="code-row"><span class="line-no">9</span><code>            _, room = heapq.heappop(heap)</code></div>
+<div class="code-row marked"><span class="line-no">10</span><code>        else:</code></div>
+<div class="code-row"><span class="line-no">11</span><code>            room = room_count</code></div>
+<div class="code-row"><span class="line-no">12</span><code>            room_count += 1</code></div>
+<div class="code-row marked"><span class="line-no">13</span><code>        heapq.heappush(heap, (finish, room))</code></div>
+<div class="code-row"><span class="line-no">14</span><code>    return room_count</code></div>
+</div>
+<div class="code-notes"><h3>Why the heap works</h3>
+<div class="code-note-item"><span>4</span><p>Intervals are processed by start time.</p></div>
+<div class="code-note-item wide-note"><span>8–9</span><p>If the earliest finishing room is free, reuse it. Any other free room would also work for correctness, but the heap gives this test efficiently.</p></div>
+<div class="code-note-item wide-note"><span>10–13</span><p>If the minimum finish time is still too late, all rooms are occupied, so a new room is necessary.</p></div>
+</div></div>
+<div class="complexity-strip"><div><span>Sorting</span><b>O(n log n)</b><small>by start</small></div><div><span>Heap operation</span><b>O(log n)</b><small>per interval</small></div><div><span>Total</span><b>O(n log n)</b><small>all intervals</small></div><div><span>Heap size</span><b>O(d)</b><small>d = rooms</small></div></div>
+</section>
+
+<section class="lecture-section" id="comparison">
+<h2>Scheduling vs partitioning</h2>
+<div class="table-wrap"><table><thead><tr><th>Question</th><th>Interval Scheduling</th><th>Interval Partitioning</th></tr></thead><tbody>
+<tr><td>May we discard intervals?</td><td>Yes</td><td>No</td></tr>
+<tr><td>Objective</td><td>Maximize number selected</td><td>Minimize number of rooms</td></tr>
+<tr><td>Sort by</td><td>Finish time</td><td>Start time</td></tr>
+<tr><td>Main data structure</td><td>None beyond sorting</td><td>Min-heap of room finish times</td></tr>
+<tr><td>Proof idea</td><td>Exchange argument</td><td>Depth lower bound</td></tr>
+</tbody></table></div>
+</section>
+
+<section class="lecture-section" id="exercises">
+<h2>Exercises</h2>
+<div class="exercise-list">
+<article class="exercise"><div class="exercise-num">1</div><div><h3>Depth</h3><p>If at 10:30 five meetings overlap, what lower bound does this give on the number of rooms?</p><button class="reveal" data-reveal="ip-en-1" type="button">Show answer</button><div class="answer-box" hidden id="ip-en-1">At least 5 rooms are necessary, because no two overlapping meetings can share a room.</div></div></article>
+<article class="exercise"><div class="exercise-num">2</div><div><h3>Why earliest finishing room?</h3><p>If the earliest-finishing room is not free, why do we know that no existing room is free?</p><button class="reveal" data-reveal="ip-en-2" type="button">Show answer</button><div class="answer-box" hidden id="ip-en-2">Its finish time is the minimum among all rooms. If even that minimum is later than the new interval’s start, every other room finishes even later.</div></div></article>
+<article class="exercise"><div class="exercise-num">3</div><div><h3>Complexity</h3><p>Why not scan all rooms linearly for every interval?</p><button class="reveal" data-reveal="ip-en-3" type="button">Show answer</button><div class="answer-box" hidden id="ip-en-3">That can take O(n) per interval and O(n²) total. A min-heap finds and updates the earliest finishing room in O(log n).</div></div></article>
+</div>
+<div class="next-part"><h3>Next: Minimizing Maximum Lateness</h3><p>The next scheduling problem has one machine, deadlines, and a different greedy ordering rule: earliest deadline first.</p><a class="next-part-link" href="minimizing-lateness.html">Minimizing Maximum Lateness →</a></div>
+</section></main>
+<footer class="lecture-footer"><div>Allan's Handbook of Algorithms</div><div>© 2026 Allan Allemand</div></footer>
+<script src="../assets/js/lecture-core.js"></script><script>
+(() => {
+  "use strict";
+  const intervals=[
+    {name:"A",start:0,finish:4},
+    {name:"B",start:1,finish:3},
+    {name:"C",start:2,finish:7},
+    {name:"D",start:4,finish:6},
+    {name:"E",start:5,finish:9},
+    {name:"F",start:8,finish:10}
+  ];
+  const states=[{assignments:[],current:null,rooms:[]}];
+  const rooms=[];
+  const assignments=[];
+  intervals.forEach(it=>{
+    let roomIndex=-1;
+    let earliest=Infinity;
+    for(let r=0;r<rooms.length;r++){
+      if(rooms[r]<=it.start && rooms[r]<earliest){
+        earliest=rooms[r];
+        roomIndex=r;
+      }
+    }
+    let created=false;
+    if(roomIndex===-1){
+      roomIndex=rooms.length;
+      rooms.push(it.finish);
+      created=true;
+    }else{
+      rooms[roomIndex]=it.finish;
+    }
+    assignments.push({name:it.name,start:it.start,finish:it.finish,room:roomIndex,created:created});
+    states.push({assignments:assignments.slice(),current:it.name,rooms:rooms.slice(),created:created});
+  });
+  let index=0;
+  const root=document.querySelector(".room-demo");
+  if(!root) return;
+
+  function render(){
+    const state=states[index];
+    const ru=document.documentElement.lang.toLowerCase().startsWith("ru");
+    const board=root.querySelector("[data-role='rooms']");
+    board.replaceChildren();
+    const roomCount=Math.max(1,state.rooms.length);
+    for(let r=0;r<roomCount;r++){
+      const row=document.createElement("div");
+      row.className="room-row";
+      const label=document.createElement("div");
+      label.className="room-name";
+      label.textContent=(ru?"Комната ":"Room ")+(r+1);
+      const track=document.createElement("div");
+      track.className="room-track";
+      state.assignments.filter(a=>a.room===r).forEach(a=>{
+        const block=document.createElement("div");
+        block.className="room-block"+(a.name===state.current?" active":" done");
+        block.style.setProperty("--start",(a.start/10*100)+"%");
+        block.style.setProperty("--width",((a.finish-a.start)/10*100)+"%");
+        block.textContent=a.name+" "+a.start+"–"+a.finish;
+        track.appendChild(block);
+      });
+      row.append(label,track);
+      board.appendChild(row);
+    }
+    const caption=root.querySelector(".step-caption");
+    if(index===0){
+      caption.textContent=ru?"Интервалы отсортированы по времени начала. Начинаем без комнат.":"Intervals are sorted by start time. We begin with no rooms.";
+    }else{
+      const a=state.assignments[state.assignments.length-1];
+      caption.textContent=state.created
+        ? (ru?"Для "+a.name+" нет свободной комнаты — открываем комнату "+(a.room+1)+".":"No room is free for "+a.name+", so open Room "+(a.room+1)+".")
+        : (ru?"Для "+a.name+" переиспользуем комнату "+(a.room+1)+", которая освободилась раньше всех.":"Reuse Room "+(a.room+1)+" for "+a.name+"; it is the earliest room that is free.");
+    }
+    root.querySelector("[data-role='count']").textContent=state.rooms.length;
+    root.querySelector("[data-action='previous']").disabled=index===0;
+    root.querySelector("[data-action='next']").disabled=index===states.length-1;
+  }
+  root.addEventListener("click",e=>{
+    const b=e.target.closest("[data-action]");
+    if(!b) return;
+    if(b.dataset.action==="next") index=Math.min(index+1,states.length-1);
+    if(b.dataset.action==="previous") index=Math.max(index-1,0);
+    if(b.dataset.action==="reset") index=0;
+    render();
+  });
+  render();
+})();
+</script><script src="../assets/js/language-switch.js"></script></body></html>
