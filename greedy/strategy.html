@@ -93,14 +93,18 @@
 
 <!-- grokking-pass-strategy -->
 <section class="lecture-section" id="grokking-outcomes">
-<h2>The same greedy instinct can lead to three different outcomes</h2>
-<p class="lead">A useful way to learn greedy is to compare problems that look equally simple at first. The local move can be exactly right, merely useful, or provably approximate.</p>
+<h2>One greedy instinct, three very different guarantees</h2>
+<p class="lead">The fastest way to understand greedy is to compare three problems that all invite the same thought: “take the best-looking option now.” What changes is not the syntax of the rule, but what we can prove about it.</p>
 <div class="grokking-contrast">
-<article class="grokking-card good"><span>Exact</span><h3>Classroom scheduling</h3><p>Pick the compatible class that finishes first. Here the local choice can be proved to preserve an optimum.</p></article>
-<article class="grokking-card warn"><span>Not exact</span><h3>0/1 Knapsack</h3><p>Picking the locally most attractive whole item can block a better combination. A plausible greedy rule is not automatically an algorithm for OPT.</p></article>
-<article class="grokking-card approx"><span>Approximation</span><h3>Set Cover</h3><p>When exact search is too expensive, repeatedly covering the most still-uncovered elements gives a fast solution with a provable quality bound.</p></article>
+<article class="grokking-card good"><span>Exact</span><h3>Classroom scheduling</h3><p>Pick the compatible class that finishes first. The choice leaves at least as much room for every future class, so it can be proved globally optimal.</p></article>
+<article class="grokking-card warn"><span>Greedy guess</span><h3>0/1 Knapsack</h3><p>Take the most attractive whole item first. This can look sensible and still lose to a combination of smaller items. Here greedy is only a heuristic unless an additional guarantee is proved.</p></article>
+<article class="grokking-card approx"><span>Approximation</span><h3>Set Cover</h3><p>Pick the set covering the most still-uncovered elements. It may miss the exact optimum, but the loss can be bounded mathematically.</p></article>
 </div>
-<div class="predict-card"><span class="predict-kicker">Two questions to ask immediately</span><h3>Does the local choice preserve an optimum? If not, what guarantee is left?</h3><p>That pair of questions is more useful than memorizing a list of “greedy problems”. It separates exact greedy algorithms from heuristics and approximation algorithms.</p></div>
+<div class="inline-contrast">
+<div class="yes"><h3>When judging an approximation</h3><p>Ask two separate questions: how fast does it run, and how close is its answer guaranteed to be to OPT?</p></div>
+<div class="no"><h3>When judging a heuristic</h3><p>Empirical quality is useful, but “it worked on all my examples” is not a worst-case guarantee.</p></div>
+</div>
+<div class="predict-card"><span class="predict-kicker">The habit to keep</span><h3>After proposing a greedy rule, immediately ask what kind of claim you are making.</h3><p>Exact optimum? Provable approximation? Or simply a practical heuristic? The same-looking loop can belong to any of the three.</p></div>
 </section>
 
 <section class="lecture-section" id="failure">
