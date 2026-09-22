@@ -8,7 +8,7 @@
 <body class="lecture-page"><div aria-hidden="true" class="progress-track"><div class="progress-bar" id="reading-progress"></div></div>
 <header class="topbar"><a class="brand" href="../"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name">Allan's Handbook of Algorithms</span></a>
 <nav aria-label="Primary navigation" class="topnav"><a href="./">Greedy overview</a><div aria-label="Language" class="language-switch"><span class="current">EN</span><span class="language-separator">·</span><a href="interval-scheduling-ru.html">RU</a></div></nav></header>
-<aside aria-label="Section navigation" class="sidebar"><div class="sidebar-title">Chapter 9 · Section 4</div><a href="#problem">Problem</a><a href="#choices">Choosing the rule</a><a href="#classroom-walk">Classroom walkthrough</a><a href="#frontier">Why earliest finish dominates</a><a href="#algorithm">Algorithm</a><a href="#proof">Correctness</a><a href="#runtime">Where the O(n log n) comes from</a><a href="#implementation">Implementation</a><a href="#interval-pattern">Choose the right interval pattern</a><a href="#recognition">Recognition checklist</a><a href="#variants">Variants</a><a href="#exercises">Exercises</a></aside>
+<aside aria-label="Section navigation" class="sidebar"><div class="sidebar-title">Chapter 9 · Section 4</div><a href="#problem">Problem</a><a href="#choices">Choosing the rule</a><a href="#residual-set">Why earliest finish preserves options</a><a href="#classroom-walk">Classroom walkthrough</a><a href="#frontier">Why earliest finish dominates</a><a href="#algorithm">Algorithm</a><a href="#proof">Correctness</a><a href="#runtime">Where the O(n log n) comes from</a><a href="#implementation">Implementation</a><a href="#interval-pattern">Choose the right interval pattern</a><a href="#recognition">Recognition checklist</a><a href="#variants">Variants</a><a href="#exercises">Exercises</a></aside>
 <main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Chapter 9 · Section 4</div><h1>Interval Scheduling</h1><p class="chapter-topics">Choose as many non-overlapping intervals as possible. The right greedy move is simple: finish early and leave room for what comes next.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-interval-scheduling.svg"/></div></section>
 <section class="lecture-section" id="problem">
 <h2>Choose as many intervals as possible</h2>
@@ -42,6 +42,18 @@
 
 <!-- book-synthesis-is -->
 <!-- grokking-pass-interval -->
+<!-- karumanchi-round-interval -->
+<section class="lecture-section" id="residual-set">
+<h2>Earliest finish is really a statement about the residual instance</h2>
+<p class="lead">The rule is stronger than the slogan “leave more time”. It leaves a superset of the future intervals that would remain after any other possible first choice.</p>
+<div class="two-column-block">
+<div class="text-panel"><h3>Greedy first interval</h3><p>Let <span class="math">g</span> be the interval with the earliest finish time. After choosing it, the remaining feasible intervals are those with <span class="math">start ≥ finish(g)</span>.</p></div>
+<div class="proof-panel"><h3>Any alternative first interval</h3><p>If some other interval <span class="math">o</span> is chosen first, then <span class="math">finish(g) ≤ finish(o)</span>. Therefore every interval feasible after <span class="math">o</span> is also feasible after <span class="math">g</span>.</p></div>
+</div>
+<div class="formula-line">future(o) ⊆ future(g)</div>
+<div class="one-line"><strong>This is why the rule survives the counterexample tournament.</strong> Earliest start, shortest duration, and fewest conflicts do not guarantee a residual feasible set at least as rich as every alternative; earliest finish does.</div>
+</section>
+
 <section class="lecture-section" id="classroom-walk">
 <h2>See the greedy choice happen, one class at a time</h2>
 <p class="lead">The classroom version is useful because the rule can be executed almost without notation. At each step, ignore every class that now conflicts and choose the remaining class that ends first.</p>
