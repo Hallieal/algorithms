@@ -8,7 +8,7 @@
 <body class="lecture-page"><div aria-hidden="true" class="progress-track"><div class="progress-bar" id="reading-progress"></div></div>
 <header class="topbar"><a class="brand" href="../"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name">Allan's Handbook of Algorithms</span></a>
 <nav aria-label="Primary navigation" class="topnav"><a href="./">Greedy overview</a><div aria-label="Language" class="language-switch"><span class="current">EN</span><span class="language-separator">·</span><a href="interval-scheduling-ru.html">RU</a></div></nav></header>
-<aside aria-label="Section navigation" class="sidebar"><div class="sidebar-title">Chapter 9 · Section 4</div><a href="#problem">Problem</a><a href="#choices">Choosing the rule</a><a href="#classroom-walk">Classroom walkthrough</a><a href="#frontier">Why earliest finish dominates</a><a href="#algorithm">Algorithm</a><a href="#proof">Correctness</a><a href="#runtime">Where the O(n log n) comes from</a><a href="#implementation">Implementation</a><a href="#recognition">Recognition checklist</a><a href="#variants">Variants</a><a href="#exercises">Exercises</a></aside>
+<aside aria-label="Section navigation" class="sidebar"><div class="sidebar-title">Chapter 9 · Section 4</div><a href="#problem">Problem</a><a href="#choices">Choosing the rule</a><a href="#classroom-walk">Classroom walkthrough</a><a href="#frontier">Why earliest finish dominates</a><a href="#algorithm">Algorithm</a><a href="#proof">Correctness</a><a href="#runtime">Where the O(n log n) comes from</a><a href="#implementation">Implementation</a><a href="#interval-pattern">Choose the right interval pattern</a><a href="#recognition">Recognition checklist</a><a href="#variants">Variants</a><a href="#exercises">Exercises</a></aside>
 <main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Chapter 9 · Section 4</div><h1>Interval Scheduling</h1><p class="chapter-topics">Choose as many non-overlapping intervals as possible. The right greedy move is simple: finish early and leave room for what comes next.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-interval-scheduling.svg"/></div></section>
 <section class="lecture-section" id="problem">
 <h2>Choose as many intervals as possible</h2>
@@ -127,6 +127,19 @@
 <div class="code-note-item wide-note"><span>5–8</span><p>After sorting, a single scan is enough. We accept exactly the intervals compatible with the last selected one.</p></div>
 </div></div>
 <div class="complexity-strip"><div><span>Sorting</span><b>O(n log n)</b><small>by finish</small></div><div><span>Scan</span><b>O(n)</b><small>one pass</small></div><div><span>Total</span><b>O(n log n)</b><small>dominant sort</small></div><div><span>Extra memory</span><b>O(n)</b><small>for output</small></div></div>
+</section>
+
+<!-- coding-patterns-round-interval -->
+<section class="lecture-section" id="interval-pattern">
+<h2>“Intervals” is not one pattern: choose the representation from the question</h2>
+<p class="lead">In interviews, interval inputs often look nearly identical. The objective tells you which ordering—or whether endpoints rather than intervals—should drive the algorithm.</p>
+<div class="sort-key-grid">
+<article><code>sort by start</code><h3>Merge overlaps</h3><p>Once intervals are chronological by start, compare each interval only with the last merged interval. The earlier-starting interval supplies the left boundary.</p></article>
+<article><code>sort by finish</code><h3>Maximum compatible subset</h3><p>For Interval Scheduling, the objective is not to merge overlaps but to preserve future room. Earliest finish is the safe greedy key.</p></article>
+<article><code>sort endpoints</code><h3>Maximum overlap / room count</h3><p>If you only need how many intervals are simultaneously active, starts and finishes can be processed as events rather than keeping interval identity.</p></article>
+</div>
+<div class="edge-case-row"><span>closed vs half-open endpoints</span><span>equal start times</span><span>equal finish/start times</span><span>output intervals vs only a count</span></div>
+<div class="interview-answer"><h3>Before writing code</h3><p>Draw two or three intervals and say exactly what a tie means. A large fraction of interval bugs come from using the right high-level pattern with the wrong endpoint semantics.</p></div>
 </section>
 
 <section class="lecture-section" id="recognition">
