@@ -212,14 +212,12 @@ def prim(graph, start=0):
 <article class="variant-card"><h3>Clustering</h3><p>Строим MST по точкам или объектам и удаляем самые тяжёлые рёбра. Оставшиеся connected components дают кластеры, разделённые дорогими связями.</p></article>
 <article class="variant-card"><h3>Maximum spanning tree</h3><p>Используем ту же greedy-логику, но идём по весам в обратном порядке. Эквивалентно — меняем знак весов и строим minimum spanning tree.</p></article>
 <article class="variant-card"><h3>Minimum bottleneck</h3><p>Любое MST минимизирует максимальный использованный вес ребра среди всех spanning trees. Цель «минимизировать худшую связь» получается бесплатно.</p></article>
-<article class="variant-card"><h3>Approximation scaffold</h3><p>MST также служит дешёвой lower-bound structure для более трудных network/routing problems. В metric TSP удвоение MST-walk с shortcut повторов даёт tour не хуже factor 2 от optimum; полный аргумент разобран в <a href="greedy-beyond-ru.html#metric-tsp">Matroids & Beyond</a>.</p></article>
 </div>
 <div class="practice-note"><h3>Representation — часть алгоритма</h3><p>Kruskal естественно использует edge list + DSU, Prim — adjacency по вершинам. Математический greedy-choice может быть одинаково хорош, а оптимальная data structure зависит от плотности графа.</p></div>
 </section>
 
 <section class="lecture-section" id="properties">
 <h2>Полезные свойства</h2>
-<div class="theory-note"><h3>MST — чистый пример матроида</h3><p>Множества рёбер без циклов образуют <em>графический матроид</em>. Остовное дерево — базис этого матроида. Поэтому Краскал является частным случаем общей greedy-теоремы для матроидов: упорядочиваем элементы по весу и добавляем элемент, пока сохраняется независимость. Свойство разреза — графовая форма того же обменного принципа.</p></div>
 <div class="decision-grid">
 <article class="decision-card greedy-signal"><h3>Разные веса ⇒ единственность</h3><p>Если веса всех рёбер различны, MST единственно.</p></article>
 <article class="decision-card greedy-signal"><h3>При равных весах MST может быть несколько</h3><p>Разные безопасные рёбра одинакового веса могут привести к разным остовным деревьям с одной и той же минимальной стоимостью.</p></article>
