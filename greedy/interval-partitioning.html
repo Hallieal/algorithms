@@ -8,7 +8,7 @@
 <body class="lecture-page"><div aria-hidden="true" class="progress-track"><div class="progress-bar" id="reading-progress"></div></div>
 <header class="topbar"><a class="brand" href="../"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name">Allan's Handbook of Algorithms</span></a>
 <nav aria-label="Primary navigation" class="topnav"><a href="./">Greedy overview</a><div aria-label="Language" class="language-switch"><span class="current">EN</span><span class="language-separator">·</span><a href="interval-partitioning-ru.html">RU</a></div></nav></header>
-<aside aria-label="Section navigation" class="sidebar"><div class="sidebar-title">Chapter 9 · Section 5</div><a href="#problem">Problem</a><a href="#depth">Depth</a><a href="#algorithm">Algorithm</a><a href="#sweep">Count only: sweep line</a><a href="#proof">Correctness</a><a href="#implementation">Implementation</a><a href="#comparison">Comparison</a><a href="#exercises">Exercises</a></aside>
+<aside aria-label="Section navigation" class="sidebar"><div class="sidebar-title">Chapter 9 · Section 5</div><a href="#problem">Problem</a><a href="#depth">Depth</a><a href="#same-input">Same intervals, different question</a><a href="#algorithm">Algorithm</a><a href="#sweep">Count only: sweep line</a><a href="#proof">Correctness</a><a href="#implementation">Implementation</a><a href="#comparison">Comparison</a><a href="#exercises">Exercises</a></aside>
 <main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Chapter 9 · Section 5</div><h1>Interval Partitioning</h1><p class="chapter-topics">Schedule every interval while using as few rooms as possible. Reuse the room that becomes free first.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-interval-partitioning.svg"/></div></section>
 <section class="lecture-section" id="problem">
 <h2>Use as few rooms as possible</h2>
@@ -29,6 +29,18 @@
 <div class="depth-card"><h3>Depth</h3><div class="depth-number">3</div><p>In our example, A, B, and C overlap around time 2. Therefore at least 3 rooms are necessary.</p></div>
 <div class="depth-card"><h3>Goal of the greedy proof</h3><p>If our algorithm never uses more rooms than the depth, then it is optimal: it matches a lower bound that every schedule must obey.</p></div>
 </div>
+</section>
+
+<!-- grokking-pass-partition -->
+<section class="lecture-section" id="same-input">
+<h2>The classroom story changes because the objective changes</h2>
+<p class="lead">The intervals can be identical to Interval Scheduling, but the problem is no longer “which classes should we keep?” Every class must happen. The only freedom is which room receives it.</p>
+<div class="objective-swap">
+<article><h3>Interval Scheduling</h3><p>You may reject classes. Goal: keep as many as possible. Greedy decision: which class should be accepted next?</p></article>
+<div class="objective-arrow">→</div>
+<article><h3>Interval Partitioning</h3><p>You may reject nothing. Goal: use as few rooms as possible. Greedy decision: which existing room can safely be reused?</p></article>
+</div>
+<div class="predict-card"><span class="predict-kicker">Recognition check</span><h3>Same picture of intervals does not imply the same greedy rule.</h3><p>Always identify what the algorithm is allowed to discard and what the objective is before importing a familiar ordering rule.</p></div>
 </section>
 
 <section class="lecture-section" id="algorithm">
