@@ -8,7 +8,7 @@
 <body class="lecture-page"><div aria-hidden="true" class="progress-track"><div class="progress-bar" id="reading-progress"></div></div>
 <header class="topbar"><a class="brand" href="../index-ru.html"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name ru-brand-name"><span class="ru-brand-lines"><span>Гайд по алгоритмам</span><span class="ru-brand-presented">presented by Аллан</span></span></span></a>
 <nav aria-label="Основная навигация" class="topnav"><a href="index-ru.html">Жадные алгоритмы</a><div aria-label="Язык" class="language-switch"><a href="dijkstra.html">EN</a><span class="language-separator">·</span><span class="current">RU</span></div></nav></header>
-<aside aria-label="Навигация по разделу" class="sidebar"><div class="sidebar-title">Глава 9 · Раздел 10</div><a href="#problem">Постановка</a><a href="#idea">Жадная идея</a><a href="#demo">По шагам</a><a href="#proof">Корректность</a><a href="#negative">Отрицательные рёбра</a><a href="#implementation">Реализация</a><a href="#paths">Восстановление путей</a><a href="#comparison">Сравнение с MST</a><a href="#exercises">Задачи</a></aside>
+<aside aria-label="Навигация по разделу" class="sidebar"><div class="sidebar-title">Глава 9 · Раздел 10</div><a href="#problem">Постановка</a><a href="#idea">Жадная идея</a><a href="#mental-model">Модель в четыре шага</a><a href="#demo">По шагам</a><a href="#bfs-link">От BFS к Dijkstra</a><a href="#proof">Корректность</a><a href="#negative">Отрицательные рёбра</a><a href="#implementation">Реализация</a><a href="#paths">Восстановление путей</a><a href="#comparison">Сравнение с MST</a><a href="#choice-guide">Какой shortest-path метод?</a><a href="#exercises">Задачи</a></aside>
 <main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Глава 9 · Раздел 10</div><h1>Алгоритм Дейкстры</h1><p class="chapter-topics">При неотрицательных весах минимальную временную метку можно безопасно зафиксировать. На этом одном жадном шаге построен алгоритм Дейкстры.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-dijkstra.svg"/></div></section>
 <section class="lecture-section" id="problem">
 <h2>Кратчайшие пути из одного источника</h2>
@@ -33,6 +33,19 @@
 <div class="greedy-definition"><span>Релаксация</span><p>Для ребра <span class="math">(u,v)</span> веса <span class="math">w</span> заменяем <span class="math">dist[v]</span> на <span class="math">min(dist[v], dist[u]+w)</span>.</p></div>
 </section>
 
+<!-- book-synthesis-dijkstra -->
+<section class="lecture-section" id="mental-model">
+<h2>Ментальная модель в четыре шага</h2>
+<p class="lead">Реализация выглядит громоздко из-за heap и stale entries, но идея алгоритма маленькая. Повторяем четыре действия, пока не закончатся достижимые tentative vertices.</p>
+<div class="proof-template">
+<article><b>1. Pick</b><p>Берём unfinalized вершину с минимальной tentative distance.</p></article>
+<article><b>2. Finalize</b><p>Объявляем это расстояние окончательным. Безопасность необратимого шага даёт неотрицательность рёбер.</p></article>
+<article><b>3. Relax</b><p>Проверяем исходящие рёбра и пытаемся улучшить соседей через только что finalized вершину.</p></article>
+<article><b>4. Repeat</b><p>Frontier движется наружу в порядке неубывающего расстояния от source.</p></article>
+</div>
+<div class="rule-formula">новый candidate для v = dist[u] + w(u,v)</div>
+</section>
+
 <section class="lecture-section" id="demo">
 <h2>Смотрим, как метки становятся окончательными</h2>
 <p class="lead">Рассмотрим неориентированный граф с рёбрами S—A=4, S—B=1, B—A=2, B—C=5, A—C=1, A—D=7, C—D=3 и B—D=8.</p>
@@ -46,6 +59,16 @@
 <div class="secondary-controls"><button data-action="reset" type="button">Сбросить</button></div>
 </div>
 <div class="path-chip-row"><span class="path-chip fixed">S = 0</span><span class="path-chip fixed">B = 1</span><span class="path-chip fixed">A = 3</span><span class="path-chip fixed">C = 4</span><span class="path-chip fixed">D = 7</span></div>
+</section>
+
+<section class="lecture-section" id="bfs-link">
+<h2>Dijkstra — это BFS с более информативным frontier</h2>
+<p class="lead">BFS и Dijkstra концептуально делают одно и то же: расширяют следующую вершину, для которой shortest distance уже можно считать известной. Различаются структуры данных, потому что различается модель рёбер.</p>
+<div class="table-wrap"><table><thead><tr><th>Граф</th><th>Frontier</th><th>Почему</th></tr></thead><tbody>
+<tr><td>Unweighted или все веса одинаковы</td><td>FIFO queue</td><td>Следующий BFS-layer ровно на одно ребро дальше.</td></tr>
+<tr><td>Неотрицательные веса</td><td>Min-priority queue</td><td>Безопасна вершина с минимальной <em>накопленной</em> стоимостью, а не та, которую раньше обнаружили.</td></tr>
+</tbody></table></div>
+<div class="one-line"><strong>Полезный reduction.</strong> Если каждый вес равен 1, priority order Дейкстры превращается в BFS layers. Используйте BFS: он проще и работает за <span class="math">O(V+E)</span>.</div>
 </section>
 
 <section class="lecture-section" id="proof">
@@ -129,6 +152,16 @@
 <tr><td>Отрицательные веса</td><td>Разрешены</td><td>Запрещены</td></tr>
 </tbody></table></div>
 <div class="bridge-note"><h3>Одинаковый control flow, разный инвариант</h3><p>Оба алгоритма могут выглядеть как «извлечь минимум, посмотреть соседей, добавить обновления». Прим измеряет цену присоединения вершины к дереву. Дейкстра — полную цену пути до неё от источника.</p></div>
+</section>
+
+<section class="lecture-section" id="choice-guide">
+<h2>Какой shortest-path инструмент выбирать?</h2>
+<div class="table-wrap"><table><thead><tr><th>Input</th><th>Естественный метод</th><th>Главная причина</th></tr></thead><tbody>
+<tr><td>Unweighted / unit weights</td><td>BFS</td><td>Heap не нужен; расстояние измеряется числом рёбер.</td></tr>
+<tr><td>Неотрицательные веса</td><td>Dijkstra</td><td>Минимальную tentative distance можно безопасно finalize.</td></tr>
+<tr><td>Есть отрицательные рёбра, но нет достижимого negative cycle</td><td>Bellman–Ford</td><td>Distance может улучшиться после момента, когда Dijkstra уже зафиксировал бы вершину.</td></tr>
+<tr><td>Одна цель + admissible heuristic</td><td>A*</td><td>Использует информацию о цели, сохраняя оптимальность при выполнении условий на heuristic.</td></tr>
+</tbody></table></div>
 </section>
 
 <section class="lecture-section" id="exercises">
