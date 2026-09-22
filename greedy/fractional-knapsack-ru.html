@@ -1,57 +1,202 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1" name="viewport"/>
-<meta content="Жадная задача оптимизации, где локальный критерий — ценность на единицу веса." name="description"/>
-<meta content="Дробная задача о рюкзаке | Гайд по алгоритмам — presented by Аллан" property="og:title"/>
-<meta content="Жадная задача оптимизации, где локальный критерий — ценность на единицу веса." property="og:description"/>
-<meta content="article" property="og:type"/>
+<!DOCTYPE html><html lang="ru"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="Как максимизировать ценность при ограничении на вместимость, выбирая предметы по убыванию ценности на единицу веса." name="description"/><meta content="Дробная задача о рюкзаке | Гайд по алгоритмам — presented by Аллан" property="og:title"/><meta content="Как максимизировать ценность при ограничении на вместимость, выбирая предметы по убыванию ценности на единицу веса." property="og:description"/><meta content="article" property="og:type"/>
 <title>Дробная задача о рюкзаке | Гайд по алгоритмам — presented by Аллан</title>
-<link href="../assets/css/styles.css" rel="stylesheet"/>
-<link href="assets/greedy.css" rel="stylesheet"/>
-<link href="../assets/images/favicon-32.png" rel="icon" sizes="32x32" type="image/png"/>
-<link href="../assets/images/favicon.png" rel="icon" sizes="64x64" type="image/png"/>
-<link href="../assets/images/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180"/>
-<link href="fractional-knapsack.html" hreflang="en" rel="alternate"/><link href="fractional-knapsack-ru.html" hreflang="ru" rel="alternate"/>
-</head>
-<body class="lecture-page">
-<header class="topbar">
-<a class="brand" href="../index-ru.html"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name ru-brand-name"><span class="ru-brand-lines"><span>Гайд по алгоритмам</span><span class="ru-brand-presented">presented by Аллан</span></span></span></a>
-<nav aria-label="Основная навигация" class="topnav">
-<a href="index-ru.html">Жадные алгоритмы</a>
-<div aria-label="Язык" class="language-switch"><a href="fractional-knapsack.html">EN</a><span class="language-separator">·</span><span class="current">RU</span></div>
-</nav>
-</header>
-<aside aria-label="Навигация по разделу" class="sidebar">
-<div class="sidebar-title">Глава 9 · Раздел 7</div>
-<a href="#coming-soon">Скоро</a>
-</aside>
-<main class="lecture">
-<section class="lecture-hero greedy-placeholder-hero">
-<div>
-<div class="chapter-label">Глава 9 · Раздел 7</div>
-<h1>Дробная задача о рюкзаке</h1>
-<p class="chapter-topics">Жадная задача оптимизации, где локальный критерий — ценность на единицу веса.</p>
-</div>
-<div class="greedy-hero-icon"><img alt="" src="assets/greedy-fractional-knapsack.svg"/></div>
+<link href="../assets/css/styles.css" rel="stylesheet"/><link href="assets/greedy.css" rel="stylesheet"/>
+<link href="../assets/images/favicon-32.png" rel="icon" sizes="32x32" type="image/png"/><link href="../assets/images/favicon.png" rel="icon" sizes="64x64" type="image/png"/><link href="../assets/images/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180"/>
+<link href="fractional-knapsack.html" hreflang="en" rel="alternate"/><link href="fractional-knapsack-ru.html" hreflang="ru" rel="alternate"/></head>
+<body class="lecture-page"><div aria-hidden="true" class="progress-track"><div class="progress-bar" id="reading-progress"></div></div>
+<header class="topbar"><a class="brand" href="../index-ru.html"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name ru-brand-name"><span class="ru-brand-lines"><span>Гайд по алгоритмам</span><span class="ru-brand-presented">presented by Аллан</span></span></span></a>
+<nav aria-label="Основная навигация" class="topnav"><a href="index-ru.html">Жадные алгоритмы</a><div aria-label="Язык" class="language-switch"><a href="fractional-knapsack.html">EN</a><span class="language-separator">·</span><span class="current">RU</span></div></nav></header>
+<aside aria-label="Навигация по разделу" class="sidebar"><div class="sidebar-title">Глава 9 · Раздел 7</div><a href="#problem">Постановка</a><a href="#density">Плотность ценности</a><a href="#algorithm">Алгоритм</a><a href="#proof">Корректность</a><a href="#boundary">Граница с 0/1</a><a href="#implementation">Реализация</a><a href="#exercises">Задачи</a></aside>
+<main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Глава 9 · Раздел 7</div><h1>Дробная задача о рюкзаке</h1><p class="chapter-topics">Как максимизировать ценность при ограничении на вместимость, выбирая предметы по убыванию ценности на единицу веса.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-fractional-knapsack.svg"/></div></section>
+<section class="lecture-section" id="problem">
+<h2>Постановка задачи</h2>
+<p class="lead">Есть рюкзак вместимости <span class="math">W</span>. Предмет <span class="math">i</span> имеет вес <span class="math">wᵢ</span> и ценность <span class="math">vᵢ</span>. В отличие от задачи о рюкзаке 0/1, здесь можно взять любую долю предмета.</p>
+<div class="greedy-definition"><span>Дробный рюкзак</span><p>Нужно выбрать доли <span class="math">0 ≤ xᵢ ≤ 1</span>, максимизируя <span class="math">∑ xᵢvᵢ</span> при ограничении <span class="math">∑ xᵢwᵢ ≤ W</span>.</p></div>
 </section>
-<section class="lecture-section" id="coming-soon">
-<div class="coming-soon-panel">
-<span class="coming-soon-kicker">В разработке</span>
-<h2>Страница скоро будет заполнена</h2>
-<p>Здесь отсортируем предметы по отношению ценности к весу, заполним рюкзак в этом порядке и докажем оптимальность. Сравнение с задачей о рюкзаке 0/1 покажет, как небольшое изменение условия может разрушить жадное свойство.</p>
-</div>
-<div class="placeholder-navigation">
-<a href="minimizing-lateness-ru.html">← Минимизация максимального опоздания</a>
-<a href="huffman-ru.html">Кодирование Хаффмана →</a>
-</div>
+
+<section class="lecture-section" id="density">
+<h2>Правильный локальный критерий: ценность на единицу веса</h2>
+<p class="lead">Если от предмета можно взять произвольный кусок, сравнивать нужно не полную ценность и не полный вес, а то, сколько ценности даёт одна единица вместимости.</p>
+<div class="table-wrap"><table class="density-table"><thead><tr><th>Предмет</th><th>Вес</th><th>Ценность</th><th>Ценность / вес</th></tr></thead><tbody>
+<tr><td>A</td><td>10</td><td>60</td><td><span class="density-pill">6.0</span></td></tr>
+<tr><td>B</td><td>20</td><td>100</td><td><span class="density-pill">5.0</span></td></tr>
+<tr><td>C</td><td>30</td><td>120</td><td><span class="density-pill">4.0</span></td></tr>
+</tbody></table></div>
+<div class="greedy-caution"><strong>Жадное правило.</strong> Каждую следующую единицу вместимости заполняем материалом из оставшегося предмета с максимальным отношением <span class="math">vᵢ/wᵢ</span>.</div>
 </section>
-</main>
-<footer class="lecture-footer">
-<div>Гайд по алгоритмам · presented by Аллан</div>
-<div>© 2026 Allan Allemand</div>
-</footer>
-<script src="../assets/js/language-switch.js"></script>
-</body>
-</html>
+
+<section class="lecture-section" id="algorithm">
+<h2>Жадный алгоритм</h2>
+<div class="step-flow">
+<article class="step-item"><div class="step-number">1</div><div><h3>Считаем плотности</h3><p>Для каждого предмета вычисляем <span class="math">vᵢ/wᵢ</span>.</p></div></article>
+<article class="step-item"><div class="step-number">2</div><div><h3>Сортируем по убыванию</h3><p>Сначала рассматриваем предметы с максимальной ценностью на единицу веса.</p></div></article>
+<article class="step-item"><div class="step-number">3</div><div><h3>Берём целиком, пока помещается</h3><p>Если текущий предмет помещается, кладём его полностью.</p></div></article>
+<article class="step-item"><div class="step-number">4</div><div><h3>Берём последнюю долю</h3><p>Если следующий предмет целиком не помещается, берём ровно ту долю, которая заполнит остаток вместимости.</p></div></article>
+</div>
+<div class="visualizer knapsack-demo">
+<div class="visualizer-head"><div><h3>Заполним рюкзак вместимости 50</h3><p>Предметы идут по убыванию ценности на единицу веса.</p></div><div class="step-nav-controls"><button class="previous-step" data-action="previous" type="button">← Назад</button><button class="primary-step" data-action="next" type="button">Дальше →</button></div></div>
+<div class="knapsack-demo-grid">
+<div class="knapsack-item-list" data-role="items"></div>
+<div class="knapsack-bag">
+<div class="coin-panel-label">Рюкзак</div>
+<div class="bag-meter"><div class="bag-fill" style="--fill:0%"></div><div class="bag-label">занятая вместимость</div></div>
+<div class="bag-stats"><div class="bag-stat"><span>Вес</span><b data-role="weight">0 / 50</b></div><div class="bag-stat"><span>Ценность</span><b data-role="value">0</b></div></div>
+</div>
+</div>
+<div class="step-caption"></div>
+<div class="secondary-controls"><button data-action="reset" type="button">Сбросить</button></div>
+</div>
+<p>Итоговое решение берёт A и B целиком, затем две трети C. Ценность равна <span class="math">60 + 100 + (2/3)·120 = 240</span>.</p>
+</section>
+
+<section class="lecture-section" id="proof">
+<h2>Почему сортировка по плотности оптимальна</h2>
+<p class="lead">Доказательство — обменный аргумент на уровне маленьких порций веса.</p>
+<div class="exchange-density">
+<div class="density-side"><h3>Пусть оптимум устроен «не по порядку»</h3><div class="density-bars">
+<div class="density-bar"><span>высокая плотность</span><div class="density-track"><span style="--fill:40%"></span></div><b>не весь взят</b></div>
+<div class="density-bar"><span>низкая плотность</span><div class="density-track"><span style="--fill:90%"></span></div><b>взят</b></div>
+</div></div>
+<div class="density-arrow">→</div>
+<div class="density-side good"><h3>Меняем одинаковый вес</h3><div class="density-bars">
+<div class="density-bar"><span>высокая плотность</span><div class="density-track"><span style="--fill:60%"></span></div><b>берём больше</b></div>
+<div class="density-bar"><span>низкая плотность</span><div class="density-track"><span style="--fill:70%"></span></div><b>берём меньше</b></div>
+</div></div>
+</div>
+<p>Перенесём маленький вес <span class="math">δ</span> с предмета меньшей плотности на предмет большей плотности. Общий вес не меняется, а ценность меняется на <span class="math">δ(r<sub>high</sub> − r<sub>low</sub>) ≥ 0</span>. Значит, существует оптимальное решение, в котором предметы большей плотности заполняются раньше.</p>
+<div class="proof-goal"><h3>Свойство жадного выбора</h3><p>Существует оптимальное решение, которое берёт максимально возможную долю текущего предмета с наибольшей плотностью. После этого то же рассуждение применяется к оставшейся вместимости.</p></div>
+</section>
+
+<section class="lecture-section" id="boundary">
+<h2>Почему рюкзак 0/1 — другая задача</h2>
+<p class="lead">Предыдущее доказательство полностью опирается на делимость предметов. Если предметы неделимы, переносить произвольно малый одинаковый вес между ними нельзя.</p>
+<div class="boundary-example">
+<article class="boundary-card good"><h3>Дробная версия</h3><p>Вместимость 50, A=(10,60), B=(20,100), C=(30,120). Greedy по плотности даёт 240: A, B и 2/3 C. Это оптимум.</p></article>
+<article class="boundary-card bad"><h3>Версия 0/1</h3><p>Тот же порядок по плотности берёт A и B и получает 160. Но B+C помещаются ровно и дают 220. Первый жадный выбор A блокирует оптимум.</p></article>
+</div>
+<div class="greedy-caution"><strong>Вывод.</strong> Небольшое изменение модели может полностью уничтожить жадное свойство. Нельзя переносить доказательство с одной версии задачи на другую, не проверив ключевое предположение.</div>
+</section>
+
+<section class="lecture-section" id="implementation">
+<h2>Реализация на Python</h2>
+<div class="code-explainer">
+<div class="annotated-code">
+<div class="code-row"><span class="line-no">1</span><code>def fractional_knapsack(items, capacity):</code></div>
+<div class="code-row marked"><span class="line-no">2</span><code>    items = sorted(</code></div>
+<div class="code-row"><span class="line-no">3</span><code>        items,</code></div>
+<div class="code-row"><span class="line-no">4</span><code>        key=lambda x: x[1] / x[0],</code></div>
+<div class="code-row"><span class="line-no">5</span><code>        reverse=True</code></div>
+<div class="code-row"><span class="line-no">6</span><code>    )</code></div>
+<div class="code-row"><span class="line-no">7</span><code>    value = 0.0</code></div>
+<div class="code-row marked"><span class="line-no">8</span><code>    for weight, item_value in items:</code></div>
+<div class="code-row marked"><span class="line-no">9</span><code>        take = min(weight, capacity)</code></div>
+<div class="code-row"><span class="line-no">10</span><code>        value += take * item_value / weight</code></div>
+<div class="code-row"><span class="line-no">11</span><code>        capacity -= take</code></div>
+<div class="code-row marked"><span class="line-no">12</span><code>        if capacity == 0:</code></div>
+<div class="code-row"><span class="line-no">13</span><code>            break</code></div>
+<div class="code-row"><span class="line-no">14</span><code>    return value</code></div>
+</div>
+<div class="code-notes"><h3>Что важно</h3>
+<div class="code-note-item wide-note"><span>2–6</span><p>Жадный приоритет — убывание ценности на единицу веса.</p></div>
+<div class="code-note-item wide-note"><span>8–11</span><p>Берём предмет целиком, если он помещается; иначе — ровно оставшуюся вместимость.</p></div>
+</div></div>
+<div class="complexity-strip"><div><span>Плотности</span><b>O(n)</b><small>все предметы</small></div><div><span>Сортировка</span><b>O(n log n)</b><small>по плотности</small></div><div><span>Проход</span><b>O(n)</b><small>один раз</small></div><div><span>Итого</span><b>O(n log n)</b><small>доминирует сортировка</small></div></div>
+</section>
+
+<section class="lecture-section" id="exercises">
+<h2>Задачи</h2>
+<div class="exercise-list">
+<article class="exercise"><div class="exercise-num">1</div><div><h3>Плотность</h3><p>Предмет имеет вес 8 и ценность 52. Чему равна его ценность на единицу веса?</p><button class="reveal" data-reveal="fk-ru-1" type="button">Показать ответ</button><div class="answer-box" hidden id="fk-ru-1">52 / 8 = 6.5.</div></div></article>
+<article class="exercise"><div class="exercise-num">2</div><div><h3>Последняя доля</h3><p>Осталась вместимость 10, следующий предмет весит 25 и имеет ценность 100. Какую долю берём и какую ценность она добавит?</p><button class="reveal" data-reveal="fk-ru-2" type="button">Показать ответ</button><div class="answer-box" hidden id="fk-ru-2">Берём 10/25 = 40% предмета. Добавленная ценность: 0.4·100 = 40.</div></div></article>
+<article class="exercise"><div class="exercise-num">3</div><div><h3>Предположение доказательства</h3><p>Какое свойство задачи позволяет в обменном аргументе переносить одинаковый вес между двумя предметами?</p><button class="reveal" data-reveal="fk-ru-3" type="button">Показать ответ</button><div class="answer-box" hidden id="fk-ru-3">Делимость предметов. Без дробных решений обмен одинакового веса может вообще не соответствовать допустимому решению.</div></div></article>
+</div>
+<div class="next-part"><h3>Дальше: кодирование Хаффмана</h3><p>В дробном рюкзаке greedy выбирает лучший следующий материал. Хаффман устроен иначе: он снова и снова объединяет две самые дешёвые части в более крупную структуру.</p><a class="next-part-link" href="huffman-ru.html">Кодирование Хаффмана →</a></div>
+</section></main>
+<footer class="lecture-footer"><div>Гайд по алгоритмам · presented by Аллан</div><div>© 2026 Allan Allemand</div></footer>
+<script src="../assets/js/lecture-core.js"></script><script>
+(() => {
+  "use strict";
+  const items=[
+    {name:"A",weight:10,value:60},
+    {name:"B",weight:20,value:100},
+    {name:"C",weight:30,value:120}
+  ].map(x=>({...x,density:x.value/x.weight})).sort((a,b)=>b.density-a.density);
+  const capacity=50;
+  const states=[{i:-1,remaining:capacity,value:0,taken:[]}];
+  let remaining=capacity,value=0;
+  const taken=[];
+  items.forEach((item,i)=>{
+    const amount=Math.min(item.weight,remaining);
+    const fraction=amount/item.weight;
+    states.push({i:i,remaining:remaining,value:value,taken:taken.slice(),current:"consider"});
+    if(amount>0){
+      taken.push({name:item.name,weight:amount,value:item.value*fraction,fraction:fraction});
+      remaining-=amount;
+      value+=item.value*fraction;
+    }
+    states.push({i:i,remaining:remaining,value:value,taken:taken.slice(),current:"take"});
+  });
+  states.push({i:items.length,remaining:remaining,value:value,taken:taken.slice(),done:true});
+  let index=0;
+  const root=document.querySelector(".knapsack-demo");
+  if(!root) return;
+  function render(){
+    const s=states[index];
+    const ru=document.documentElement.lang.toLowerCase().startsWith("ru");
+    const list=root.querySelector("[data-role='items']");
+    list.replaceChildren();
+    items.forEach((item,i)=>{
+      const row=document.createElement("div");
+      let cls="knapsack-demo-item";
+      const selected=s.taken.find(x=>x.name===item.name);
+      if(selected) cls+=" taken";
+      if(i===s.i && s.current==="consider") cls+=" current";
+      row.className=cls;
+      const name=document.createElement("b"); name.textContent=item.name;
+      const info=document.createElement("div");
+      info.innerHTML="<b>"+item.value+" / "+item.weight+"</b><small>"+(ru?"ценность/вес = ":"value/weight = ")+item.density.toFixed(1)+"</small>";
+      const frac=document.createElement("div"); frac.className="knapsack-fraction";
+      frac.textContent=selected ? (selected.fraction*100).toFixed(0)+"%" : "";
+      row.append(name,info,frac); list.appendChild(row);
+    });
+    const used=capacity-s.remaining;
+    root.querySelector(".bag-fill").style.setProperty("--fill",(used/capacity*100)+"%");
+    root.querySelector("[data-role='weight']").textContent=used.toFixed(0)+" / "+capacity;
+    root.querySelector("[data-role='value']").textContent=s.value.toFixed(0);
+    const caption=root.querySelector(".step-caption");
+    if(s.done){
+      caption.textContent=ru
+        ? "Готово: рюкзак заполнен. Итоговая ценность — "+s.value.toFixed(0)+"."
+        : "Done: the knapsack is full. Total value = "+s.value.toFixed(0)+".";
+    }else if(s.i<0){
+      caption.textContent=ru
+        ? "Сначала сортируем предметы по убыванию ценности на единицу веса."
+        : "First sort the items by decreasing value density.";
+    }else{
+      const item=items[s.i];
+      if(s.current==="consider"){
+        caption.textContent=ru
+          ? "Рассматриваем "+item.name+": плотность "+item.density.toFixed(1)+". Осталось вместимости "+s.remaining+"."
+          : "Consider "+item.name+": density "+item.density.toFixed(1)+". Remaining capacity "+s.remaining+".";
+      }else{
+        const x=s.taken.find(t=>t.name===item.name);
+        caption.textContent=ru
+          ? "Берём "+(x.fraction*100).toFixed(0)+"% предмета "+item.name+"."
+          : "Take "+(x.fraction*100).toFixed(0)+"% of item "+item.name+".";
+      }
+    }
+    root.querySelector("[data-action='previous']").disabled=index===0;
+    root.querySelector("[data-action='next']").disabled=index===states.length-1;
+  }
+  root.addEventListener("click",e=>{
+    const b=e.target.closest("[data-action]");
+    if(!b) return;
+    if(b.dataset.action==="next") index=Math.min(index+1,states.length-1);
+    if(b.dataset.action==="previous") index=Math.max(index-1,0);
+    if(b.dataset.action==="reset") index=0;
+    render();
+  });
+  render();
+})();
+</script><script src="../assets/js/language-switch.js"></script></body></html>
