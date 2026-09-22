@@ -16,6 +16,7 @@
 <link href="strategy.html" hreflang="en" rel="alternate"/><link href="strategy-ru.html" hreflang="ru" rel="alternate"/>
 </head>
 <body class="lecture-page">
+<div aria-hidden="true" class="progress-track"><div class="progress-bar" id="reading-progress"></div></div>
 <header class="topbar">
 <a class="brand" href="../"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name">Allan's Handbook of Algorithms</span></a>
 <nav aria-label="Primary navigation" class="topnav">
@@ -25,10 +26,10 @@
 </header>
 <aside aria-label="Section navigation" class="sidebar">
 <div class="sidebar-title">Chapter 9 · Section 1</div>
-<a href="#coming-soon">Coming soon</a>
+<a href="#idea">The basic idea</a><a href="#anatomy">Anatomy</a><a href="#example">First example</a><a href="#failure">When greedy fails</a><a href="#properties">Structural properties</a><a href="#implementation">Implementation</a><a href="#complexity">Efficiency</a><a href="#exercises">Exercises</a>
 </aside>
 <main class="lecture">
-<section class="lecture-hero greedy-placeholder-hero">
+<section class="lecture-hero greedy-lecture-hero">
 <div>
 <div class="chapter-label">Chapter 9 · Section 1</div>
 <h1>Greedy Strategy</h1>
@@ -36,22 +37,252 @@
 </div>
 <div class="greedy-hero-icon"><img alt="" src="assets/greedy-strategy.svg"/></div>
 </section>
-<section class="lecture-section" id="coming-soon">
-<div class="coming-soon-panel">
-<span class="coming-soon-kicker">In development</span>
-<h2>This page will be filled soon</h2>
-<p>We will introduce the greedy-choice viewpoint, distinguish feasible choices from optimal ones, and use small counterexamples to show why a locally best move is not automatically globally optimal.</p>
+
+<section class="lecture-section" id="idea">
+<h2>The basic idea</h2>
+<p class="lead">A greedy algorithm builds a solution one decision at a time. At each step it chooses the option that looks best according to a simple local rule, keeps the choice if it is feasible, and then moves on without reconsidering earlier decisions.</p>
+<div class="greedy-process-grid">
+<article class="greedy-process-card"><div class="greedy-process-num">1</div><h3>Look at the current state</h3><p>Use only the information relevant to the decision you need to make now.</p></article>
+<article class="greedy-process-card"><div class="greedy-process-num">2</div><h3>Choose locally</h3><p>Pick the candidate with the best priority according to the greedy rule.</p></article>
+<article class="greedy-process-card"><div class="greedy-process-num">3</div><h3>Keep it if feasible</h3><p>The choice must not violate the constraints of the problem.</p></article>
+<article class="greedy-process-card"><div class="greedy-process-num">4</div><h3>Commit and continue</h3><p>Do not backtrack. Reduce the problem and repeat on what remains.</p></article>
 </div>
-<div class="placeholder-navigation">
-<a href="./">← Chapter overview</a>
-<a href="proofs.html">Proving Greedy Correctness →</a>
+<div class="greedy-definition"><span>Definition</span><p>A greedy algorithm constructs a solution incrementally by repeatedly making a locally optimal feasible choice and never revisiting choices that have already been fixed.</p></div>
+</section>
+
+<section class="lecture-section" id="anatomy">
+<h2>Anatomy of a greedy algorithm</h2>
+<p class="lead">Most greedy algorithms can be understood through three separate questions. Keeping them separate is useful: a good priority rule is not the same thing as a feasibility condition, and neither one by itself proves optimality.</p>
+<div class="greedy-anatomy-grid">
+<article class="greedy-anatomy-card"><div class="greedy-anatomy-icon">↕</div><h3>Priority rule</h3><p>Which candidate is considered first? Examples: smallest finishing time, cheapest edge, largest value density.</p></article>
+<article class="greedy-anatomy-card"><div class="greedy-anatomy-icon">✓</div><h3>Feasibility test</h3><p>Can we take this candidate without breaking the constraints? If not, skip it or choose another candidate.</p></article>
+<article class="greedy-anatomy-card"><div class="greedy-anatomy-icon">→</div><h3>Irreversible commitment</h3><p>Once accepted, a choice is treated as final. The algorithm does not enumerate alternative histories.</p></article>
+</div>
+<div class="greedy-caution"><strong>Important.</strong> “Choose the largest”, “choose the cheapest”, or “choose the nearest” is only a heuristic until we prove that the choice is safe.</div>
+</section>
+
+<section class="lecture-section" id="example">
+<h2>A first greedy example</h2>
+<p class="lead">Suppose a machine is available for 10 minutes. Four independent jobs take 7, 4, 3, and 2 minutes. The goal is to complete as many jobs as possible.</p>
+<div class="greedy-job-example">
+<div class="greedy-job-head"><div><span class="example-kicker">Greedy rule</span><h3>Do the shortest remaining job first</h3></div><p>Choosing a shorter job uses no more time than choosing a longer one, so it leaves at least as much room for future jobs.</p></div>
+<div class="job-row"><span>Input</span><div class="job-chips"><div class="job-chip">7 min</div><div class="job-chip">4 min</div><div class="job-chip">3 min</div><div class="job-chip">2 min</div></div></div>
+<div class="job-row"><span>Greedy order</span><div class="job-chips"><div class="job-chip chosen">2 min</div><div class="job-chip chosen">3 min</div><div class="job-chip chosen">4 min</div><div class="job-chip rejected">7 min</div></div></div>
+<div class="greedy-job-result">The first three jobs use 2 + 3 + 4 = 9 minutes, so we complete 3 jobs. The remaining 7-minute job no longer fits.</div>
+</div>
+<div class="subsection"><h3>Why this local choice is promising</h3><p>If a solution contains a longer job while a shorter unchosen job exists, replacing the longer job by the shorter one cannot increase the total time. This exchange idea is exactly the kind of reasoning we need to justify a greedy rule. The next page develops such proofs systematically.</p></div>
+</section>
+
+<section class="lecture-section" id="failure">
+<h2>Local best does not always mean global best</h2>
+<p class="lead">Greedy algorithms are attractive because they are simple. They are also dangerous because a very natural local rule can be wrong.</p>
+<div class="visualizer coin-greedy-demo">
+<div class="visualizer-head"><div><h3>Coin change: take the largest coin that fits</h3><p>Step through the greedy choices, then compare the result with the true minimum number of coins.</p></div><div class="step-nav-controls"><button class="previous-step" data-action="previous" type="button">← Previous step</button><button class="primary-step" data-action="next" type="button">Next step →</button></div></div>
+<div class="coin-preset-row"><button class="active" data-preset="trap" type="button">Counterexample: 1, 3, 4</button><button data-preset="canonical" type="button">Works here: 1, 5, 10, 25</button></div>
+<div class="coin-demo-grid">
+<div class="coin-panel"><div class="coin-panel-label">Problem</div><div class="coin-target">Amount <span data-role="amount">6</span></div><div class="coin-bank" data-role="bank"></div></div>
+<div class="coin-panel"><div class="coin-panel-label">Greedy construction</div><div>Remaining: <strong data-role="remaining">6</strong></div><div class="coin-picks" data-role="picks"></div></div>
+</div>
+<div class="step-caption"></div>
+<div class="coin-result-grid" data-role="results" hidden>
+<div class="coin-result-card" data-role="greedy-card"><span>Greedy result</span><b data-role="greedy-result"></b><small data-role="greedy-count"></small></div>
+<div class="coin-result-card pass"><span>Optimal result</span><b data-role="optimal-result"></b><small data-role="optimal-count"></small></div>
+</div>
+</div>
+<p>For amount 6 with coins 1, 3, and 4, the greedy rule chooses 4 + 1 + 1: three coins. But 3 + 3 uses only two coins. The local rule is clear and feasible, yet it is not globally optimal.</p>
+</section>
+
+<section class="lecture-section" id="properties">
+<h2>What makes greediness possible?</h2>
+<p class="lead">Two structural ideas appear again and again in problems where greedy algorithms are correct.</p>
+<div class="greedy-properties">
+<article class="greedy-property"><h3>Greedy-choice property</h3><p>There exists an optimal solution that is compatible with the greedy first choice. In other words, committing to that local choice does not destroy every optimal solution.</p></article>
+<article class="greedy-property"><h3>Optimal substructure</h3><p>After fixing the first choice, the rest of an optimal solution is itself optimal for the remaining subproblem.</p></article>
+</div>
+<div class="greedy-caution"><strong>Optimal substructure alone is not enough.</strong> Dynamic programming also relies on optimal substructure. What distinguishes a greedy algorithm is that one locally chosen branch can be committed to without keeping alternatives alive.</div>
+</section>
+
+<section class="lecture-section" id="implementation">
+<h2>A generic implementation pattern</h2>
+<p class="lead">Many greedy algorithms are implemented by sorting candidates once and scanning them from best to worst.</p>
+<div class="code-explainer">
+<div class="annotated-code">
+<div class="code-row"><span class="line-no">1</span><code>def greedy(candidates, priority, feasible):</code></div>
+<div class="code-row marked"><span class="line-no">2</span><code>    ordered = sorted(candidates, key=priority)</code></div>
+<div class="code-row"><span class="line-no">3</span><code>    solution = []</code></div>
+<div class="code-row marked"><span class="line-no">4</span><code>    for candidate in ordered:</code></div>
+<div class="code-row marked"><span class="line-no">5</span><code>        if feasible(solution, candidate):</code></div>
+<div class="code-row marked"><span class="line-no">6</span><code>            solution.append(candidate)</code></div>
+<div class="code-row"><span class="line-no">7</span><code>    return solution</code></div>
+</div>
+<div class="code-notes"><h3>What the skeleton means</h3>
+<div class="code-note-item"><span>2</span><p><strong>Priority.</strong> Put candidates in the order dictated by the greedy rule.</p></div>
+<div class="code-note-item wide-note"><span>4–6</span><p><strong>Scan and commit.</strong> Consider each candidate once. If adding it remains feasible, accept it permanently.</p></div>
+<p>This pattern is not universal: some greedy algorithms use a heap or repeatedly update priorities. But the conceptual structure is the same.</p>
+</div>
 </div>
 </section>
+
+<section class="lecture-section" id="complexity">
+<h2>Efficiency</h2>
+<p class="lead">“Greedy” describes a design strategy, not a running-time class. Still, many greedy algorithms are fast because they avoid exploring many alternative solutions.</p>
+<div class="table-wrap"><table class="greedy-runtime-table"><thead><tr><th>Implementation pattern</th><th>Typical cost</th><th>Where it appears</th></tr></thead><tbody>
+<tr><td>Sort once + scan</td><td>Usually O(n log n)</td><td>Scheduling, interval selection, Kruskal-style processing</td></tr>
+<tr><td>Priority queue</td><td>Often O(n log n), or O((n + m) log n) on graphs</td><td>Huffman coding, Prim, Dijkstra</td></tr>
+<tr><td>Simple scan</td><td>Sometimes O(n)</td><td>When candidates already arrive in the required order</td></tr>
+</tbody></table></div>
+<p class="caption">The exact bound always depends on the problem and data structures. A greedy algorithm can even be slow if its local choice is expensive to compute.</p>
+</section>
+
+<section class="lecture-section" id="exercises">
+<h2>Exercises</h2>
+<div class="exercise-list">
+<article class="exercise"><div class="exercise-num">1</div><div><h3>Identify the greedy components</h3><p>In the 10-minute job example, what are the priority rule, feasibility condition, and commitment?</p><button aria-expanded="false" class="reveal" data-reveal="gs-en-1" type="button">Show answer</button><div class="answer-box" hidden id="gs-en-1">Priority: shortest remaining job first. Feasibility: the job must fit in the remaining time. Commitment: once a job is selected, it stays in the schedule.</div></div></article>
+<article class="exercise"><div class="exercise-num">2</div><div><h3>Break the coin heuristic</h3><p>For coins 1, 5, and 6 and amount 10, what does “take the largest coin” return? What is optimal?</p><button aria-expanded="false" class="reveal" data-reveal="gs-en-2" type="button">Show answer</button><div class="answer-box" hidden id="gs-en-2">Greedy gives 6 + 1 + 1 + 1 + 1, five coins. The optimum is 5 + 5, two coins.</div></div></article>
+<article class="exercise"><div class="exercise-num">3</div><div><h3>Feasible is not optimal</h3><p>Why does checking feasibility after each choice not prove that the final solution is optimal?</p><button aria-expanded="false" class="reveal" data-reveal="gs-en-3" type="button">Show answer</button><div class="answer-box" hidden id="gs-en-3">Feasibility only says the partial solution obeys the constraints. It does not say that the choice preserves the possibility of reaching a globally best solution.</div></div></article>
+<article class="exercise"><div class="exercise-num">4</div><div><h3>Complexity</h3><p>If a greedy algorithm sorts n candidates and then checks each candidate in O(1), what is its total running time?</p><button aria-expanded="false" class="reveal" data-reveal="gs-en-4" type="button">Show answer</button><div class="answer-box" hidden id="gs-en-4">O(n log n): sorting dominates the subsequent O(n) scan.</div></div></article>
+</div>
+<div class="next-part"><h3>Next section: proving greedy correctness</h3><p>Now we turn the intuition of a “safe local choice” into reusable proof techniques.</p><a class="next-part-link" href="proofs.html">Proving Greedy Correctness →</a></div>
+</section>
 </main>
-<footer class="lecture-footer">
-<div>Allan's Handbook of Algorithms</div>
-<div>© 2026 Allan Allemand</div>
-</footer>
+<footer class="lecture-footer"><div>Allan's Handbook of Algorithms</div><div>© 2026 Allan Allemand</div></footer>
+<script src="../assets/js/lecture-core.js"></script>
+<script>
+(() => {
+  "use strict";
+  const presets = {
+    trap: { coins: [4, 3, 1], amount: 6 },
+    canonical: { coins: [25, 10, 5, 1], amount: 41 }
+  };
+  const root = document.querySelector(".coin-greedy-demo");
+  if (!root) return;
+  let preset = "trap";
+  let states = [];
+  let index = 0;
+
+  function greedyStates(config) {
+    let remaining = config.amount;
+    const picked = [];
+    const result = [{ remaining: remaining, picked: [], next: null, done: false }];
+    for (const coin of config.coins) {
+      while (coin <= remaining) {
+        result.push({ remaining: remaining, picked: picked.slice(), next: coin, done: false });
+        picked.push(coin);
+        remaining -= coin;
+        result.push({ remaining: remaining, picked: picked.slice(), next: null, done: false });
+      }
+    }
+    result.push({ remaining: remaining, picked: picked.slice(), next: null, done: true });
+    return result;
+  }
+
+  function optimalChange(amount, coins) {
+    const dp = Array(amount + 1).fill(Infinity);
+    const prev = Array(amount + 1).fill(null);
+    dp[0] = 0;
+    for (let x = 1; x <= amount; x++) {
+      for (const coin of coins) {
+        if (coin <= x && dp[x - coin] + 1 < dp[x]) {
+          dp[x] = dp[x - coin] + 1;
+          prev[x] = coin;
+        }
+      }
+    }
+    const picked = [];
+    let x = amount;
+    while (x > 0 && prev[x] !== null) {
+      picked.push(prev[x]);
+      x -= prev[x];
+    }
+    return picked;
+  }
+
+  function render() {
+    const config = presets[preset];
+    const state = states[index];
+    const ru = document.documentElement.lang.toLowerCase().startsWith("ru");
+    root.querySelector("[data-role='amount']").textContent = config.amount;
+    root.querySelector("[data-role='remaining']").textContent = state.remaining;
+
+    const bank = root.querySelector("[data-role='bank']");
+    bank.replaceChildren();
+    config.coins.forEach(coin => {
+      const el = document.createElement("span");
+      el.className = "coin-chip" + (state.next === coin ? " next" : "");
+      el.textContent = coin;
+      bank.appendChild(el);
+    });
+
+    const picks = root.querySelector("[data-role='picks']");
+    picks.replaceChildren();
+    if (!state.picked.length) {
+      const empty = document.createElement("span");
+      empty.className = "coin-empty";
+      empty.textContent = ru ? "Пока ничего не выбрано" : "No coins chosen yet";
+      picks.appendChild(empty);
+    } else {
+      state.picked.forEach(coin => {
+        const el = document.createElement("span");
+        el.className = "coin-chip";
+        el.textContent = coin;
+        picks.appendChild(el);
+      });
+    }
+
+    const caption = root.querySelector(".step-caption");
+    if (state.done) {
+      caption.textContent = ru
+        ? "Жадный алгоритм завершён. Теперь сравним результат с оптимальным."
+        : "The greedy algorithm is finished. Now compare it with the optimum.";
+    } else if (state.next !== null) {
+      caption.textContent = ru
+        ? "Самая крупная монета, не превышающая остаток " + state.remaining + ", — " + state.next + ". Берём её."
+        : "The largest coin not exceeding the remaining " + state.remaining + " is " + state.next + ". Take it.";
+    } else {
+      caption.textContent = ru ? "Осталось набрать " + state.remaining + "." : state.remaining + " remains to be paid.";
+    }
+
+    const greedy = states[states.length - 1].picked;
+    const optimal = optimalChange(config.amount, config.coins);
+    const resultWrap = root.querySelector("[data-role='results']");
+    resultWrap.hidden = !state.done;
+    root.querySelector("[data-role='greedy-result']").textContent = greedy.join(" + ");
+    root.querySelector("[data-role='greedy-count']").textContent = ru ? greedy.length + " монет" : greedy.length + " coins";
+    root.querySelector("[data-role='optimal-result']").textContent = optimal.join(" + ");
+    root.querySelector("[data-role='optimal-count']").textContent = ru ? optimal.length + " монет" : optimal.length + " coins";
+    const greedyCard = root.querySelector("[data-role='greedy-card']");
+    greedyCard.classList.toggle("fail", greedy.length > optimal.length);
+    greedyCard.classList.toggle("pass", greedy.length === optimal.length);
+    root.querySelector("[data-action='previous']").disabled = index === 0;
+    root.querySelector("[data-action='next']").disabled = index === states.length - 1;
+  }
+
+  function reset(name) {
+    preset = name;
+    states = greedyStates(presets[preset]);
+    index = 0;
+    root.querySelectorAll("[data-preset]").forEach(button => {
+      button.classList.toggle("active", button.dataset.preset === preset);
+    });
+    render();
+  }
+
+  root.addEventListener("click", event => {
+    const presetButton = event.target.closest("[data-preset]");
+    if (presetButton) {
+      reset(presetButton.dataset.preset);
+      return;
+    }
+    const button = event.target.closest("[data-action]");
+    if (!button) return;
+    if (button.dataset.action === "next") index = Math.min(index + 1, states.length - 1);
+    if (button.dataset.action === "previous") index = Math.max(index - 1, 0);
+    render();
+  });
+
+  reset("trap");
+})();
+</script>
 <script src="../assets/js/language-switch.js"></script>
 </body>
 </html>
