@@ -26,6 +26,7 @@
 <div class="huffman-symbol"><b>F</b><span>5</span></div>
 </div>
 <div class="greedy-definition"><span>Цель</span><p>Построить двоичный префиксный код, минимизирующий взвешенную длину <span class="math">∑ fᵢ · ℓᵢ</span>, где <span class="math">fᵢ</span> — частота символа, а <span class="math">ℓᵢ</span> — длина его кодового слова.</p></div>
+<div class="formula-line">cost(T) = ∑ fᵢℓᵢ</div>
 </section>
 
 <!-- grokking-pass-huffman -->
@@ -126,6 +127,7 @@
 <section class="lecture-section" id="entropy">
 <h2>Связь с энтропией</h2>
 <p class="lead">Для normalized probabilities p_i entropy H задаёт lower bound средней длины prefix code. Huffman даёт L, для которого H ≤ L < H + 1.</p>
+<div class="formula-line">H = −∑ pᵢ log₂ pᵢ &nbsp;&nbsp; and &nbsp;&nbsp; H ≤ L &lt; H + 1</div>
 <div class="entropy-strip">
 <div class="entropy-cell"><span>Энтропия H</span><b>≈ 2.220 бит/символ</b><small>Для вероятностей 0.45, 0.13, 0.12, 0.16, 0.09, 0.05.</small></div>
 <div class="entropy-cell"><span>Средняя длина Хаффмана L</span><b>2.24 бит/символ</b><small>224 бита на 100 появлений символов.</small></div>
