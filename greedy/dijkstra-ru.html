@@ -99,7 +99,7 @@
 <div class="code-note-item wide-note"><span>9–11</span><p>Устаревшие записи, расстояние в которых уже не совпадает с текущим <code>dist[u]</code>, просто пропускаются.</p></div>
 <div class="code-note-item wide-note"><span>12–16</span><p>Релаксируем все исходящие рёбра. Если найден более короткий путь, обновляем метку и кладём новую пару в heap.</p></div>
 </div></div>
-<div class="complexity-strip"><div><span>Список смежности</span><b>O(V+E)</b><small>хранение графа</small></div><div><span>Операция heap</span><b>O(log V)</b><small>на полезное обновление</small></div><div><span>Итого</span><b>O((V+E) log V)</b><small>binary heap</small></div><div><span>Расстояния</span><b>O(V)</b><small>плюс записи heap</small></div></div>
+<div class="complexity-strip"><div><span>Список смежности</span><b>O(V+E)</b><small>хранение графа</small></div><div><span>Операция heap</span><b>O(log E)</b><small>ленивые записи heapq</small></div><div><span>Итого</span><b>O((V+E) log E)</b><small>= O((V+E) log V) для простого графа</small></div><div><span>Размер heap</span><b>O(E)</b><small>устаревшие записи остаются</small></div></div>
 </section>
 
 <section class="lecture-section" id="paths">
