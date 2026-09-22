@@ -8,7 +8,7 @@
 <body class="lecture-page"><div aria-hidden="true" class="progress-track"><div class="progress-bar" id="reading-progress"></div></div>
 <header class="topbar"><a class="brand" href="../index-ru.html"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name ru-brand-name"><span class="ru-brand-lines"><span>Гайд по алгоритмам</span><span class="ru-brand-presented">presented by Аллан</span></span></span></a>
 <nav aria-label="Основная навигация" class="topnav"><a href="index-ru.html">Жадные алгоритмы</a><div aria-label="Язык" class="language-switch"><a href="interval-scheduling.html">EN</a><span class="language-separator">·</span><span class="current">RU</span></div></nav></header>
-<aside aria-label="Навигация по разделу" class="sidebar"><div class="sidebar-title">Глава 9 · Раздел 4</div><a href="#problem">Постановка</a><a href="#choices">Выбор правила</a><a href="#classroom-walk">Пошаговое расписание</a><a href="#frontier">Почему earliest finish доминирует</a><a href="#algorithm">Алгоритм</a><a href="#proof">Корректность</a><a href="#runtime">Откуда берётся O(n log n)</a><a href="#implementation">Реализация</a><a href="#recognition">Как распознать задачу</a><a href="#variants">Варианты задачи</a><a href="#exercises">Задачи</a></aside>
+<aside aria-label="Навигация по разделу" class="sidebar"><div class="sidebar-title">Глава 9 · Раздел 4</div><a href="#problem">Постановка</a><a href="#choices">Выбор правила</a><a href="#classroom-walk">Пошаговое расписание</a><a href="#frontier">Почему earliest finish доминирует</a><a href="#algorithm">Алгоритм</a><a href="#proof">Корректность</a><a href="#runtime">Откуда берётся O(n log n)</a><a href="#implementation">Реализация</a><a href="#interval-pattern">Какой interval pattern нужен?</a><a href="#recognition">Как распознать задачу</a><a href="#variants">Варианты задачи</a><a href="#exercises">Задачи</a></aside>
 <main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Глава 9 · Раздел 4</div><h1>Выбор непересекающихся интервалов</h1><p class="chapter-topics">Нужно выбрать как можно больше непересекающихся интервалов. Правильный жадный ход — освободить время как можно раньше.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-interval-scheduling.svg"/></div></section>
 <section class="lecture-section" id="problem">
 <h2>Выбрать как можно больше интервалов</h2>
@@ -126,6 +126,19 @@
 <div class="code-note-item wide-note"><span>5–8</span><p>После сортировки достаточно одного прохода. Принимаем ровно те интервалы, которые совместимы с последним выбранным.</p></div>
 </div></div>
 <div class="complexity-strip"><div><span>Сортировка</span><b>O(n log n)</b><small>по окончанию</small></div><div><span>Проход</span><b>O(n)</b><small>один раз</small></div><div><span>Итого</span><b>O(n log n)</b><small>доминирует сортировка</small></div><div><span>Доп. память</span><b>O(n)</b><small>для ответа</small></div></div>
+</section>
+
+<!-- coding-patterns-round-interval -->
+<section class="lecture-section" id="interval-pattern">
+<h2>“Intervals” — не один pattern: representation выбирается по вопросу</h2>
+<p class="lead">На интервью interval inputs часто выглядят почти одинаково. Именно objective определяет, какая сортировка нужна и нужно ли вообще хранить intervals как единые объекты.</p>
+<div class="sort-key-grid">
+<article><code>sort by start</code><h3>Merge overlaps</h3><p>После сортировки по start достаточно сравнивать текущий interval только с последним merged interval. Более ранний start задаёт левую границу.</p></article>
+<article><code>sort by finish</code><h3>Maximum compatible subset</h3><p>В Interval Scheduling цель не merge, а сохранить место для будущего. Поэтому safe greedy key — earliest finish.</p></article>
+<article><code>sort endpoints</code><h3>Maximum overlap / room count</h3><p>Если нужен только максимум одновременно active intervals, start/end можно обрабатывать как события и вообще не сохранять identity каждого interval.</p></article>
+</div>
+<div class="edge-case-row"><span>closed vs half-open endpoints</span><span>equal start times</span><span>equal finish/start times</span><span>нужны intervals или только count</span></div>
+<div class="interview-answer"><h3>До кода</h3><p>Нарисуйте два-три interval и вслух скажите, что означает tie. Большая доля ошибок в interval-задачах — это правильный high-level pattern с неправильной endpoint semantics.</p></div>
 </section>
 
 <section class="lecture-section" id="recognition">
