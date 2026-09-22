@@ -7,10 +7,10 @@
 <body class="lecture-page"><div aria-hidden="true" class="progress-track"><div class="progress-bar" id="reading-progress"></div></div>
 <header class="topbar"><a class="brand" href="../"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name">Allan's Handbook of Algorithms</span></a><nav aria-label="Primary navigation" class="topnav"><a href="./">Greedy overview</a><div aria-label="Language" class="language-switch"><span class="current">EN</span><span class="language-separator">·</span><a href="greedy-vs-dp-ru.html">RU</a></div></nav></header>
 <aside aria-label="Section navigation" class="sidebar"><div class="sidebar-title">Chapter 9 · Section 3</div><a href="#difference">Core difference</a><a href="#structure">Shared structure</a><a href="#coins">Coin change</a><a href="#coin-system">A realistic coin-system trap</a><a href="#knapsack">0/1 Knapsack</a><a href="#knapsack-ladder">Knapsack: three levels</a><a href="#capacity-state">When DP is “fast” only for small capacity</a><a href="#weighted">Weighted intervals</a><a href="#state">What must the future remember?</a><a href="#compressed-dp">When DP collapses to one state</a><a href="#branch-test">Can one branch be discarded?</a><a href="#signals">Which technique?</a><a href="#code">Code comparison</a><a href="#spectrum">Exactness spectrum</a><a href="#comparison">Summary table</a><a href="#exercises">Exercises</a></aside>
-<main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Chapter 9 · Section 3</div><h1>Greedy vs Dynamic Programming</h1><p class="chapter-topics">Greedy keeps one future. Dynamic programming keeps several states alive until it knows which future wins.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-vs-dp.svg"/></div></section>
+<main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Chapter 9 · Section 3</div><h1>Greedy vs Dynamic Programming</h1><p class="chapter-topics">Greedy and dynamic programming differ mainly in how many partial states must survive. This page uses coin change, Knapsack, and interval problems to make that distinction concrete.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-vs-dp.svg"/></div></section>
 <section class="lecture-section" id="difference">
-<h2>One path or many states?</h2>
-<p class="lead">Both methods avoid brute force by exploiting structure. The difference is what they refuse to forget: greedy keeps one promising continuation, while dynamic programming keeps several partial answers because the future may treat them differently.</p><div class="concept-strip">
+<h2>Greedy choice versus dynamic-programming state</h2>
+<p class="lead">Greedy keeps one continuation only when the discarded alternatives are provably dominated. Dynamic programming keeps several states when future decisions can distinguish between them.</p><div class="concept-strip">
 <article class="concept-cell rule"><span>Greedy</span><b>Keep one future</b><p>Commit as soon as one choice can be proved safe.</p></article>
 <article class="concept-cell proof"><span>DP</span><b>Keep several states</b><p>Different partial choices remain relevant to the future.</p></article>
 <article class="concept-cell cost"><span>Diagnostic</span><b>Can one state dominate the rest?</b><p>If you cannot prove that, throwing alternatives away is dangerous.</p></article>
@@ -24,7 +24,7 @@
 </section>
 
 <section class="lecture-section" id="structure">
-<h2>What they share</h2>
+<h2>Shared ingredients</h2>
 <div class="greedy-properties">
 <article class="greedy-property"><h3>Optimal substructure</h3><p>Both methods often rely on the fact that an optimal solution contains optimal solutions to smaller subproblems.</p></article>
 <article class="greedy-property"><h3>Repeated structure</h3><p>Both methods exploit a regular way in which a large problem reduces to smaller ones.</p></article>
@@ -33,8 +33,8 @@
 </section>
 
 <section class="lecture-section" id="coins">
-<h2>Coin change: what greedy throws away</h2>
-<p class="lead">Suppose the coins are 1, 3, and 4 and we want to make amount 6 with the minimum number of coins.</p>
+<h2>Coin change: information lost by greedy choice</h2>
+<p class="lead">With coin values 1, 3, and 4 and target 6, the largest-coin-first rule commits to a state that is locally good but globally suboptimal.</p>
 <div class="two-column-block">
 <div class="text-panel"><h3>Greedy</h3><p>Take the largest coin that fits:</p><div class="formula-line">6 → 2 → 1 → 0</div><p>Choices: 4, 1, 1. Total: 3 coins.</p></div>
 <div class="proof-panel"><h3>Dynamic programming</h3><p>For every amount x, remember the minimum number of coins needed for x:</p><div class="formula-line">dp[x] = 1 + min dp[x − c]</div><p>For x = 6, the best transition uses coin 3 twice, giving 2 coins.</p></div>
@@ -44,8 +44,8 @@
 
 <!-- karumanchi-round-gvdp -->
 <section class="lecture-section" id="coin-system">
-<h2>Greedy can fail even when the denominations look “normal”</h2>
-<p class="lead">It is easy to dismiss the set <span class="math">{1,3,4}</span> as artificial. A second example shows that the issue is structural, not cosmetic.</p>
+<h2>A second coin-change counterexample</h2>
+<p class="lead">The failure of greedy coin change is not specific to the set {1,3,4}. Other denomination systems also produce locally attractive choices that block the optimum.</p>
 <div class="two-column-block">
 <div class="text-panel"><h3>Denominations</h3><p><span class="math">{1,5,10,20,25,50}</span>, target amount <span class="math">40</span>.</p><p>Largest-coin-first chooses <span class="math">25+10+5</span>: three coins.</p></div>
 <div class="proof-panel"><h3>Better combination</h3><p><span class="math">20+20</span> reaches the same amount using only two coins.</p><p>The first greedy coin creates a remainder that is locally feasible but globally expensive.</p></div>
@@ -54,8 +54,8 @@
 </section>
 
 <section class="lecture-section" id="knapsack">
-<h2>0/1 Knapsack: a classic boundary</h2>
-<p class="lead">A very natural greedy rule is to take the item with the largest value-to-weight ratio. This works for fractional knapsack, where items may be split. It can fail when each item must be taken whole.</p>
+<h2>0/1 Knapsack and Fractional Knapsack</h2>
+<p class="lead">Sorting by value-to-weight ratio is exact when items may be split. With indivisible items, the same order can discard combinations that later become optimal.</p>
 <div class="knapsack-example">
 <h3>Capacity = 50</h3>
 <div class="knapsack-items">
@@ -73,8 +73,8 @@
 
 <!-- grokking-pass-gvdp -->
 <section class="lecture-section" id="knapsack-ladder">
-<h2>Knapsack shows the whole spectrum in one problem</h2>
-<p class="lead">This is one of the clearest places to see why “fast local choice” and “exact optimization” are different goals.</p>
+<h2>Three approaches to Knapsack</h2>
+<p class="lead">Knapsack illustrates three distinct strategies: exhaustive search, a fast but generally inexact greedy order, and dynamic programming that stores the best value for many capacities.</p>
 <div class="mini-example-grid">
 <article class="mini-example bad"><h3>A natural greedy mistake</h3><p>In the classic thief example, taking the most expensive single item first yields value 3000, while a different pair is worth 3500. The first locally attractive choice blocks the better combination.</p></article>
 <article class="mini-example good"><h3>What DP preserves</h3><p>Instead of committing to one packing, DP keeps the best value for many smaller capacities. A state that looks weaker now may combine better with a later item.</p></article>
@@ -95,8 +95,8 @@
 
 <!-- skiena-round-gvdp -->
 <section class="lecture-section" id="capacity-state">
-<h2>State-space size matters: O(nC) is pseudo-polynomial</h2>
-<p class="lead">The standard integer-capacity knapsack DP is a good reminder that a compact recurrence does not automatically mean the input-size complexity is small.</p>
+<h2>Pseudo-polynomial dynamic programming</h2>
+<p class="lead">The standard integer-capacity Knapsack algorithm runs in O(nC) time. This is polynomial in the numeric capacity C, but not in the number of bits needed to encode C.</p>
 <div class="two-column-block">
 <div class="text-panel"><h3>What the table costs</h3><p>With <span class="math">n</span> items and integer capacity <span class="math">C</span>, a one-dimensional implementation can run in <span class="math">O(nC)</span> time and <span class="math">O(C)</span> space.</p></div>
 <div class="proof-panel"><h3>Why “pseudo-polynomial”?</h3><p>The number <span class="math">C</span> is written using only <span class="math">Θ(log C)</span> bits. So a runtime linear in the numeric value of <span class="math">C</span> can still be exponential in the length of that part of the input.</p></div>
@@ -110,8 +110,8 @@
 </section>
 
 <section class="lecture-section" id="weighted">
-<h2>Weighted intervals: one change flips the method</h2>
-<p class="lead">For unweighted interval scheduling, earliest finish is enough. Give each interval a profit, and that rule can fail immediately: one long valuable interval may be better than several short cheap ones.</p>
+<h2>Weighted interval scheduling</h2>
+<p class="lead">Earliest finish is exact when every interval has equal value. Once profits differ, several incompatible partial schedules may have to be retained, which leads naturally to dynamic programming.</p>
 <div class="mini-example-grid"><article class="mini-example bad"><h3>Unweighted view</h3><p>Greedy asks only how many compatible intervals can fit, so finishing early preserves room for more choices.</p></article><article class="mini-example good"><h3>Weighted view</h3><p>Now we must compare “take interval j” with “skip j”. After sorting by finish time, dynamic programming keeps both possibilities.</p></article></div>
 <div class="inline-recurrence">OPT(j) = max( wⱼ + OPT(p(j)), OPT(j−1) )</div>
 <div class="source-note"><h3>Why the sort still matters</h3><p>This is a hybrid pattern: sorting by finish time does not solve the problem, but it makes the DP state clean. <span class="math">p(j)</span> is the last interval finishing before <span class="math">j</span> starts. Weighted Interval Scheduling does not yet have its own page in this handbook.</p></div>
@@ -119,8 +119,8 @@
 
 <!-- book-synthesis-gvdp -->
 <section class="lecture-section" id="state">
-<h2>Ask what the future still needs to remember</h2>
-<p class="lead">A very practical way to distinguish greedy from DP is to ask how much information about the past must survive. Greedy works when many partial histories can be safely collapsed into one dominant summary.</p>
+<h2>How much state must be preserved?</h2>
+<p class="lead">The main distinction is whether different partial solutions can be safely collapsed into one representative. If future choices can value them differently, a single greedy state is insufficient.</p>
 <div class="pattern-lenses">
 <article class="pattern-lens"><span class="pattern-tag">One frontier</span><h3>Jump Game</h3><p>A backward scan only needs the leftmost index already known to reach the end. Every successful suffix behind that frontier is dominated by the frontier itself.</p></article>
 <article class="pattern-lens"><span class="pattern-tag">One candidate</span><h3>Gas Station</h3><p>When a running deficit first appears, an entire block of starting points can be discarded. The algorithm keeps one surviving candidate rather than a state for every start.</p></article>
@@ -131,8 +131,8 @@
 
 <!-- common-sense-round-gvdp -->
 <section class="lecture-section" id="compressed-dp">
-<h2>Sometimes “greedy vs DP” is the wrong boundary</h2>
-<p class="lead">Maximum subarray is a useful example because the same one-pass algorithm can be understood from two directions: a DP recurrence or a greedy discard rule.</p>
+<h2>When greedy and DP descriptions coincide</h2>
+<p class="lead">Some one-pass recurrences can be read either as a compressed dynamic program or as a greedy dominance argument. Maximum subarray is a standard example.</p>
 <div class="two-column-block">
 <div class="text-panel"><h3>DP view</h3><p>Let <span class="math">E_i</span> be the best subarray sum that <em>must end</em> at position <span class="math">i</span>. Then</p><div class="formula-line">Eᵢ = max(aᵢ, Eᵢ₋₁ + aᵢ)</div><p>Only the previous state is needed, so the whole DP table collapses to one variable.</p></div>
 <div class="proof-panel"><h3>Greedy view</h3><p>If the running prefix sum becomes negative, carry none of it forward. Any future suffix is better without a negative contribution, so reset the running sum and start fresh.</p></div>
@@ -147,8 +147,8 @@
 
 <!-- coding-patterns-round-gvdp -->
 <section class="lecture-section" id="branch-test">
-<h2>A useful interview test: can one branch be discarded forever?</h2>
-<p class="lead">Greedy and DP can both start from “there are several choices”. The difference is whether one choice provably dominates the others or whether multiple futures must remain alive.</p>
+<h2>Dominance test for discarding a branch</h2>
+<p class="lead">A greedy choice is justified when one partial state is at least as good as another for every possible continuation. Otherwise, both states may need to remain in the dynamic program.</p>
 <div class="recognition-grid">
 <article class="recognition-card"><span class="signal">Jump to the End</span><h3>One frontier survives</h3><p>Once index <span class="math">j</span> can reach the old destination, making <span class="math">j</span> the new destination does not lose any earlier solution: any earlier index that could reach the old destination can also reach <span class="math">j</span>.</p></article>
 <article class="recognition-card"><span class="signal">Gas Stations</span><h3>A failed segment kills candidates</h3><p>If start <span class="math">a</span> first fails at <span class="math">b</span>, all starts in that block can be discarded together. There is no reason to branch and test each one independently.</p></article>
@@ -158,8 +158,8 @@
 </section>
 
 <section class="lecture-section" id="signals">
-<h2>A practical test</h2>
-<p class="lead">Ask what information a future decision may still need. If two partial solutions can trade off different resources, keeping only one is usually unsafe.</p>
+<h2>Practical diagnostic</h2>
+<p class="lead">Look for competing resources, incomparable partial solutions, or choices whose value depends on future input. These are signs that several states may need to be preserved.</p>
 <div class="decision-grid">
 <article class="decision-card greedy-signal"><h3>Signal for greedy: exchangeability</h3><p>You can replace a choice in an optimal solution by the greedy choice without making the answer worse.</p></article>
 <article class="decision-card greedy-signal"><h3>Signal for greedy: one safe frontier</h3><p>There is a clear next edge, interval, item, or vertex that can be finalized permanently.</p></article>
@@ -170,8 +170,8 @@
 </section>
 
 <section class="lecture-section" id="code">
-<h2>The difference shows up in memory</h2>
-<p class="lead">For the same coin problem, the greedy implementation follows one path. The DP implementation explicitly stores answers to many smaller amounts.</p>
+<h2>Memory requirements</h2>
+<p class="lead">The contrast appears directly in the implementation: greedy follows one current state, while dynamic programming stores a family of subproblem answers.</p>
 <div class="dual-code">
 <div class="dual-code-block"><h3>Greedy change</h3><pre><code>def greedy_change(amount, coins):
     result = []
@@ -200,7 +200,7 @@
 </section>
 
 <section class="lecture-section" id="spectrum">
-<h2>Greedy and DP are part of a larger spectrum</h2>
+<h2>Greedy, dynamic programming, approximation, and heuristics</h2>
 <div class="table-wrap"><table><thead><tr><th>Situation</th><th>What to keep</th><th>Typical method</th><th>Example</th></tr></thead><tbody>
 <tr><td>One state dominates all competitors</td><td>One frontier / candidate</td><td>Exact greedy</td><td>Interval Scheduling, Jump Game</td></tr>
 <tr><td>Several incomparable states survive</td><td>A state table or memo</td><td>Dynamic programming</td><td>0/1 Knapsack, weighted intervals</td></tr>
@@ -211,7 +211,7 @@
 </section>
 
 <section class="lecture-section" id="comparison">
-<h2>Side by side</h2>
+<h2>Comparison</h2>
 <div class="table-wrap"><table><thead><tr><th>Question</th><th>Greedy</th><th>Dynamic programming</th></tr></thead><tbody>
 <tr><td>How many alternatives are kept?</td><td>Usually one</td><td>Many subproblem states</td></tr>
 <tr><td>Can an earlier choice be reconsidered?</td><td>No</td><td>Indirectly, by comparing state transitions</td></tr>
