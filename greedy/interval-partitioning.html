@@ -50,7 +50,7 @@
 <div class="source-note"><h3>Ties at the same start time</h3><p>Assuming positive-duration intervals, if two intervals start simultaneously, their relative order does not affect correctness. They overlap immediately, so they cannot reuse the same room regardless of which one is processed first.</p></div>
 <div class="step-flow">
 <article class="step-item"><div class="step-number">1</div><div><h3>Sort by start time</h3><p>When we process an interval, all earlier-starting intervals have already been assigned.</p></div></article>
-<article class="step-item"><div class="step-number">2</div><div><h3>Look at the earliest finishing room</h3><p>A min-heap lets us find the room that becomes free first.</p></div></article>
+<article class="step-item"><div class="step-number">2</div><div><h3>Earliest-finishing room</h3><p>A min-heap lets us find the room that becomes free first.</p></div></article>
 <article class="step-item"><div class="step-number">3</div><div><h3>Reuse if possible</h3><p>If that room finishes by the new interval’s start, assign the interval there.</p></div></article>
 <article class="step-item"><div class="step-number">4</div><div><h3>Otherwise open a new room</h3><p>If even the earliest-finishing room is still busy, every existing room is busy.</p></div></article>
 </div>
@@ -95,7 +95,7 @@
 <article class="concept-cell cost"><span>Answer</span><b>Maximum prefix sum</b><p>The peak number of active trains is the minimum number of platforms.</p></article>
 </div>
 <div class="greedy-caution"><strong>Tie rule matters.</strong> If a departure and an arrival occur at the same timestamp and the departing train releases its platform in time, process the departure first. Otherwise the sweep invents an overlap that does not exist.</div>
-<div class="bridge-note"><h3>Why this example is useful</h3><p>It makes the lower-bound proof almost physical: if three trains are simultaneously at the station, no scheduling trick can serve them with only two platforms.</p></div>
+<div class="bridge-note"><h3>Lower-bound interpretation</h3><p>It makes the lower-bound proof almost physical: if three trains are simultaneously at the station, no scheduling trick can serve them with only two platforms.</p></div>
 </section>
 
 <section class="lecture-section" id="two-array-sweep">
@@ -179,7 +179,7 @@
 </section>
 
 <section class="lecture-section" id="comparison">
-<div class="bridge-note"><h3>Another view: coloring an interval graph</h3><p>Create one graph vertex per interval and connect two vertices when the intervals overlap. Assigning rooms is exactly graph coloring on this interval graph. General graph coloring is NP-hard, but interval graphs are perfect: their chromatic number equals their clique number, which here is exactly the maximum overlap depth. The greedy scheduling proof is the algorithmic version of that structure.</p></div>
+<div class="bridge-note"><h3>Interval-graph formulation</h3><p>Create one graph vertex per interval and connect two vertices when the intervals overlap. Assigning rooms is exactly graph coloring on this interval graph. General graph coloring is NP-hard, but interval graphs are perfect: their chromatic number equals their clique number, which here is exactly the maximum overlap depth. The greedy scheduling proof is the algorithmic version of that structure.</p></div>
 <h2>Interval Scheduling versus Interval Partitioning</h2>
 <div class="table-wrap"><table><thead><tr><th>Question</th><th>Interval Scheduling</th><th>Interval Partitioning</th></tr></thead><tbody>
 <tr><td>May we discard intervals?</td><td>Yes</td><td>No</td></tr>
