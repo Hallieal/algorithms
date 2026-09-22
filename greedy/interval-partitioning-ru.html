@@ -3,7 +3,8 @@
 <title>Разбиение интервалов по ресурсам | Гайд по алгоритмам — presented by Аллан</title>
 <link href="../assets/css/styles.css" rel="stylesheet"/><link href="assets/greedy.css" rel="stylesheet"/>
 <link href="../assets/images/favicon-32.png" rel="icon" sizes="32x32" type="image/png"/><link href="../assets/images/favicon.png" rel="icon" sizes="64x64" type="image/png"/><link href="../assets/images/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180"/>
-<link href="interval-partitioning.html" hreflang="en" rel="alternate"/><link href="interval-partitioning-ru.html" hreflang="ru" rel="alternate"/></head>
+<link href="interval-partitioning.html" hreflang="en" rel="alternate"/><link href="interval-partitioning-ru.html" hreflang="ru" rel="alternate"/><noscript><style>.answer-box[hidden]{display:block!important}.reveal{display:none!important}</style></noscript>
+</head>
 <body class="lecture-page"><div aria-hidden="true" class="progress-track"><div class="progress-bar" id="reading-progress"></div></div>
 <header class="topbar"><a class="brand" href="../index-ru.html"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name ru-brand-name"><span class="ru-brand-lines"><span>Гайд по алгоритмам</span><span class="ru-brand-presented">presented by Аллан</span></span></span></a>
 <nav aria-label="Основная навигация" class="topnav"><a href="index-ru.html">Жадные алгоритмы</a><div aria-label="Язык" class="language-switch"><a href="interval-partitioning.html">EN</a><span class="language-separator">·</span><span class="current">RU</span></div></nav></header>
@@ -18,6 +19,7 @@
 </div>
 <div class="greedy-definition"><span>Разбиение интервалов</span><p>Нужно назначить каждый интервал в аудиторию так, чтобы пересекающиеся интервалы находились в разных аудиториях, и минимизировать общее число аудиторий.</p></div>
 <div class="greedy-caution"><strong>Не путайте с Interval Scheduling.</strong> Там мы максимизировали число оставленных интервалов. Здесь все интервалы обязательны, а минимизируется число параллельных ресурсов.</div>
+<div class="theory-note"><h3>Как считаются концы интервалов</h3><p>Используем полуоткрытые интервалы <span class="math">[s,f)</span>. Поэтому встреча, заканчивающаяся в 5, и встреча, начинающаяся в 5, могут использовать одну аудиторию. Именно поэтому в коде стоит <code>finish &lt;= start</code>, а не <code>finish &lt; start</code>.</p></div>
 </section>
 
 <section class="lecture-section" id="depth">
@@ -32,6 +34,7 @@
 <section class="lecture-section" id="algorithm">
 <h2>Переиспользуем аудиторию, которая освобождается первой</h2>
 <p class="lead">Сортируем по времени начала. Для нового интервала смотрим на минимальное время освобождения. Если эта аудитория уже свободна, используем её; если даже она занята, заняты все.</p>
+<div class="source-note"><h3>Что делать с одинаковым временем начала</h3><p>Если два интервала начинаются одновременно, порядок между ними не влияет на корректность. В момент начала они пересекаются, поэтому всё равно обязаны находиться в разных аудиториях.</p></div>
 <div class="step-flow">
 <article class="step-item"><div class="step-number">1</div><div><h3>Сортируем по началу</h3><p>Когда рассматриваем интервал, все более ранние по началу уже распределены.</p></div></article>
 <article class="step-item"><div class="step-number">2</div><div><h3>Берём самое раннее освобождение</h3><p>Min-heap позволяет мгновенно найти аудиторию, которая освободится первой.</p></div></article>
@@ -80,13 +83,14 @@
 </div>
 <div class="code-notes"><h3>Почему работает heap</h3>
 <div class="code-note-item"><span>4</span><p>Интервалы идут по времени начала.</p></div>
-<div class="code-note-item wide-note"><span>8–9</span><p>Если самая ранняя аудитория свободна, переиспользуем её. Для корректности подошла бы любая свободная аудитория, но heap делает проверку быстрой.</p></div>
+<div class="code-note-item wide-note"><span>8–9</span><p>Если самая ранняя аудитория удовлетворяет <code>finish &lt;= start</code>, переиспользуем её. Неравенство нестрогое именно из-за соглашения <span class="math">[s,f)</span>.</p></div>
 <div class="code-note-item wide-note"><span>10–13</span><p>Если минимальное время окончания всё ещё позже старта нового интервала, заняты все аудитории и нужна новая.</p></div>
 </div></div>
 <div class="complexity-strip"><div><span>Сортировка</span><b>O(n log n)</b><small>по началу</small></div><div><span>Операция heap</span><b>O(log n)</b><small>на интервал</small></div><div><span>Итого</span><b>O(n log n)</b><small>все интервалы</small></div><div><span>Размер heap</span><b>O(d)</b><small>d = аудитории</small></div></div>
 </section>
 
 <section class="lecture-section" id="comparison">
+<div class="bridge-note"><h3>Другой взгляд: раскраска интервального графа</h3><p>Создадим вершину для каждого интервала и соединим две вершины, если интервалы пересекаются. Распределение по аудиториям — это ровно раскраска такого интервального графа. Для общих графов раскраска NP-трудна, но интервальные графы совершенны: хроматическое число равно размеру максимальной клики, а здесь это как раз максимальная глубина пересечений. Жадный алгоритм использует именно эту специальную структуру.</p></div>
 <h2>Не путайте две задачи на интервалы</h2>
 <div class="table-wrap"><table><thead><tr><th>Вопрос</th><th>Interval Scheduling</th><th>Interval Partitioning</th></tr></thead><tbody>
 <tr><td>Можно выбрасывать интервалы?</td><td>Да</td><td>Нет</td></tr>
