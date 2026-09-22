@@ -101,7 +101,7 @@
 <div class="greedy-job-result">The first three jobs use 2 + 3 + 4 = 9 minutes, so we complete 3 jobs. The remaining 7-minute job no longer fits.</div>
 </div>
 <div class="subsection"><h3>Effect of the local choice</h3><p>If a solution contains a longer job while a shorter unchosen job exists, replacing the longer job by the shorter one cannot increase the total time. This exchange idea is exactly the kind of reasoning we need to justify a greedy rule.</p></div>
-<div class="compact-proof"><h3>A complete proof in three lines</h3><p>Let <span class="math">d₁ ≤ d₂ ≤ ··· ≤ dₙ</span>, and suppose greedy fits exactly the first <span class="math">k</span> jobs. Then <span class="math">d₁+···+dₖ ≤ T</span> but <span class="math">d₁+···+dₖ₊₁ &gt; T</span>. Any set of <span class="math">k+1</span> jobs has total duration at least that of the <span class="math">k+1</span> shortest jobs, so no solution can complete <span class="math">k+1</span> jobs.</p></div>
+<div class="compact-proof"><h3>A complete proof in three lines</h3><p>Let <span class="math">d₁ ≤ d₂ ≤ ··· ≤ dₙ</span>, and suppose greedy fits exactly the first <span class="math">k</span> jobs.</p><div class="formula-line">d₁ + ··· + dₖ ≤ T &lt; d₁ + ··· + dₖ₊₁</div><p>Any set of <span class="math">k+1</span> jobs has total duration at least that of the <span class="math">k+1</span> shortest jobs, so no solution can complete <span class="math">k+1</span> jobs.</p></div>
 </section>
 
 <!-- grokking-pass-strategy -->
