@@ -2,10 +2,11 @@
 <meta content="Greedy keeps one future. Dynamic programming keeps several states alive until it knows which future wins." name="description"/><meta content="Greedy vs Dynamic Programming | Allan's Handbook of Algorithms" property="og:title"/><meta content="Greedy keeps one future. Dynamic programming keeps several states alive until it knows which future wins." property="og:description"/><meta content="article" property="og:type"/>
 <title>Greedy vs Dynamic Programming | Allan's Handbook of Algorithms</title>
 <link href="../assets/css/styles.css" rel="stylesheet"/><link href="assets/greedy.css" rel="stylesheet"/><link href="../assets/images/favicon-32.png" rel="icon" sizes="32x32" type="image/png"/><link href="../assets/images/favicon.png" rel="icon" sizes="64x64" type="image/png"/><link href="../assets/images/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180"/>
-<link href="greedy-vs-dp.html" hreflang="en" rel="alternate"/><link href="greedy-vs-dp-ru.html" hreflang="ru" rel="alternate"/></head>
+<link href="greedy-vs-dp.html" hreflang="en" rel="alternate"/><link href="greedy-vs-dp-ru.html" hreflang="ru" rel="alternate"/><noscript><style>.answer-box[hidden]{display:block!important}.reveal{display:none!important}</style></noscript>
+</head>
 <body class="lecture-page"><div aria-hidden="true" class="progress-track"><div class="progress-bar" id="reading-progress"></div></div>
 <header class="topbar"><a class="brand" href="../"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name">Allan's Handbook of Algorithms</span></a><nav aria-label="Primary navigation" class="topnav"><a href="./">Greedy overview</a><div aria-label="Language" class="language-switch"><span class="current">EN</span><span class="language-separator">·</span><a href="greedy-vs-dp-ru.html">RU</a></div></nav></header>
-<aside aria-label="Section navigation" class="sidebar"><div class="sidebar-title">Chapter 9 · Section 3</div><a href="#difference">Core difference</a><a href="#structure">Shared structure</a><a href="#coins">Coin change</a><a href="#knapsack">0/1 Knapsack</a><a href="#signals">Which technique?</a><a href="#code">Code comparison</a><a href="#comparison">Summary table</a><a href="#exercises">Exercises</a></aside>
+<aside aria-label="Section navigation" class="sidebar"><div class="sidebar-title">Chapter 9 · Section 3</div><a href="#difference">Core difference</a><a href="#structure">Shared structure</a><a href="#coins">Coin change</a><a href="#knapsack">0/1 Knapsack</a><a href="#weighted">Weighted intervals</a><a href="#signals">Which technique?</a><a href="#code">Code comparison</a><a href="#comparison">Summary table</a><a href="#exercises">Exercises</a></aside>
 <main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Chapter 9 · Section 3</div><h1>Greedy vs Dynamic Programming</h1><p class="chapter-topics">Greedy keeps one future. Dynamic programming keeps several states alive until it knows which future wins.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-vs-dp.svg"/></div></section>
 <section class="lecture-section" id="difference">
 <h2>One path or many states?</h2>
@@ -59,6 +60,14 @@
 <p>The greedy first choice A is locally attractive but blocks the globally best combination. A DP indexed by remaining capacity or used capacity can compare these alternatives.</p>
 </section>
 
+<section class="lecture-section" id="weighted">
+<h2>Weighted intervals: one change flips the method</h2>
+<p class="lead">For unweighted interval scheduling, earliest finish is enough. Give each interval a profit, and that rule can fail immediately: one long valuable interval may be better than several short cheap ones.</p>
+<div class="mini-example-grid"><article class="mini-example bad"><h3>Unweighted view</h3><p>Greedy asks only how many compatible intervals can fit, so finishing early preserves room for more choices.</p></article><article class="mini-example good"><h3>Weighted view</h3><p>Now we must compare “take interval j” with “skip j”. After sorting by finish time, dynamic programming keeps both possibilities.</p></article></div>
+<div class="inline-recurrence">OPT(j) = max( wⱼ + OPT(p(j)), OPT(j−1) )</div>
+<div class="source-note"><h3>Why the sort still matters</h3><p>This is a hybrid pattern: sorting by finish time does not solve the problem, but it makes the DP state clean. <span class="math">p(j)</span> is the last interval finishing before <span class="math">j</span> starts. Weighted Interval Scheduling does not yet have its own page in this handbook.</p></div>
+</section>
+
 <section class="lecture-section" id="signals">
 <h2>A practical test</h2>
 <p class="lead">Ask what information a future decision may still need. If two partial solutions can trade off different resources, keeping only one is usually unsafe.</p>
@@ -67,6 +76,7 @@
 <article class="decision-card greedy-signal"><h3>Signal for greedy: one safe frontier</h3><p>There is a clear next edge, interval, item, or vertex that can be finalized permanently.</p></article>
 <article class="decision-card dp-signal"><h3>Signal for DP: resource trade-offs</h3><p>Different partial solutions use different amounts of time, capacity, cost, or another resource, and none obviously dominates.</p></article>
 <article class="decision-card dp-signal"><h3>Signal for DP: future-dependent choices</h3><p>A locally worse choice can create a better combination later, so several states must remain alive.</p></article>
+<article class="decision-card dp-signal"><h3>Fast counterexample test</h3><p>Try to make the locally best greedy choice lead to a globally worse answer. If you can do it quickly, stop searching for a greedy proof and look for the missing state.</p></article>
 </div>
 </section>
 
@@ -108,6 +118,7 @@
 <tr><td>Main proof idea</td><td>Safe greedy choice / exchange / staying ahead</td><td>Correct recurrence + optimal substructure</td></tr>
 <tr><td>Typical memory</td><td>Small</td><td>Often proportional to the number of states</td></tr>
 <tr><td>Typical speed</td><td>Often very fast</td><td>Often slower but more general</td></tr>
+<tr><td>Hybrid cases</td><td colspan="2">A greedy pre-sort may simplify a DP without replacing it. Weighted Interval Scheduling sorts by finish time, then runs DP on that order.</td></tr>
 </tbody></table></div>
 </section>
 
