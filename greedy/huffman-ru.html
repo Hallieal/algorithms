@@ -8,7 +8,7 @@
 <body class="lecture-page"><div aria-hidden="true" class="progress-track"><div class="progress-bar" id="reading-progress"></div></div>
 <header class="topbar"><a class="brand" href="../index-ru.html"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name ru-brand-name"><span class="ru-brand-lines"><span>Гайд по алгоритмам</span><span class="ru-brand-presented">presented by Аллан</span></span></span></a>
 <nav aria-label="Основная навигация" class="topnav"><a href="index-ru.html">Жадные алгоритмы</a><div aria-label="Язык" class="language-switch"><a href="huffman.html">EN</a><span class="language-separator">·</span><span class="current">RU</span></div></nav></header>
-<aside aria-label="Навигация по разделу" class="sidebar"><div class="sidebar-title">Глава 9 · Раздел 8</div><a href="#problem">Постановка</a><a href="#bit-baseline">Зачем variable length</a><a href="#bits-first">Зачем variable-length codes?</a><a href="#prefix">Префиксные коды</a><a href="#decode">Декодирование по битам</a><a href="#decode">Декодирование по дереву</a><a href="#algorithm">Алгоритм</a><a href="#tree">Дерево и коды</a><a href="#merge">Optimal merge pattern</a><a href="#entropy">Энтропия</a><a href="#proof">Корректность</a><a href="#implementation">Реализация</a><a href="#limits">Что оптимизируется</a><a href="#exercises">Задачи</a></aside>
+<aside aria-label="Навигация по разделу" class="sidebar"><div class="sidebar-title">Глава 9 · Раздел 8</div><a href="#problem">Постановка</a><a href="#bits-first">Зачем variable-length codes?</a><a href="#prefix">Префиксные коды</a><a href="#decode">Декодирование по дереву</a><a href="#algorithm">Алгоритм</a><a href="#tree">Дерево и коды</a><a href="#merge">Optimal merge pattern</a><a href="#entropy">Энтропия</a><a href="#proof">Корректность</a><a href="#implementation">Реализация</a><a href="#limits">Что оптимизируется</a><a href="#exercises">Задачи</a></aside>
 <main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Глава 9 · Раздел 8</div><h1>Кодирование Хаффмана</h1><p class="chapter-topics">Частые символы должны иметь короткие коды. Хаффман добивается этого, каждый раз объединяя два узла с минимальными частотами.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-huffman.svg"/></div></section>
 <section class="lecture-section" id="problem">
 <h2>Частые символы должны кодироваться дёшево</h2>
@@ -29,18 +29,6 @@
 </section>
 
 <!-- grokking-pass-huffman -->
-<section class="lecture-section" id="bit-baseline">
-<h2>Начните с вопроса о памяти, а не с дерева</h2>
-<p class="lead">Зачем вообще разрешать codewords разной длины? Fixed-width code тратит одинаковое число битов на частые и редкие символы. Frequency-aware code может тратить биты там, где они действительно нужны.</p>
-<div class="bit-baseline">
-<div class="bit-side"><h3>Fixed width</h3><p>Пусть A встречается 6 раз, B — два, C — один. Для трёх символов нужно 2 бита на символ, поэтому 9 символов стоят <strong>18 bits</strong>.</p></div>
-<div class="bit-arrow">→</div>
-<div class="bit-side good"><h3>Variable length</h3><p>Возьмём A=<code>1</code>, B=<code>01</code>, C=<code>00</code>. Те же частоты стоят <strong>12 bits</strong>: 6·1 + 2·2 + 1·2.</p></div>
-</div>
-<div class="one-line"><strong>Идея до Huffman:</strong> частые символы должны иметь более короткие пути от root до leaf. Greedy merge Хаффмана систематически строит лучший prefix tree для этой цели.</div>
-</section>
-
-<!-- grokking-round-huffman -->
 <section class="lecture-section" id="bits-first">
 <h2>До дерева: сначала увидим, какие биты мы вообще экономим</h2>
 <p class="lead">Huffman становится гораздо понятнее, когда compression виден как задача подсчёта битов. Возьмём крошечное сообщение <code>tilt</code>: в нём всего три разных символа, причём один встречается дважды.</p>
@@ -68,13 +56,6 @@
 <div class="prefix-code-row"><span>C</span><code>11</code></div>
 <p>Каждое завершённое кодовое слово соответствует листу двоичного дерева, поэтому декодирование однозначно.</p></article>
 </div>
-</section>
-
-<section class="lecture-section" id="decode">
-<h2>Variable-length code декодируется проходом по дереву</h2>
-<p class="lead">Fixed-width stream можно разбить на равные chunks. У Huffman codewords длины разные, поэтому decoder читает по одному bit и использует само дерево для определения границы символа.</p>
-<div class="predict-card"><span class="predict-kicker">Пример code</span><h3>A = 1 · B = 01 · C = 00</h3><div class="decode-tape"><span class="decode-bit leaf">1</span><span class="decode-bit">0</span><span class="decode-bit leaf">1</span><span class="decode-bit">0</span><span class="decode-bit leaf">0</span></div><p class="decode-rule">Стартуем в root. Bit 0 ведёт влево, bit 1 — вправо. Как только дошли до leaf, выдаём symbol и возвращаемся в root. Tape выше декодируется как A, B, C.</p></div>
-<div class="bridge-note"><h3>Почему symbols должны быть только в leaves</h3><p>Если symbol стоял бы во внутренней вершине, его code был бы prefix для всех кодов ниже и декодирование стало бы неоднозначным. Leaf-only representation автоматически даёт prefix-free code.</p></div>
 </section>
 
 <section class="lecture-section" id="decode">
