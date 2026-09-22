@@ -8,7 +8,7 @@
 <body class="lecture-page"><div aria-hidden="true" class="progress-track"><div class="progress-bar" id="reading-progress"></div></div>
 <header class="topbar"><a class="brand" href="../index-ru.html"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name ru-brand-name"><span class="ru-brand-lines"><span>Гайд по алгоритмам</span><span class="ru-brand-presented">presented by Аллан</span></span></span></a>
 <nav aria-label="Основная навигация" class="topnav"><a href="index-ru.html">Жадные алгоритмы</a><div aria-label="Язык" class="language-switch"><a href="interval-partitioning.html">EN</a><span class="language-separator">·</span><span class="current">RU</span></div></nav></header>
-<aside aria-label="Навигация по разделу" class="sidebar"><div class="sidebar-title">Глава 9 · Раздел 5</div><a href="#problem">Постановка</a><a href="#depth">Depth</a><a href="#same-input">Те же интервалы, другая задача</a><a href="#algorithm">Алгоритм</a><a href="#sweep">Только число комнат: sweep line</a><a href="#proof">Корректность</a><a href="#implementation">Реализация</a><a href="#comparison">Сравнение</a><a href="#exercises">Задачи</a></aside>
+<aside aria-label="Навигация по разделу" class="sidebar"><div class="sidebar-title">Глава 9 · Раздел 5</div><a href="#problem">Постановка</a><a href="#depth">Depth</a><a href="#same-input">Те же интервалы, другая задача</a><a href="#algorithm">Алгоритм</a><a href="#sweep">Только число комнат: sweep line</a><a href="#proof">Корректность</a><a href="#data-structure">Почему нужен heap</a><a href="#implementation">Реализация</a><a href="#comparison">Сравнение</a><a href="#exercises">Задачи</a></aside>
 <main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Глава 9 · Раздел 5</div><h1>Разбиение интервалов по ресурсам</h1><p class="chapter-topics">Нужно разместить все интервалы в минимальном числе аудиторий. Переиспользуем ту, которая освобождается раньше всех.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-interval-partitioning.svg"/></div></section>
 <section class="lecture-section" id="problem">
 <h2>Использовать как можно меньше аудиторий</h2>
@@ -93,6 +93,17 @@
 <div class="proof-check"><span>4</span><p>Следовательно, depth не меньше <span class="math">d+1</span>. Любое расписание требует столько же аудиторий. Новая аудитория неизбежна.</p></div>
 </div>
 <div class="proof-goal"><h3>Оптимальность</h3><p>Каждая новая аудитория открывается только тогда, когда её наличие вынуждено одновременным пересечением. Поэтому число аудиторий у greedy равно depth, и лучше сделать невозможно.</p></div>
+</section>
+
+<!-- common-sense-round-partition -->
+<section class="lecture-section" id="data-structure">
+<h2>Greedy-rule прост; быстрым его делает data structure</h2>
+<p class="lead">Для каждого interval нужна одна повторяющаяся операция: найти room, чья текущая пара заканчивается раньше всех. Runtime зависит от того, как именно мы храним rooms.</p>
+<div class="operation-profile">
+<article class="neutral"><h3>Сканировать все rooms</h3><p>Храним finish times в обычном list. Поиск earliest-free room стоит <span class="math">O(r)</span> для <span class="math">r</span> комнат, поэтому assignment для <span class="math">n</span> intervals может стоить <span class="math">O(nr)</span> после sorting.</p></article>
+<article class="good"><h3>Использовать min-heap</h3><p>Минимальный finish всегда лежит в root. Посмотреть его можно сразу, а заменить или добавить room finish — за <span class="math">O(log r)</span>. Assignment phase становится <span class="math">O(n log r)</span>.</p></article>
+</div>
+<div class="one-line"><strong>Data structure выбирается по повторяющейся операции.</strong> Алгоритм постоянно спрашивает минимум finish time — именно его min-heap умеет быстро выставлять наверх.</div>
 </section>
 
 <section class="lecture-section" id="implementation">
