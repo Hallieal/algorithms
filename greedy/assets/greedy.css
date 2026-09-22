@@ -570,3 +570,11 @@
     min-height:0;
   }
 }
+
+.greedy-overview-lead{
+  max-width:820px;
+  margin:10px 0 30px;
+  color:#5f6870;
+  font-size:17px;
+  line-height:1.72;
+}
