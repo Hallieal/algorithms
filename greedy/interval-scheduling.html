@@ -44,14 +44,18 @@
 <!-- grokking-pass-interval -->
 <section class="lecture-section" id="classroom-walk">
 <h2>See the greedy choice happen, one class at a time</h2>
-<p class="lead">A simple classroom story makes the algorithm memorable: choose the class that ends first, delete everything that now conflicts, and repeat on what remains.</p>
+<p class="lead">The classroom version is useful because the rule can be executed almost without notation. At each step, ignore every class that now conflicts and choose the remaining class that ends first.</p>
+<div class="predict-card"><span class="predict-kicker">Try it before reading</span><h3>Which class would you choose first?</h3><p>Available: Algorithms 09:00–10:00, Physics 09:30–11:00, Statistics 10:00–11:00, Music 10:30–12:00, Art 11:00–12:00. Do not think about the whole schedule yet—make one local choice.</p></div>
 <div class="classroom-walk">
-<div class="classroom-step"><span>Start</span><p>Available: Algorithms 09:00–10:00, Physics 09:30–11:00, Statistics 10:00–11:00, Music 10:30–12:00, Art 11:00–12:00.</p></div>
-<div class="classroom-step"><span>Pick 1</span><p><strong>Algorithms</strong> ends first at 10:00. Keep it. <del>Physics</del> overlaps and is removed.</p></div>
+<div class="classroom-step"><span>Pick 1</span><p><strong>Algorithms</strong> ends first at 10:00. Keep it. <del>Physics</del> is now impossible because it overlaps.</p></div>
 <div class="classroom-step"><span>Pick 2</span><p>Among classes starting at or after 10:00, <strong>Statistics</strong> ends first at 11:00. Keep it. <del>Music</del> now conflicts.</p></div>
 <div class="classroom-step"><span>Pick 3</span><p><strong>Art</strong> starts exactly when Statistics ends, so under <span class="math">[s,f)</span> semantics it is compatible. Final schedule: three classes.</p></div>
 </div>
-<div class="predict-card"><span class="predict-kicker">Before looking at the proof</span><h3>What information did the algorithm keep?</h3><p>After every choice, it forgot almost everything about the past. It only needed the finish time of the last accepted class. That one-number frontier is a strong clue that a greedy solution may exist.</p></div>
+<div class="inline-contrast">
+<div class="yes"><h3>What the algorithm remembers</h3><p>Only the finish time of the last accepted class. Everything earlier can be forgotten once the choice is fixed.</p></div>
+<div class="no"><h3>What it does not try to predict</h3><p>It never searches over future combinations. The proof is what justifies that aggressive forgetting.</p></div>
+</div>
+<div class="one-line"><strong>The simplicity is the point.</strong> A greedy algorithm can be almost trivial to execute and still require a nontrivial proof.</div>
 </section>
 
 <section class="lecture-section" id="frontier">
