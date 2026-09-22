@@ -27,7 +27,7 @@
 </header>
 <aside aria-label="Навигация по разделу" class="sidebar">
 <div class="sidebar-title">Глава 9 · Раздел 1</div>
-<a href="#idea">Основная идея</a><a href="#anatomy">Из чего состоит алгоритм</a><a href="#example">Первый пример</a><a href="#failure">Когда greedy ошибается</a><a href="#properties">Структурные свойства</a><a href="#implementation">Реализация</a><a href="#complexity">Эффективность</a><a href="#exercises">Задачи</a>
+<a href="#idea">Основная идея</a><a href="#guarantees">Алгоритм или эвристика?</a><a href="#anatomy">Из чего состоит алгоритм</a><a href="#example">Первый пример</a><a href="#failure">Когда greedy ошибается</a><a href="#design-loop">Как находят greedy</a><a href="#properties">Структурные свойства</a><a href="#implementation">Реализация</a><a href="#complexity">Эффективность</a><a href="#recognition">Паттерны распознавания</a><a href="#exercises">Задачи</a>
 </aside>
 <main class="lecture">
 <section class="lecture-hero greedy-lecture-hero">
@@ -53,6 +53,18 @@
 <article class="greedy-process-card"><div class="greedy-process-num">4</div><h3>Фиксируем и продолжаем</h3><p>Не откатываемся назад. Уменьшаем задачу и повторяем шаги для остатка.</p></article>
 </div>
 <div class="greedy-definition"><span>Определение</span><p>Жадный алгоритм строит решение по частям, каждый раз делая локально оптимальный допустимый выбор и не пересматривая уже зафиксированные решения.</p></div>
+</section>
+
+<!-- book-synthesis-strategy -->
+<section class="lecture-section" id="guarantees">
+<h2>Greedy algorithm, heuristic или approximation?</h2>
+<p class="lead">Одинаково «локальное» правило может играть три совершенно разные роли. Их важно не смешивать: «хорошо сработало на моих примерах» ещё не означает корректность.</p>
+<div class="concept-strip">
+<article class="concept-cell rule"><span>Exact algorithm</span><b>Всегда возвращает optimum</b><p>Interval Scheduling, Fractional Knapsack, Huffman, MST и Dijkstra относятся сюда при выполнении их предположений.</p></article>
+<article class="concept-cell proof"><span>Heuristic</span><b>Быстрое правило без worst-case гарантии</b><p>Эвристика может быть очень хороша на практике, но её качество подтверждается экспериментом, а не доказательством.</p></article>
+<article class="concept-cell cost"><span>Approximation</span><b>Может промахнуться мимо OPT, но контролируемо</b><p>Greedy Set Cover не точен, зато имеет доказанную гарантию приближения. Это существенно сильнее, чем «обычно работает».</p></article>
+</div>
+<div class="one-line"><strong>Правило проектирования.</strong> Сначала решите, что именно вы утверждаете: точный optimum, гарантированное приближение или практическую эвристику. Для этих трёх утверждений нужны разные доказательства.</div>
 </section>
 
 <section class="lecture-section" id="anatomy">
@@ -95,6 +107,19 @@
 </div>
 </div>
 <p>Для суммы 6 и монет 1, 3 и 4 жадное правило выбирает 4 + 1 + 1 — три монеты. Но 3 + 3 использует только две. Локальное правило понятно и всегда даёт допустимое решение, но не гарантирует глобальный оптимум.</p>
+</section>
+
+<section class="lecture-section" id="design-loop">
+<h2>Как на самом деле находят greedy-алгоритмы</h2>
+<p class="lead">Хорошее жадное правило редко появляется сразу. Рабочий процесс — предложить естественный локальный выбор, попытаться его сломать и сохранить только тот структурный инвариант, который пережил контрпримеры.</p>
+<div class="design-loop-grid">
+<article class="design-loop-card"><span>1</span><h3>Зафиксируйте модель</h3><p>Точно сформулируйте допустимость и целевую функцию. Маленькое изменение модели может полностью уничтожить greedy-rule.</p></article>
+<article class="design-loop-card"><span>2</span><h3>Предложите локальный выбор</h3><p>Самое раннее окончание? Максимальная плотность? Самое дешёвое ребро? Минимальная временная метка?</p></article>
+<article class="design-loop-card"><span>3</span><h3>Попробуйте сломать</h3><p>Стройте маленькие неприятные примеры. Один контрпример убивает claim об exact greedy и часто показывает, что именно нужно защищать.</p></article>
+<article class="design-loop-card"><span>4</span><h3>Назовите инвариант</h3><p>Что остаётся безопасным после шага: больше свободного времени, лес без циклов, окончательное расстояние, допустимый префикс?</p></article>
+<article class="design-loop-card"><span>5</span><h3>Докажите или понизьте claim</h3><p>Используйте exchange, staying ahead, induction или cut. Если доказательства нет, правило может остаться heuristic/approximation — но надо так его и называть.</p></article>
+</div>
+<div class="practice-note"><h3>Контрпример — часть дизайна, а не провал</h3><p>Попробовать earliest start и shortest duration перед earliest finish полезно: неправильные правила показывают, какая информация действительно важна, и делают правильное доказательство заметнее.</p></div>
 </section>
 
 <section class="lecture-section" id="properties">
@@ -140,13 +165,25 @@
 <p class="caption">Точная оценка всегда зависит от конкретной задачи и структур данных. Жадный алгоритм вполне может быть медленным, если вычисление локального выбора дорого.</p>
 </section>
 
+<section class="lecture-section" id="recognition">
+<h2>Три interview-style greedy-паттерна</h2>
+<p class="lead">Не всякая greedy-задача выглядит как сортировка интервалов. Здесь три полезных формы, где множество будущих вариантов сжимается в одну безопасную характеристику.</p>
+<div class="pattern-lenses">
+<article class="pattern-lens"><span class="pattern-tag">Backward frontier</span><h3>Jump to the end</h3><p>Идём справа налево и храним самую левую позицию, из которой уже известно, что конец достижим. Если <span class="math">i</span> достигает frontier, переносим frontier в <span class="math">i</span>. Один индекс заменяет множество успешных suffix-состояний.</p></article>
+<article class="pattern-lens"><span class="pattern-tag">Candidate elimination</span><h3>Gas station</h3><p>Если старт из <span class="math">a</span> впервые приводит к отрицательному баку у <span class="math">b</span>, ни одна станция строго между <span class="math">a</span> и <span class="math">b</span> тоже не может быть стартом. Один неудачный prefix сразу выбрасывает целый блок кандидатов.</p></article>
+<article class="pattern-lens"><span class="pattern-tag">Directional constraints</span><h3>Candies</h3><p>Проход слева направо удовлетворяет ограничения относительно левого соседа, проход справа налево — относительно правого. Иногда greedy получается разложением локальных ограничений по направлениям.</p></article>
+</div>
+<div class="bridge-note"><h3>Что искать</h3><p>Хороший сигнал — утверждение о <em>доминировании</em>: одно частичное состояние никогда не хуже целого семейства альтернатив, поэтому альтернативы можно навсегда забыть.</p></div>
+</section>
+
 <section class="lecture-section" id="exercises">
 <h2>Задачи</h2>
 <div class="exercise-list">
 <article class="exercise"><div class="exercise-num">1</div><div><h3>Разберите жадные компоненты</h3><p>В примере с 10 минутами назовите правило приоритета, условие допустимости и необратимое решение.</p><button aria-expanded="false" class="reveal" data-reveal="gs-ru-1" type="button">Показать ответ</button><div class="answer-box" hidden id="gs-ru-1">Приоритет: самая короткая оставшаяся задача. Допустимость: задача должна помещаться в оставшееся время. Фиксация: выбранная задача остаётся в расписании.</div></div></article>
 <article class="exercise"><div class="exercise-num">2</div><div><h3>Сломайте правило монет</h3><p>Для монет 1, 5 и 6 и суммы 10 что выдаст правило «бери крупнейшую монету»? Каков оптимум? Затем сформулируйте, что означает термин <em>canonical coin system</em>.</p><button aria-expanded="false" class="reveal" data-reveal="gs-ru-2" type="button">Показать ответ</button><div class="answer-box" hidden id="gs-ru-2">Greedy даст 6 + 1 + 1 + 1 + 1 — пять монет. Оптимум: 5 + 5 — две монеты. Система монет называется канонической, если правило «каждый раз брать крупнейшую подходящую монету» даёт минимальное число монет для любой суммы.</div></div></article>
 <article class="exercise"><div class="exercise-num">3</div><div><h3>Допустимость — не оптимальность</h3><p>Почему проверка допустимости после каждого выбора не доказывает оптимальность итогового решения?</p><button aria-expanded="false" class="reveal" data-reveal="gs-ru-3" type="button">Показать ответ</button><div class="answer-box" hidden id="gs-ru-3">Допустимость говорит только о том, что частичное решение не нарушает ограничения. Она ничего не говорит о том, сохраняет ли выбор возможность прийти к глобально лучшему ответу.</div></div></article>
-<article class="exercise"><div class="exercise-num">4</div><div><h3>Сложность</h3><p>Если жадный алгоритм сортирует n кандидатов, а затем проверяет каждого за O(1), какова общая сложность?</p><button aria-expanded="false" class="reveal" data-reveal="gs-ru-4" type="button">Показать ответ</button><div class="answer-box" hidden id="gs-ru-4">O(n log n): сортировка доминирует над последующим линейным проходом O(n).</div></div></article>
+<article class="exercise"><div class="exercise-num">4</div><div><h3>Классифицируйте утверждение</h3><p>Быстрое правило на всех ваших тестах даёт результат не хуже чем на 10% от optimum, но доказательства нет. Это exact algorithm, approximation algorithm или heuristic?</p><button aria-expanded="false" class="reveal" data-reveal="gs-ru-4a" type="button">Показать ответ</button><div class="answer-box" hidden id="gs-ru-4a">Пока это heuristic. Экспериментальная стабильность полезна, но approximation требует доказанной worst-case гарантии, а exact algorithm — доказательства оптимальности.</div></div></article>
+<article class="exercise"><div class="exercise-num">5</div><div><h3>Сложность</h3><p>Если жадный алгоритм сортирует n кандидатов, а затем проверяет каждого за O(1), какова общая сложность?</p><button aria-expanded="false" class="reveal" data-reveal="gs-ru-4" type="button">Показать ответ</button><div class="answer-box" hidden id="gs-ru-4">O(n log n): сортировка доминирует над последующим линейным проходом O(n).</div></div></article>
 </div>
 <div class="next-part"><h3>Следующий раздел: доказательства корректности</h3><p>Теперь превратим интуитивную идею «безопасного локального выбора» в несколько стандартных схем доказательства.</p><a class="next-part-link" href="proofs-ru.html">Доказательства корректности →</a></div>
 </section>
