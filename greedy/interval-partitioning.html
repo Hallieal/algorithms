@@ -25,6 +25,7 @@
 <section class="lecture-section" id="depth">
 <h2>Lower bound from overlap depth</h2>
 <p class="lead">If d intervals overlap at the same time, at least d rooms are necessary. The maximum simultaneous overlap is therefore a lower bound on every feasible schedule.</p>
+<div class="formula-line">rooms ≥ depth = max<sub>t</sub> active(t)</div>
 <div class="depth-illustration">
 <div class="depth-card"><h3>Depth</h3><div class="depth-number">3</div><p>In our example, A, B, and C overlap around time 2. Therefore at least 3 rooms are necessary.</p></div>
 <div class="depth-card"><h3>Goal of the greedy proof</h3><p>If our algorithm never uses more rooms than the depth, then it is optimal: it matches a lower bound that every schedule must obey.</p></div>
