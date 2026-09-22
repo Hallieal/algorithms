@@ -1017,3 +1017,80 @@
   .path-choice{grid-template-columns:1fr}
   .classroom-step{grid-template-columns:70px 1fr}
 }
+
+
+/* =========================================================
+   A Common-Sense Guide pass — optimization lens and state compression
+   ========================================================= */
+.runtime-ladder{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:12px;
+  margin-top:22px;
+}
+.runtime-step{
+  padding:18px 19px;
+  border:1px solid var(--line);
+  border-radius:14px;
+  background:#fff;
+}
+.runtime-step span{
+  display:block;
+  margin-bottom:7px;
+  color:#8b949a;
+  font-size:9px;
+  font-weight:850;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+}
+.runtime-step h3{font-size:15px;margin-bottom:6px}
+.runtime-step p{margin:0;color:#68727a;font-size:12.5px;line-height:1.55}
+.runtime-step.best{border-top:3px solid var(--green)}
+.optimization-gap{
+  margin-top:18px;
+  padding:18px 20px;
+  border:1px dashed #c8ced3;
+  border-radius:14px;
+  background:#fbfbfa;
+}
+.optimization-gap b{display:block;margin-bottom:6px;font-size:14px}
+.optimization-gap p{margin:0;color:#677179;font-size:12.5px;line-height:1.6}
+.stream-state{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:10px;
+  margin-top:20px;
+}
+.stream-state article{
+  padding:17px;
+  border:1px solid var(--line);
+  border-radius:13px;
+  background:#fff;
+}
+.stream-state code{
+  display:block;
+  margin-bottom:8px;
+  color:#4f5f69;
+  font-size:12px;
+  font-weight:800;
+}
+.stream-state p{margin:0;color:#68727a;font-size:12px;line-height:1.52}
+.operation-profile{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+  margin-top:20px;
+}
+.operation-profile article{
+  padding:18px 19px;
+  border:1px solid var(--line);
+  border-radius:14px;
+  background:#fff;
+}
+.operation-profile h3{font-size:15px;margin-bottom:6px}
+.operation-profile p{margin:0;color:#68727a;font-size:12.5px;line-height:1.55}
+.operation-profile .good{border-left:4px solid var(--green)}
+.operation-profile .neutral{border-left:4px solid #8ba2b4}
+@media(max-width:760px){
+  .runtime-ladder,.stream-state,.operation-profile{grid-template-columns:1fr}
+}
