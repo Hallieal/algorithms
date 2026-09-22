@@ -1,5 +1,5 @@
 <!DOCTYPE html><html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1" name="viewport"/>
-<meta content="Find single-source shortest paths with nonnegative edge weights by repeatedly finalizing the vertex with minimum tentative distance." name="description"/><meta content="Dijkstra’s Algorithm | Allan's Handbook of Algorithms" property="og:title"/><meta content="Find single-source shortest paths with nonnegative edge weights by repeatedly finalizing the vertex with minimum tentative distance." property="og:description"/><meta content="article" property="og:type"/>
+<meta content="For nonnegative edge weights, the smallest tentative distance is safe to finalize. That single greedy step is Dijkstra’s algorithm." name="description"/><meta content="Dijkstra’s Algorithm | Allan's Handbook of Algorithms" property="og:title"/><meta content="For nonnegative edge weights, the smallest tentative distance is safe to finalize. That single greedy step is Dijkstra’s algorithm." property="og:description"/><meta content="article" property="og:type"/>
 <title>Dijkstra’s Algorithm | Allan's Handbook of Algorithms</title>
 <link href="../assets/css/styles.css" rel="stylesheet"/><link href="assets/greedy.css" rel="stylesheet"/>
 <link href="../assets/images/favicon-32.png" rel="icon" sizes="32x32" type="image/png"/><link href="../assets/images/favicon.png" rel="icon" sizes="64x64" type="image/png"/><link href="../assets/images/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180"/>
@@ -8,17 +8,21 @@
 <header class="topbar"><a class="brand" href="../"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name">Allan's Handbook of Algorithms</span></a>
 <nav aria-label="Primary navigation" class="topnav"><a href="./">Greedy overview</a><div aria-label="Language" class="language-switch"><span class="current">EN</span><span class="language-separator">·</span><a href="dijkstra-ru.html">RU</a></div></nav></header>
 <aside aria-label="Section navigation" class="sidebar"><div class="sidebar-title">Chapter 9 · Section 10</div><a href="#problem">Problem</a><a href="#idea">Greedy idea</a><a href="#demo">Step-by-step</a><a href="#proof">Correctness</a><a href="#negative">Negative edges</a><a href="#implementation">Implementation</a><a href="#paths">Recover paths</a><a href="#comparison">MST comparison</a><a href="#exercises">Exercises</a></aside>
-<main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Chapter 9 · Section 10</div><h1>Dijkstra’s Algorithm</h1><p class="chapter-topics">Find single-source shortest paths with nonnegative edge weights by repeatedly finalizing the vertex with minimum tentative distance.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-dijkstra.svg"/></div></section>
+<main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Chapter 9 · Section 10</div><h1>Dijkstra’s Algorithm</h1><p class="chapter-topics">For nonnegative edge weights, the smallest tentative distance is safe to finalize. That single greedy step is Dijkstra’s algorithm.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-dijkstra.svg"/></div></section>
 <section class="lecture-section" id="problem">
-<h2>Single-source shortest paths</h2>
-<p class="lead">Given a weighted graph and a source vertex <span class="math">s</span>, we want the minimum total weight of a path from <span class="math">s</span> to every other vertex.</p>
+<h2>Shortest paths from one source</h2>
+<p class="lead">Choose a source <span class="math">s</span>. For every vertex, we want the cheapest path from <span class="math">s</span> to that vertex. Paths may use many edges; only their total weight matters.</p><div class="concept-strip">
+<article class="concept-cell rule"><span>Rule</span><b>Finalize the smallest tentative distance</b><p>Then relax every outgoing edge from that vertex.</p></article>
+<article class="concept-cell proof"><span>Why it works</span><b>Nonnegative edges cannot create a cheaper path later</b><p>Once the minimum label is extracted, it is final.</p></article>
+<article class="concept-cell cost"><span>Cost</span><b>O((V+E) log V)</b><p>Adjacency lists plus a binary heap.</p></article>
+</div>
 <div class="greedy-definition"><span>Dijkstra’s setting</span><p>All edge weights must be nonnegative. The graph may be directed or undirected. Unreachable vertices simply keep distance <span class="math">∞</span>.</p></div>
 <div class="greedy-caution"><strong>Shortest paths and MST are different objectives.</strong> Dijkstra minimizes each source-to-vertex path separately. An MST minimizes one global sum of selected edge weights.</div>
 </section>
 
 <section class="lecture-section" id="idea">
-<h2>The greedy idea</h2>
-<p class="lead">For every vertex <span class="math">v</span>, maintain a tentative distance <span class="math">dist[v]</span>: the length of the best source-to-<span class="math">v</span> path discovered so far. Repeatedly finalize the unsettled vertex with the smallest tentative distance.</p>
+<h2>Finalize the closest unfinished vertex</h2>
+<p class="lead">Each <span class="math">dist[v]</span> is the best route found so far, not necessarily the final answer. Dijkstra repeatedly takes the smallest such label and declares exactly that one final.</p>
 <div class="greedy-process-grid">
 <article class="greedy-process-card"><div class="greedy-process-num">1</div><h3>Start at the source</h3><p>Set <span class="math">dist[s]=0</span> and all other distances to infinity.</p></article>
 <article class="greedy-process-card"><div class="greedy-process-num">2</div><h3>Extract the minimum</h3><p>Choose the unsettled vertex with the smallest current tentative distance.</p></article>
@@ -29,7 +33,7 @@
 </section>
 
 <section class="lecture-section" id="demo">
-<h2>Dijkstra step by step</h2>
+<h2>Watch the labels settle</h2>
 <p class="lead">Use the undirected graph with edges S—A=4, S—B=1, B—A=2, B—C=5, A—C=1, A—D=7, C—D=3, and B—D=8.</p>
 <div class="visualizer dijkstra-demo">
 <div class="visualizer-head"><div><h3>Distances from S</h3><p>Green rows are finalized. Orange marks the vertex finalized on the current step.</p></div><div class="step-nav-controls"><button class="previous-step" data-action="previous" type="button">← Previous</button><button class="primary-step" data-action="next" type="button">Next →</button></div></div>
@@ -44,8 +48,8 @@
 </section>
 
 <section class="lecture-section" id="proof">
-<h2>Why the minimum tentative distance is safe</h2>
-<p class="lead">Suppose <span class="math">u</span> is the unsettled vertex with minimum tentative distance. We prove that <span class="math">dist[u]</span> is already the true shortest-path distance <span class="math">δ(s,u)</span>.</p>
+<h2>Why a finalized distance never changes</h2>
+<p class="lead">Take the unfinished vertex <span class="math">u</span> with the smallest label. If a cheaper path to <span class="math">u</span> still existed, that path would have to leave the already-finalized region through some unfinished vertex whose label is no larger. That contradicts the choice of <span class="math">u</span>.</p>
 <div class="proof-checklist">
 <div class="proof-check"><span>1</span><p>Assume there is a shorter path from <span class="math">s</span> to <span class="math">u</span> than <span class="math">dist[u]</span>.</p></div>
 <div class="proof-check"><span>2</span><p>On that shortest path, let <span class="math">x</span> be the first unsettled vertex and <span class="math">y</span> its predecessor. Then <span class="math">y</span> is already finalized.</p></div>
@@ -57,8 +61,8 @@
 </section>
 
 <section class="lecture-section" id="negative">
-<h2>Why negative edges break Dijkstra</h2>
-<p class="lead">Consider a directed graph with S→A of weight 2, S→B of weight 5, and B→A of weight −10.</p>
+<h2>Exactly what a negative edge breaks</h2>
+<p class="lead">A negative edge can make a path cheaper after we have already passed through a more expensive-looking vertex. That destroys the argument that the current minimum label is final.</p>
 <div class="negative-counterexample">
 <div class="negative-side bad"><h3>What Dijkstra sees first</h3><p>After processing S: <span class="math">dist[A]=2</span> and <span class="math">dist[B]=5</span>. It finalizes A because 2 is smaller.</p></div>
 <div class="negative-arrow">→</div>
@@ -68,7 +72,7 @@
 </section>
 
 <section class="lecture-section" id="implementation">
-<h2>Python with a priority queue</h2>
+<h2>Priority-queue implementation</h2>
 <p class="lead">The heap stores pairs <code>(tentative_distance, vertex)</code>. Python’s <code>heapq</code> has no decrease-key operation, so the standard implementation pushes a new pair whenever a distance improves and skips stale entries later.</p>
 <div class="code-explainer">
 <div class="annotated-code">
@@ -99,7 +103,7 @@
 </section>
 
 <section class="lecture-section" id="paths">
-<h2>Recovering the actual paths</h2>
+<h2>Distances are not paths</h2>
 <p class="lead">Distances alone are often not enough. Store a predecessor whenever relaxation improves a vertex.</p>
 <div class="code-explainer">
 <div class="annotated-code">
@@ -113,7 +117,7 @@
 </section>
 
 <section class="lecture-section" id="comparison">
-<h2>MST vs Dijkstra</h2>
+<h2>Do not confuse Dijkstra with MST</h2>
 <div class="table-wrap"><table><thead><tr><th>Question</th><th>Minimum Spanning Tree</th><th>Dijkstra</th></tr></thead><tbody>
 <tr><td>Goal</td><td>Minimize total weight of a connecting tree</td><td>Minimize source-to-vertex path weights</td></tr>
 <tr><td>Greedy object</td><td>A safe edge</td><td>A safe vertex distance</td></tr>
