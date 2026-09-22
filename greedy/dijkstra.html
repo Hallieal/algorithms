@@ -8,7 +8,7 @@
 <body class="lecture-page"><div aria-hidden="true" class="progress-track"><div class="progress-bar" id="reading-progress"></div></div>
 <header class="topbar"><a class="brand" href="../"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name">Allan's Handbook of Algorithms</span></a>
 <nav aria-label="Primary navigation" class="topnav"><a href="./">Greedy overview</a><div aria-label="Language" class="language-switch"><span class="current">EN</span><span class="language-separator">·</span><a href="dijkstra-ru.html">RU</a></div></nav></header>
-<aside aria-label="Section navigation" class="sidebar"><div class="sidebar-title">Chapter 9 · Section 10</div><a href="#problem">Problem</a><a href="#idea">Greedy idea</a><a href="#fewest-cheapest">Fewest edges vs cheapest path</a><a href="#mental-model">Four-step mental model</a><a href="#demo">Step-by-step</a><a href="#bfs-link">From BFS to Dijkstra</a><a href="#state-table">Costs, parents, processed</a><a href="#proof">Correctness</a><a href="#negative">Negative edges</a><a href="#implementation">Implementation</a><a href="#paths">Recover paths</a><a href="#comparison">MST comparison</a><a href="#choice-guide">Which shortest-path tool?</a><a href="#exercises">Exercises</a></aside>
+<aside aria-label="Section navigation" class="sidebar"><div class="sidebar-title">Chapter 9 · Section 10</div><a href="#problem">Problem</a><a href="#idea">Greedy idea</a><a href="#fewest-cheapest">Fewest edges vs cheapest path</a><a href="#cost-not-distance">Cost need not be distance</a><a href="#mental-model">Four-step mental model</a><a href="#demo">Step-by-step</a><a href="#bfs-link">From BFS to Dijkstra</a><a href="#state-table">Costs, parents, processed</a><a href="#proof">Correctness</a><a href="#negative">Negative edges</a><a href="#implementation">Implementation</a><a href="#paths">Recover paths</a><a href="#comparison">MST comparison</a><a href="#choice-guide">Which shortest-path tool?</a><a href="#exercises">Exercises</a></aside>
 <main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Chapter 9 · Section 10</div><h1>Dijkstra’s Algorithm</h1><p class="chapter-topics">For nonnegative edge weights, the smallest tentative distance is safe to finalize. That single greedy step is Dijkstra’s algorithm.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-dijkstra.svg"/></div></section>
 <section class="lecture-section" id="problem">
 <h2>Shortest paths from one source</h2>
@@ -43,6 +43,17 @@
 <article class="good"><h3>Three edges, total cost 7</h3><p><span class="math">S → A → B → T</span> uses more segments but less total weight. Dijkstra prefers this path because the objective is accumulated cost.</p></article>
 </div>
 <div class="one-line"><strong>Choose the algorithm from the meaning of distance.</strong> Fewest edges → BFS. Minimum sum of nonnegative weights → Dijkstra.</div>
+</section>
+
+<!-- grokking-round-dijkstra -->
+<section class="lecture-section" id="cost-not-distance">
+<h2>“Shortest” can mean cheapest, fastest, or least costly</h2>
+<p class="lead">Dijkstra does not care whether an edge weight is measured in kilometers. It only needs an additive nonnegative cost.</p>
+<div class="path-choice">
+<article class="good"><h3>A trade graph</h3><p>Imagine nodes are objects you can trade for and an edge weight is the extra money required for that trade. A path is then a sequence of trades, and its total weight is the money spent.</p></article>
+<article><h3>The same algorithm</h3><p>The labels still mean “best cost found so far”. Relaxation asks whether reaching an item through the current node makes the total trade cheaper.</p></article>
+</div>
+<div class="predict-card"><span class="predict-kicker">Key intuition</span><h3>If the cheapest unfinished node costs 2, can a path that first reaches a node costing 6 later come back and beat 2?</h3><p>Not when every remaining edge cost is nonnegative. You have already spent at least 6 before taking another edge. This is the everyday version of the correctness proof.</p></div>
 </section>
 
 <section class="lecture-section" id="mental-model">
@@ -117,6 +128,7 @@
 <div class="negative-side good"><h3>But the true shortest path</h3><p>The path S→B→A has length <span class="math">5−10 = −5</span>, which is much shorter. The “final” value 2 was not actually safe.</p></div>
 </div>
 <div class="greedy-caution"><strong>Use Bellman–Ford or another appropriate method when negative edges are present.</strong> Dijkstra is correct with zero-weight edges, but not with negative ones.</div>
+<div class="predict-card"><span class="predict-kicker">A diagnostic red flag</span><h3>If a vertex you already finalized later receives a cheaper distance, the greedy assumption has been violated.</h3><p>That is exactly what a negative edge can cause. In a correct Dijkstra run, a finalized distance never needs to decrease.</p></div>
 <div class="source-note"><h3>Two nearby algorithms</h3><p><strong>Bellman–Ford</strong> repeatedly relaxes all edges and can handle negative weights (and detect reachable negative cycles). <strong>A*</strong> is a goal-directed relative of Dijkstra: it orders the search by distance-so-far plus an admissible heuristic. Neither has a standalone page in this handbook yet.</p></div>
 </section>
 
@@ -153,17 +165,23 @@
 </section>
 
 <section class="lecture-section" id="paths">
-<h2>Distances are not paths</h2>
-<p class="lead">Distances alone are often not enough. Store a predecessor whenever relaxation improves a vertex.</p>
+<h2>Distances are not paths: keep parents too</h2>
+<p class="lead">A cost table tells you how expensive the optimum is. A parent table tells you how to achieve it.</p>
 <div class="code-explainer">
 <div class="annotated-code">
-<div class="code-row"><span class="line-no">1</span><code>if new_dist < dist[v]:</code></div>
+<div class="code-row"><span class="line-no">1</span><code>if new_dist &lt; dist[v]:</code></div>
 <div class="code-row"><span class="line-no">2</span><code>    dist[v] = new_dist</code></div>
 <div class="code-row marked"><span class="line-no">3</span><code>    parent[v] = u</code></div>
 <div class="code-row"><span class="line-no">4</span><code>    heapq.heappush(heap, (new_dist, v))</code></div>
 </div>
-<div class="code-notes"><h3>Then walk backward</h3><p>To reconstruct the shortest path to a target, repeatedly follow <code>parent[target]</code> back to the source, then reverse the resulting list.</p></div>
+<div class="code-notes"><h3>Every improvement records the route</h3><p>If going through <code>u</code> makes <code>v</code> cheaper, then <code>u</code> becomes the predecessor of <code>v</code> on the best path currently known.</p></div>
 </div>
+<div class="classroom-walk">
+<div class="classroom-step"><span>Target</span><p>Start from the destination and read its parent.</p></div>
+<div class="classroom-step"><span>Backtrack</span><p>Follow <code>parent[target]</code>, then the parent of that vertex, and so on until the source.</p></div>
+<div class="classroom-step"><span>Reverse</span><p>The parent chain is stored backward, so reverse it to obtain the source-to-target path.</p></div>
+</div>
+<div class="one-line"><strong>Two outputs, two data structures.</strong> <code>dist</code> answers “how much?”, while <code>parent</code> answers “which sequence of choices?”.</div>
 </section>
 
 <section class="lecture-section" id="comparison">
