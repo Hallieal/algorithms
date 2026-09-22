@@ -8,7 +8,7 @@
 <body class="lecture-page"><div aria-hidden="true" class="progress-track"><div class="progress-bar" id="reading-progress"></div></div>
 <header class="topbar"><a class="brand" href="../index-ru.html"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name ru-brand-name"><span class="ru-brand-lines"><span>Гайд по алгоритмам</span><span class="ru-brand-presented">presented by Аллан</span></span></span></a>
 <nav aria-label="Основная навигация" class="topnav"><a href="index-ru.html">Жадные алгоритмы</a><div aria-label="Язык" class="language-switch"><a href="huffman.html">EN</a><span class="language-separator">·</span><span class="current">RU</span></div></nav></header>
-<aside aria-label="Навигация по разделу" class="sidebar"><div class="sidebar-title">Глава 9 · Раздел 8</div><a href="#problem">Постановка</a><a href="#bits-first">Зачем variable-length codes?</a><a href="#prefix">Префиксные коды</a><a href="#decode">Декодирование по дереву</a><a href="#algorithm">Алгоритм</a><a href="#tree">Дерево и коды</a><a href="#merge">Optimal merge pattern</a><a href="#entropy">Энтропия</a><a href="#proof">Корректность</a><a href="#heap-optimization">Почему heap всё меняет</a><a href="#implementation">Реализация</a><a href="#limits">Что оптимизируется</a><a href="#exercises">Задачи</a></aside>
+<aside aria-label="Навигация по разделу" class="sidebar"><div class="sidebar-title">Глава 9 · Раздел 8</div><a href="#problem">Постановка</a><a href="#bits-first">Зачем variable-length codes?</a><a href="#prefix">Префиксные коды</a><a href="#decode">Декодирование по дереву</a><a href="#algorithm">Алгоритм</a><a href="#tree">Дерево и коды</a><a href="#merge">Optimal merge pattern</a><a href="#entropy">Энтропия</a><a href="#proof">Корректность</a><a href="#heap-pattern">Heap recognition pattern</a><a href="#heap-optimization">Почему heap всё меняет</a><a href="#implementation">Реализация</a><a href="#limits">Что оптимизируется</a><a href="#exercises">Задачи</a></aside>
 <main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Глава 9 · Раздел 8</div><h1>Кодирование Хаффмана</h1><p class="chapter-topics">Частые символы должны иметь короткие коды. Хаффман добивается этого, каждый раз объединяя два узла с минимальными частотами.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-huffman.svg"/></div></section>
 <section class="lecture-section" id="problem">
 <h2>Частые символы должны кодироваться дёшево</h2>
@@ -145,6 +145,18 @@
 </section>
 
 <!-- common-sense-round-huffman -->
+<!-- coding-patterns-round-huffman -->
+<section class="lecture-section" id="heap-pattern">
+<h2>Interview recognition: меняющаяся коллекция + repeated min extraction → подумайте о heap</h2>
+<p class="lead">Huffman — чистый пример более общего priority-queue pattern. Candidate set меняется после каждого выбора, но на каждом шаге нужны только один-два highest-priority elements.</p>
+<div class="recognition-grid">
+<article class="recognition-card"><span class="signal">Repeated query</span><h3>Какие два веса сейчас минимальны?</h3><p>Ответ меняется после каждого merge, потому что combined node возвращается в candidate set.</p></article>
+<article class="recognition-card"><span class="signal">Data structure</span><h3>Min-heap</h3><p><code>pop</code> показывает current minimum, а <code>push</code> восстанавливает структуру после вставки merged weight. Полный re-sort не нужен.</p></article>
+<article class="recognition-card"><span class="signal">Greedy rule</span><h3>Merge, reinsert, repeat</h3><p>Pattern почти буквально превращается в код: два pop, сложить веса, push суммы и продолжать, пока не останется одно tree.</p></article>
+</div>
+<div class="interview-answer"><h3>Полезное обобщение</h3><p>Если задача много раз спрашивает current min/max, пока candidate set изменяется, сначала думайте о priority queue, а не о «сортировать заново после каждого update».</p></div>
+</section>
+
 <section class="lecture-section" id="heap-optimization">
 <h2>Очевидная реализация Huffman получается квадратичной</h2>
 <p class="lead">Математическое rule говорит: «многократно извлекай два минимальных веса». Первая implementation-идея — каждый раз сканировать всю коллекцию, но именно repeated minimum search становится bottleneck.</p>
