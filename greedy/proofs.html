@@ -109,13 +109,20 @@
 
 <!-- grokking-pass-proofs -->
 <section class="lecture-section" id="intuition-proof">
-<h2>Simple enough to feel obvious is exactly when you need a proof</h2>
-<p class="lead">Two greedy rules can look equally natural and have completely different status. A visual example can build intuition; only the structural argument tells us whether the commitment is safe on every input.</p>
+<h2>First make the choice feel inevitable. Then prove it.</h2>
+<p class="lead">A good greedy explanation has two layers. The first is the picture in your head: why does this move seem to leave the future in the best shape? The second is the proof that no hidden counterexample survives.</p>
 <div class="path-choice">
-<article class="good"><h3>Earliest finish</h3><p>For maximum-cardinality interval scheduling, finishing earlier leaves every option that a later finish would leave. The intuition can be turned into an exchange proof.</p></article>
-<article class="bad"><h3>Take the best-looking whole item</h3><p>For 0/1 Knapsack, the first attractive item may consume capacity needed by a better pair. The rule feels just as natural, but a tiny counterexample destroys it.</p></article>
+<article class="good"><h3>Classroom scheduling</h3><p>Finishing first feels right because it frees the room as early as possible. That intuition suggests the invariant: every class available after a later finish is still available after the earlier finish.</p></article>
+<article class="bad"><h3>0/1 Knapsack</h3><p>“Take the most valuable item first” feels just as natural, but one item can consume capacity needed by a better pair. The picture alone does not tell us whether commitment is safe.</p></article>
 </div>
-<div class="one-line"><strong>Pedagogical rule:</strong> use examples to discover the invariant, then prove the invariant. Never use the example itself as the proof.</div>
+<div class="predict-card"><span class="predict-kicker">Try before reading the proof</span><h3>What future opportunity can the greedy choice never make worse?</h3><p>If you cannot answer that in one sentence, you probably do not yet know what your proof should preserve.</p></div>
+<div class="proof-template">
+<article><b>Intuition</b><p>Describe the local choice in ordinary language: “free the room earlier”, “use the denser material”, “finalize the cheapest reachable node”.</p></article>
+<article><b>Invariant</b><p>Translate that picture into something comparable: remaining candidates, total capacity, cut weight, or tentative distance.</p></article>
+<article><b>Counterexample test</b><p>Try to construct the smallest instance that breaks the invariant. If you succeed, change the rule.</p></article>
+<article><b>Formal proof</b><p>Only after the invariant survives should you write the exchange, staying-ahead, induction, or cut argument.</p></article>
+</div>
+<div class="one-line"><strong>Examples discover the proof; they do not replace it.</strong> The purpose of the story is to expose the invariant you will later prove for every input.</div>
 </section>
 
 <section class="lecture-section" id="mistakes">
