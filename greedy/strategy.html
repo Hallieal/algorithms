@@ -27,7 +27,7 @@
 </header>
 <aside aria-label="Section navigation" class="sidebar">
 <div class="sidebar-title">Chapter 9 · Section 1</div>
-<a href="#idea">The basic idea</a><a href="#guarantees">Algorithm or heuristic?</a><a href="#anatomy">Anatomy</a><a href="#example">First example</a><a href="#grokking-outcomes">What can greedy mean?</a><a href="#failure">When greedy fails</a><a href="#design-loop">Design loop</a><a href="#properties">Structural properties</a><a href="#implementation">Implementation</a><a href="#complexity">Efficiency</a><a href="#recognition">Recognition patterns</a><a href="#exercises">Exercises</a>
+<a href="#idea">The basic idea</a><a href="#guarantees">Algorithm or heuristic?</a><a href="#optimization-lens">Optimization lens</a><a href="#anatomy">Anatomy</a><a href="#example">First example</a><a href="#grokking-outcomes">What can greedy mean?</a><a href="#failure">When greedy fails</a><a href="#design-loop">Design loop</a><a href="#properties">Structural properties</a><a href="#implementation">Implementation</a><a href="#complexity">Efficiency</a><a href="#streaming">One-pass greedy state</a><a href="#recognition">Recognition patterns</a><a href="#exercises">Exercises</a>
 </aside>
 <main class="lecture">
 <section class="lecture-hero greedy-lecture-hero">
@@ -65,6 +65,19 @@
 <article class="concept-cell cost"><span>Approximation</span><b>May miss OPT, but by a proved amount</b><p>Greedy Set Cover is not exact, yet it comes with a mathematical approximation guarantee. That is much stronger than “usually good”.</p></article>
 </div>
 <div class="one-line"><strong>Design principle.</strong> First decide which claim you are making: exact optimum, guaranteed approximation, or practical heuristic. The proof obligation is different in each case.</div>
+</section>
+
+<!-- common-sense-round-strategy -->
+<section class="lecture-section" id="optimization-lens">
+<h2>Greedy can be a way to remove unnecessary work</h2>
+<p class="lead">A useful optimization habit is to compare the runtime you have with the fastest runtime the input could plausibly allow. The gap tells you what kind of simplification to search for.</p>
+<div class="runtime-ladder">
+<article class="runtime-step"><span>Current idea</span><h3>Compare every candidate against everything</h3><p>For array maximum, checking each number against all others costs <span class="math">O(n²)</span>.</p></article>
+<article class="runtime-step"><span>Better, but indirect</span><h3>Sort, then take the last element</h3><p>A comparison sort reduces this to <span class="math">O(n log n)</span>, but sorting computes far more order information than the problem asks for.</p></article>
+<article class="runtime-step best"><span>Best imaginable</span><h3>Keep only the best seen so far</h3><p>One scan is enough: update the current maximum whenever a larger value appears. That is <span class="math">O(n)</span>, and every input item must be inspected anyway.</p></article>
+</div>
+<div class="optimization-gap"><b>Optimization question</b><p>What information is the slower algorithm computing that the final answer never uses? Greedy often becomes possible when that extra work can be replaced by one safe running summary.</p></div>
+<div class="source-note"><h3>A terminology note</h3><p>Scanning for a maximum is not usually presented as a “greedy algorithm” in formal optimization courses. It is still a useful mental model for greedy state compression: after each prefix, keep the best fact that can safely summarize everything seen so far.</p></div>
 </section>
 
 <section class="lecture-section" id="anatomy">
@@ -181,6 +194,17 @@
 <tr><td>Dynamic priorities / repeated updates</td><td>O(n²) with repeated scans; often O((n+u) log n) with a heap for u updates</td><td>Greedy rules whose priorities change after each choice</td></tr>
 </tbody></table></div>
 <p class="caption">The exact bound always depends on the problem and data structures. A greedy algorithm can even be slow if its local choice is expensive to compute.</p>
+</section>
+
+<section class="lecture-section" id="streaming">
+<h2>Sometimes the greedy object is a tiny piece of state</h2>
+<p class="lead">Not every greedy algorithm repeatedly chooses an item from a sorted list. Some one-pass algorithms greedily maintain the most promising summary of the prefix seen so far.</p>
+<div class="stream-state">
+<article><code>best_so_far</code><p>Array maximum keeps only the greatest value seen. Every smaller previous candidate is permanently dominated.</p></article>
+<article><code>current_sum</code><p>For maximum subarray, once the running sum becomes negative, carrying it forward can only hurt every future extension. Resetting it discards a dominated prefix.</p></article>
+<article><code>low, middle</code><p>For an increasing triplet, continually lowering the first and second thresholds makes it easier—not harder—to find a later third value.</p></article>
+</div>
+<div class="practice-note"><h3>State compression is the common thread</h3><p>The interesting question is not “does this problem involve sorting?” but “can many partial histories be replaced by one stronger summary without losing a future optimum or witness?”</p></div>
 </section>
 
 <section class="lecture-section" id="recognition">
