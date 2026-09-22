@@ -8,7 +8,7 @@
 <body class="lecture-page"><div aria-hidden="true" class="progress-track"><div class="progress-bar" id="reading-progress"></div></div>
 <header class="topbar"><a class="brand" href="../index-ru.html"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name ru-brand-name"><span class="ru-brand-lines"><span>Гайд по алгоритмам</span><span class="ru-brand-presented">presented by Аллан</span></span></span></a>
 <nav aria-label="Основная навигация" class="topnav"><a href="index-ru.html">Жадные алгоритмы</a><div aria-label="Язык" class="language-switch"><a href="interval-partitioning.html">EN</a><span class="language-separator">·</span><span class="current">RU</span></div></nav></header>
-<aside aria-label="Навигация по разделу" class="sidebar"><div class="sidebar-title">Глава 9 · Раздел 5</div><a href="#problem">Постановка</a><a href="#depth">Depth</a><a href="#algorithm">Алгоритм</a><a href="#proof">Корректность</a><a href="#implementation">Реализация</a><a href="#comparison">Сравнение</a><a href="#exercises">Задачи</a></aside>
+<aside aria-label="Навигация по разделу" class="sidebar"><div class="sidebar-title">Глава 9 · Раздел 5</div><a href="#problem">Постановка</a><a href="#depth">Depth</a><a href="#algorithm">Алгоритм</a><a href="#sweep">Только число комнат: sweep line</a><a href="#proof">Корректность</a><a href="#implementation">Реализация</a><a href="#comparison">Сравнение</a><a href="#exercises">Задачи</a></aside>
 <main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Глава 9 · Раздел 5</div><h1>Разбиение интервалов по ресурсам</h1><p class="chapter-topics">Нужно разместить все интервалы в минимальном числе аудиторий. Переиспользуем ту, которая освобождается раньше всех.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-interval-partitioning.svg"/></div></section>
 <section class="lecture-section" id="problem">
 <h2>Использовать как можно меньше аудиторий</h2>
@@ -47,6 +47,27 @@
 <div class="greedy-job-result">Использовано аудиторий: <strong data-role="count">0</strong></div>
 <div class="secondary-controls"><button data-action="reset" type="button">Сбросить</button></div>
 </div>
+</section>
+
+<!-- book-synthesis-ip -->
+<section class="lecture-section" id="sweep">
+<h2>Если нужно только число комнат: sweep line по endpoints</h2>
+<p class="lead">Heap-алгоритм строит конкретное распределение по аудиториям. Если требуется только минимальное число комнат, максимальную глубину можно посчитать напрямую проходом по событиям.</p>
+<div class="clean-steps">
+<div class="clean-step"><span>1</span><p>Для каждого интервала создаём start-event <span class="math">(+1)</span> и finish-event <span class="math">(−1)</span>.</p></div>
+<div class="clean-step"><span>2</span><p>Сортируем события по времени. При полуоткрытой модели <span class="math">[s,f)</span> на равном времени finish обрабатывается раньше start.</p></div>
+<div class="clean-step"><span>3</span><p>Идём по событиям и считаем число активных интервалов. Его максимум — depth, а значит и оптимальное число комнат.</p></div>
+</div>
+<div class="sweep-demo">
+<div class="sweep-row event-start"><span>09:00</span><b>начало пары</b><code>active + 1</code></div>
+<div class="sweep-row event-start"><span>09:30</span><b>начало пары</b><code>active + 1</code></div>
+<div class="sweep-row event-end"><span>10:00</span><b>конец пары</b><code>active − 1</code></div>
+<div class="sweep-row event-start"><span>10:00</span><b>следующая начинается</b><code>active + 1</code></div>
+</div>
+<div class="table-wrap"><table><thead><tr><th>Что требуется</th><th>Лучшее представление</th><th>Что получаем</th></tr></thead><tbody>
+<tr><td>Только минимальное число комнат</td><td>Отсортированные start/finish events</td><td>Максимальную глубину</td></tr>
+<tr><td>Конкретное распределение по комнатам</td><td>Min-heap времён освобождения</td><td>Room id для каждого интервала</td></tr>
+</tbody></table></div>
 </section>
 
 <section class="lecture-section" id="proof">
