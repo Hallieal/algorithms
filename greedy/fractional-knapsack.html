@@ -3,7 +3,8 @@
 <title>Fractional Knapsack | Allan's Handbook of Algorithms</title>
 <link href="../assets/css/styles.css" rel="stylesheet"/><link href="assets/greedy.css" rel="stylesheet"/>
 <link href="../assets/images/favicon-32.png" rel="icon" sizes="32x32" type="image/png"/><link href="../assets/images/favicon.png" rel="icon" sizes="64x64" type="image/png"/><link href="../assets/images/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180"/>
-<link href="fractional-knapsack.html" hreflang="en" rel="alternate"/><link href="fractional-knapsack-ru.html" hreflang="ru" rel="alternate"/></head>
+<link href="fractional-knapsack.html" hreflang="en" rel="alternate"/><link href="fractional-knapsack-ru.html" hreflang="ru" rel="alternate"/><noscript><style>.answer-box[hidden]{display:block!important}.reveal{display:none!important}</style></noscript>
+</head>
 <body class="lecture-page"><div aria-hidden="true" class="progress-track"><div class="progress-bar" id="reading-progress"></div></div>
 <header class="topbar"><a class="brand" href="../"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name">Allan's Handbook of Algorithms</span></a>
 <nav aria-label="Primary navigation" class="topnav"><a href="./">Greedy overview</a><div aria-label="Language" class="language-switch"><span class="current">EN</span><span class="language-separator">·</span><a href="fractional-knapsack-ru.html">RU</a></div></nav></header>
@@ -17,6 +18,7 @@
 <article class="concept-cell cost"><span>Cost</span><b>O(n log n)</b><p>Compute densities, sort once, scan once.</p></article>
 </div>
 <div class="greedy-definition"><span>Fractional Knapsack</span><p>Choose fractions <span class="math">0 ≤ xᵢ ≤ 1</span> to maximize <span class="math">∑ xᵢvᵢ</span> subject to <span class="math">∑ xᵢwᵢ ≤ W</span>.</p></div>
+<div class="source-note"><h3>Standard assumptions</h3><p>The mathematical version normally assumes <span class="math">wᵢ &gt; 0</span> and <span class="math">vᵢ ≥ 0</span>. The implementation below is slightly more defensive: negative weights are rejected, nonpositive-value items are skipped, and positive-value zero-weight items are taken for free.</p></div>
 </section>
 
 <section class="lecture-section" id="density">
@@ -80,6 +82,7 @@
 <article class="boundary-card bad"><h3>0/1 version</h3><p>The same density order takes A and B for value 160. But B+C fits exactly and gives 220. The greedy first choice A blocks the optimum.</p></article>
 </div>
 <div class="greedy-caution"><strong>Lesson.</strong> A tiny modeling change can destroy the greedy-choice property. Never transfer a greedy proof from one problem variant to another without checking its key assumption.</div>
+<div class="bridge-note"><h3>Greedy is still useful around 0/1 Knapsack</h3><p>The fractional optimum is an <strong>upper bound</strong> on the 0/1 optimum: allowing fractions can only help. That bound is useful in branch-and-bound. For exact 0/1 Knapsack, a standard DP over capacity is pseudo-polynomial. A plain density-greedy choice by itself has no constant-factor guarantee; approximation needs an additional idea, such as also comparing against the best single item.</p></div>
 </section>
 
 <section class="lecture-section" id="implementation">
@@ -87,23 +90,33 @@
 <div class="code-explainer">
 <div class="annotated-code">
 <div class="code-row"><span class="line-no">1</span><code>def fractional_knapsack(items, capacity):</code></div>
-<div class="code-row marked"><span class="line-no">2</span><code>    items = sorted(</code></div>
-<div class="code-row"><span class="line-no">3</span><code>        items,</code></div>
-<div class="code-row"><span class="line-no">4</span><code>        key=lambda x: x[1] / x[0],</code></div>
-<div class="code-row"><span class="line-no">5</span><code>        reverse=True</code></div>
-<div class="code-row"><span class="line-no">6</span><code>    )</code></div>
-<div class="code-row"><span class="line-no">7</span><code>    value = 0.0</code></div>
-<div class="code-row marked"><span class="line-no">8</span><code>    for weight, item_value in items:</code></div>
-<div class="code-row marked"><span class="line-no">9</span><code>        take = min(weight, capacity)</code></div>
-<div class="code-row"><span class="line-no">10</span><code>        value += take * item_value / weight</code></div>
-<div class="code-row"><span class="line-no">11</span><code>        capacity -= take</code></div>
-<div class="code-row marked"><span class="line-no">12</span><code>        if capacity == 0:</code></div>
-<div class="code-row"><span class="line-no">13</span><code>            break</code></div>
-<div class="code-row"><span class="line-no">14</span><code>    return value</code></div>
+<div class="code-row"><span class="line-no">2</span><code>    if capacity &lt; 0:</code></div>
+<div class="code-row"><span class="line-no">3</span><code>        raise ValueError("capacity must be nonnegative")</code></div>
+<div class="code-row"><span class="line-no">4</span><code></code></div>
+<div class="code-row"><span class="line-no">5</span><code>    value = 0.0</code></div>
+<div class="code-row"><span class="line-no">6</span><code>    candidates = []</code></div>
+<div class="code-row marked"><span class="line-no">7</span><code>    for weight, item_value in items:</code></div>
+<div class="code-row"><span class="line-no">8</span><code>        if weight &lt; 0:</code></div>
+<div class="code-row"><span class="line-no">9</span><code>            raise ValueError("weight must be nonnegative")</code></div>
+<div class="code-row"><span class="line-no">10</span><code>        if item_value &lt;= 0:</code></div>
+<div class="code-row"><span class="line-no">11</span><code>            continue</code></div>
+<div class="code-row marked"><span class="line-no">12</span><code>        if weight == 0:</code></div>
+<div class="code-row"><span class="line-no">13</span><code>            value += item_value</code></div>
+<div class="code-row"><span class="line-no">14</span><code>        else:</code></div>
+<div class="code-row"><span class="line-no">15</span><code>            candidates.append((weight, item_value))</code></div>
+<div class="code-row"><span class="line-no">16</span><code></code></div>
+<div class="code-row marked"><span class="line-no">17</span><code>    candidates.sort(key=lambda x: x[1] / x[0], reverse=True)</code></div>
+<div class="code-row marked"><span class="line-no">18</span><code>    for weight, item_value in candidates:</code></div>
+<div class="code-row"><span class="line-no">19</span><code>        if capacity == 0:</code></div>
+<div class="code-row"><span class="line-no">20</span><code>            break</code></div>
+<div class="code-row"><span class="line-no">21</span><code>        take = min(weight, capacity)</code></div>
+<div class="code-row"><span class="line-no">22</span><code>        value += take * item_value / weight</code></div>
+<div class="code-row"><span class="line-no">23</span><code>        capacity -= take</code></div>
+<div class="code-row"><span class="line-no">24</span><code>    return value</code></div>
 </div>
 <div class="code-notes"><h3>What matters</h3>
-<div class="code-note-item wide-note"><span>2–6</span><p>The greedy priority is decreasing value density.</p></div>
-<div class="code-note-item wide-note"><span>8–11</span><p>Take the entire item if it fits; otherwise take exactly the remaining capacity from it.</p></div>
+<div class="code-note-item wide-note"><span>7–15</span><p>Handle edge cases before any division: reject negative weight, skip items that cannot improve the objective, and collect free positive value.</p></div>
+<div class="code-note-item wide-note"><span>17–23</span><p>Among positive-weight, positive-value items, the greedy priority is still exactly decreasing value density.</p></div>
 </div></div>
 <div class="complexity-strip"><div><span>Ratios</span><b>O(n)</b><small>all items</small></div><div><span>Sorting</span><b>O(n log n)</b><small>by density</small></div><div><span>Scan</span><b>O(n)</b><small>fill once</small></div><div><span>Total</span><b>O(n log n)</b><small>sorting dominates</small></div></div>
 </section>
@@ -114,6 +127,7 @@
 <article class="exercise"><div class="exercise-num">1</div><div><h3>Value density</h3><p>An item has weight 8 and value 52. What is its value density?</p><button class="reveal" data-reveal="fk-en-1" type="button">Show answer</button><div class="answer-box" hidden id="fk-en-1">52 / 8 = 6.5 units of value per unit of weight.</div></div></article>
 <article class="exercise"><div class="exercise-num">2</div><div><h3>Final fraction</h3><p>Capacity 10 remains and the next item weighs 25 with value 100. What fraction is taken and how much value does it contribute?</p><button class="reveal" data-reveal="fk-en-2" type="button">Show answer</button><div class="answer-box" hidden id="fk-en-2">Take 10/25 = 40% of the item. Its contribution is 0.4·100 = 40.</div></div></article>
 <article class="exercise"><div class="exercise-num">3</div><div><h3>Proof assumption</h3><p>Which assumption lets the exchange proof move equal weight between two items?</p><button class="reveal" data-reveal="fk-en-3" type="button">Show answer</button><div class="answer-box" hidden id="fk-en-3">Items must be divisible. Without fractional choices, an equal-weight exchange may not correspond to any legal solution.</div></div></article>
+<article class="exercise"><div class="exercise-num">4</div><div><h3>Edge cases</h3><p>What should happen if capacity is already 0? What about an item with weight 0 and positive value?</p><button class="reveal" data-reveal="fk-en-4" type="button">Show answer</button><div class="answer-box" hidden id="fk-en-4">No positive-weight item can be taken when capacity is 0. A positive-value item of weight 0 costs no capacity, so it should still be taken; this is why the implementation handles zero-weight items before the capacity loop.</div></div></article>
 </div>
 <div class="next-part"><h3>Next: Huffman Coding</h3><p>Fractional Knapsack greedily chooses the best next material. Huffman Coding instead repeatedly combines the two cheapest pieces into a larger structure.</p><a class="next-part-link" href="huffman.html">Huffman Coding →</a></div>
 </section></main>
