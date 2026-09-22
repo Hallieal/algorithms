@@ -6,7 +6,7 @@
 </head>
 <body class="lecture-page"><div aria-hidden="true" class="progress-track"><div class="progress-bar" id="reading-progress"></div></div>
 <header class="topbar"><a class="brand" href="../index-ru.html"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name ru-brand-name"><span class="ru-brand-lines"><span>Гайд по алгоритмам</span><span class="ru-brand-presented">presented by Аллан</span></span></span></a><nav aria-label="Основная навигация" class="topnav"><a href="index-ru.html">Жадные алгоритмы</a><div aria-label="Язык" class="language-switch"><a href="greedy-vs-dp.html">EN</a><span class="language-separator">·</span><span class="current">RU</span></div></nav></header>
-<aside aria-label="Навигация по разделу" class="sidebar"><div class="sidebar-title">Глава 9 · Раздел 3</div><a href="#difference">Главное отличие</a><a href="#structure">Общая структура</a><a href="#coins">Размен монет</a><a href="#knapsack">Рюкзак 0/1</a><a href="#knapsack-ladder">Knapsack: три уровня</a><a href="#weighted">Взвешенные интервалы</a><a href="#state">Что должно помнить будущее?</a><a href="#compressed-dp">Когда DP сжимается в одно state</a><a href="#branch-test">Можно ли удалить одну ветку?</a><a href="#signals">Как выбрать метод?</a><a href="#code">Сравнение кода</a><a href="#spectrum">Спектр методов</a><a href="#comparison">Итоговая таблица</a><a href="#exercises">Задачи</a></aside>
+<aside aria-label="Навигация по разделу" class="sidebar"><div class="sidebar-title">Глава 9 · Раздел 3</div><a href="#difference">Главное отличие</a><a href="#structure">Общая структура</a><a href="#coins">Размен монет</a><a href="#coin-system">Ловушка с реалистичными coins</a><a href="#knapsack">Рюкзак 0/1</a><a href="#knapsack-ladder">Knapsack: три уровня</a><a href="#weighted">Взвешенные интервалы</a><a href="#state">Что должно помнить будущее?</a><a href="#compressed-dp">Когда DP сжимается в одно state</a><a href="#branch-test">Можно ли удалить одну ветку?</a><a href="#signals">Как выбрать метод?</a><a href="#code">Сравнение кода</a><a href="#spectrum">Спектр методов</a><a href="#comparison">Итоговая таблица</a><a href="#exercises">Задачи</a></aside>
 <main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Глава 9 · Раздел 3</div><h1>Жадные алгоритмы и динамическое программирование</h1><p class="chapter-topics">Greedy оставляет одно будущее. Динамическое программирование хранит несколько состояний, пока не станет ясно, какое из них победит.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-vs-dp.svg"/></div></section>
 <section class="lecture-section" id="difference">
 <h2>Один путь или несколько состояний?</h2>
@@ -40,6 +40,17 @@
 <div class="proof-panel"><h3>Динамическое программирование</h3><p>Для каждой суммы x храним минимальное число монет:</p><div class="formula-line">dp[x] = 1 + min dp[x − c]</div><p>Для x = 6 лучший переход использует монету 3 дважды, поэтому ответ равен 2.</p></div>
 </div>
 <p>Почему greedy ошибается? После выбора 4 он навсегда отбрасывает альтернативное частичное состояние 3. Но именно оно идеально дополняется ещё одной тройкой. DP сохраняет достаточно состояний, чтобы это увидеть.</p>
+</section>
+
+<!-- karumanchi-round-gvdp -->
+<section class="lecture-section" id="coin-system">
+<h2>Greedy может ломаться даже на «нормально выглядящих» denominations</h2>
+<p class="lead">Набор <span class="math">{1,3,4}</span> легко принять за искусственный. Второй пример показывает, что проблема структурная, а не косметическая.</p>
+<div class="two-column-block">
+<div class="text-panel"><h3>Denominations</h3><p><span class="math">{1,5,10,20,25,50}</span>, target amount <span class="math">40</span>.</p><p>Largest-coin-first выбирает <span class="math">25+10+5</span>: три coins.</p></div>
+<div class="proof-panel"><h3>Лучшее сочетание</h3><p><span class="math">20+20</span> набирает ту же сумму всего двумя coins.</p><p>Первый greedy coin оставляет remainder, который локально допустим, но глобально дорог.</p></div>
+</div>
+<div class="interview-answer"><h3>Урок</h3><p>Нельзя выводить корректность coin-change greedy из того, что он работает для одной знакомой валюты. Exactness зависит от denomination system. Без structural proof DP сохраняет remainder states, которые greedy выбрасывает.</p></div>
 </section>
 
 <section class="lecture-section" id="knapsack">
