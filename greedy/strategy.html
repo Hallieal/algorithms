@@ -27,7 +27,7 @@
 </header>
 <aside aria-label="Section navigation" class="sidebar">
 <div class="sidebar-title">Chapter 9 · Section 1</div>
-<a href="#idea">The basic idea</a><a href="#guarantees">Algorithm or heuristic?</a><a href="#optimization-lens">Optimization lens</a><a href="#anatomy">Anatomy</a><a href="#example">First example</a><a href="#grokking-outcomes">What can greedy mean?</a><a href="#failure">When greedy fails</a><a href="#design-loop">Design loop</a><a href="#properties">Structural properties</a><a href="#implementation">Implementation</a><a href="#complexity">Efficiency</a><a href="#streaming">One-pass greedy state</a><a href="#recognition">Recognition patterns</a><a href="#exercises">Exercises</a>
+<a href="#idea">The basic idea</a><a href="#guarantees">Algorithm or heuristic?</a><a href="#optimization-lens">Optimization lens</a><a href="#anatomy">Anatomy</a><a href="#example">First example</a><a href="#grokking-outcomes">What can greedy mean?</a><a href="#failure">When greedy fails</a><a href="#design-loop">Design loop</a><a href="#properties">Structural properties</a><a href="#implementation">Implementation</a><a href="#complexity">Efficiency</a><a href="#streaming">One-pass greedy state</a><a href="#interview-workflow">Interview workflow</a><a href="#recognition">Recognition patterns</a><a href="#exercises">Exercises</a>
 </aside>
 <main class="lecture">
 <section class="lecture-hero greedy-lecture-hero">
@@ -207,15 +207,28 @@
 <div class="practice-note"><h3>State compression is the common thread</h3><p>The interesting question is not “does this problem involve sorting?” but “can many partial histories be replaced by one stronger summary without losing a future optimum or witness?”</p></div>
 </section>
 
-<section class="lecture-section" id="recognition">
-<h2>Three interview-style greedy patterns</h2>
-<p class="lead">Not every greedy problem looks like sorting intervals. These three patterns are useful because each compresses many possible futures into one safe summary.</p>
-<div class="pattern-lenses">
-<article class="pattern-lens"><span class="pattern-tag">Backward frontier</span><h3>Jump to the end</h3><p>Scan right-to-left and keep the leftmost index known to reach the destination. If index <span class="math">i</span> can reach that frontier, replace the frontier by <span class="math">i</span>. One integer summarizes every successful suffix.</p></article>
-<article class="pattern-lens"><span class="pattern-tag">Candidate elimination</span><h3>Gas station</h3><p>If starting at <span class="math">a</span> first makes the running tank negative at <span class="math">b</span>, then no station strictly between <span class="math">a</span> and <span class="math">b</span> can be a valid start. One failed prefix eliminates a whole block of candidates.</p></article>
-<article class="pattern-lens"><span class="pattern-tag">Directional constraints</span><h3>Candies</h3><p>One left-to-right pass enforces the left-neighbor inequality; one right-to-left pass enforces the right-neighbor inequality. Greedy can work by satisfying independent local constraints in separate directions.</p></article>
+<!-- coding-patterns-round-strategy -->
+<section class="lecture-section" id="interview-workflow">
+<h2>A practical interview workflow for greedy problems</h2>
+<p class="lead">There is no single template that solves every greedy problem. A better interview habit is to classify the shape of the decision and then state the one fact that makes an irreversible choice safe.</p>
+<div class="interview-flow">
+<article><span>1</span><h3>State the objective</h3><p>What exactly must be maximized, minimized, reached, or allocated? Similar-looking inputs can require different greedy keys.</p></article>
+<article><span>2</span><h3>Name the local choice</h3><p>Say what gets committed now: move a destination frontier, discard candidate starts, satisfy one directional constraint, or pick the next priority item.</p></article>
+<article><span>3</span><h3>Explain what is discarded</h3><p>The strongest greedy explanations say which alternatives no longer matter and why they cannot produce a better future.</p></article>
+<article><span>4</span><h3>Finish with complexity</h3><p>Identify the number of passes and the auxiliary state. Many interview greedy solutions are valuable precisely because they collapse to O(n) time and O(1) extra space.</p></article>
 </div>
-<div class="bridge-note"><h3>What to look for</h3><p>A promising greedy problem often has a <em>dominance</em> statement: one partial state is never worse than many alternatives, so those alternatives can be discarded permanently.</p></div>
+<div class="interview-answer"><h3>What a strong verbal explanation sounds like</h3><p>“I will maintain this frontier/candidate/resource summary. When condition X happens, every discarded alternative is dominated because of Y. Therefore I can commit without backtracking.”</p></div>
+</section>
+
+<section class="lecture-section" id="recognition">
+<h2>Three greedy shapes worth recognizing</h2>
+<p class="lead">The most useful pattern is not a particular line of code. It is the structural reason many alternatives can collapse to one surviving state.</p>
+<div class="recognition-grid">
+<article class="recognition-card"><span class="signal">Reaching a destination</span><h3>Move the goal backward</h3><p>In Jump to the End, keep the leftmost index already known to reach the current destination. If <span class="math">i + nums[i] ≥ destination</span>, index <span class="math">i</span> becomes the new destination. The suffix is compressed into one frontier.</p></article>
+<article class="recognition-card"><span class="signal">Circular feasibility</span><h3>Eliminate a block of starts</h3><p>In Gas Stations, once a start fails at station <span class="math">b</span>, every station between that start and <span class="math">b</span> can be rejected together. The algorithm jumps directly to <span class="math">b+1</span>.</p></article>
+<article class="recognition-card"><span class="signal">Neighbor constraints</span><h3>Solve one direction at a time</h3><p>In Candies, the left-neighbor and right-neighbor requirements are handled in opposite passes. The second pass keeps the larger amount already required by either direction.</p></article>
+</div>
+<div class="candidate-elimination"><h3>The shared signal</h3><p>Look for a statement of the form “all these candidates are no better than this one summary.” A backward frontier, a surviving start index, or a directional lower bound can replace many explicit possibilities.</p></div>
 </section>
 
 <section class="lecture-section" id="exercises">
