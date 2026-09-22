@@ -3,7 +3,8 @@
 <title>Interval Partitioning | Allan's Handbook of Algorithms</title>
 <link href="../assets/css/styles.css" rel="stylesheet"/><link href="assets/greedy.css" rel="stylesheet"/>
 <link href="../assets/images/favicon-32.png" rel="icon" sizes="32x32" type="image/png"/><link href="../assets/images/favicon.png" rel="icon" sizes="64x64" type="image/png"/><link href="../assets/images/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180"/>
-<link href="interval-partitioning.html" hreflang="en" rel="alternate"/><link href="interval-partitioning-ru.html" hreflang="ru" rel="alternate"/></head>
+<link href="interval-partitioning.html" hreflang="en" rel="alternate"/><link href="interval-partitioning-ru.html" hreflang="ru" rel="alternate"/><noscript><style>.answer-box[hidden]{display:block!important}.reveal{display:none!important}</style></noscript>
+</head>
 <body class="lecture-page"><div aria-hidden="true" class="progress-track"><div class="progress-bar" id="reading-progress"></div></div>
 <header class="topbar"><a class="brand" href="../"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name">Allan's Handbook of Algorithms</span></a>
 <nav aria-label="Primary navigation" class="topnav"><a href="./">Greedy overview</a><div aria-label="Language" class="language-switch"><span class="current">EN</span><span class="language-separator">·</span><a href="interval-partitioning-ru.html">RU</a></div></nav></header>
@@ -18,6 +19,7 @@
 </div>
 <div class="greedy-definition"><span>Interval Partitioning</span><p>Assign every interval to a room so that overlapping intervals receive different rooms, while minimizing the total number of rooms.</p></div>
 <div class="greedy-caution"><strong>Do not confuse this with Interval Scheduling.</strong> There we maximized how many intervals to keep. Here every interval must remain, and we minimize the number of parallel resources.</div>
+<div class="theory-note"><h3>Endpoint convention</h3><p>We use half-open intervals <span class="math">[s,f)</span>. Therefore a meeting ending at time 5 and another starting at time 5 may use the same room. This is why the implementation checks <code>finish &lt;= start</code>, not <code>finish &lt; start</code>.</p></div>
 </section>
 
 <section class="lecture-section" id="depth">
@@ -32,6 +34,7 @@
 <section class="lecture-section" id="algorithm">
 <h2>Reuse the room that frees first</h2>
 <p class="lead">Sort by start time. For each interval, look at the room with the smallest current finish time. If that room is free, reuse it. If even that room is still busy, every room is busy.</p>
+<div class="source-note"><h3>Ties at the same start time</h3><p>If two intervals start simultaneously, their relative order does not affect correctness. They overlap at that start time, so they cannot reuse the same room regardless of which one is processed first.</p></div>
 <div class="step-flow">
 <article class="step-item"><div class="step-number">1</div><div><h3>Sort by start time</h3><p>When we process an interval, all earlier-starting intervals have already been assigned.</p></div></article>
 <article class="step-item"><div class="step-number">2</div><div><h3>Look at the earliest finishing room</h3><p>A min-heap lets us find the room that becomes free first.</p></div></article>
@@ -81,13 +84,14 @@
 </div>
 <div class="code-notes"><h3>Why the heap works</h3>
 <div class="code-note-item"><span>4</span><p>Intervals are processed by start time.</p></div>
-<div class="code-note-item wide-note"><span>8–9</span><p>If the earliest finishing room is free, reuse it. Any other free room would also work for correctness, but the heap gives this test efficiently.</p></div>
+<div class="code-note-item wide-note"><span>8–9</span><p>If the earliest finishing room satisfies <code>finish &lt;= start</code>, reuse it. The non-strict inequality is exactly the half-open <span class="math">[s,f)</span> convention.</p></div>
 <div class="code-note-item wide-note"><span>10–13</span><p>If the minimum finish time is still too late, all rooms are occupied, so a new room is necessary.</p></div>
 </div></div>
 <div class="complexity-strip"><div><span>Sorting</span><b>O(n log n)</b><small>by start</small></div><div><span>Heap operation</span><b>O(log n)</b><small>per interval</small></div><div><span>Total</span><b>O(n log n)</b><small>all intervals</small></div><div><span>Heap size</span><b>O(d)</b><small>d = rooms</small></div></div>
 </section>
 
 <section class="lecture-section" id="comparison">
+<div class="bridge-note"><h3>Another view: coloring an interval graph</h3><p>Create one graph vertex per interval and connect two vertices when the intervals overlap. Assigning rooms is exactly graph coloring on this interval graph. General graph coloring is NP-hard, but interval graphs are perfect: their chromatic number equals their clique number, which here is exactly the maximum overlap depth. The greedy scheduling proof is the algorithmic version of that structure.</p></div>
 <h2>Do not confuse the two interval problems</h2>
 <div class="table-wrap"><table><thead><tr><th>Question</th><th>Interval Scheduling</th><th>Interval Partitioning</th></tr></thead><tbody>
 <tr><td>May we discard intervals?</td><td>Yes</td><td>No</td></tr>
