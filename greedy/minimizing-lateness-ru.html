@@ -1,5 +1,5 @@
 <!DOCTYPE html><html lang="ru"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1" name="viewport"/>
-<meta content="Как упорядочить задачи по возрастанию дедлайнов, чтобы минимизировать максимальное опоздание на одной машине." name="description"/><meta content="Минимизация максимального опоздания | Гайд по алгоритмам — presented by Аллан" property="og:title"/><meta content="Как упорядочить задачи по возрастанию дедлайнов, чтобы минимизировать максимальное опоздание на одной машине." property="og:description"/><meta content="article" property="og:type"/>
+<meta content="На одной машине худшее опоздание минимизируется простым правилом: сначала выполняем задачу с самым ранним дедлайном." name="description"/><meta content="Минимизация максимального опоздания | Гайд по алгоритмам — presented by Аллан" property="og:title"/><meta content="На одной машине худшее опоздание минимизируется простым правилом: сначала выполняем задачу с самым ранним дедлайном." property="og:description"/><meta content="article" property="og:type"/>
 <title>Минимизация максимального опоздания | Гайд по алгоритмам — presented by Аллан</title>
 <link href="../assets/css/styles.css" rel="stylesheet"/><link href="assets/greedy.css" rel="stylesheet"/>
 <link href="../assets/images/favicon-32.png" rel="icon" sizes="32x32" type="image/png"/><link href="../assets/images/favicon.png" rel="icon" sizes="64x64" type="image/png"/><link href="../assets/images/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180"/>
@@ -8,16 +8,20 @@
 <header class="topbar"><a class="brand" href="../index-ru.html"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name ru-brand-name"><span class="ru-brand-lines"><span>Гайд по алгоритмам</span><span class="ru-brand-presented">presented by Аллан</span></span></span></a>
 <nav aria-label="Основная навигация" class="topnav"><a href="index-ru.html">Жадные алгоритмы</a><div aria-label="Язык" class="language-switch"><a href="minimizing-lateness.html">EN</a><span class="language-separator">·</span><span class="current">RU</span></div></nav></header>
 <aside aria-label="Навигация по разделу" class="sidebar"><div class="sidebar-title">Глава 9 · Раздел 6</div><a href="#problem">Постановка</a><a href="#example">Пример</a><a href="#algorithm">Алгоритм EDF</a><a href="#proof">Корректность</a><a href="#implementation">Реализация</a><a href="#boundaries">Границы модели</a><a href="#exercises">Задачи</a></aside>
-<main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Глава 9 · Раздел 6</div><h1>Минимизация максимального опоздания</h1><p class="chapter-topics">Как упорядочить задачи по возрастанию дедлайнов, чтобы минимизировать максимальное опоздание на одной машине.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-lateness.svg"/></div></section>
+<main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Глава 9 · Раздел 6</div><h1>Минимизация максимального опоздания</h1><p class="chapter-topics">На одной машине худшее опоздание минимизируется простым правилом: сначала выполняем задачу с самым ранним дедлайном.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-lateness.svg"/></div></section>
 <section class="lecture-section" id="problem">
-<h2>Постановка задачи</h2>
-<p class="lead">Есть одна машина и несколько задач. Задача <span class="math">j</span> требует время обработки <span class="math">pⱼ</span> и имеет дедлайн <span class="math">dⱼ</span>. Все задачи доступны с момента 0, а машина выполняет их по одной.</p>
+<h2>Сначала — самый срочный дедлайн</h2>
+<p class="lead">У каждой задачи есть длительность и дедлайн. Выполнить нужно все задачи на одной машине. Цель не в том, чтобы закончить всё как можно раньше, а в том, чтобы сделать худшее нарушение дедлайна минимальным.</p><div class="concept-strip">
+<article class="concept-cell rule"><span>Правило</span><b>Самый ранний дедлайн — первым</b><p>Сортируем по дедлайну и не оставляем машину без дела.</p></article>
+<article class="concept-cell proof"><span>Почему работает</span><b>Убираем инверсии дедлайнов перестановками</b><p>Ранний дедлайн впереди не увеличивает худшее опоздание.</p></article>
+<article class="concept-cell cost"><span>Сложность</span><b>O(n log n)</b><p>Доминирует сортировка; дальше один проход.</p></article>
+</div>
 <div class="greedy-definition"><span>Цель</span><p>Если задача <span class="math">j</span> заканчивается в момент <span class="math">Cⱼ</span>, её опоздание равно <span class="math">Lⱼ = Cⱼ − dⱼ</span>. Нужно упорядочить все задачи так, чтобы минимизировать <span class="math">L<sub>max</sub> = maxⱼ Lⱼ</span>.</p></div>
 <div class="greedy-caution"><strong>Опоздание может быть отрицательным.</strong> Если задача закончилась до дедлайна, её lateness отрицателен. Нас интересует худшее значение среди всех задач.</div>
 </section>
 
 <section class="lecture-section" id="example">
-<h2>Небольшой пример</h2>
+<h2>Пример: четыре задачи и четыре дедлайна</h2>
 <p class="lead">Рассмотрим четыре задачи. Ниже указаны длительности и дедлайны.</p>
 <div class="table-wrap"><table class="lateness-table"><thead><tr><th>Задача</th><th>Длительность</th><th>Дедлайн</th><th>Окончание в EDF</th><th>Опоздание</th></tr></thead><tbody>
 <tr><td>A</td><td>3</td><td>4</td><td>3</td><td>−1</td></tr>
@@ -35,8 +39,8 @@
 </section>
 
 <section class="lecture-section" id="algorithm">
-<h2>Самый ранний дедлайн сначала</h2>
-<p class="lead">Оптимальное жадное правило простое: сортируем задачи по неубыванию дедлайна и выполняем в этом порядке. Это правило называют Earliest Deadline First (EDF) или Earliest Due Date (EDD).</p>
+<h2>Алгоритм: Earliest Deadline First</h2>
+<p class="lead">Сортируем задачи по неубыванию дедлайна и выполняем без пауз. Это правило называют Earliest Deadline First (EDF) или Earliest Due Date (EDD).</p>
 <div class="step-flow">
 <article class="step-item"><div class="step-number">1</div><div><h3>Сортируем по дедлайну</h3><p>Получаем <span class="math">d₁ ≤ d₂ ≤ ··· ≤ dₙ</span>.</p></div></article>
 <article class="step-item"><div class="step-number">2</div><div><h3>Работаем без простоя</h3><p>Следующая задача начинается сразу после завершения текущей.</p></div></article>
@@ -47,8 +51,8 @@
 </section>
 
 <section class="lecture-section" id="proof">
-<h2>Доказательство перестановкой инверсий</h2>
-<p class="lead">Пусть в расписании две соседние задачи идут как <span class="math">i</span>, затем <span class="math">j</span>, причём <span class="math">dᵢ &gt; dⱼ</span>. Их дедлайны стоят в неправильном порядке. Покажем, что перестановка этих задач не увеличит максимальное опоздание.</p>
+<h2>Почему сортировка по дедлайну безопасна</h2>
+<p class="lead">Если две соседние задачи стоят в неправильном порядке дедлайнов — <span class="math">i</span> перед <span class="math">j</span>, но <span class="math">dᵢ &gt; dⱼ</span> — меняем их местами. Пара заканчивается в тот же момент, а более срочная задача заканчивается раньше.</p>
 <div class="swap-proof">
 <div class="swap-order"><span>До</span><div class="swap-jobs"><div class="swap-job">i · более поздний дедлайн</div><div class="swap-job">j · более ранний дедлайн</div></div></div>
 <div class="swap-arrow">→</div>
@@ -84,8 +88,8 @@
 </section>
 
 <section class="lecture-section" id="boundaries">
-<h2>Где заканчивается теорема</h2>
-<p class="lead">EDF оптимален именно для этой модели. Небольшие изменения постановки могут потребовать совсем других алгоритмов.</p>
+<h2>Меняем модель — меняется алгоритм</h2>
+<p class="lead">EDF оптимален именно при этих предположениях и этой целевой функции. Добавим разные моменты появления задач или поменяем критерий — доказательство уже нельзя переносить автоматически.</p>
 <div class="decision-grid">
 <article class="decision-card greedy-signal"><h3>Разные моменты появления</h3><p>Если задачи становятся доступны в разные моменты времени, простая одноразовая сортировка по дедлайну уже не решает общую задачу.</p></article>
 <article class="decision-card greedy-signal"><h3>Другая целевая функция</h3><p>Минимизация суммарного времени завершения, суммарного взвешенного опоздания или числа просроченных задач — это другие задачи с другими правилами или более сложными алгоритмами.</p></article>
