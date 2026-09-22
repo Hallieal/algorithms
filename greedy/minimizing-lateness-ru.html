@@ -8,7 +8,7 @@
 <body class="lecture-page"><div aria-hidden="true" class="progress-track"><div class="progress-bar" id="reading-progress"></div></div>
 <header class="topbar"><a class="brand" href="../index-ru.html"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name ru-brand-name"><span class="ru-brand-lines"><span>Гайд по алгоритмам</span><span class="ru-brand-presented">presented by Аллан</span></span></span></a>
 <nav aria-label="Основная навигация" class="topnav"><a href="index-ru.html">Жадные алгоритмы</a><div aria-label="Язык" class="language-switch"><a href="minimizing-lateness.html">EN</a><span class="language-separator">·</span><span class="current">RU</span></div></nav></header>
-<aside aria-label="Навигация по разделу" class="sidebar"><div class="sidebar-title">Глава 9 · Раздел 6</div><a href="#problem">Постановка</a><a href="#example">Пример</a><a href="#same-looking">Похожий сюжет, новая цель</a><a href="#model">Сначала модель</a><a href="#algorithm">Алгоритм EDF</a><a href="#proof">Корректность</a><a href="#runtime">Один выбор порядка, затем scan</a><a href="#implementation">Реализация</a><a href="#interview-recognition">Recognition checklist</a><a href="#boundaries">Границы модели</a><a href="#exercises">Задачи</a></aside>
+<aside aria-label="Навигация по разделу" class="sidebar"><div class="sidebar-title">Глава 9 · Раздел 6</div><a href="#problem">Постановка</a><a href="#example">Пример</a><a href="#same-looking">Похожий сюжет, новая цель</a><a href="#spt">Другая scheduling objective: SPT</a><a href="#model">Сначала модель</a><a href="#algorithm">Алгоритм EDF</a><a href="#proof">Корректность</a><a href="#runtime">Один выбор порядка, затем scan</a><a href="#implementation">Реализация</a><a href="#interview-recognition">Recognition checklist</a><a href="#boundaries">Границы модели</a><a href="#exercises">Задачи</a></aside>
 <main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Глава 9 · Раздел 6</div><h1>Минимизация максимального опоздания</h1><p class="chapter-topics">На одной машине худшее опоздание минимизируется простым правилом: сначала выполняем задачу с самым ранним дедлайном.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-lateness.svg"/></div></section>
 <section class="lecture-section" id="problem">
 <h2>Сначала — самый срочный дедлайн</h2>
@@ -52,6 +52,22 @@
 </div>
 <div class="predict-card"><span class="predict-kicker">Попробуйте угадать rule до ответа</span><h3>Кого ставить первым: самый короткий job, самый ранний start или самый ранний deadline?</h3><p>Только один из этих приоритетов непосредственно связан с величиной, которую мы минимизируем. Дальше proof покажет, почему этого достаточно.</p></div>
 <div class="one-line"><strong>Переносите вопрос, а не старый ответ.</strong> Greedy особенно легко применить неправильно, когда две задачи рассказываются одной и той же историей, но оптимизируют разные quantities.</div>
+</section>
+
+<!-- karumanchi-round-lateness -->
+<section class="lecture-section" id="spt">
+<h2>Рядом живёт другой корректный greedy rule: Shortest Processing Time first</h2>
+<p class="lead">Примеры Karumanchi с tape и customer service хорошо показывают контраст. Если objective — total waiting time, а не maximum lateness, естественный greedy rule сортирует по processing time, а не по deadline.</p>
+<div class="objective-swap">
+<article><h3>Minimize total waiting time</h3><p>Короткие jobs идут раньше. Длинный job в начале задерживает каждого, кто стоит за ним, поэтому swap inversion с <span class="math">p_i&gt;p_j</span> уменьшает waiting-time contribution этой пары.</p></article>
+<div class="objective-arrow">≠</div>
+<article><h3>Minimize maximum lateness</h3><p>Раньше идут меньшие deadlines. Processing time сам по себе не показывает, какой job сильнее рискует нарушить худший deadline.</p></article>
+</div>
+<div class="two-column-block">
+<div class="text-panel"><h3>Tape analogy</h3><p>Если songs одинаково вероятно запрашиваются с sequential tape, короткие songs в начале уменьшают объём данных, который поздним запросам приходится проматывать.</p></div>
+<div class="proof-panel"><h3>Queue analogy</h3><p>Если service times известны, обслуживание customers по increasing service time минимизирует total waiting time в простой single-server model.</p></div>
+</div>
+<div class="one-line"><strong>Greedy keys привязаны к objective.</strong> SPT и EDD/EDF — оба exact greedy rules, но для разных objective functions.</div>
 </section>
 
 <section class="lecture-section" id="model">
