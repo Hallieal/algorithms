@@ -6,7 +6,7 @@
 </head>
 <body class="lecture-page"><div aria-hidden="true" class="progress-track"><div class="progress-bar" id="reading-progress"></div></div>
 <header class="topbar"><a class="brand" href="../"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name">Allan's Handbook of Algorithms</span></a><nav aria-label="Primary navigation" class="topnav"><a href="./">Greedy overview</a><div aria-label="Language" class="language-switch"><span class="current">EN</span><span class="language-separator">·</span><a href="greedy-vs-dp-ru.html">RU</a></div></nav></header>
-<aside aria-label="Section navigation" class="sidebar"><div class="sidebar-title">Chapter 9 · Section 3</div><a href="#difference">Core difference</a><a href="#structure">Shared structure</a><a href="#coins">Coin change</a><a href="#coin-system">A realistic coin-system trap</a><a href="#knapsack">0/1 Knapsack</a><a href="#knapsack-ladder">Knapsack: three levels</a><a href="#weighted">Weighted intervals</a><a href="#state">What must the future remember?</a><a href="#compressed-dp">When DP collapses to one state</a><a href="#branch-test">Can one branch be discarded?</a><a href="#signals">Which technique?</a><a href="#code">Code comparison</a><a href="#spectrum">Exactness spectrum</a><a href="#comparison">Summary table</a><a href="#exercises">Exercises</a></aside>
+<aside aria-label="Section navigation" class="sidebar"><div class="sidebar-title">Chapter 9 · Section 3</div><a href="#difference">Core difference</a><a href="#structure">Shared structure</a><a href="#coins">Coin change</a><a href="#coin-system">A realistic coin-system trap</a><a href="#knapsack">0/1 Knapsack</a><a href="#knapsack-ladder">Knapsack: three levels</a><a href="#capacity-state">When DP is “fast” only for small capacity</a><a href="#weighted">Weighted intervals</a><a href="#state">What must the future remember?</a><a href="#compressed-dp">When DP collapses to one state</a><a href="#branch-test">Can one branch be discarded?</a><a href="#signals">Which technique?</a><a href="#code">Code comparison</a><a href="#spectrum">Exactness spectrum</a><a href="#comparison">Summary table</a><a href="#exercises">Exercises</a></aside>
 <main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Chapter 9 · Section 3</div><h1>Greedy vs Dynamic Programming</h1><p class="chapter-topics">Greedy keeps one future. Dynamic programming keeps several states alive until it knows which future wins.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-vs-dp.svg"/></div></section>
 <section class="lecture-section" id="difference">
 <h2>One path or many states?</h2>
@@ -91,6 +91,22 @@
 <tr><td>4</td><td>This is the final target, built from the smaller answers.</td></tr>
 </tbody></table></div>
 <div class="predict-card"><span class="predict-kicker">The real difference</span><h3>Greedy throws away alternative futures; DP stores the ones that may still matter.</h3><p>That is the structural question to ask before choosing between the two techniques.</p></div>
+</section>
+
+<!-- skiena-round-gvdp -->
+<section class="lecture-section" id="capacity-state">
+<h2>State-space size matters: O(nC) is pseudo-polynomial</h2>
+<p class="lead">The standard integer-capacity knapsack DP is a good reminder that a compact recurrence does not automatically mean the input-size complexity is small.</p>
+<div class="two-column-block">
+<div class="text-panel"><h3>What the table costs</h3><p>With <span class="math">n</span> items and integer capacity <span class="math">C</span>, a one-dimensional implementation can run in <span class="math">O(nC)</span> time and <span class="math">O(C)</span> space.</p></div>
+<div class="proof-panel"><h3>Why “pseudo-polynomial”?</h3><p>The number <span class="math">C</span> is written using only <span class="math">Θ(log C)</span> bits. So a runtime linear in the numeric value of <span class="math">C</span> can still be exponential in the length of that part of the input.</p></div>
+</div>
+<div class="runtime-ladder">
+<article class="runtime-step best"><span>Small C</span><h3>DP is practical</h3><p>If capacity is a few thousand, keeping one state per capacity may be entirely reasonable.</p></article>
+<article class="runtime-step"><span>Huge C</span><h3>The state range explodes</h3><p>A capacity in the millions or billions can make the same recurrence unattractive even when <span class="math">n</span> is modest.</p></article>
+<article class="runtime-step"><span>Greedy heuristic</span><h3>Fast does not mean safe</h3><p>For general 0/1 Knapsack, density ordering can be arbitrarily far from optimum. Its speed does not replace a correctness or approximation guarantee.</p></article>
+</div>
+<div class="one-line"><strong>Method choice depends on both structure and numbers.</strong> DP preserves the necessary alternatives, but the range of the state variable determines whether that exact method is computationally attractive.</div>
 </section>
 
 <section class="lecture-section" id="weighted">
