@@ -27,7 +27,7 @@
 </header>
 <aside aria-label="Section navigation" class="sidebar">
 <div class="sidebar-title">Chapter 9 · Section 1</div>
-<a href="#idea">The basic idea</a><a href="#guarantees">Algorithm or heuristic?</a><a href="#optimization-lens">Optimization lens</a><a href="#anatomy">Anatomy</a><a href="#example">First example</a><a href="#grokking-outcomes">What can greedy mean?</a><a href="#failure">When greedy fails</a><a href="#design-loop">Design loop</a><a href="#properties">Structural properties</a><a href="#implementation">Implementation</a><a href="#complexity">Efficiency</a><a href="#streaming">One-pass greedy state</a><a href="#interview-workflow">Interview workflow</a><a href="#recognition">Recognition patterns</a><a href="#exercises">Exercises</a>
+<a href="#idea">The basic idea</a><a href="#guarantees">Algorithm or heuristic?</a><a href="#optimization-lens">Optimization lens</a><a href="#anatomy">Anatomy</a><a href="#example">First example</a><a href="#grokking-outcomes">What can greedy mean?</a><a href="#failure">When greedy fails</a><a href="#design-loop">Design loop</a><a href="#reduce">Choose, commit, reduce</a><a href="#properties">Structural properties</a><a href="#implementation">Implementation</a><a href="#complexity">Efficiency</a><a href="#streaming">One-pass greedy state</a><a href="#interview-workflow">Interview workflow</a><a href="#recognition">Recognition patterns</a><a href="#exercises">Exercises</a>
 </aside>
 <main class="lecture">
 <section class="lecture-hero greedy-lecture-hero">
@@ -151,6 +151,23 @@
 <article class="design-loop-card"><span>5</span><h3>Prove or downgrade</h3><p>Use exchange, staying ahead, induction, or a cut argument. If no proof exists, the rule may still be a heuristic or approximation—but call it that.</p></article>
 </div>
 <div class="practice-note"><h3>Counterexamples are part of the design process</h3><p>Trying earliest start and shortest duration before discovering earliest finish is not wasted effort. The failed rules explain what information matters and make the final proof easier to see.</p></div>
+</section>
+
+<!-- karumanchi-round-strategy -->
+<section class="lecture-section" id="reduce">
+<h2>A greedy step should make the remaining problem smaller</h2>
+<p class="lead">A useful way to describe greediness is as a three-part loop: choose the locally preferred feasible action, commit to it without reopening the decision, then reduce the instance and repeat.</p>
+<div class="interview-flow">
+<article><span>1</span><h3>Choose</h3><p>Among the currently feasible options, identify the candidate favored by the greedy key: earliest finish, largest density, lightest safe edge, smallest frequency, and so on.</p></article>
+<article><span>2</span><h3>Commit</h3><p>The decision becomes part of the partial solution. A correct greedy algorithm does not later backtrack and replace it.</p></article>
+<article><span>3</span><h3>Reduce</h3><p>Delete incompatible or dominated possibilities and view what remains as a smaller instance of the same problem.</p></article>
+<article><span>4</span><h3>Repeat</h3><p>The proof must justify that the same local rule remains safe on every reduced instance, not only on the first step.</p></article>
+</div>
+<div class="two-column-block">
+<div class="text-panel"><h3>What greediness buys</h3><p>Once a decision is proved safe, the algorithm does not spend time reconsidering it. This often leads to short implementations and very small state.</p></div>
+<div class="proof-panel"><h3>What greediness risks</h3><p>If the commitment is not actually safe, there is no recovery mechanism. A locally attractive choice can permanently destroy the global optimum.</p></div>
+</div>
+<div class="one-line"><strong>Greedy is not “ignore the future”.</strong> The implementation may not explore future branches, but the correctness proof must explain why the future cannot punish the committed choice.</div>
 </section>
 
 <section class="lecture-section" id="properties">
