@@ -63,13 +63,23 @@
 <!-- grokking-pass-gvdp -->
 <section class="lecture-section" id="knapsack-ladder">
 <h2>Knapsack shows the whole spectrum in one problem</h2>
-<p class="lead">The same optimization problem can be attacked at three levels. Seeing them in order makes the role of dynamic programming much clearer.</p>
-<div class="knapsack-ladder">
-<article class="knapsack-rung"><div class="rung-no">1</div><h3>Try every subset</h3><p>Enumerate all combinations and keep the best feasible one.</p><small>Exact, but exponential: O(2ⁿ) subsets.</small></article>
-<article class="knapsack-rung"><div class="rung-no">2</div><h3>Make a greedy guess</h3><p>Take items in some locally attractive order. This is fast, but for indivisible items the rule can miss the best combination.</p><small>Fast, but not automatically exact.</small></article>
-<article class="knapsack-rung"><div class="rung-no">3</div><h3>Keep subproblem answers</h3><p>DP stores the best value for smaller capacities and reuses those answers when deciding whether to include the next item.</p><small>Exact for integer capacities; pseudo-polynomial in capacity.</small></article>
+<p class="lead">This is one of the clearest places to see why “fast local choice” and “exact optimization” are different goals.</p>
+<div class="mini-example-grid">
+<article class="mini-example bad"><h3>A natural greedy mistake</h3><p>In the classic thief example, taking the most expensive single item first yields value 3000, while a different pair is worth 3500. The first locally attractive choice blocks the better combination.</p></article>
+<article class="mini-example good"><h3>What DP preserves</h3><p>Instead of committing to one packing, DP keeps the best value for many smaller capacities. A state that looks weaker now may combine better with a later item.</p></article>
 </div>
-<div class="predict-card"><span class="predict-kicker">What changed between steps 2 and 3?</span><h3>DP refuses to discard alternative capacities too early.</h3><p>Greedy compresses the future to one path. Knapsack needs several partial solutions because an apparently weaker state can combine better with later items.</p></div>
+<div class="knapsack-ladder">
+<article class="knapsack-rung"><div class="rung-no">1</div><h3>Try every subset</h3><p>Enumerate all combinations and keep the best feasible one.</p><small>Exact, but exponential: 2ⁿ subsets.</small></article>
+<article class="knapsack-rung"><div class="rung-no">2</div><h3>Make a greedy guess</h3><p>Choose items in a locally attractive order and never revisit the decision.</p><small>Fast, but not exact for 0/1 Knapsack.</small></article>
+<article class="knapsack-rung"><div class="rung-no">3</div><h3>Build from sub-knapsacks</h3><p>For each smaller capacity, store the best value seen so far and reuse it when a new item is considered.</p><small>Exact for integer capacities; pseudo-polynomial in capacity.</small></article>
+</div>
+<div class="table-wrap state-table"><table><thead><tr><th>Capacity</th><th>Why keep it?</th></tr></thead><tbody>
+<tr><td>1</td><td>A later 3-unit item may combine with the best 1-unit solution.</td></tr>
+<tr><td>2</td><td>It may be worse than the 4-unit optimum now, but it is a different future resource budget.</td></tr>
+<tr><td>3</td><td>A new 1-unit item can turn this state into the best 4-unit answer.</td></tr>
+<tr><td>4</td><td>This is the final target, built from the smaller answers.</td></tr>
+</tbody></table></div>
+<div class="predict-card"><span class="predict-kicker">The real difference</span><h3>Greedy throws away alternative futures; DP stores the ones that may still matter.</h3><p>That is the structural question to ask before choosing between the two techniques.</p></div>
 </section>
 
 <section class="lecture-section" id="weighted">
