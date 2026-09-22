@@ -1094,3 +1094,132 @@
 @media(max-width:760px){
   .runtime-ladder,.stream-state,.operation-profile{grid-template-columns:1fr}
 }
+
+
+/* =========================================================
+   Coding Interview Patterns pass — recognition and interview reasoning
+   ========================================================= */
+.interview-flow{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:10px;
+  margin-top:22px;
+}
+.interview-flow article{
+  padding:17px;
+  border:1px solid var(--line);
+  border-radius:13px;
+  background:#fff;
+}
+.interview-flow span{
+  display:grid;
+  place-items:center;
+  width:28px;height:28px;
+  margin-bottom:9px;
+  border-radius:50%;
+  background:#eef3f7;
+  color:#566f86;
+  font-size:11px;font-weight:850;
+}
+.interview-flow h3{font-size:14px;margin-bottom:5px}
+.interview-flow p{margin:0;color:#68727a;font-size:12px;line-height:1.52}
+.recognition-grid{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:12px;
+  margin-top:20px;
+}
+.recognition-card{
+  padding:18px;
+  border:1px solid var(--line);
+  border-radius:14px;
+  background:#fff;
+}
+.recognition-card .signal{
+  display:inline-block;
+  margin-bottom:9px;
+  padding:4px 8px;
+  border-radius:999px;
+  background:#f1f3f4;
+  color:#707a81;
+  font-size:9px;
+  font-weight:850;
+  letter-spacing:.07em;
+  text-transform:uppercase;
+}
+.recognition-card h3{font-size:15px;margin-bottom:6px}
+.recognition-card p{margin:0;color:#68727a;font-size:12.5px;line-height:1.55}
+.candidate-elimination{
+  margin-top:20px;
+  padding:20px;
+  border:1px solid var(--line);
+  border-radius:14px;
+  background:#fbfbf9;
+}
+.candidate-elimination h3{font-size:15px;margin-bottom:8px}
+.candidate-elimination p{margin:0;color:#626c73;font-size:13px;line-height:1.65}
+.directional-passes{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+  margin-top:20px;
+}
+.directional-passes article{
+  padding:18px;
+  border:1px solid var(--line);
+  border-radius:14px;
+  background:#fff;
+}
+.directional-passes h3{font-size:15px;margin-bottom:6px}
+.directional-passes p{margin:0;color:#68727a;font-size:12.5px;line-height:1.55}
+.interview-answer{
+  margin-top:20px;
+  padding:18px 20px;
+  border-left:4px solid #8ba2b4;
+  border-radius:0 12px 12px 0;
+  background:#f8fafb;
+}
+.interview-answer h3{font-size:14px;margin-bottom:6px}
+.interview-answer p{margin:0;color:#657078;font-size:12.5px;line-height:1.6}
+.sort-key-grid{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:12px;
+  margin-top:20px;
+}
+.sort-key-grid article{
+  padding:18px;
+  border:1px solid var(--line);
+  border-radius:14px;
+  background:#fff;
+}
+.sort-key-grid code{
+  display:block;
+  margin-bottom:8px;
+  font-size:11px;
+  font-weight:800;
+}
+.sort-key-grid h3{font-size:14px;margin-bottom:5px}
+.sort-key-grid p{margin:0;color:#68727a;font-size:12px;line-height:1.52}
+.edge-case-row{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  margin-top:16px;
+}
+.edge-case-row span{
+  padding:6px 9px;
+  border:1px solid var(--line);
+  border-radius:999px;
+  background:#fff;
+  color:#657078;
+  font-size:10.5px;
+  font-weight:700;
+}
+@media(max-width:900px){
+  .interview-flow{grid-template-columns:repeat(2,1fr)}
+  .recognition-grid,.sort-key-grid{grid-template-columns:1fr}
+}
+@media(max-width:700px){
+  .interview-flow,.directional-passes{grid-template-columns:1fr}
+}
