@@ -6,7 +6,7 @@
 </head>
 <body class="lecture-page"><div aria-hidden="true" class="progress-track"><div class="progress-bar" id="reading-progress"></div></div>
 <header class="topbar"><a class="brand" href="../index-ru.html"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name ru-brand-name"><span class="ru-brand-lines"><span>Гайд по алгоритмам</span><span class="ru-brand-presented">presented by Аллан</span></span></span></a><nav aria-label="Основная навигация" class="topnav"><a href="index-ru.html">Жадные алгоритмы</a><div aria-label="Язык" class="language-switch"><a href="greedy-vs-dp.html">EN</a><span class="language-separator">·</span><span class="current">RU</span></div></nav></header>
-<aside aria-label="Навигация по разделу" class="sidebar"><div class="sidebar-title">Глава 9 · Раздел 3</div><a href="#difference">Главное отличие</a><a href="#structure">Общая структура</a><a href="#coins">Размен монет</a><a href="#knapsack">Рюкзак 0/1</a><a href="#weighted">Взвешенные интервалы</a><a href="#state">Что должно помнить будущее?</a><a href="#signals">Как выбрать метод?</a><a href="#code">Сравнение кода</a><a href="#spectrum">Спектр методов</a><a href="#comparison">Итоговая таблица</a><a href="#exercises">Задачи</a></aside>
+<aside aria-label="Навигация по разделу" class="sidebar"><div class="sidebar-title">Глава 9 · Раздел 3</div><a href="#difference">Главное отличие</a><a href="#structure">Общая структура</a><a href="#coins">Размен монет</a><a href="#knapsack">Рюкзак 0/1</a><a href="#knapsack-ladder">Knapsack: три уровня</a><a href="#weighted">Взвешенные интервалы</a><a href="#state">Что должно помнить будущее?</a><a href="#signals">Как выбрать метод?</a><a href="#code">Сравнение кода</a><a href="#spectrum">Спектр методов</a><a href="#comparison">Итоговая таблица</a><a href="#exercises">Задачи</a></aside>
 <main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Глава 9 · Раздел 3</div><h1>Жадные алгоритмы и динамическое программирование</h1><p class="chapter-topics">Greedy оставляет одно будущее. Динамическое программирование хранит несколько состояний, пока не станет ясно, какое из них победит.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-vs-dp.svg"/></div></section>
 <section class="lecture-section" id="difference">
 <h2>Один путь или несколько состояний?</h2>
@@ -58,6 +58,18 @@
 </div>
 </div>
 <p>Первый жадный выбор A локально выглядит лучше, но блокирует глобально лучшую комбинацию. DP по оставшейся или использованной вместимости умеет сравнивать такие варианты.</p>
+</section>
+
+<!-- grokking-pass-gvdp -->
+<section class="lecture-section" id="knapsack-ladder">
+<h2>Knapsack показывает весь спектр методов на одной задаче</h2>
+<p class="lead">Одну и ту же optimization problem можно решать на трёх уровнях. Если увидеть их подряд, граница между greedy и DP становится гораздо яснее.</p>
+<div class="knapsack-ladder">
+<article class="knapsack-rung"><div class="rung-no">1</div><h3>Перебрать все subsets</h3><p>Проверяем все комбинации и оставляем лучшую допустимую.</p><small>Exact, но экспоненциально: O(2ⁿ) subsets.</small></article>
+<article class="knapsack-rung"><div class="rung-no">2</div><h3>Сделать greedy-ставку</h3><p>Берём items в некотором локально привлекательном порядке. Это быстро, но для неделимых предметов rule может промахнуться мимо лучшей комбинации.</p><small>Быстро, но не автоматически exact.</small></article>
+<article class="knapsack-rung"><div class="rung-no">3</div><h3>Хранить ответы подзадач</h3><p>DP хранит best value для меньших capacities и переиспользует их, решая, добавлять ли очередной item.</p><small>Exact для целочисленных capacities; pseudo-polynomial по capacity.</small></article>
+</div>
+<div class="predict-card"><span class="predict-kicker">Что изменилось между шагами 2 и 3?</span><h3>DP не выбрасывает альтернативные capacities слишком рано.</h3><p>Greedy сжимает будущее в один путь. Knapsack требует нескольких partial solutions: локально более слабое состояние может лучше соединиться с последующими items.</p></div>
 </section>
 
 <section class="lecture-section" id="weighted">
