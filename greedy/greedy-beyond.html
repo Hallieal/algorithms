@@ -24,7 +24,7 @@
 </header>
 <aside aria-label="Section navigation" class="sidebar">
 <div class="sidebar-title">Chapter 9 · Section 11</div>
-<a href="#map">The big picture</a><a href="#matroid">Matroids</a><a href="#mst">Kruskal</a><a href="#limits">What is not a matroid</a><a href="#exact-vs-fast">Exact search vs fast greedy</a><a href="#guarantees">Heuristic vs approximation</a><a href="#approx">Approximation</a><a href="#setcover">Set Cover worked example</a><a href="#set-code">Set Cover in code</a><a href="#optimization">Greedy as state compression</a><a href="#decision">Decision map</a><a href="#reading">Further reading</a><a href="#exercises">Exercises</a>
+<a href="#map">The big picture</a><a href="#matroid">Matroids</a><a href="#mst">Kruskal</a><a href="#limits">What is not a matroid</a><a href="#exact-vs-fast">Exact search vs fast greedy</a><a href="#guarantees">Heuristic vs approximation</a><a href="#approx">Approximation</a><a href="#setcover">Set Cover worked example</a><a href="#set-code">Set Cover in code</a><a href="#optimization">Greedy as state compression</a><a href="#pattern-library">Pattern library, not one template</a><a href="#decision">Decision map</a><a href="#reading">Further reading</a><a href="#exercises">Exercises</a>
 </aside>
 <main class="lecture">
 <section class="lecture-hero greedy-lecture-hero">
@@ -182,6 +182,21 @@ while uncovered:
 <div class="one-line"><strong>A compact state is the reward for a proof.</strong> First show which alternatives can never matter again; only then delete them from the algorithm.</div>
 </section>
 
+<!-- coding-patterns-round-beyond -->
+<section class="lecture-section" id="pattern-library">
+<h2>There is no one-size-fits-all greedy template—build a pattern library instead</h2>
+<p class="lead">A better way to prepare for interviews is to remember several structural moves and the proof obligation behind each one.</p>
+<div class="recognition-grid">
+<article class="recognition-card"><span class="signal">Backward frontier</span><h3>Reachability</h3><p>Replace a far destination by an earlier index that can already reach it. The proof shows earlier solutions are preserved.</p></article>
+<article class="recognition-card"><span class="signal">Block elimination</span><h3>Circular feasibility</h3><p>A failed prefix can certify that many possible starting points are impossible, so the candidate jumps forward instead of backtracking.</p></article>
+<article class="recognition-card"><span class="signal">Directional passes</span><h3>Local inequalities</h3><p>When constraints come from left and right neighbors, satisfy each direction separately and combine the necessary lower bounds.</p></article>
+<article class="recognition-card"><span class="signal">Sorted intervals</span><h3>Ordering creates locality</h3><p>Sorting by the right endpoint feature can turn global overlap questions into comparisons against one current frontier.</p></article>
+<article class="recognition-card"><span class="signal">Priority queue</span><h3>Repeated best candidate</h3><p>If a changing candidate set repeatedly asks for the current minimum or maximum, a heap often exposes exactly the choice the greedy rule needs.</p></article>
+<article class="recognition-card"><span class="signal">Union-Find</span><h3>Dynamic components</h3><p>If greedy considers edges while needing fast “same component?” checks, DSU separates feasibility maintenance from the greedy priority rule.</p></article>
+</div>
+<div class="interview-answer"><h3>What pattern recognition should not become</h3><p>Do not match keywords to memorized code. Match the problem to an invariant: what frontier is safe, what candidates are dominated, what constraint is being enforced, and what information can be discarded permanently?</p></div>
+</section>
+
 <section class="lecture-section" id="decision">
 <h2>A checklist for new problems</h2>
 <div class="proof-checklist">
@@ -195,6 +210,7 @@ while uncovered:
 <section class="lecture-section" id="reading">
 <h2>Further reading</h2>
 <div class="reference-list">
+<div class="reference-item"><b>Alex Xu & Shaun Gunawardane — Coding Interview Patterns</b><span>Chapter 16 develops three complementary greedy forms—backward destination movement, candidate elimination on a circular route, and two directional passes. Chapter 9 supplies the interval/sweep-line pattern, while Chapters 8 and 13 reinforce heaps and Union-Find as supporting structures.</span></div>
 <div class="reference-item"><b>Jay Wengrow — A Common-Sense Guide to Data Structures and Algorithms in Python</b><span>Chapter 20 develops the optimization workflow from current Big O to best-imaginable Big O, then uses greedy state compression for array maximum, maximum-subarray sum, and increasing triplets; Chapter 18 gives a detailed Dijkstra walk-through and compares a simple array frontier with a priority queue.</span></div>
 <div class="reference-item"><b>Aditya Y. Bhargava — Grokking Algorithms, 2nd ed.</b><span>Chapter 10 gives the intuitive progression from classroom scheduling to a failing 0/1 Knapsack greedy rule and then to greedy Set Cover as an approximation; Chapters 7 and 9 give visual treatments of Huffman coding and Dijkstra.</span></div>
 <a class="reference-item" href="https://www.pearson.com/en-us/subject-catalog/p/algorithm-design/P200000003259" target="_blank" rel="noopener"><b>Jon Kleinberg & Eva Tardos — Algorithm Design</b><span>A more proof-oriented treatment of scheduling, MSTs, and greedy design.</span></a>
