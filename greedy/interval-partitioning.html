@@ -9,10 +9,10 @@
 <header class="topbar"><a class="brand" href="../"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name">Allan's Handbook of Algorithms</span></a>
 <nav aria-label="Primary navigation" class="topnav"><a href="./">Greedy overview</a><div aria-label="Language" class="language-switch"><span class="current">EN</span><span class="language-separator">·</span><a href="interval-partitioning-ru.html">RU</a></div></nav></header>
 <aside aria-label="Section navigation" class="sidebar"><div class="sidebar-title">Chapter 9 · Section 5</div><a href="#problem">Problem</a><a href="#depth">Depth</a><a href="#same-input">Same intervals, different question</a><a href="#algorithm">Algorithm</a><a href="#sweep">Count only: sweep line</a><a href="#railway">Same problem: railway platforms</a><a href="#two-array-sweep">Two-array sweep</a><a href="#proof">Correctness</a><a href="#data-structure">Why a heap matters</a><a href="#implementation">Implementation</a><a href="#interval-structure">Why interval structure makes coloring easy</a><a href="#comparison">Comparison</a><a href="#exercises">Exercises</a></aside>
-<main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Chapter 9 · Section 5</div><h1>Interval Partitioning</h1><p class="chapter-topics">Schedule every interval while using as few rooms as possible. Reuse the room that becomes free first.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-interval-partitioning.svg"/></div></section>
+<main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Chapter 9 · Section 5</div><h1>Interval Partitioning</h1><p class="chapter-topics">Interval Partitioning keeps every interval and minimizes the number of resources. The optimum equals the maximum overlap depth and is obtained by processing intervals in start-time order.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-interval-partitioning.svg"/></div></section>
 <section class="lecture-section" id="problem">
-<h2>Use as few rooms as possible</h2>
-<p class="lead">Every interval must stay. The only freedom is where to place it. Overlapping intervals need different rooms, so the problem is to reuse rooms as aggressively as possible without creating a conflict.</p><div class="concept-strip">
+<h2>Problem statement</h2>
+<p class="lead">Every interval must be assigned to a room, and overlapping intervals cannot share a room. The objective is to minimize the number of rooms used.</p><div class="concept-strip">
 <article class="concept-cell rule"><span>Rule</span><b>Process by start time; reuse the earliest-free room</b><p>A min-heap tells us which room becomes available first.</p></article>
 <article class="concept-cell proof"><span>Why it works</span><b>A new room is opened only when all rooms are busy</b><p>At that moment the overlap depth forces the same number of rooms.</p></article>
 <article class="concept-cell cost"><span>Cost</span><b>O(n log n)</b><p>Sort once; one heap update per interval.</p></article>
@@ -23,8 +23,8 @@
 </section>
 
 <section class="lecture-section" id="depth">
-<h2>First find the lower bound: depth</h2>
-<p class="lead">If <span class="math">d</span> intervals overlap at one instant, they need <span class="math">d</span> different rooms. The maximum such overlap is called the depth, and no schedule can beat it.</p>
+<h2>Lower bound from overlap depth</h2>
+<p class="lead">If d intervals overlap at the same time, at least d rooms are necessary. The maximum simultaneous overlap is therefore a lower bound on every feasible schedule.</p>
 <div class="depth-illustration">
 <div class="depth-card"><h3>Depth</h3><div class="depth-number">3</div><p>In our example, A, B, and C overlap around time 2. Therefore at least 3 rooms are necessary.</p></div>
 <div class="depth-card"><h3>Goal of the greedy proof</h3><p>If our algorithm never uses more rooms than the depth, then it is optimal: it matches a lower bound that every schedule must obey.</p></div>
@@ -33,8 +33,8 @@
 
 <!-- grokking-pass-partition -->
 <section class="lecture-section" id="same-input">
-<h2>The same classroom picture can mean a completely different problem</h2>
-<p class="lead">Greedy rules are tied to objectives, not to surface vocabulary. “Classes with start and finish times” can describe two problems whose correct local choices are different.</p>
+<h2>Selection and partitioning are different problems</h2>
+<p class="lead">The same set of intervals can define two different objectives: choose as many as possible, or keep all intervals while minimizing resources. The correct ordering rule changes with the objective.</p>
 <div class="objective-swap">
 <article><h3>One room, reject some classes</h3><p>Goal: keep as many classes as possible. Choosing the class that ends first is useful because it preserves room on the timeline.</p></article>
 <div class="objective-arrow">→</div>
@@ -45,8 +45,8 @@
 </section>
 
 <section class="lecture-section" id="algorithm">
-<h2>Reuse the room that frees first</h2>
-<p class="lead">Sort by start time. For each interval, look at the room with the smallest current finish time. If that room is free, reuse it. If even that room is still busy, every room is busy.</p>
+<h2>Greedy room assignment</h2>
+<p class="lead">Process intervals by start time and reuse the room with the earliest current finish time whenever possible. If that room is still occupied, all existing rooms are occupied and a new room is necessary.</p>
 <div class="source-note"><h3>Ties at the same start time</h3><p>Assuming positive-duration intervals, if two intervals start simultaneously, their relative order does not affect correctness. They overlap immediately, so they cannot reuse the same room regardless of which one is processed first.</p></div>
 <div class="step-flow">
 <article class="step-item"><div class="step-number">1</div><div><h3>Sort by start time</h3><p>When we process an interval, all earlier-starting intervals have already been assigned.</p></div></article>
@@ -65,8 +65,8 @@
 
 <!-- book-synthesis-ip -->
 <section class="lecture-section" id="sweep">
-<h2>If you only need the number of rooms: sweep the endpoints</h2>
-<p class="lead">The heap algorithm constructs an actual room assignment. If the task asks only for the minimum number of rooms, we can compute the maximum overlap depth directly with a sweep line.</p>
+<h2>Counting rooms with a sweep line</h2>
+<p class="lead">If only the minimum number of rooms is required, compute the maximum number of active intervals directly by sorting interval endpoints.</p>
 <div class="clean-steps">
 <div class="clean-step"><span>1</span><p>Create one start event <span class="math">(+1)</span> and one finish event <span class="math">(−1)</span> for every interval.</p></div>
 <div class="clean-step"><span>2</span><p>Sort events by time. Under half-open semantics <span class="math">[s,f)</span>, process a finish before a start when times are equal.</p></div>
@@ -87,8 +87,8 @@
 <!-- coding-patterns-round-partition -->
 <!-- karumanchi-round-partition -->
 <section class="lecture-section" id="railway">
-<h2>Same mathematics, different story: railway platforms</h2>
-<p class="lead">Replace classes by trains and rooms by platforms. The minimum number of platforms is again the maximum number of simultaneously active intervals.</p>
+<h2>Equivalent formulation: railway platforms</h2>
+<p class="lead">Train arrivals and departures form the same interval-partitioning problem. The minimum number of platforms equals the maximum number of trains present simultaneously.</p>
 <div class="concept-strip">
 <article class="concept-cell rule"><span>Arrival</span><b>+1 active train</b><p>A new platform may be needed.</p></article>
 <article class="concept-cell proof"><span>Departure</span><b>−1 active train</b><p>A platform becomes reusable.</p></article>
@@ -99,8 +99,8 @@
 </section>
 
 <section class="lecture-section" id="two-array-sweep">
-<h2>Interview variant: split starts and finishes into two sorted arrays</h2>
-<p class="lead">The sweep-line idea can be implemented without building tagged events. Keep sorted starts and sorted finishes, then advance whichever event happens next.</p>
+<h2>Two-array sweep</h2>
+<p class="lead">The overlap count can be computed from separately sorted start and finish arrays. Advance the earlier next event and update the number of active intervals.</p>
 <div class="code-explainer">
 <div class="annotated-code">
 <div class="code-row"><span class="line-no">1</span><code>starts = sorted(s for s, f in intervals)</code></div>
@@ -116,8 +116,8 @@
 </section>
 
 <section class="lecture-section" id="proof">
-<h2>Why opening a new room is unavoidable</h2>
-<p class="lead">The key moment is when the algorithm opens a new room for an interval <span class="math">j</span> starting at time <span class="math">sⱼ</span>.</p>
+<h2>Optimality proof</h2>
+<p class="lead">When the algorithm opens a new room for an interval starting at time s_j, every existing room contains an interval that overlaps s_j. Thus the current overlap depth already requires that many rooms.</p>
 <div class="proof-checklist">
 <div class="proof-check"><span>1</span><p>The earliest-finishing existing room is still occupied after <span class="math">sⱼ</span>.</p></div>
 <div class="proof-check"><span>2</span><p>Therefore every existing room contains an interval that overlaps <span class="math">j</span> at time <span class="math">sⱼ</span>.</p></div>
@@ -129,8 +129,8 @@
 
 <!-- common-sense-round-partition -->
 <section class="lecture-section" id="data-structure">
-<h2>The greedy rule is easy; the data structure makes it fast</h2>
-<p class="lead">At every interval, we need one operation: find the room whose current class finishes earliest. How we represent rooms determines the runtime.</p>
+<h2>Priority-queue representation</h2>
+<p class="lead">The repeated operation is to find the room with the smallest finish time. A min-heap supports this operation efficiently.</p>
 <div class="operation-profile">
 <article class="neutral"><h3>Scan all rooms</h3><p>Keep room finish times in a plain list. Finding the earliest-free room costs <span class="math">O(r)</span> for <span class="math">r</span> rooms, so assigning <span class="math">n</span> intervals can cost <span class="math">O(nr)</span> after sorting.</p></article>
 <article class="good"><h3>Use a min-heap</h3><p>The earliest finish is always at the root. Reading it is immediate, while replacing or inserting a room finish costs <span class="math">O(log r)</span>. The assignment phase becomes <span class="math">O(n log r)</span>.</p></article>
@@ -139,8 +139,8 @@
 </section>
 
 <section class="lecture-section" id="implementation">
-<h2>Python with a priority queue</h2>
-<p class="lead">The heap stores pairs <code>(finish_time, room_id)</code>. Its minimum is always the room that becomes available first.</p>
+<h2>Python implementation</h2>
+<p class="lead">Store pairs (finish_time, room_id) in a min-heap. The minimum entry identifies the room that becomes available first.</p>
 <div class="code-explainer">
 <div class="annotated-code">
 <div class="code-row"><span class="line-no">1</span><code>import heapq</code></div>
@@ -168,8 +168,8 @@
 
 <!-- skiena-round-partition -->
 <section class="lecture-section" id="interval-structure">
-<h2>Why the interval representation is doing real algorithmic work</h2>
-<p class="lead">Room assignment can be viewed as graph coloring, but the input is not an arbitrary conflict graph. Every conflict comes from overlap on a line, and that extra structure is exactly what makes the greedy schedule possible.</p>
+<h2>Why interval structure matters</h2>
+<p class="lead">The conflict graph is an interval graph, not an arbitrary graph. Start and finish coordinates provide an order that the greedy algorithm can exploit.</p>
 <div class="recognition-grid">
 <article class="recognition-card"><span class="signal">Arbitrary conflicts</span><h3>Only a graph is given</h3><p>Knowing that A conflicts with B and C does not tell us where those conflicts occur or provide a natural chronological sweep.</p></article>
 <article class="recognition-card"><span class="signal">Interval conflicts</span><h3>Every vertex has a start and finish</h3><p>Sorting by start creates a meaningful left-to-right order, while the current finish times summarize when each room becomes reusable.</p></article>
@@ -180,7 +180,7 @@
 
 <section class="lecture-section" id="comparison">
 <div class="bridge-note"><h3>Another view: coloring an interval graph</h3><p>Create one graph vertex per interval and connect two vertices when the intervals overlap. Assigning rooms is exactly graph coloring on this interval graph. General graph coloring is NP-hard, but interval graphs are perfect: their chromatic number equals their clique number, which here is exactly the maximum overlap depth. The greedy scheduling proof is the algorithmic version of that structure.</p></div>
-<h2>Do not confuse the two interval problems</h2>
+<h2>Interval Scheduling versus Interval Partitioning</h2>
 <div class="table-wrap"><table><thead><tr><th>Question</th><th>Interval Scheduling</th><th>Interval Partitioning</th></tr></thead><tbody>
 <tr><td>May we discard intervals?</td><td>Yes</td><td>No</td></tr>
 <tr><td>Objective</td><td>Maximize number selected</td><td>Minimize number of rooms</td></tr>
