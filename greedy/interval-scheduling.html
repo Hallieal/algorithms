@@ -8,7 +8,7 @@
 <body class="lecture-page"><div aria-hidden="true" class="progress-track"><div class="progress-bar" id="reading-progress"></div></div>
 <header class="topbar"><a class="brand" href="../"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name">Allan's Handbook of Algorithms</span></a>
 <nav aria-label="Primary navigation" class="topnav"><a href="./">Greedy overview</a><div aria-label="Language" class="language-switch"><span class="current">EN</span><span class="language-separator">·</span><a href="interval-scheduling-ru.html">RU</a></div></nav></header>
-<aside aria-label="Section navigation" class="sidebar"><div class="sidebar-title">Chapter 9 · Section 4</div><a href="#problem">Problem</a><a href="#choices">Choosing the rule</a><a href="#frontier">Why earliest finish dominates</a><a href="#algorithm">Algorithm</a><a href="#proof">Correctness</a><a href="#implementation">Implementation</a><a href="#recognition">Recognition checklist</a><a href="#variants">Variants</a><a href="#exercises">Exercises</a></aside>
+<aside aria-label="Section navigation" class="sidebar"><div class="sidebar-title">Chapter 9 · Section 4</div><a href="#problem">Problem</a><a href="#choices">Choosing the rule</a><a href="#classroom-walk">Classroom walkthrough</a><a href="#frontier">Why earliest finish dominates</a><a href="#algorithm">Algorithm</a><a href="#proof">Correctness</a><a href="#implementation">Implementation</a><a href="#recognition">Recognition checklist</a><a href="#variants">Variants</a><a href="#exercises">Exercises</a></aside>
 <main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Chapter 9 · Section 4</div><h1>Interval Scheduling</h1><p class="chapter-topics">Choose as many non-overlapping intervals as possible. The right greedy move is simple: finish early and leave room for what comes next.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-interval-scheduling.svg"/></div></section>
 <section class="lecture-section" id="problem">
 <h2>Choose as many intervals as possible</h2>
@@ -41,6 +41,19 @@
 </section>
 
 <!-- book-synthesis-is -->
+<!-- grokking-pass-interval -->
+<section class="lecture-section" id="classroom-walk">
+<h2>See the greedy choice happen, one class at a time</h2>
+<p class="lead">A simple classroom story makes the algorithm memorable: choose the class that ends first, delete everything that now conflicts, and repeat on what remains.</p>
+<div class="classroom-walk">
+<div class="classroom-step"><span>Start</span><p>Available: Algorithms 09:00–10:00, Physics 09:30–11:00, Statistics 10:00–11:00, Music 10:30–12:00, Art 11:00–12:00.</p></div>
+<div class="classroom-step"><span>Pick 1</span><p><strong>Algorithms</strong> ends first at 10:00. Keep it. <del>Physics</del> overlaps and is removed.</p></div>
+<div class="classroom-step"><span>Pick 2</span><p>Among classes starting at or after 10:00, <strong>Statistics</strong> ends first at 11:00. Keep it. <del>Music</del> now conflicts.</p></div>
+<div class="classroom-step"><span>Pick 3</span><p><strong>Art</strong> starts exactly when Statistics ends, so under <span class="math">[s,f)</span> semantics it is compatible. Final schedule: three classes.</p></div>
+</div>
+<div class="predict-card"><span class="predict-kicker">Before looking at the proof</span><h3>What information did the algorithm keep?</h3><p>After every choice, it forgot almost everything about the past. It only needed the finish time of the last accepted class. That one-number frontier is a strong clue that a greedy solution may exist.</p></div>
+</section>
+
 <section class="lecture-section" id="frontier">
 <h2>Earliest finish is a dominance rule</h2>
 <p class="lead">The successful greedy rule is not “pick something short”. It is “push the occupied frontier as little as possible”. Among all candidates we could take next, the earliest-finishing one leaves a residual instance that contains every option left by any later-finishing choice—and sometimes more.</p>
