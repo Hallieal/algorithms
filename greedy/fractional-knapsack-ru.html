@@ -8,7 +8,7 @@
 <body class="lecture-page"><div aria-hidden="true" class="progress-track"><div class="progress-bar" id="reading-progress"></div></div>
 <header class="topbar"><a class="brand" href="../index-ru.html"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name ru-brand-name"><span class="ru-brand-lines"><span>Гайд по алгоритмам</span><span class="ru-brand-presented">presented by Аллан</span></span></span></a>
 <nav aria-label="Основная навигация" class="topnav"><a href="index-ru.html">Жадные алгоритмы</a><div aria-label="Язык" class="language-switch"><a href="fractional-knapsack.html">EN</a><span class="language-separator">·</span><span class="current">RU</span></div></nav></header>
-<aside aria-label="Навигация по разделу" class="sidebar"><div class="sidebar-title">Глава 9 · Раздел 7</div><a href="#problem">Постановка</a><a href="#whole-vs-fractional">Целые предметы и дроби</a><a href="#density">Плотность ценности</a><a href="#algorithm">Алгоритм</a><a href="#proof">Корректность</a><a href="#lp-view">Почему только одна дробь?</a><a href="#divisibility">Одно предположение меняет всё</a><a href="#boundary">Граница с 0/1</a><a href="#implementation-choice">Sort или heap?</a><a href="#implementation">Реализация</a><a href="#exercises">Задачи</a></aside>
+<aside aria-label="Навигация по разделу" class="sidebar"><div class="sidebar-title">Глава 9 · Раздел 7</div><a href="#problem">Постановка</a><a href="#whole-vs-fractional">Целые предметы и дроби</a><a href="#density">Плотность ценности</a><a href="#algorithm">Алгоритм</a><a href="#proof">Корректность</a><a href="#lp-view">Почему только одна дробь?</a><a href="#divisibility">Одно предположение меняет всё</a><a href="#boundary">Граница с 0/1</a><a href="#runtime">Не ищите max density заново</a><a href="#implementation-choice">Sort или heap?</a><a href="#implementation">Реализация</a><a href="#exercises">Задачи</a></aside>
 <main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Глава 9 · Раздел 7</div><h1>Дробная задача о рюкзаке</h1><p class="chapter-topics">Если предметы делимы, каждую единицу вместимости выгодно отдавать предмету с максимальной ценностью на единицу веса.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-fractional-knapsack.svg"/></div></section>
 <section class="lecture-section" id="problem">
 <h2>Тратим вместимость там, где она приносит больше всего</h2>
@@ -122,6 +122,18 @@
 </div>
 <div class="greedy-caution"><strong>Вывод.</strong> Небольшое изменение модели может полностью уничтожить жадное свойство. Нельзя переносить доказательство с одной версии задачи на другую, не проверив ключевое предположение.</div>
 <div class="bridge-note"><h3>Но дробный greedy всё ещё полезен для 0/1 Knapsack</h3><p>Оптимум дробной задачи — <strong>верхняя граница</strong> для 0/1-оптимума: разрешение дробей может только улучшить ответ. Такая граница используется в branch-and-bound. Для точного 0/1 Knapsack стандартный DP по вместимости псевдополиномиален. Простое density-greedy само по себе не имеет постоянной гарантии приближения; для approximation нужен дополнительный приём, например сравнение с лучшим одиночным предметом.</p></div>
+</section>
+
+<!-- common-sense-round-fractional -->
+<section class="lecture-section" id="runtime">
+<h2>Rule говорит “бери max density”; не надо искать её с нуля каждый раз</h2>
+<p class="lead">После того как proof установил, что следующая единица capacity должна идти в item с максимальной remaining density, implementation становится отдельной optimization-задачей.</p>
+<div class="runtime-ladder">
+<article class="runtime-step"><span>Naive</span><h3>Сканировать remaining items ради maximum density</h3><p>Повторяющийся linear maximum search после каждого выбранного item может стоить <span class="math">O(n²)</span>.</p></article>
+<article class="runtime-step best"><span>Sort once</span><h3>Заранее упорядочить densities</h3><p>Считаем ratios за <span class="math">O(n)</span>, сортируем за <span class="math">O(n log n)</span>, затем проходим список один раз.</p></article>
+<article class="runtime-step"><span>Heap alternative</span><h3>Показывать только следующий maximum</h3><p>Если capacity заполнится после извлечения лишь <span class="math">c</span> items, max-heap строится за <span class="math">O(n)</span> и делает <span class="math">c</span> extractions за <span class="math">O(c log n)</span>.</p></article>
+</div>
+<div class="one-line"><strong>Proof задаёт order relation, а не обязуется использовать sorting.</strong> Когда “largest density next” уже доказано, data structure стоит выбирать по операциям конкретного input.</div>
 </section>
 
 <section class="lecture-section" id="implementation-choice">
