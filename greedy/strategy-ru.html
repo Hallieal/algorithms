@@ -27,7 +27,7 @@
 </header>
 <aside aria-label="Навигация по разделу" class="sidebar">
 <div class="sidebar-title">Глава 9 · Раздел 1</div>
-<a href="#idea">Основная идея</a><a href="#guarantees">Алгоритм или эвристика?</a><a href="#optimization-lens">Optimization lens</a><a href="#anatomy">Из чего состоит алгоритм</a><a href="#example">Первый пример</a><a href="#grokking-outcomes">Три исхода greedy</a><a href="#failure">Когда greedy ошибается</a><a href="#design-loop">Как находят greedy</a><a href="#reduce">Choose, commit, reduce</a><a href="#properties">Структурные свойства</a><a href="#implementation">Реализация</a><a href="#complexity">Эффективность</a><a href="#streaming">One-pass greedy state</a><a href="#interview-workflow">Interview workflow</a><a href="#recognition">Паттерны распознавания</a><a href="#exercises">Задачи</a>
+<a href="#idea">Основная идея</a><a href="#guarantees">Алгоритм или эвристика?</a><a href="#optimization-lens">Optimization lens</a><a href="#anatomy">Из чего состоит алгоритм</a><a href="#example">Первый пример</a><a href="#grokking-outcomes">Три исхода greedy</a><a href="#failure">Когда greedy ошибается</a><a href="#problem-first">Сначала problem, потом rule</a><a href="#design-loop">Как находят greedy</a><a href="#reduce">Choose, commit, reduce</a><a href="#properties">Структурные свойства</a><a href="#implementation">Реализация</a><a href="#complexity">Эффективность</a><a href="#streaming">One-pass greedy state</a><a href="#interview-workflow">Interview workflow</a><a href="#recognition">Паттерны распознавания</a><a href="#exercises">Задачи</a>
 </aside>
 <main class="lecture">
 <section class="lecture-hero greedy-lecture-hero">
@@ -136,6 +136,18 @@
 </div>
 </div>
 <p>Для суммы 6 и монет 1, 3 и 4 жадное правило выбирает 4 + 1 + 1 — три монеты. Но 3 + 3 использует только две. Локальное правило понятно и всегда даёт допустимое решение, но не гарантирует глобальный оптимум.</p>
+</section>
+
+<!-- skiena-round-strategy -->
+<section class="lecture-section" id="problem-first">
+<h2>Сначала problem, потом rule</h2>
+<p class="lead">Greedy rule может быть корректен только для точно сформулированной задачи. До выбора local choice надо зафиксировать и допустимый класс inputs, и то, что именно output должен оптимизировать.</p>
+<div class="recognition-grid">
+<article class="recognition-card"><span class="signal">Input class</span><h3>Какие instances допустимы?</h3><p>Jobs — это один interval или несколько кусочков с gaps? Graph weighted или unweighted? Edge weights неотрицательны? Похожая story может стать другой задачей после маленького изменения input class.</p></article>
+<article class="recognition-card"><span class="signal">Objective</span><h3>Что значит “best”?</h3><p>Shortest route, fastest route, fewest turns, maximum number of jobs, minimum lateness и minimum total network cost — разные optimization problems.</p></article>
+<article class="recognition-card"><span class="signal">Useful restriction</span><h3>Можно ли сузить structure?</h3><p>Иногда правильный ход — использовать special structure: intervals вместо arbitrary conflicts, trees вместо general graphs, nonnegative weights вместо arbitrary weights.</p></article>
+</div>
+<div class="interview-answer"><h3>Хорошая первая фраза</h3><p>«До выбора greedy key я хочу точно зафиксировать допустимые inputs и objective». Это защищает от доказательства правильного алгоритма для неправильной задачи.</p></div>
 </section>
 
 <section class="lecture-section" id="design-loop">
