@@ -51,7 +51,7 @@
 <article><h3>Maximum lateness</h3><p>Выполнить нужно все jobs. Мы минимизируем худшее нарушение deadline, поэтому критичной информацией становится deadline, а не длина или start time.</p></article>
 </div>
 <div class="predict-card"><span class="predict-kicker">Попробуйте угадать rule до ответа</span><h3>Кого ставить первым: самый короткий job, самый ранний start или самый ранний deadline?</h3><p>Только один из этих приоритетов непосредственно связан с величиной, которую мы минимизируем. Дальше proof покажет, почему этого достаточно.</p></div>
-<div class="one-line"><strong>Переносите вопрос, а не старый ответ.</strong> Greedy особенно легко применить неправильно, когда две задачи рассказываются одной и той же историей, но оптимизируют разные quantities.</div>
+<div class="one-line"><strong>Разные objectives требуют разных правил.</strong> Greedy особенно легко применить неправильно, когда две задачи рассказываются одной и той же историей, но оптимизируют разные quantities.</div>
 </section>
 
 <!-- karumanchi-round-lateness -->
@@ -93,7 +93,7 @@
 <article><code>jobs ↔ qualified workers</code><h3>Matching</h3><p>Если задача — назначить jobs людям, которые умеют их выполнять, structure задаётся bipartite compatibility, а не timeline ordering rule.</p></article>
 <article><code>pairwise conflicts</code><h3>Graph coloring</h3><p>Если конфликтующие jobs не могут делить один time slot, constraint естественно становится coloring. Interval structure может сильно упростить special cases.</p></article>
 </div>
-<div class="candidate-elimination"><h3>Preemption может менять сложность</h3><p>Можно ли прерывать job, разбивать её между processors или продолжать позже — не implementation detail. Эти свободы способны изменить сам optimization problem, поэтому их надо зафиксировать до выбора greedy key.</p></div>
+<div class="candidate-elimination"><h3>Роль preemption</h3><p>Можно ли прерывать job, разбивать её между processors или продолжать позже — не implementation detail. Эти свободы способны изменить сам optimization problem, поэтому их надо зафиксировать до выбора greedy key.</p></div>
 <div class="one-line"><strong>Сначала переведите story в модель, потом сортируйте.</strong> EDF — theorem для конкретной scheduling model, а не универсальный ответ на слова jobs и deadlines.</div>
 </section>
 
@@ -174,7 +174,7 @@
 <h2>Варианты модели</h2>
 <p class="lead">EDF оптимален именно для описанной single-machine maximum-lateness model. При изменении constraints или objective требуется новое доказательство.</p>
 <div class="decision-grid">
-<article class="decision-card greedy-signal"><h3>Release times делают задачу качественно сложнее</h3><p>При временах появления общая задача <span class="math">1|r_j|L_max</span> strongly NP-hard. Здесь недостаточно просто придумать чуть более хитрую сортировку по дедлайну.</p></article>
+<article class="decision-card greedy-signal"><h3>Release times</h3><p>При временах появления общая задача <span class="math">1|r_j|L_max</span> strongly NP-hard. Здесь недостаточно просто придумать чуть более хитрую сортировку по дедлайну.</p></article>
 <article class="decision-card greedy-signal"><h3>Другая целевая функция</h3><p>Минимизация суммарного времени завершения, суммарного взвешенного опоздания или числа просроченных задач — это другие задачи с другими правилами или более сложными алгоритмами.</p></article>
 </div>
 <div class="mini-example-grid"><article class="mini-example bad"><h3>Наивный EDF среди доступных задач</h3><p>J₁=(r=0,p=10,d=50), J₂=(r=1,p=1,d=2), J₃=(r=0,p=1,d=100). В момент 0 J₂ ещё недоступна, поэтому правило без простоя запускает J₁. J₂ заканчивается только в 11 и имеет опоздание 9.</p></article><article class="mini-example good"><h3>Лучшее расписание</h3><p>Ждём до момента 1, выполняем J₂ с 1 до 2, затем J₁ и J₃. Максимальное опоздание равно 0. При release times намеренный простой иногда необходим.</p></article></div>
