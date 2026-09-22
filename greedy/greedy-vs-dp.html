@@ -6,7 +6,7 @@
 </head>
 <body class="lecture-page"><div aria-hidden="true" class="progress-track"><div class="progress-bar" id="reading-progress"></div></div>
 <header class="topbar"><a class="brand" href="../"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name">Allan's Handbook of Algorithms</span></a><nav aria-label="Primary navigation" class="topnav"><a href="./">Greedy overview</a><div aria-label="Language" class="language-switch"><span class="current">EN</span><span class="language-separator">·</span><a href="greedy-vs-dp-ru.html">RU</a></div></nav></header>
-<aside aria-label="Section navigation" class="sidebar"><div class="sidebar-title">Chapter 9 · Section 3</div><a href="#difference">Core difference</a><a href="#structure">Shared structure</a><a href="#coins">Coin change</a><a href="#knapsack">0/1 Knapsack</a><a href="#knapsack-ladder">Knapsack: three levels</a><a href="#weighted">Weighted intervals</a><a href="#state">What must the future remember?</a><a href="#signals">Which technique?</a><a href="#code">Code comparison</a><a href="#spectrum">Exactness spectrum</a><a href="#comparison">Summary table</a><a href="#exercises">Exercises</a></aside>
+<aside aria-label="Section navigation" class="sidebar"><div class="sidebar-title">Chapter 9 · Section 3</div><a href="#difference">Core difference</a><a href="#structure">Shared structure</a><a href="#coins">Coin change</a><a href="#knapsack">0/1 Knapsack</a><a href="#knapsack-ladder">Knapsack: three levels</a><a href="#weighted">Weighted intervals</a><a href="#state">What must the future remember?</a><a href="#compressed-dp">When DP collapses to one state</a><a href="#signals">Which technique?</a><a href="#code">Code comparison</a><a href="#spectrum">Exactness spectrum</a><a href="#comparison">Summary table</a><a href="#exercises">Exercises</a></aside>
 <main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Chapter 9 · Section 3</div><h1>Greedy vs Dynamic Programming</h1><p class="chapter-topics">Greedy keeps one future. Dynamic programming keeps several states alive until it knows which future wins.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-vs-dp.svg"/></div></section>
 <section class="lecture-section" id="difference">
 <h2>One path or many states?</h2>
@@ -100,6 +100,22 @@
 <article class="pattern-lens"><span class="pattern-tag">Many capacities</span><h3>0/1 Knapsack</h3><p>Two partial packings with different used capacities may both matter later. Neither necessarily dominates the other, so DP preserves a table of alternatives.</p></article>
 </div>
 <div class="rule-formula">Greedy question: can many histories be replaced by one dominant state?</div>
+</section>
+
+<!-- common-sense-round-gvdp -->
+<section class="lecture-section" id="compressed-dp">
+<h2>Sometimes “greedy vs DP” is the wrong boundary</h2>
+<p class="lead">Maximum subarray is a useful example because the same one-pass algorithm can be understood from two directions: a DP recurrence or a greedy discard rule.</p>
+<div class="two-column-block">
+<div class="text-panel"><h3>DP view</h3><p>Let <span class="math">E_i</span> be the best subarray sum that <em>must end</em> at position <span class="math">i</span>. Then</p><div class="formula-line">Eᵢ = max(aᵢ, Eᵢ₋₁ + aᵢ)</div><p>Only the previous state is needed, so the whole DP table collapses to one variable.</p></div>
+<div class="proof-panel"><h3>Greedy view</h3><p>If the running prefix sum becomes negative, carry none of it forward. Any future suffix is better without a negative contribution, so reset the running sum and start fresh.</p></div>
+</div>
+<div class="stream-state">
+<article><code>current_sum</code><p>Best sum of a subarray ending at the current position.</p></article>
+<article><code>best_sum</code><p>Best answer over all ending positions seen so far.</p></article>
+<article><code>discard rule</code><p>A negative running prefix is dominated by starting after it.</p></article>
+</div>
+<div class="one-line"><strong>The deeper distinction is how much state survives.</strong> Some DP recurrences compress to constant state; some greedy arguments can be written as tiny recurrences. Algorithm labels are less important than understanding what information the future needs.</div>
 </section>
 
 <section class="lecture-section" id="signals">
