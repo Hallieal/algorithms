@@ -9,10 +9,10 @@
 <header class="topbar"><a class="brand" href="../index-ru.html"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name ru-brand-name"><span class="ru-brand-lines"><span>Гайд по алгоритмам</span><span class="ru-brand-presented">presented by Аллан</span></span></span></a>
 <nav aria-label="Основная навигация" class="topnav"><a href="index-ru.html">Жадные алгоритмы</a><div aria-label="Язык" class="language-switch"><a href="dijkstra.html">EN</a><span class="language-separator">·</span><span class="current">RU</span></div></nav></header>
 <aside aria-label="Навигация по разделу" class="sidebar"><div class="sidebar-title">Глава 9 · Раздел 10</div><a href="#problem">Постановка</a><a href="#all-distances">Один source — все distances</a><a href="#query-scope">Single source и all pairs</a><a href="#model-transform">Transform model, keep Dijkstra</a><a href="#idea">Жадная идея</a><a href="#fewest-cheapest">Меньше рёбер vs дешевле путь</a><a href="#cost-not-distance">Cost — не обязательно distance</a><a href="#mental-model">Модель в четыре шага</a><a href="#demo">По шагам</a><a href="#bfs-link">От BFS к Dijkstra</a><a href="#state-table">Costs, parents, processed</a><a href="#proof">Корректность</a><a href="#negative">Отрицательные рёбра</a><a href="#frontier-structure">Array frontier и heap frontier</a><a href="#implementation">Реализация</a><a href="#paths">Восстановление путей</a><a href="#comparison">Сравнение с MST</a><a href="#interview-decompose">Interview decomposition</a><a href="#choice-guide">Какой shortest-path метод?</a><a href="#exercises">Задачи</a></aside>
-<main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Глава 9 · Раздел 10</div><h1>Алгоритм Дейкстры</h1><p class="chapter-topics">При неотрицательных весах минимальную временную метку можно безопасно зафиксировать. На этом одном жадном шаге построен алгоритм Дейкстры.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-dijkstra.svg"/></div></section>
+<main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Глава 9 · Раздел 10</div><h1>Алгоритм Дейкстры</h1><p class="chapter-topics">Алгоритм Дейкстры решает single-source shortest paths при неотрицательных edge weights, фиксируя vertices в порядке возрастания tentative distance.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-dijkstra.svg"/></div></section>
 <section class="lecture-section" id="problem">
-<h2>Кратчайшие пути из одного источника</h2>
-<p class="lead">Выбираем исходную вершину <span class="math">s</span>. Для каждой вершины нужно найти путь из <span class="math">s</span> минимального суммарного веса. Число рёбер в пути не важно — важна только сумма.</p><div class="concept-strip">
+<h2>Постановка задачи</h2>
+<p class="lead">Для source vertex s в graph с неотрицательными edge weights нужно найти минимальную стоимость пути из s до каждой reachable vertex.</p><div class="concept-strip">
 <article class="concept-cell rule"><span>Правило</span><b>Фиксируем минимальную временную метку</b><p>После этого релаксируем все исходящие рёбра.</p></article>
 <article class="concept-cell proof"><span>Почему работает</span><b>Неотрицательные рёбра не смогут удешевить путь позже</b><p>После извлечения минимальная метка становится окончательной.</p></article>
 <article class="concept-cell cost"><span>Сложность</span><b>O((V+E) log V)</b><p>Списки смежности и binary heap.</p></article>
@@ -23,8 +23,8 @@
 
 <!-- common-sense-round-dijkstra -->
 <section class="lecture-section" id="all-distances">
-<h2>Один target-query фактически даёт целую shortest-path map</h2>
-<p class="lead">Dijkstra часто формулируют как «найди cheapest route из S в T», но сам алгоритм естественно вычисляет больше: после завершения у каждой reachable вершины известно shortest distance от source.</p>
+<h2>Distances и predecessors</h2>
+<p class="lead">Один полный запуск Dijkstra вычисляет shortest distances от одного source до всех reachable vertices. Одновременно можно хранить predecessor pointers для восстановления paths.</p>
 <div class="grokking-contrast">
 <article class="grokking-card good"><span>Distance table</span><h3>Сколько стоит добраться до каждого destination?</h3><p><code>dist[v]</code> хранит cheapest known source-to-<span class="math">v</span> cost и становится final, когда <span class="math">v</span> безопасно извлечена.</p></article>
 <article class="grokking-card warn"><span>Parent table</span><h3>Как именно туда попасть?</h3><p><code>parent[v]</code> запоминает predecessor, давший лучшую cost. Backtracking по parents восстанавливает route.</p></article>
@@ -35,8 +35,8 @@
 
 <!-- karumanchi-round-dijkstra -->
 <section class="lecture-section" id="query-scope">
-<h2>Single-source и all-pairs shortest paths — разные формы запроса</h2>
-<p class="lead">Один запуск Dijkstra отвечает сразу для всех destinations от одного source. Если нужны все source-to-destination pairs, меняется внешняя задача, хотя внутренняя single-source routine может остаться той же.</p>
+<h2>Single-source и all-pairs queries</h2>
+<p class="lead">Dijkstra решает single-source problem. Если нужны distances для всех pairs, это уже другая внешняя задача: repeated single-source runs или отдельный all-pairs algorithm.</p>
 <div class="table-wrap"><table><thead><tr><th>Вопрос</th><th>Естественный подход</th><th>Важное условие</th></tr></thead><tbody>
 <tr><td>One source → all vertices</td><td>Dijkstra</td><td>Все edge weights неотрицательны</td></tr>
 <tr><td>All sources → all vertices</td><td>Запустить Dijkstra от каждого source</td><td>По-прежнему нужны nonnegative edge weights</td></tr>
@@ -47,8 +47,8 @@
 
 <!-- skiena-round-dijkstra -->
 <section class="lecture-section" id="model-transform">
-<h2>Иногда лучшее изменение algorithm — вообще не менять algorithm</h2>
-<p class="lead">Если shortest-path story хранит costs на vertices, а не edges, хочется переписать Dijkstra. Часто чище преобразовать input в model, которую готовый algorithm уже решает.</p>
+<h2>Переход от vertex costs к edge costs</h2>
+<p class="lead">Если costs находятся на vertices, каждому directed edge (u,v) можно присвоить cost destination vertex v. После этого используется обычный Dijkstra без изменения алгоритма.</p>
 <div class="two-column-block">
 <div class="text-panel"><h3>Original model</h3><p>У каждой vertex <span class="math">v</span> есть nonnegative cost <span class="math">c(v)</span>. Cost path — сумма costs посещённых vertices.</p></div>
 <div class="proof-panel"><h3>Edge-weighted model</h3><p>Для каждого directed edge <span class="math">(u,v)</span> задаём <span class="math">w(u,v)=c(v)</span>. Вход в <span class="math">v</span> теперь оплачивает ровно ту cost, которая раньше находилась на vertex.</p></div>
@@ -59,8 +59,8 @@
 </section>
 
 <section class="lecture-section" id="idea">
-<h2>Фиксируем ближайшую незавершённую вершину</h2>
-<p class="lead">Каждая <span class="math">dist[v]</span> — пока лишь лучший найденный путь, а не обязательно окончательный ответ. Дейкстра каждый раз берёт минимальную такую метку и только её объявляет окончательной.</p>
+<h2>Фиксация tentative distances</h2>
+<p class="lead">Храним лучший известный distance до каждой unfinished vertex. На каждом шаге выбираем минимальный tentative distance, фиксируем его и релаксируем исходящие edges.</p>
 <div class="greedy-process-grid">
 <article class="greedy-process-card"><div class="greedy-process-num">1</div><h3>Начинаем с источника</h3><p>Полагаем <span class="math">dist[s]=0</span>, все остальные расстояния равны бесконечности.</p></article>
 <article class="greedy-process-card"><div class="greedy-process-num">2</div><h3>Извлекаем минимум</h3><p>Берём необработанную вершину с минимальным текущим расстоянием.</p></article>
@@ -73,8 +73,8 @@
 <!-- book-synthesis-dijkstra -->
 <!-- grokking-pass-dijkstra -->
 <section class="lecture-section" id="fewest-cheapest">
-<h2>“Shortest” может означать две разные вещи</h2>
-<p class="lead">Самый простой способ понять, почему Dijkstra — не просто BFS, — сравнить путь с меньшим числом рёбер и путь с меньшей суммарной стоимостью.</p>
+<h2>Минимум рёбер и минимум суммарного веса</h2>
+<p class="lead">BFS минимизирует число edges в unweighted graph. Dijkstra минимизирует сумму nonnegative weights, поэтому weighted shortest path может содержать больше edges.</p>
 <div class="path-choice">
 <article class="bad"><h3>Два ребра, total cost 11</h3><p><span class="math">S → X → T</span> использует меньше segments. Unweighted BFS предпочтёт его, потому что измеряет distance числом рёбер.</p></article>
 <article class="good"><h3>Три ребра, total cost 7</h3><p><span class="math">S → A → B → T</span> длиннее по числу segments, но дешевле по total weight. Dijkstra выбирает его, потому что objective — накопленная стоимость.</p></article>
@@ -84,8 +84,8 @@
 
 <!-- grokking-round-dijkstra -->
 <section class="lecture-section" id="cost-not-distance">
-<h2>“Shortest” может означать cheapest, fastest или least costly</h2>
-<p class="lead">Dijkstra не важно, измеряется ли edge weight в километрах. Нужна лишь аддитивная неотрицательная cost.</p>
+<h2>Edge weights как общая неотрицательная стоимость</h2>
+<p class="lead">Weights могут означать расстояние, время, цену или любую другую additive nonnegative cost. Algorithm использует только их сумму и порядок.</p>
 <div class="path-choice">
 <article class="good"><h3>Граф обменов</h3><p>Представим, что nodes — предметы, которые можно получить обменом, а edge weight — сколько денег нужно доплатить за соответствующий trade. Path становится цепочкой обменов, а его total weight — потраченной суммой.</p></article>
 <article><h3>Алгоритм не меняется</h3><p>Labels всё так же означают «лучшая найденная cost». Relaxation спрашивает, не станет ли получение предмета дешевле через текущий node.</p></article>
@@ -94,8 +94,8 @@
 </section>
 
 <section class="lecture-section" id="mental-model">
-<h2>Ментальная модель в четыре шага</h2>
-<p class="lead">Реализация выглядит громоздко из-за heap и stale entries, но идея алгоритма маленькая. Повторяем четыре действия, пока не закончатся достижимые tentative vertices.</p>
+<h2>Шаги алгоритма</h2>
+<p class="lead">На каждой итерации: извлечь минимальный tentative distance, finalize vertex, выполнить relax исходящих edges и продолжить до исчерпания reachable unfinished vertices.</p>
 <div class="proof-template">
 <article><b>1. Pick</b><p>Берём unfinalized вершину с минимальной tentative distance.</p></article>
 <article><b>2. Finalize</b><p>Объявляем это расстояние окончательным. Безопасность необратимого шага даёт неотрицательность рёбер.</p></article>
@@ -106,8 +106,8 @@
 </section>
 
 <section class="lecture-section" id="demo">
-<h2>Смотрим, как метки становятся окончательными</h2>
-<p class="lead">Рассмотрим неориентированный граф с рёбрами S—A=4, S—B=1, B—A=2, B—C=5, A—C=1, A—D=7, C—D=3 и B—D=8.</p>
+<h2>Пример</h2>
+<p class="lead">В примере используются edges S—A=4, S—B=1, B—A=2, B—C=5, A—C=1, A—D=7, C—D=3 и B—D=8.</p>
 <div class="visualizer dijkstra-demo">
 <div class="visualizer-head"><div><h3>Расстояния от S</h3><p>Зелёные строки уже зафиксированы. Оранжевым отмечена вершина, фиксируемая на текущем шаге.</p></div><div class="step-nav-controls"><button class="previous-step" data-action="previous" type="button">← Назад</button><button class="primary-step" data-action="next" type="button">Дальше →</button></div></div>
 <div class="dijkstra-demo-grid">
@@ -121,8 +121,8 @@
 </section>
 
 <section class="lecture-section" id="bfs-link">
-<h2>Dijkstra — это BFS с более информативным frontier</h2>
-<p class="lead">BFS и Dijkstra концептуально делают одно и то же: расширяют следующую вершину, для которой shortest distance уже можно считать известной. Различаются структуры данных, потому что различается модель рёбер.</p>
+<h2>Связь с breadth-first search</h2>
+<p class="lead">BFS и Dijkstra расширяют vertices в порядке неубывания distance. FIFO queue достаточно при одинаковой стоимости edges; для разных weights нужен priority queue.</p>
 <div class="table-wrap"><table><thead><tr><th>Граф</th><th>Frontier</th><th>Почему</th></tr></thead><tbody>
 <tr><td>Unweighted или все веса одинаковы</td><td>FIFO queue</td><td>Следующий BFS-layer ровно на одно ребро дальше.</td></tr>
 <tr><td>Неотрицательные веса</td><td>Min-priority queue</td><td>Безопасна вершина с минимальной <em>накопленной</em> стоимостью, а не та, которую раньше обнаружили.</td></tr>
@@ -131,8 +131,8 @@
 </section>
 
 <section class="lecture-section" id="state-table">
-<h2>Три части состояния рассказывают весь Dijkstra</h2>
-<p class="lead">Очень удобно трассировать алгоритм тремя вещами: tentative costs, parent для восстановления пути и признак того, finalized ли вершина.</p>
+<h2>Состояние алгоритма</h2>
+<p class="lead">Удобно хранить tentative distances, predecessor pointers и признак того, была ли vertex уже finalized.</p>
 <div class="table-wrap state-table"><table><thead><tr><th>Vertex</th><th>Final distance from S</th><th>Parent</th><th>Status</th></tr></thead><tbody>
 <tr><td>S</td><td>0</td><td>—</td><td>final</td></tr>
 <tr><td>B</td><td>1</td><td>S</td><td>final</td></tr>
@@ -144,8 +144,8 @@
 </section>
 
 <section class="lecture-section" id="proof">
-<h2>Почему зафиксированное расстояние уже не изменится</h2>
-<p class="lead">Берём незавершённую вершину <span class="math">u</span> с минимальной меткой. Если бы существовал более дешёвый путь до <span class="math">u</span>, он должен был бы выйти из уже зафиксированной области через некоторую незавершённую вершину с не большей меткой. Это противоречит выбору <span class="math">u</span>.</p>
+<h2>Почему finalization корректна</h2>
+<p class="lead">Пусть u — unfinished vertex с минимальным tentative distance. Любой альтернативный path к u должен сначала войти в unfinished region через vertex с не меньшей меткой, а nonnegative edges уже не смогут уменьшить cost.</p>
 <div class="proof-checklist">
 <div class="proof-check"><span>1</span><p>Предположим противное: существует путь из <span class="math">s</span> в <span class="math">u</span> короче, чем <span class="math">dist[u]</span>.</p></div>
 <div class="proof-check"><span>2</span><p>На таком кратчайшем пути возьмём первую ещё не зафиксированную вершину <span class="math">x</span> и её предшественника <span class="math">y</span>. Тогда <span class="math">y</span> уже зафиксирована.</p></div>
@@ -157,8 +157,8 @@
 </section>
 
 <section class="lecture-section" id="negative">
-<h2>Что именно ломает отрицательное ребро</h2>
-<p class="lead">Отрицательное ребро может удешевить путь уже после того, как алгоритм прошёл через вершину с более дорогой временной меткой. Поэтому текущий минимум перестаёт быть гарантированно окончательным.</p>
+<h2>Почему отрицательные edges запрещены</h2>
+<p class="lead">Negative edge способен создать более дешёвый путь к vertex уже после её finalization. Это нарушает инвариант доказательства.</p>
 <div class="negative-counterexample">
 <div class="negative-side bad"><h3>Что сначала видит Дейкстра</h3><p>После обработки S имеем <span class="math">dist[A]=2</span> и <span class="math">dist[B]=5</span>. Алгоритм фиксирует A, потому что 2 меньше.</p></div>
 <div class="negative-arrow">→</div>
@@ -170,8 +170,8 @@
 </section>
 
 <section class="lecture-section" id="frontier-structure">
-<h2>Representation frontier меняет Big O Dijkstra</h2>
-<p class="lead">Abstract algorithm говорит: «выбери unfinalized vertex с минимальной tentative distance». Он не требует конкретной data structure.</p>
+<h2>Array и heap реализации</h2>
+<p class="lead">Абстрактная операция — извлечение unfinished vertex с минимальным tentative distance. Linear scan даёт O(V²), binary heap обычно лучше на sparse graphs.</p>
 <div class="operation-profile">
 <article class="neutral"><h3>Обычный array / linear search</h3><p>Чтобы найти следующий minimum, можно каждый раз сканировать все unvisited vertices. Повторение такого поиска даёт implementation порядка <span class="math">O(V²)</span>. Зато её проще трассировать вручную.</p></article>
 <article class="good"><h3>Min-priority queue</h3><p>Heap быстро показывает следующий minimum. С adjacency lists стандартная heap-реализация работает за <span class="math">O((V+E) log V)</span>, что для connected graphs обычно пишут как <span class="math">O(E log V)</span>.</p></article>
@@ -180,8 +180,8 @@
 </section>
 
 <section class="lecture-section" id="implementation">
-<h2>Реализация с очередью с приоритетом</h2>
-<p class="lead">В heap хранятся пары <code>(tentative_distance, vertex)</code>. В <code>heapq</code> нет операции decrease-key, поэтому при улучшении расстояния стандартная реализация просто добавляет новую пару, а устаревшие записи пропускает позже.</p>
+<h2>Реализация на priority queue</h2>
+<p class="lead">В Python heapq нет decrease-key. При улучшении distance добавляется новая пара, а устаревшие записи пропускаются при извлечении.</p>
 <div class="code-explainer">
 <div class="annotated-code">
 <div class="code-row"><span class="line-no">1</span><code>import heapq</code></div>
@@ -212,8 +212,8 @@
 </section>
 
 <section class="lecture-section" id="paths">
-<h2>Distances — не сами paths: храните parents</h2>
-<p class="lead">Cost table отвечает, насколько дорог optimum. Parent table — как именно его получить.</p>
+<h2>Восстановление пути</h2>
+<p class="lead">При каждом улучшении dist[v] сохраняем parent[v]. Обратный проход по parent pointers от destination восстанавливает shortest path.</p>
 <div class="code-explainer">
 <div class="annotated-code">
 <div class="code-row"><span class="line-no">1</span><code>if new_dist &lt; dist[v]:</code></div>
@@ -232,7 +232,7 @@
 </section>
 
 <section class="lecture-section" id="comparison">
-<h2>Прим и Дейкстра похожи в коде — но ключ heap означает разное</h2>
+<h2>Разные heap keys у Prim и Dijkstra</h2>
 <div class="table-wrap"><table><thead><tr><th>Вопрос</th><th>Прим</th><th>Дейкстра</th></tr></thead><tbody>
 <tr><td>Цель</td><td>Минимальный суммарный вес остовного дерева</td><td>Минимальный вес пути от источника до каждой вершины</td></tr>
 <tr><td>Что хранится в ключе heap</td><td>Самое дешёвое ребро, присоединяющее вершину к текущему дереву</td><td>Лучшее найденное накопленное расстояние от источника</td></tr>
@@ -245,8 +245,8 @@
 
 <!-- coding-patterns-round-dijkstra -->
 <section class="lecture-section" id="interview-decompose">
-<h2>Interview decomposition: переведите story в graph до выбора Dijkstra</h2>
-<p class="lead">Shortest-path задачи часто маскируются под цены, задержки, transformations или маршруты. До кода разложите story на четыре graph ingredients.</p>
+<h2>Моделирование shortest-path задач</h2>
+<p class="lead">До выбора algorithm переведите application в vertices, edges, weights и ограничения на weights.</p>
 <div class="interview-flow">
 <article><span>1</span><h3>Vertices</h3><p>Что является states: города, страницы, accounts, configurations, positions или что-то ещё?</p></article>
 <article><span>2</span><h3>Edges</h3><p>Какой один transition разрешён между states? Важна ли direction?</p></article>
@@ -262,7 +262,7 @@
 </section>
 
 <section class="lecture-section" id="choice-guide">
-<h2>Какой shortest-path инструмент выбирать?</h2>
+<h2>Выбор shortest-path algorithm</h2>
 <div class="table-wrap"><table><thead><tr><th>Input</th><th>Естественный метод</th><th>Главная причина</th></tr></thead><tbody>
 <tr><td>Unweighted / unit weights</td><td>BFS</td><td>Heap не нужен; расстояние измеряется числом рёбер.</td></tr>
 <tr><td>Неотрицательные веса</td><td>Dijkstra</td><td>Минимальную tentative distance можно безопасно finalize.</td></tr>
