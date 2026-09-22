@@ -27,7 +27,7 @@
 </header>
 <aside aria-label="Навигация по разделу" class="sidebar">
 <div class="sidebar-title">Глава 9 · Раздел 1</div>
-<a href="#idea">Основная идея</a><a href="#guarantees">Алгоритм или эвристика?</a><a href="#optimization-lens">Optimization lens</a><a href="#anatomy">Из чего состоит алгоритм</a><a href="#example">Первый пример</a><a href="#grokking-outcomes">Три исхода greedy</a><a href="#failure">Когда greedy ошибается</a><a href="#design-loop">Как находят greedy</a><a href="#properties">Структурные свойства</a><a href="#implementation">Реализация</a><a href="#complexity">Эффективность</a><a href="#streaming">One-pass greedy state</a><a href="#recognition">Паттерны распознавания</a><a href="#exercises">Задачи</a>
+<a href="#idea">Основная идея</a><a href="#guarantees">Алгоритм или эвристика?</a><a href="#optimization-lens">Optimization lens</a><a href="#anatomy">Из чего состоит алгоритм</a><a href="#example">Первый пример</a><a href="#grokking-outcomes">Три исхода greedy</a><a href="#failure">Когда greedy ошибается</a><a href="#design-loop">Как находят greedy</a><a href="#properties">Структурные свойства</a><a href="#implementation">Реализация</a><a href="#complexity">Эффективность</a><a href="#streaming">One-pass greedy state</a><a href="#interview-workflow">Interview workflow</a><a href="#recognition">Паттерны распознавания</a><a href="#exercises">Задачи</a>
 </aside>
 <main class="lecture">
 <section class="lecture-hero greedy-lecture-hero">
@@ -205,15 +205,28 @@
 <div class="practice-note"><h3>Общий смысл — state compression</h3><p>Нужный вопрос не «есть ли здесь sorting?», а «можно ли много partial histories заменить одним более сильным summary, не потеряв будущий optimum или witness?»</p></div>
 </section>
 
-<section class="lecture-section" id="recognition">
-<h2>Три interview-style greedy-паттерна</h2>
-<p class="lead">Не всякая greedy-задача выглядит как сортировка интервалов. Здесь три полезных формы, где множество будущих вариантов сжимается в одну безопасную характеристику.</p>
-<div class="pattern-lenses">
-<article class="pattern-lens"><span class="pattern-tag">Backward frontier</span><h3>Jump to the end</h3><p>Идём справа налево и храним самую левую позицию, из которой уже известно, что конец достижим. Если <span class="math">i</span> достигает frontier, переносим frontier в <span class="math">i</span>. Один индекс заменяет множество успешных suffix-состояний.</p></article>
-<article class="pattern-lens"><span class="pattern-tag">Candidate elimination</span><h3>Gas station</h3><p>Если старт из <span class="math">a</span> впервые приводит к отрицательному баку у <span class="math">b</span>, ни одна станция строго между <span class="math">a</span> и <span class="math">b</span> тоже не может быть стартом. Один неудачный prefix сразу выбрасывает целый блок кандидатов.</p></article>
-<article class="pattern-lens"><span class="pattern-tag">Directional constraints</span><h3>Candies</h3><p>Проход слева направо удовлетворяет ограничения относительно левого соседа, проход справа налево — относительно правого. Иногда greedy получается разложением локальных ограничений по направлениям.</p></article>
+<!-- coding-patterns-round-strategy -->
+<section class="lecture-section" id="interview-workflow">
+<h2>Практичный interview workflow для greedy-задач</h2>
+<p class="lead">У greedy нет одного шаблона, который решает всё. Гораздо полезнее сначала распознать форму решения, а затем сформулировать один факт, делающий необратимый выбор безопасным.</p>
+<div class="interview-flow">
+<article><span>1</span><h3>Назовите objective</h3><p>Что именно нужно максимизировать, минимизировать, достичь или распределить? Похожие inputs могут требовать разных greedy keys.</p></article>
+<article><span>2</span><h3>Назовите local choice</h3><p>Что фиксируется сейчас: destination frontier, surviving start, directional constraint или следующий priority item?</p></article>
+<article><span>3</span><h3>Объясните discard</h3><p>Сильное greedy-объяснение прямо говорит, какие альтернативы больше не нужны и почему они не смогут дать лучшее будущее.</p></article>
+<article><span>4</span><h3>Закройте complexity</h3><p>Посчитайте passes и auxiliary state. Многие хорошие interview greedy solutions ценны именно тем, что сжимаются до O(n) time и O(1) extra space.</p></article>
 </div>
-<div class="bridge-note"><h3>Что искать</h3><p>Хороший сигнал — утверждение о <em>доминировании</em>: одно частичное состояние никогда не хуже целого семейства альтернатив, поэтому альтернативы можно навсегда забыть.</p></div>
+<div class="interview-answer"><h3>Как звучит сильное устное объяснение</h3><p>«Я поддерживаю такой frontier/candidate/resource summary. Когда выполняется X, все выбрасываемые альтернативы dominated из-за Y. Поэтому решение можно фиксировать без backtracking».</p></div>
+</section>
+
+<section class="lecture-section" id="recognition">
+<h2>Три greedy-формы, которые стоит узнавать</h2>
+<p class="lead">Полезнее запомнить не строку кода, а структурную причину, по которой множество альтернатив схлопывается в одно surviving state.</p>
+<div class="recognition-grid">
+<article class="recognition-card"><span class="signal">Reaching a destination</span><h3>Двигайте цель назад</h3><p>В Jump to the End храним самый левый index, из которого уже достижим текущий destination. Если <span class="math">i + nums[i] ≥ destination</span>, index <span class="math">i</span> становится новой целью. Весь suffix сжимается в один frontier.</p></article>
+<article class="recognition-card"><span class="signal">Circular feasibility</span><h3>Выбрасывайте блок стартов</h3><p>В Gas Stations, если выбранный start впервые ломается у station <span class="math">b</span>, все станции между start и <span class="math">b</span> можно исключить сразу. Следующий кандидат — <span class="math">b+1</span>.</p></article>
+<article class="recognition-card"><span class="signal">Neighbor constraints</span><h3>Решайте направления отдельно</h3><p>В Candies ограничения относительно left и right neighbor обрабатываются двумя противоположными passes. Второй проход сохраняет большее уже необходимое значение.</p></article>
+</div>
+<div class="candidate-elimination"><h3>Общий сигнал</h3><p>Ищите утверждение вида «целая группа кандидатов не лучше одного summary». Backward frontier, surviving start или directional lower bound могут заменить множество явных вариантов.</p></div>
 </section>
 
 <section class="lecture-section" id="exercises">
