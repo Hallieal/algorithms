@@ -3,7 +3,8 @@
 <title>Минимизация максимального опоздания | Гайд по алгоритмам — presented by Аллан</title>
 <link href="../assets/css/styles.css" rel="stylesheet"/><link href="assets/greedy.css" rel="stylesheet"/>
 <link href="../assets/images/favicon-32.png" rel="icon" sizes="32x32" type="image/png"/><link href="../assets/images/favicon.png" rel="icon" sizes="64x64" type="image/png"/><link href="../assets/images/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180"/>
-<link href="minimizing-lateness.html" hreflang="en" rel="alternate"/><link href="minimizing-lateness-ru.html" hreflang="ru" rel="alternate"/></head>
+<link href="minimizing-lateness.html" hreflang="en" rel="alternate"/><link href="minimizing-lateness-ru.html" hreflang="ru" rel="alternate"/><noscript><style>.answer-box[hidden]{display:block!important}.reveal{display:none!important}</style></noscript>
+</head>
 <body class="lecture-page"><div aria-hidden="true" class="progress-track"><div class="progress-bar" id="reading-progress"></div></div>
 <header class="topbar"><a class="brand" href="../index-ru.html"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name ru-brand-name"><span class="ru-brand-lines"><span>Гайд по алгоритмам</span><span class="ru-brand-presented">presented by Аллан</span></span></span></a>
 <nav aria-label="Основная навигация" class="topnav"><a href="index-ru.html">Жадные алгоритмы</a><div aria-label="Язык" class="language-switch"><a href="minimizing-lateness.html">EN</a><span class="language-separator">·</span><span class="current">RU</span></div></nav></header>
@@ -23,12 +24,13 @@
 <section class="lecture-section" id="example">
 <h2>Пример: четыре задачи и четыре дедлайна</h2>
 <p class="lead">Рассмотрим четыре задачи. Ниже указаны длительности и дедлайны.</p>
-<div class="table-wrap"><table class="lateness-table"><thead><tr><th>Задача</th><th>Длительность</th><th>Дедлайн</th><th>Окончание в EDF</th><th>Опоздание</th></tr></thead><tbody>
-<tr><td>A</td><td>3</td><td>4</td><td>3</td><td>−1</td></tr>
-<tr><td>B</td><td>2</td><td>6</td><td>5</td><td>−1</td></tr>
-<tr><td>C</td><td>4</td><td>9</td><td>9</td><td>0</td></tr>
-<tr><td>D</td><td>2</td><td>12</td><td>11</td><td>−1</td></tr>
+<div class="table-wrap"><table class="lateness-table"><thead><tr><th>Задача</th><th>Длительность</th><th>Дедлайн</th><th>Запас d−p</th><th>Окончание в EDF</th><th>Опоздание</th></tr></thead><tbody>
+<tr><td>A</td><td>3</td><td>4</td><td>1</td><td>3</td><td>−1</td></tr>
+<tr><td>B</td><td>2</td><td>6</td><td>4</td><td>5</td><td>−1</td></tr>
+<tr><td>C</td><td>4</td><td>9</td><td>5</td><td>9</td><td>0</td></tr>
+<tr><td>D</td><td>2</td><td>12</td><td>10</td><td>11</td><td>−1</td></tr>
 </tbody></table></div>
+<div class="source-note"><h3>Запас времени выглядит естественно, но это не оптимальное правило</h3><p><span class="math">d−p</span> показывает, сколько времени остаётся у задачи, если начать её сейчас. Но одноразовая сортировка по минимальному slack вообще не оптимальна для <span class="math">1||L_max</span>; оптимален EDF. Например, для задач (p,d)=(100,101) и (1,3) запасы равны 1 и 2. Least Slack First выберет длинную задачу и получит максимальное опоздание 98, а EDF начнёт с короткой и получит 0.</p></div>
 <div class="lateness-sequence">
 <div class="lateness-job ontime"><span>Задача A</span><b>p=3 · d=4</b><small>конец 3</small></div>
 <div class="lateness-job ontime"><span>Задача B</span><b>p=2 · d=6</b><small>конец 5</small></div>
@@ -91,9 +93,10 @@
 <h2>Меняем модель — меняется алгоритм</h2>
 <p class="lead">EDF оптимален именно при этих предположениях и этой целевой функции. Добавим разные моменты появления задач или поменяем критерий — доказательство уже нельзя переносить автоматически.</p>
 <div class="decision-grid">
-<article class="decision-card greedy-signal"><h3>Разные моменты появления</h3><p>Если задачи становятся доступны в разные моменты времени, простая одноразовая сортировка по дедлайну уже не решает общую задачу.</p></article>
+<article class="decision-card greedy-signal"><h3>Release times делают задачу качественно сложнее</h3><p>При временах появления общая задача <span class="math">1|r_j|L_max</span> strongly NP-hard. Здесь недостаточно просто придумать чуть более хитрую сортировку по дедлайну.</p></article>
 <article class="decision-card greedy-signal"><h3>Другая целевая функция</h3><p>Минимизация суммарного времени завершения, суммарного взвешенного опоздания или числа просроченных задач — это другие задачи с другими правилами или более сложными алгоритмами.</p></article>
 </div>
+<div class="mini-example-grid"><article class="mini-example bad"><h3>Наивный EDF среди доступных задач</h3><p>J₁=(r=0,p=10,d=50), J₂=(r=1,p=1,d=2), J₃=(r=0,p=1,d=100). В момент 0 J₂ ещё недоступна, поэтому правило без простоя запускает J₁. J₂ заканчивается только в 11 и имеет опоздание 9.</p></article><article class="mini-example good"><h3>Лучшее расписание</h3><p>Ждём до момента 1, выполняем J₂ с 1 до 2, затем J₁ и J₃. Максимальное опоздание равно 0. При release times намеренный простой иногда необходим.</p></article></div>
 </section>
 
 <section class="lecture-section" id="exercises">
