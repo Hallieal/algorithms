@@ -9,7 +9,7 @@
 <body class="lecture-page"><div aria-hidden="true" class="progress-track"><div class="progress-bar" id="reading-progress"></div></div>
 <header class="topbar"><a class="brand" href="../index-ru.html"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name ru-brand-name"><span class="ru-brand-lines"><span>Гайд по алгоритмам</span><span class="ru-brand-presented">presented by Аллан</span></span></span></a>
 <nav aria-label="Основная навигация" class="topnav"><a href="index-ru.html">Жадные алгоритмы</a><div aria-label="Язык" class="language-switch"><a href="proofs.html">EN</a><span class="language-separator">·</span><span class="current">RU</span></div></nav></header>
-<aside aria-label="Навигация по разделу" class="sidebar"><div class="sidebar-title">Глава 9 · Раздел 2</div><a href="#goal">Что нужно доказать?</a><a href="#patterns">Схемы доказательств</a><a href="#counterexamples">Лаборатория контрпримеров</a><a href="#exchange">Обменный аргумент</a><a href="#worked">Полное доказательство</a><a href="#ahead">«Жадный не отстаёт»</a><a href="#induction">Индукция</a><a href="#discard">Как доказывать discard</a><a href="#template">Шаблон доказательства</a><a href="#intuition-proof">Интуиция и proof</a><a href="#summary-not-witness">Summary и witness</a><a href="#mistakes">Типичные ошибки</a><a href="#exercises">Задачи</a></aside>
+<aside aria-label="Навигация по разделу" class="sidebar"><div class="sidebar-title">Глава 9 · Раздел 2</div><a href="#goal">Что нужно доказать?</a><a href="#patterns">Схемы доказательств</a><a href="#counterexamples">Лаборатория контрпримеров</a><a href="#exchange">Обменный аргумент</a><a href="#worked">Полное доказательство</a><a href="#ahead">«Жадный не отстаёт»</a><a href="#induction">Индукция</a><a href="#discard">Как доказывать discard</a><a href="#gas-proof">Candidate-elimination proof</a><a href="#template">Шаблон доказательства</a><a href="#directional-proof">Two-pass proof</a><a href="#intuition-proof">Интуиция и proof</a><a href="#summary-not-witness">Summary и witness</a><a href="#mistakes">Типичные ошибки</a><a href="#exercises">Задачи</a></aside>
 <main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Глава 9 · Раздел 2</div><h1>Доказательства корректности</h1><p class="chapter-topics">У доказательства greedy одна главная задача: показать, что локальный выбор можно зафиксировать, не потеряв оптимальность.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-proofs.svg"/></div></section>
 <section class="lecture-section" id="goal">
 <h2>Что должно доказать жадное доказательство</h2>
@@ -107,6 +107,22 @@
 <div class="practice-note"><h3>Это переносимая форма proof</h3><p>Чтобы оправдать state compression, сравните две histories под одним произвольным будущим. Если одна никогда не выигрывает после любого continuation, она dominated и хранить её больше не нужно.</p></div>
 </section>
 
+<!-- coding-patterns-round-proofs -->
+<section class="lecture-section" id="gas-proof">
+<h2>Candidate elimination: докажите невозможность целого блока сразу</h2>
+<p class="lead">Gas Stations даёт очень полезную interview-форму доказательства: если один start провалился, полезно не просто отвергнуть его, а показать, почему вместе с ним отпадает целый interval кандидатов.</p>
+<div class="candidate-elimination">
+<h3>Пусть start <span class="math">a</span> впервые остаётся без топлива перед выходом со station <span class="math">b</span></h3>
+<p>Обозначим <span class="math">d_i = gas_i - cost_i</span>. Так как <span class="math">b</span> — первый failure, все prefix sums от <span class="math">a</span> до любой станции раньше <span class="math">b</span> неотрицательны, но сумма от <span class="math">a</span> до <span class="math">b</span> отрицательна.</p>
+</div>
+<div class="clean-steps">
+<div class="clean-step"><span>1</span><p>Для любого candidate <span class="math">j</span>, где <span class="math">a&lt;j≤b</span>, накопленный gain от <span class="math">a</span> до <span class="math">j−1</span> неотрицателен.</p></div>
+<div class="clean-step"><span>2</span><p>Значит <span class="math">Σ_{i=j}^{b} d_i = Σ_{i=a}^{b} d_i − Σ_{i=a}^{j−1} d_i &lt; 0</span>.</p></div>
+<div class="clean-step"><span>3</span><p>Поэтому start в <span class="math">j</span> тоже не доедет дальше <span class="math">b</span>. Весь блок стартов можно пропустить, а следующий возможный candidate — <span class="math">b+1</span>.</p></div>
+</div>
+<div class="one-line"><strong>Interview pattern.</strong> Если failed attempt содержит monotone/nonnegative prefix invariant, проверьте, не сертифицирует ли этот failure невозможность сразу многих соседних кандидатов.</div>
+</section>
+
 <section class="lecture-section" id="template">
 <h2>Универсальный шаблон greedy-доказательства</h2>
 <p class="lead">Детали меняются от интервалов к графам и кодам, но большинство exact greedy proofs можно организовать вокруг четырёх одинаковых вопросов.</p>
@@ -120,6 +136,16 @@
 </section>
 
 <!-- grokking-pass-proofs -->
+<section class="lecture-section" id="directional-proof">
+<h2>Two-pass greedy proofs: независимые направления отдельно</h2>
+<p class="lead">Candies показывает ещё одну proof-форму. Local constraint смотрит в обе стороны, поэтому одного scan мало; вместо этого каждая семья inequalities обеспечивается своим направлением.</p>
+<div class="directional-passes">
+<article><h3>Left → right</h3><p>Если <span class="math">rating_i &gt; rating_{i-1}</span>, ставим <span class="math">candies_i = candies_{i-1}+1</span>. После pass все left-neighbor constraints выполнены с минимальными значениями, которые принудительно задаёт prefix.</p></article>
+<article><h3>Right → left</h3><p>Если <span class="math">rating_i &gt; rating_{i+1}</span>, требуется как минимум <span class="math">candies_{i+1}+1</span>. Берём <span class="math">max(current, right-required)</span>, чтобы второй pass не разрушал первый.</p></article>
+</div>
+<div class="proof-goal"><h3>Почему результат минимален</h3><p>Каждый pass задаёт необходимый lower bound от одного направления. Финальное значение в каждой позиции — максимум двух обязательных lower bounds; уменьшение хотя бы одного значения нарушит хотя бы одно required inequality.</p></div>
+</section>
+
 <section class="lecture-section" id="intuition-proof">
 <h2>Сначала сделайте выбор почти неизбежным. Потом докажите его.</h2>
 <p class="lead">У хорошего greedy-объяснения два слоя. Первый — картинка в голове: почему этот шаг оставляет будущее в лучшем состоянии? Второй — доказательство, что скрытого контрпримера действительно нет.</p>
