@@ -4,7 +4,8 @@
 <title>Доказательства корректности | Гайд по алгоритмам — presented by Аллан</title>
 <link href="../assets/css/styles.css" rel="stylesheet"/><link href="assets/greedy.css" rel="stylesheet"/>
 <link href="../assets/images/favicon-32.png" rel="icon" sizes="32x32" type="image/png"/><link href="../assets/images/favicon.png" rel="icon" sizes="64x64" type="image/png"/><link href="../assets/images/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180"/>
-<link href="proofs.html" hreflang="en" rel="alternate"/><link href="proofs-ru.html" hreflang="ru" rel="alternate"/></head>
+<link href="proofs.html" hreflang="en" rel="alternate"/><link href="proofs-ru.html" hreflang="ru" rel="alternate"/><noscript><style>.answer-box[hidden]{display:block!important}.reveal{display:none!important}</style></noscript>
+</head>
 <body class="lecture-page"><div aria-hidden="true" class="progress-track"><div class="progress-bar" id="reading-progress"></div></div>
 <header class="topbar"><a class="brand" href="../index-ru.html"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name ru-brand-name"><span class="ru-brand-lines"><span>Гайд по алгоритмам</span><span class="ru-brand-presented">presented by Аллан</span></span></span></a>
 <nav aria-label="Основная навигация" class="topnav"><a href="index-ru.html">Жадные алгоритмы</a><div aria-label="Язык" class="language-switch"><a href="proofs.html">EN</a><span class="language-separator">·</span><span class="current">RU</span></div></nav></header>
@@ -33,6 +34,7 @@
 <article class="proof-pattern-card"><div class="proof-pattern-mark">1</div><h3>Индукция по выборам</h3><p>Доказываем безопасность первого шага, уменьшаем задачу и повторяем то же рассуждение для меньшего экземпляра.</p></article>
 <article class="proof-pattern-card"><div class="proof-pattern-mark">✂</div><h3>Безопасное ребро / разрез</h3><p>В задачах на графах выделяем границу и доказываем, что лучшее ребро, пересекающее её, можно безопасно добавить.</p></article>
 </div>
+<div class="bridge-note"><h3>Это не четыре независимых метода</h3><p>Обменный аргумент доказывает безопасность одной локальной замены. «Жадный не отстаёт» повторяет такое сравнение на каждом префиксе. Индукция упаковывает безопасный шаг в доказательство для уменьшенной задачи. Разрез — это обмен, использующий структуру графа. На практике эти схемы часто смешиваются.</p></div>
 </section>
 
 <section class="lecture-section" id="exchange">
@@ -59,6 +61,7 @@
 <div class="proof-panel"><h3>Почему нельзя взять k + 1 задачу</h3><p>Среди всех наборов из <span class="math">k+1</span> задач минимальная возможная суммарная длительность — сумма <span class="math">k+1</span> самых коротких задач.</p><div class="formula-line">d₁ + ··· + dₖ₊₁ &gt; T</div><p>Значит, любой набор из <span class="math">k+1</span> задач превышает бюджет. Жадный ответ оптимален.</p></div>
 </div>
 <p>То же можно сформулировать обменным аргументом: если решение содержит более длинную задачу вместо более короткой пропущенной, их замена не может ухудшить допустимость.</p>
+<div class="theory-note"><h3>Второй пример: «жадный не отстаёт» на интервалах</h3><p>Пусть greedy всегда берёт совместимый интервал с самым ранним окончанием. Обозначим через <span class="math">gᵢ</span> время окончания его <span class="math">i</span>-го интервала, а через <span class="math">oᵢ</span> — время окончания <span class="math">i</span>-го интервала любого другого допустимого расписания. Индуктивно получаем <span class="math">gᵢ ≤ oᵢ</span>: первый greedy-интервал заканчивается раньше всех, а если после <span class="math">i−1</span> шагов greedy закончил не позже, то для следующего шага у него доступно не меньше вариантов. Значит, при одинаковом числе выбранных интервалов greedy никогда не расходует больше временной оси.</p></div>
 </section>
 
 <section class="lecture-section" id="ahead">
@@ -85,6 +88,7 @@
 <article class="proof-mistake"><h3>«Сейчас это очевидно лучше»</h3><p>«Сейчас это лучше» — как раз то утверждение, которое нужно обосновать. Будущие шаги могут полностью перевернуть локальное преимущество.</p></article>
 <article class="proof-mistake"><h3>Проверка только примеров</h3><p>Пример может опровергнуть жадное правило, но никакое конечное число удачных примеров не доказывает корректность.</p></article>
 <article class="proof-mistake"><h3>«Есть оптимальная подструктура — значит greedy»</h3><p>Оптимальная подструктура есть и у динамического программирования. Для жадности дополнительно нужен безопасный необратимый выбор.</p></article>
+<article class="proof-mistake"><h3>Доказать допустимость вместо оптимальности</h3><p>То, что каждый жадный шаг сохраняет корректность ограничений, доказывает лишь существование допустимого ответа. Это ничего не говорит о том, не был ли отброшен лучший допустимый ответ.</p></article>
 </div>
 <div class="subsection"><h3>Чек-лист доказательства</h3><div class="proof-checklist">
 <div class="proof-check"><span>✓</span><p>Что именно является жадным выбором?</p></div>
@@ -100,6 +104,7 @@
 <article class="exercise"><div class="exercise-num">1</div><div><h3>Шаг обмена</h3><p>Пусть оптимальный набор задач содержит задачу длиной 7 минут, но не содержит доступную задачу длиной 3 минуты. Что произойдёт, если поменять их местами?</p><button class="reveal" data-reveal="gp-ru-1" type="button">Показать ответ</button><div class="answer-box" hidden id="gp-ru-1">Число выбранных задач не изменится, а суммарная длительность уменьшится на 4 минуты. Поэтому допустимость точно не ухудшится.</div></div></article>
 <article class="exercise"><div class="exercise-num">2</div><div><h3>Что нужно сохранить?</h3><p>В обменном аргументе достаточно ли того, что новое решение имеет то же значение целевой функции?</p><button class="reveal" data-reveal="gp-ru-2" type="button">Показать ответ</button><div class="answer-box" hidden id="gp-ru-2">Нет. Преобразованное решение должно оставаться допустимым. Обмен, улучшающий цель, но нарушающий ограничения, ничего не доказывает.</div></div></article>
 <article class="exercise"><div class="exercise-num">3</div><div><h3>Контрпример</h3><p>Какую роль играет контрпример при проектировании жадного алгоритма?</p><button class="reveal" data-reveal="gp-ru-3" type="button">Показать ответ</button><div class="answer-box" hidden id="gp-ru-3">Одного контрпримера достаточно, чтобы опровергнуть предложенное жадное правило. Если контрпример не найден, правило всё равно остаётся недоказанным.</div></div></article>
+<article class="exercise"><div class="exercise-num">4</div><div><h3>Свойство разреза как обмен</h3><p>В доказательстве MST берётся самое лёгкое ребро через разрез. Перепишите стандартное доказательство свойства разреза как обменный аргумент.</p><button class="reveal" data-reveal="gp-ru-4" type="button">Показать ответ</button><div class="answer-box" hidden id="gp-ru-4">Берём MST без выбранного лёгкого ребра e. Добавление e создаёт цикл, в котором есть другое ребро f через тот же разрез. Поскольку w(e) ≤ w(f), заменяем f на e: дерево остаётся остовным, а вес не растёт. Это обычный обмен.</div></div></article>
 </div>
 <div class="next-part"><h3>Следующий раздел: жадные алгоритмы и динамическое программирование</h3><p>Теперь вопрос будет не только «можно ли доказать greedy?», но и «когда нужно отказаться от жадности и хранить несколько состояний подзадач?»</p><a class="next-part-link" href="greedy-vs-dp-ru.html">Жадные алгоритмы и динамическое программирование →</a></div>
 </section></main>
