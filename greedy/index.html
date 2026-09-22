@@ -26,7 +26,7 @@
 <section class="overview-section sorting-contents greedy-contents" id="chapter-map">
 <div class="chapter-label">Chapter 9</div>
 <h1>Greedy Algorithms</h1>
-<p class="greedy-overview-lead">Across 11 articles, this chapter treats greedy algorithms as a design method rather than a list of tricks: propose a local rule, attack it with counterexamples, identify the invariant, and decide whether the result is exact, approximate, or merely heuristic.</p><div class="chapter-prereq-note">Helpful before you start: <a href="../sorting/">Sorting →</a> · <a href="../data-structures/">Heaps and priority queues →</a></div>
+<p class="greedy-overview-lead">Across 11 articles, this chapter treats greedy as a design and recognition method: identify the objective, compress the right state, justify every discarded alternative, and recognize recurring interview shapes without reducing them to memorized code.</p><div class="chapter-prereq-note">Helpful before you start: <a href="../sorting/">Sorting →</a> · <a href="../data-structures/">Heaps and priority queues →</a></div>
 <div class="sorting-part">
 <div class="sorting-part-head">
 <div>
@@ -40,7 +40,7 @@
 <div class="chapter-card-icon"><img alt="" src="assets/greedy-strategy.svg"/></div>
 <div>
 <h3>Greedy Strategy</h3>
-<p>Start with three outcomes—exact, heuristic, approximation—then add an optimization lens: what work can be removed once one running state dominates the alternatives?</p>
+<p>Learn the core guarantee types, then recognize backward frontiers, candidate elimination, directional passes, and other ways a safe local summary can replace many futures.</p>
 <span class="chapter-link">Open section →</span>
 </div>
 </a>
@@ -48,7 +48,7 @@
 <div class="chapter-card-icon"><img alt="" src="assets/greedy-proofs.svg"/></div>
 <div>
 <h3>Proving Greedy Correctness</h3>
-<p>Move from intuition to invariant to proof, including dominance arguments that justify deleting entire classes of partial states.</p>
+<p>Move from intuition to invariant to proof, including Gas Station block elimination and two-pass lower-bound proofs that justify deleting whole classes of candidates.</p>
 <span class="chapter-link">Open section →</span>
 </div>
 </a>
@@ -56,7 +56,7 @@
 <div class="chapter-card-icon"><img alt="" src="assets/greedy-vs-dp.svg"/></div>
 <div>
 <h3>Greedy vs Dynamic Programming</h3>
-<p>Use Knapsack and maximum subarray to see when DP needs many states, when it collapses to one, and when a greedy discard rule says the same thing.</p>
+<p>Use Jump Game, Gas Station, Knapsack, and maximum subarray to ask the key question: can one branch dominate the others, or must several futures stay alive?</p>
 <span class="chapter-link">Open section →</span>
 </div>
 </a>
@@ -75,7 +75,7 @@
 <div class="chapter-card-icon"><img alt="" src="assets/greedy-interval-scheduling.svg"/></div>
 <div>
 <h3>Interval Scheduling</h3>
-<p>Walk through a classroom schedule, prove earliest finish, then separate the O(n) greedy scan from the O(n log n) sorting needed to expose the order.</p>
+<p>Walk through a classroom schedule, prove earliest finish, and learn to distinguish sort-by-start, sort-by-finish, and endpoint-sweep interval patterns.</p>
 <span class="chapter-link">Open section →</span>
 </div>
 </a>
@@ -83,7 +83,7 @@
 <div class="chapter-card-icon"><img alt="" src="assets/greedy-interval-partitioning.svg"/></div>
 <div>
 <h3>Interval Partitioning</h3>
-<p>Keep every class, match the overlap depth, and see why replacing a room scan with a min-heap turns the same greedy rule into a faster implementation.</p>
+<p>Keep every class, match overlap depth, and implement the sweep either with tagged events or two sorted endpoint arrays with the tie rule made explicit.</p>
 <span class="chapter-link">Open section →</span>
 </div>
 </a>
@@ -91,7 +91,7 @@
 <div class="chapter-card-icon"><img alt="" src="assets/greedy-lateness.svg"/></div>
 <div>
 <h3>Minimizing Maximum Lateness</h3>
-<p>See why deadlines drive the order, then turn repeated minimum selection into one sort plus a constant-state linear scan.</p>
+<p>See why deadlines drive the order, then use a compact recognition checklist to verify that the exact scheduling model still matches EDF before coding.</p>
 <span class="chapter-link">Open section →</span>
 </div>
 </a>
@@ -110,7 +110,7 @@
 <div class="chapter-card-icon"><img alt="" src="assets/greedy-fractional-knapsack.svg"/></div>
 <div>
 <h3>Fractional Knapsack</h3>
-<p>Start from the 0/1 failure, allow fractions, then optimize the exact density rule by choosing between repeated scans, sorting, and a heap.</p>
+<p>Use a concrete 0/1 counterexample to separate indivisible from fractional items, then derive density greedy and its implementation choices.</p>
 <span class="chapter-link">Open section →</span>
 </div>
 </a>
@@ -118,7 +118,7 @@
 <div class="chapter-card-icon"><img alt="" src="assets/greedy-huffman.svg"/></div>
 <div>
 <h3>Huffman Coding</h3>
-<p>Count the bits, decode by walking the tree, then see why a min-heap improves the obvious repeated-minimum Huffman implementation from quadratic to O(n log n).</p>
+<p>Count the bits, decode by walking the tree, and recognize the general heap pattern: repeatedly extract the current minima, merge, reinsert, repeat.</p>
 <span class="chapter-link">Open section →</span>
 </div>
 </a>
@@ -137,7 +137,7 @@
 <div class="chapter-card-icon"><img alt="" src="assets/greedy-mst.svg"/></div>
 <div>
 <h3>Minimum Spanning Trees</h3>
-<p>Separate route from network, derive Kruskal/Prim/Borůvka, and see how DSU, arrays, and heaps change the cost of exposing the next safe edge.</p>
+<p>Separate route from network, derive Kruskal/Prim/Borůvka, then connect Kruskal to Union-Find with union by size and path compression.</p>
 <span class="chapter-link">Open section →</span>
 </div>
 </a>
@@ -145,7 +145,7 @@
 <div class="chapter-card-icon"><img alt="" src="assets/greedy-dijkstra.svg"/></div>
 <div>
 <h3>Dijkstra’s Algorithm</h3>
-<p>Treat weights as any nonnegative cost, recover all source distances and parent paths, then compare a simple O(V²) frontier with a heap implementation.</p>
+<p>Translate story problems into vertices, edges, weights, and restrictions; then distinguish BFS, heap-based Dijkstra, and the negative-edge failure case.</p>
 <span class="chapter-link">Open section →</span>
 </div>
 </a>
@@ -165,7 +165,7 @@
 <div class="chapter-card-icon"><img alt="" src="assets/greedy-matroids.svg"/></div>
 <div>
 <h3>Matroids and Beyond</h3>
-<p>Finish with matroids, approximation, Set Cover, and a broader view of greedy as provably safe state compression toward a best-imaginable runtime.</p>
+<p>Finish with matroids and approximation, then organize the chapter as a pattern library: frontiers, elimination, directional passes, heaps, sweeps, and DSU.</p>
 <span class="chapter-link">Open section →</span>
 </div>
 </a>
@@ -176,11 +176,12 @@
 <div class="sorting-part-head">
 <div>
 <span class="sorting-part-kicker">Further Reading</span>
-<h3>Two complementary intuition-first books, then deeper theory</h3>
+<h3>Three complementary intuition-first books, then deeper theory</h3>
 </div>
-<p>Grokking Algorithms is strongest on visual intuition and approximation; A Common-Sense Guide is strongest on deriving faster code from a slower baseline. The formal texts below supply deeper proof theory.</p>
+<p>Coding Interview Patterns is strongest on recognition and interview-ready invariants; Grokking Algorithms emphasizes visual intuition and approximation; A Common-Sense Guide emphasizes deriving faster code from a slower baseline. The formal texts below supply deeper proof theory.</p>
 </div>
 <div class="reference-list">
+<div class="reference-item"><b>Alex Xu & Shaun Gunawardane — Coding Interview Patterns</b><span>Especially Chapter 16 for Jump to the End, Gas Stations, and Candies; Chapter 9 for intervals and sweep-line reasoning; Chapter 15 for DP contrasts such as maximum subarray and 0/1 Knapsack; and the heap/Union-Find chapters for supporting data structures.</span></div>
 <div class="reference-item"><b>Jay Wengrow — A Common-Sense Guide to Data Structures and Algorithms in Python</b><span>Especially Chapter 20: current Big O → best-imaginable Big O → pattern/state compression, plus Chapter 18 for a careful Dijkstra walkthrough and the array-vs-priority-queue implementation trade-off.</span></div>
 <div class="reference-item"><b>Aditya Y. Bhargava — Grokking Algorithms, 2nd ed.</b><span>Especially Chapter 10 on greedy algorithms, Chapter 9 on Dijkstra, and the Huffman discussion in Chapter 7. Strong on visual intuition, “try it yourself” moments, and the transition from exact greedy to approximation.</span></div>
 <a class="reference-item" href="https://www.pearson.com/en-us/subject-catalog/p/algorithm-design/P200000003259" target="_blank" rel="noopener"><b>Jon Kleinberg & Eva Tardos — Algorithm Design</b><span>Especially Chapter 4: scheduling, exchange arguments, MSTs, and shortest paths.</span></a>
