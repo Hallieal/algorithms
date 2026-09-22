@@ -9,7 +9,7 @@
 <body class="lecture-page"><div aria-hidden="true" class="progress-track"><div class="progress-bar" id="reading-progress"></div></div>
 <header class="topbar"><a class="brand" href="../index-ru.html"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name ru-brand-name"><span class="ru-brand-lines"><span>Гайд по алгоритмам</span><span class="ru-brand-presented">presented by Аллан</span></span></span></a>
 <nav aria-label="Основная навигация" class="topnav"><a href="index-ru.html">Жадные алгоритмы</a><div aria-label="Язык" class="language-switch"><a href="proofs.html">EN</a><span class="language-separator">·</span><span class="current">RU</span></div></nav></header>
-<aside aria-label="Навигация по разделу" class="sidebar"><div class="sidebar-title">Глава 9 · Раздел 2</div><a href="#goal">Что нужно доказать?</a><a href="#patterns">Схемы доказательств</a><a href="#counterexamples">Лаборатория контрпримеров</a><a href="#exchange">Обменный аргумент</a><a href="#worked">Полное доказательство</a><a href="#ahead">«Жадный не отстаёт»</a><a href="#induction">Индукция</a><a href="#template">Шаблон доказательства</a><a href="#intuition-proof">Интуиция и proof</a><a href="#mistakes">Типичные ошибки</a><a href="#exercises">Задачи</a></aside>
+<aside aria-label="Навигация по разделу" class="sidebar"><div class="sidebar-title">Глава 9 · Раздел 2</div><a href="#goal">Что нужно доказать?</a><a href="#patterns">Схемы доказательств</a><a href="#counterexamples">Лаборатория контрпримеров</a><a href="#exchange">Обменный аргумент</a><a href="#worked">Полное доказательство</a><a href="#ahead">«Жадный не отстаёт»</a><a href="#induction">Индукция</a><a href="#discard">Как доказывать discard</a><a href="#template">Шаблон доказательства</a><a href="#intuition-proof">Интуиция и proof</a><a href="#summary-not-witness">Summary и witness</a><a href="#mistakes">Типичные ошибки</a><a href="#exercises">Задачи</a></aside>
 <main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Глава 9 · Раздел 2</div><h1>Доказательства корректности</h1><p class="chapter-topics">У доказательства greedy одна главная задача: показать, что локальный выбор можно зафиксировать, не потеряв оптимальность.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-proofs.svg"/></div></section>
 <section class="lecture-section" id="goal">
 <h2>Что должно доказать жадное доказательство</h2>
@@ -95,6 +95,18 @@
 </div>
 </section>
 
+<!-- common-sense-round-proofs -->
+<section class="lecture-section" id="discard">
+<h2>Greedy-proof может оправдывать выбрасывание информации</h2>
+<p class="lead">One-pass greedy оптимизации внешне отличаются от scheduling или MST: commitment здесь не «взять этот item», а «навсегда забыть целый класс prefixes». Но proof obligation тот же — доказать, что выброшенные альтернативы уже никогда не помогут.</p>
+<div class="two-column-block">
+<div class="text-panel"><h3>Reset в maximum subarray</h3><p>Пусть running sum текущего prefix равна <span class="math">p&lt;0</span>. Пусть сумма некоторого будущего продолжения равна <span class="math">T</span>. Если тащить отрицательный prefix дальше, получим <span class="math">p+T</span>.</p></div>
+<div class="proof-panel"><h3>Почему reset безопасен</h3><p>Так как <span class="math">p&lt;0</span>, выполняется <span class="math">p+T&lt;T</span>. Начать будущий subarray после отрицательного prefix строго лучше, чем продолжать его.</p></div>
+</div>
+<div class="one-line"><strong>Greedy discard rule.</strong> Если partial state доказанно хуже для любого возможного continuation, его можно навсегда удалить.</div>
+<div class="practice-note"><h3>Это переносимая форма proof</h3><p>Чтобы оправдать state compression, сравните две histories под одним произвольным будущим. Если одна никогда не выигрывает после любого continuation, она dominated и хранить её больше не нужно.</p></div>
+</section>
+
 <section class="lecture-section" id="template">
 <h2>Универсальный шаблон greedy-доказательства</h2>
 <p class="lead">Детали меняются от интервалов к графам и кодам, но большинство exact greedy proofs можно организовать вокруг четырёх одинаковых вопросов.</p>
@@ -123,6 +135,17 @@
 <article><b>Formal proof</b><p>Только после этого пишите exchange, staying-ahead, induction или cut argument.</p></article>
 </div>
 <div class="one-line"><strong>Пример помогает открыть доказательство, но не заменяет его.</strong> История нужна, чтобы увидеть invariant, который затем доказывается для любого input.</div>
+</section>
+
+<section class="lecture-section" id="summary-not-witness">
+<h2>State variables не обязаны буквально составлять будущий witness</h2>
+<p class="lead">Greedy summaries могут хранить достаточно информации, чтобы доказать существование решения, не сохраняя в каждый момент одну согласованную partial solution.</p>
+<div class="mini-example-grid">
+<article class="mini-example good"><h3>Increasing triplet</h3><p>Храним минимальный <code>low</code> и минимальный возможный <code>middle</code>, который когда-то встретился после некоторого меньшего предыдущего значения. Если позже приходит число больше <code>middle</code>, triplet существует.</p></article>
+<article class="mini-example bad"><h3>Тонкость</h3><p>После фиксации <code>middle</code> переменная <code>low</code> может обновиться на ещё меньшее значение, стоящее уже <em>после</em> этого middle. Поэтому текущая пара <code>(low, middle)</code> может сама не быть ordered pair из witness.</p></article>
+</div>
+<div class="proof-goal"><h3>Что invariant на самом деле утверждает</h3><p>Если <code>middle</code> конечен, раньше него когда-то существовало меньшее значение. Позднее обновление <code>low</code> этот исторический факт не уничтожает. Поэтому будущий элемент больше <code>middle</code> завершает корректный increasing triplet.</p></div>
+<div class="one-line"><strong>Доказывайте abstraction, а не буквальную картинку в variables.</strong> Сжатое state может представлять факт о прошлом, а не конкретную partial solution.</div>
 </section>
 
 <section class="lecture-section" id="mistakes">
