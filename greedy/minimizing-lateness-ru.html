@@ -9,10 +9,10 @@
 <header class="topbar"><a class="brand" href="../index-ru.html"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name ru-brand-name"><span class="ru-brand-lines"><span>Гайд по алгоритмам</span><span class="ru-brand-presented">presented by Аллан</span></span></span></a>
 <nav aria-label="Основная навигация" class="topnav"><a href="index-ru.html">Жадные алгоритмы</a><div aria-label="Язык" class="language-switch"><a href="minimizing-lateness.html">EN</a><span class="language-separator">·</span><span class="current">RU</span></div></nav></header>
 <aside aria-label="Навигация по разделу" class="sidebar"><div class="sidebar-title">Глава 9 · Раздел 6</div><a href="#problem">Постановка</a><a href="#example">Пример</a><a href="#same-looking">Похожий сюжет, новая цель</a><a href="#spt">Другая scheduling objective: SPT</a><a href="#model">Сначала модель</a><a href="#scheduling-map">Scheduling — семейство моделей</a><a href="#algorithm">Алгоритм EDF</a><a href="#proof">Корректность</a><a href="#runtime">Один выбор порядка, затем scan</a><a href="#implementation">Реализация</a><a href="#interview-recognition">Recognition checklist</a><a href="#boundaries">Границы модели</a><a href="#exercises">Задачи</a></aside>
-<main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Глава 9 · Раздел 6</div><h1>Минимизация максимального опоздания</h1><p class="chapter-topics">На одной машине худшее опоздание минимизируется простым правилом: сначала выполняем задачу с самым ранним дедлайном.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-lateness.svg"/></div></section>
+<main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Глава 9 · Раздел 6</div><h1>Минимизация максимального опоздания</h1><p class="chapter-topics">Для одной машины без release times сортировка jobs по неубыванию deadline минимизирует maximum lateness. Здесь формулируется модель и доказывается exchange argument.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-lateness.svg"/></div></section>
 <section class="lecture-section" id="problem">
-<h2>Сначала — самый срочный дедлайн</h2>
-<p class="lead">У каждой задачи есть длительность и дедлайн. Выполнить нужно все задачи на одной машине. Цель не в том, чтобы закончить всё как можно раньше, а в том, чтобы сделать худшее нарушение дедлайна минимальным.</p><div class="concept-strip">
+<h2>Постановка задачи</h2>
+<p class="lead">У каждой job есть processing time и deadline. Все jobs выполняются на одной машине, а objective — минимизировать maximum lateness.</p><div class="concept-strip">
 <article class="concept-cell rule"><span>Правило</span><b>Самый ранний дедлайн — первым</b><p>Сортируем по дедлайну и не оставляем машину без дела.</p></article>
 <article class="concept-cell proof"><span>Почему работает</span><b>Убираем инверсии дедлайнов перестановками</b><p>Ранний дедлайн впереди не увеличивает худшее опоздание.</p></article>
 <article class="concept-cell cost"><span>Сложность</span><b>O(n log n)</b><p>Доминирует сортировка; дальше один проход.</p></article>
@@ -22,8 +22,8 @@
 </section>
 
 <section class="lecture-section" id="example">
-<h2>Пример: четыре задачи и четыре дедлайна</h2>
-<p class="lead">Рассмотрим четыре задачи. Ниже указаны длительности и дедлайны.</p>
+<h2>Пример</h2>
+<p class="lead">Ниже заданы четыре jobs с processing times и deadlines. Порядок выполнения определяет completion time и lateness каждой job.</p>
 <div class="table-wrap"><table class="lateness-table"><thead><tr><th>Задача</th><th>Длительность</th><th>Дедлайн</th><th>Запас d−p</th><th>Окончание в EDF</th><th>Опоздание</th></tr></thead><tbody>
 <tr><td>A</td><td>3</td><td>4</td><td>1</td><td>3</td><td>−1</td></tr>
 <tr><td>B</td><td>2</td><td>6</td><td>4</td><td>5</td><td>−1</td></tr>
@@ -43,8 +43,8 @@
 <!-- book-synthesis-lateness -->
 <!-- grokking-pass-lateness -->
 <section class="lecture-section" id="same-looking">
-<h2>То же расписание, другой вопрос — другой greedy-key</h2>
-<p class="lead">Полезная greedy-привычка — отделять внешний вид input от objective. Интервалы и jobs могут одинаково выглядеть на timeline, но требовать совершенно разной оптимизации.</p>
+<h2>Порядок зависит от целевой функции</h2>
+<p class="lead">Одинаково выглядящие scheduling inputs могут задавать разные objectives. Maximum lateness, total waiting time и interval selection требуют разных правил.</p>
 <div class="objective-swap">
 <article><h3>Interval Scheduling</h3><p>Некоторые jobs можно выкинуть. Мы максимизируем их число, поэтому ранний finish защищает будущую совместимость.</p></article>
 <div class="objective-arrow">→</div>
@@ -56,8 +56,8 @@
 
 <!-- karumanchi-round-lateness -->
 <section class="lecture-section" id="spt">
-<h2>Рядом живёт другой корректный greedy rule: Shortest Processing Time first</h2>
-<p class="lead">Примеры Karumanchi с tape и customer service хорошо показывают контраст. Если objective — total waiting time, а не maximum lateness, естественный greedy rule сортирует по processing time, а не по deadline.</p>
+<h2>Shortest Processing Time для суммарного ожидания</h2>
+<p class="lead">Если минимизируется сумма waiting/completion times, естественное правило — сортировать по processing time. Это другая задача, не maximum lateness.</p>
 <div class="objective-swap">
 <article><h3>Minimize total waiting time</h3><p>Короткие jobs идут раньше. Длинный job в начале задерживает каждого, кто стоит за ним, поэтому swap inversion с <span class="math">p_i&gt;p_j</span> уменьшает waiting-time contribution этой пары.</p></article>
 <div class="objective-arrow">≠</div>
@@ -71,8 +71,8 @@
 </section>
 
 <section class="lecture-section" id="model">
-<h2>Scheduling notation делает предположения явными</h2>
-<p class="lead">Задачи расписаний особенно чувствительны к маленьким изменениям модели. Полезная привычка — сначала назвать machine environment, дополнительные constraints и objective, и только потом выбирать порядок.</p>
+<h2>Модель и notation</h2>
+<p class="lead">Перед выбором порядка нужно зафиксировать machine environment, release/precedence constraints, возможность preemption и objective.</p>
 <div class="model-card">
 <div class="model-notation">1 || L<sub>max</sub></div>
 <p><strong>1</strong> означает одну машину; пустое среднее поле — все задачи доступны в момент 0 и дополнительных ограничений нет; <strong>L<sub>max</sub></strong> — минимизируем максимальное опоздание. Именно для этой модели сортировка по неубыванию deadline оптимальна.</p>
@@ -86,8 +86,8 @@
 
 <!-- skiena-round-lateness -->
 <section class="lecture-section" id="scheduling-map">
-<h2>“Scheduling” — это семейство задач, а не один algorithm</h2>
-<p class="lead">Слово scheduling описывает application domain. Математическая model определяется constraints и objective, и разные models могут приводить к совершенно разным algorithmic tools.</p>
+<h2>Связанные scheduling-модели</h2>
+<p class="lead">Разные constraints приводят к разным задачам: precedence — к topological ordering, совместимость jobs и workers — к matching, pairwise conflicts — к coloring.</p>
 <div class="sort-key-grid">
 <article><code>precedence constraints</code><h3>Topological ordering</h3><p>Если edge означает «task u должна закончиться раньше task v», сначала надо понять, образуют ли constraints DAG и какие topological orders feasible.</p></article>
 <article><code>jobs ↔ qualified workers</code><h3>Matching</h3><p>Если задача — назначить jobs людям, которые умеют их выполнять, structure задаётся bipartite compatibility, а не timeline ordering rule.</p></article>
@@ -98,8 +98,8 @@
 </section>
 
 <section class="lecture-section" id="algorithm">
-<h2>Алгоритм: Earliest Deadline First</h2>
-<p class="lead">Сортируем задачи по неубыванию дедлайна и выполняем без пауз. Это правило называют Earliest Deadline First (EDF) или Earliest Due Date (EDD).</p>
+<h2>Earliest Deadline First</h2>
+<p class="lead">Сортируем jobs по неубыванию deadline и выполняем подряд. Для данной модели этот порядок минимизирует maximum lateness.</p>
 <div class="step-flow">
 <article class="step-item"><div class="step-number">1</div><div><h3>Сортируем по дедлайну</h3><p>Получаем <span class="math">d₁ ≤ d₂ ≤ ··· ≤ dₙ</span>.</p></div></article>
 <article class="step-item"><div class="step-number">2</div><div><h3>Работаем без простоя</h3><p>Следующая задача начинается сразу после завершения текущей.</p></div></article>
@@ -110,8 +110,8 @@
 </section>
 
 <section class="lecture-section" id="proof">
-<h2>Почему сортировка по дедлайну безопасна</h2>
-<p class="lead">Если две соседние задачи стоят в неправильном порядке дедлайнов — <span class="math">i</span> перед <span class="math">j</span>, но <span class="math">dᵢ &gt; dⱼ</span> — меняем их местами. Пара заканчивается в тот же момент, а более срочная задача заканчивается раньше.</p>
+<h2>Обменное доказательство</h2>
+<p class="lead">Если соседние jobs стоят как i, j при d_i > d_j, их можно поменять местами без увеличения максимального lateness пары. Повторяя exchanges, получаем deadline order.</p>
 <div class="swap-proof">
 <div class="swap-order"><span>До</span><div class="swap-jobs"><div class="swap-job">i · более поздний дедлайн</div><div class="swap-job">j · более ранний дедлайн</div></div></div>
 <div class="swap-arrow">→</div>
@@ -127,8 +127,8 @@
 
 <!-- common-sense-round-lateness -->
 <section class="lecture-section" id="runtime">
-<h2>Заменяем повторяющийся выбор одной preprocessing-операцией</h2>
-<p class="lead">Rule «выполни оставшийся job с самым ранним deadline» можно реализовать поиском с нуля после каждого завершения. Это корректно — но излишне медленно.</p>
+<h2>Сложность</h2>
+<p class="lead">Достаточно один раз отсортировать jobs по deadline и затем пройти по ним линейно. Общая сложность O(n log n).</p>
 <div class="runtime-ladder">
 <article class="runtime-step"><span>Repeated search</span><h3>Снова и снова искать minimum deadline</h3><p>Если на каждом шаге сканировать все оставшиеся jobs, только selection может занять <span class="math">O(n²)</span>.</p></article>
 <article class="runtime-step best"><span>Sort once</span><h3>Заранее поставить deadlines в нужный порядок</h3><p>Sorting стоит <span class="math">O(n log n)</span>. После этого completion times и lateness считаются одним линейным scan.</p></article>
@@ -160,8 +160,8 @@
 
 <!-- coding-patterns-round-lateness -->
 <section class="lecture-section" id="interview-recognition">
-<h2>Interview recognition: проверьте модель до применения EDF</h2>
-<p class="lead">Типичная greedy-ошибка на интервью — слишком рано узнать знакомую историю. До фразы «sort by deadline» проверьте, что предположения exchange argument действительно сохранились.</p>
+<h2>Проверка модели перед EDF</h2>
+<p class="lead">Exchange proof зависит от точных assumptions. Release times, precedence constraints, preemption или другая objective могут сделать EDF неприменимым.</p>
 <div class="recognition-grid">
 <article class="recognition-card"><span class="signal">Good match</span><h3>Одна machine, все jobs доступны сейчас</h3><p>Каждый job выполняется ровно один раз, release times нет, objective — maximum lateness. Это чистая модель <span class="math">1||L_{max}</span>.</p></article>
 <article class="recognition-card"><span class="signal">Objective changed</span><h3>Average completion или waiting time</h3><p>Тот же набор jobs может требовать другого ordering rule. Нельзя сохранять EDF только потому, что deadlines всё ещё присутствуют во входе.</p></article>
@@ -171,8 +171,8 @@
 </section>
 
 <section class="lecture-section" id="boundaries">
-<h2>Меняем модель — меняется алгоритм</h2>
-<p class="lead">EDF оптимален именно при этих предположениях и этой целевой функции. Добавим разные моменты появления задач или поменяем критерий — доказательство уже нельзя переносить автоматически.</p>
+<h2>Варианты модели</h2>
+<p class="lead">EDF оптимален именно для описанной single-machine maximum-lateness model. При изменении constraints или objective требуется новое доказательство.</p>
 <div class="decision-grid">
 <article class="decision-card greedy-signal"><h3>Release times делают задачу качественно сложнее</h3><p>При временах появления общая задача <span class="math">1|r_j|L_max</span> strongly NP-hard. Здесь недостаточно просто придумать чуть более хитрую сортировку по дедлайну.</p></article>
 <article class="decision-card greedy-signal"><h3>Другая целевая функция</h3><p>Минимизация суммарного времени завершения, суммарного взвешенного опоздания или числа просроченных задач — это другие задачи с другими правилами или более сложными алгоритмами.</p></article>
