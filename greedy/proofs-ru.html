@@ -133,7 +133,7 @@
 <div class="clean-step"><span>2</span><p>Значит <span class="math">Σ_{i=j}^{b} d_i = Σ_{i=a}^{b} d_i − Σ_{i=a}^{j−1} d_i &lt; 0</span>.</p></div>
 <div class="clean-step"><span>3</span><p>Поэтому start в <span class="math">j</span> тоже не доедет дальше <span class="math">b</span>. Весь блок стартов можно пропустить, а следующий возможный candidate — <span class="math">b+1</span>.</p></div>
 </div>
-<div class="one-line"><strong>Interview pattern.</strong> Если failed attempt содержит monotone/nonnegative prefix invariant, проверьте, не сертифицирует ли этот failure невозможность сразу многих соседних кандидатов.</div>
+<div class="one-line"><strong>Критерий исключения кандидатов.</strong> Если failed attempt содержит monotone/nonnegative prefix invariant, проверьте, не сертифицирует ли этот failure невозможность сразу многих соседних кандидатов.</div>
 </section>
 
 <!-- karumanchi-round-proofs -->
@@ -195,14 +195,14 @@
 <article class="mini-example good"><h3>Increasing triplet</h3><p>Храним минимальный <code>low</code> и минимальный возможный <code>middle</code>, который когда-то встретился после некоторого меньшего предыдущего значения. Если позже приходит число больше <code>middle</code>, triplet существует.</p></article>
 <article class="mini-example bad"><h3>Тонкость</h3><p>После фиксации <code>middle</code> переменная <code>low</code> может обновиться на ещё меньшее значение, стоящее уже <em>после</em> этого middle. Поэтому текущая пара <code>(low, middle)</code> может сама не быть ordered pair из witness.</p></article>
 </div>
-<div class="proof-goal"><h3>Что invariant на самом деле утверждает</h3><p>Если <code>middle</code> конечен, раньше него когда-то существовало меньшее значение. Позднее обновление <code>low</code> этот исторический факт не уничтожает. Поэтому будущий элемент больше <code>middle</code> завершает корректный increasing triplet.</p></div>
+<div class="proof-goal"><h3>Формулировка инварианта</h3><p>Если <code>middle</code> конечен, раньше него когда-то существовало меньшее значение. Позднее обновление <code>low</code> этот исторический факт не уничтожает. Поэтому будущий элемент больше <code>middle</code> завершает корректный increasing triplet.</p></div>
 <div class="one-line"><strong>Доказывайте abstraction, а не буквальную картинку в variables.</strong> Сжатое state может представлять факт о прошлом, а не конкретную partial solution.</div>
 </section>
 
 <section class="lecture-section" id="mistakes">
 <h2>Что не является доказательством</h2>
 <div class="proof-mistakes">
-<article class="proof-mistake"><h3>«Сейчас это очевидно лучше»</h3><p>«Сейчас это лучше» — как раз то утверждение, которое нужно обосновать. Будущие шаги могут полностью перевернуть локальное преимущество.</p></article>
+<article class="proof-mistake"><h3>Локальная правдоподобность не является доказательством</h3><p>«Сейчас это лучше» — как раз то утверждение, которое нужно обосновать. Будущие шаги могут полностью перевернуть локальное преимущество.</p></article>
 <article class="proof-mistake"><h3>Проверка только примеров</h3><p>Пример может опровергнуть жадное правило, но никакое конечное число удачных примеров не доказывает корректность.</p></article>
 <article class="proof-mistake"><h3>«Есть оптимальная подструктура — значит greedy»</h3><p>Оптимальная подструктура есть и у динамического программирования. Для жадности дополнительно нужен безопасный необратимый выбор.</p></article>
 <article class="proof-mistake"><h3>Доказать допустимость вместо оптимальности</h3><p>То, что каждый жадный шаг сохраняет корректность ограничений, доказывает лишь существование допустимого ответа. Это ничего не говорит о том, не был ли отброшен лучший допустимый ответ.</p></article>
