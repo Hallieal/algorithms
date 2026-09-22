@@ -8,7 +8,7 @@
 <body class="lecture-page"><div aria-hidden="true" class="progress-track"><div class="progress-bar" id="reading-progress"></div></div>
 <header class="topbar"><a class="brand" href="../"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name">Allan's Handbook of Algorithms</span></a>
 <nav aria-label="Primary navigation" class="topnav"><a href="./">Greedy overview</a><div aria-label="Language" class="language-switch"><span class="current">EN</span><span class="language-separator">·</span><a href="dijkstra-ru.html">RU</a></div></nav></header>
-<aside aria-label="Section navigation" class="sidebar"><div class="sidebar-title">Chapter 9 · Section 10</div><a href="#problem">Problem</a><a href="#all-distances">One source gives all distances</a><a href="#query-scope">Single source vs all pairs</a><a href="#idea">Greedy idea</a><a href="#fewest-cheapest">Fewest edges vs cheapest path</a><a href="#cost-not-distance">Cost need not be distance</a><a href="#mental-model">Four-step mental model</a><a href="#demo">Step-by-step</a><a href="#bfs-link">From BFS to Dijkstra</a><a href="#state-table">Costs, parents, processed</a><a href="#proof">Correctness</a><a href="#negative">Negative edges</a><a href="#frontier-structure">Array frontier vs heap frontier</a><a href="#implementation">Implementation</a><a href="#paths">Recover paths</a><a href="#comparison">MST comparison</a><a href="#interview-decompose">Interview decomposition</a><a href="#choice-guide">Which shortest-path tool?</a><a href="#exercises">Exercises</a></aside>
+<aside aria-label="Section navigation" class="sidebar"><div class="sidebar-title">Chapter 9 · Section 10</div><a href="#problem">Problem</a><a href="#all-distances">One source gives all distances</a><a href="#query-scope">Single source vs all pairs</a><a href="#model-transform">Transform the model, keep Dijkstra</a><a href="#idea">Greedy idea</a><a href="#fewest-cheapest">Fewest edges vs cheapest path</a><a href="#cost-not-distance">Cost need not be distance</a><a href="#mental-model">Four-step mental model</a><a href="#demo">Step-by-step</a><a href="#bfs-link">From BFS to Dijkstra</a><a href="#state-table">Costs, parents, processed</a><a href="#proof">Correctness</a><a href="#negative">Negative edges</a><a href="#frontier-structure">Array frontier vs heap frontier</a><a href="#implementation">Implementation</a><a href="#paths">Recover paths</a><a href="#comparison">MST comparison</a><a href="#interview-decompose">Interview decomposition</a><a href="#choice-guide">Which shortest-path tool?</a><a href="#exercises">Exercises</a></aside>
 <main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Chapter 9 · Section 10</div><h1>Dijkstra’s Algorithm</h1><p class="chapter-topics">For nonnegative edge weights, the smallest tentative distance is safe to finalize. That single greedy step is Dijkstra’s algorithm.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-dijkstra.svg"/></div></section>
 <section class="lecture-section" id="problem">
 <h2>Shortest paths from one source</h2>
@@ -43,6 +43,19 @@
 <tr><td>All pairs with negative edges</td><td>Use an all-pairs method such as Floyd–Warshall</td><td>Finite shortest paths require no relevant negative cycle</td></tr>
 </tbody></table></div>
 <div class="one-line"><strong>Do not confuse output scope with the greedy invariant.</strong> Repeating Dijkstra changes how many times we solve the problem; negative edges change whether its finalization proof is valid at all.</div>
+</section>
+
+<!-- skiena-round-dijkstra -->
+<section class="lecture-section" id="model-transform">
+<h2>Sometimes the cleanest algorithm change is no algorithm change at all</h2>
+<p class="lead">If a shortest-path story puts costs on vertices instead of edges, it is tempting to rewrite Dijkstra. A cleaner approach is often to transform the input into the model the existing algorithm already solves.</p>
+<div class="two-column-block">
+<div class="text-panel"><h3>Original model</h3><p>Each vertex <span class="math">v</span> has nonnegative cost <span class="math">c(v)</span>. The cost of a path is the sum of the costs of vertices visited.</p></div>
+<div class="proof-panel"><h3>Edge-weighted model</h3><p>For every directed edge <span class="math">(u,v)</span>, assign weight <span class="math">w(u,v)=c(v)</span>. Traversing into <span class="math">v</span> now pays exactly the cost that used to live on the vertex.</p></div>
+</div>
+<div class="formula-line">u → v &nbsp;&nbsp;becomes&nbsp;&nbsp; u ── c(v) ──→ v</div>
+<div class="candidate-elimination"><h3>One bookkeeping detail</h3><p>If the path definition counts the source vertex’s own cost, add <span class="math">c(s)</span> once to every final distance (or initialize <span class="math">dist[s]=c(s)</span>). The edge transformation naturally charges every destination vertex but not the starting one.</p></div>
+<div class="one-line"><strong>Reduction is an algorithm-design skill.</strong> Before modifying a trusted algorithm, ask whether the new-looking problem can be translated into an old one while preserving the objective.</div>
 </section>
 
 <section class="lecture-section" id="idea">
