@@ -9,7 +9,7 @@
 <body class="lecture-page"><div aria-hidden="true" class="progress-track"><div class="progress-bar" id="reading-progress"></div></div>
 <header class="topbar"><a class="brand" href="../index-ru.html"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name ru-brand-name"><span class="ru-brand-lines"><span>Гайд по алгоритмам</span><span class="ru-brand-presented">presented by Аллан</span></span></span></a>
 <nav aria-label="Основная навигация" class="topnav"><a href="index-ru.html">Жадные алгоритмы</a><div aria-label="Язык" class="language-switch"><a href="proofs.html">EN</a><span class="language-separator">·</span><span class="current">RU</span></div></nav></header>
-<aside aria-label="Навигация по разделу" class="sidebar"><div class="sidebar-title">Глава 9 · Раздел 2</div><a href="#goal">Что нужно доказать?</a><a href="#patterns">Схемы доказательств</a><a href="#counterexamples">Лаборатория контрпримеров</a><a href="#exchange">Обменный аргумент</a><a href="#worked">Полное доказательство</a><a href="#ahead">«Жадный не отстаёт»</a><a href="#induction">Индукция</a><a href="#discard">Как доказывать discard</a><a href="#gas-proof">Candidate-elimination proof</a><a href="#template">Шаблон доказательства</a><a href="#directional-proof">Two-pass proof</a><a href="#intuition-proof">Интуиция и proof</a><a href="#summary-not-witness">Summary и witness</a><a href="#mistakes">Типичные ошибки</a><a href="#exercises">Задачи</a></aside>
+<aside aria-label="Навигация по разделу" class="sidebar"><div class="sidebar-title">Глава 9 · Раздел 2</div><a href="#goal">Что нужно доказать?</a><a href="#patterns">Схемы доказательств</a><a href="#counterexamples">Лаборатория контрпримеров</a><a href="#exchange">Обменный аргумент</a><a href="#worked">Полное доказательство</a><a href="#ahead">«Жадный не отстаёт»</a><a href="#induction">Индукция</a><a href="#discard">Как доказывать discard</a><a href="#gas-proof">Candidate-elimination proof</a><a href="#bound-certificate">Совпасть с lower bound</a><a href="#template">Шаблон доказательства</a><a href="#directional-proof">Two-pass proof</a><a href="#intuition-proof">Интуиция и proof</a><a href="#summary-not-witness">Summary и witness</a><a href="#mistakes">Типичные ошибки</a><a href="#exercises">Задачи</a></aside>
 <main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Глава 9 · Раздел 2</div><h1>Доказательства корректности</h1><p class="chapter-topics">У доказательства greedy одна главная задача: показать, что локальный выбор можно зафиксировать, не потеряв оптимальность.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-proofs.svg"/></div></section>
 <section class="lecture-section" id="goal">
 <h2>Что должно доказать жадное доказательство</h2>
@@ -121,6 +121,18 @@
 <div class="clean-step"><span>3</span><p>Поэтому start в <span class="math">j</span> тоже не доедет дальше <span class="math">b</span>. Весь блок стартов можно пропустить, а следующий возможный candidate — <span class="math">b+1</span>.</p></div>
 </div>
 <div class="one-line"><strong>Interview pattern.</strong> Если failed attempt содержит monotone/nonnegative prefix invariant, проверьте, не сертифицирует ли этот failure невозможность сразу многих соседних кандидатов.</div>
+</section>
+
+<!-- karumanchi-round-proofs -->
+<section class="lecture-section" id="bound-certificate">
+<h2>Ещё одна proof-схема: построить решение, совпавшее с lower bound</h2>
+<p class="lead">Некоторым greedy proofs не нужен exchange с неизвестным optimum. Вместо этого найдите число, которое обязано заплатить любое feasible solution, а затем покажите, что greedy платит ровно столько.</p>
+<div class="two-column-block">
+<div class="text-panel"><h3>Lower bound</h3><p>В interval partitioning, если в один момент пересекаются <span class="math">d</span> classes, любому schedule нужно минимум <span class="math">d</span> rooms. Это неизбежно независимо от algorithm.</p></div>
+<div class="proof-panel"><h3>Greedy certificate</h3><p>Когда start-time greedy открывает <span class="math">d</span>-ю room, новая class пересекается с последней class в каждой из предыдущих <span class="math">d−1</span> rooms. Значит, в этот момент одновременно существуют <span class="math">d</span> classes.</p></div>
+</div>
+<div class="proof-goal"><h3>Оптимальность одной строкой</h3><p>Greedy использует <span class="math">d</span> rooms, а любому решению нужно как минимум <span class="math">d</span>. Следовательно, greedy оптимален.</p></div>
+<div class="one-line"><strong>Reusable pattern.</strong> Lower bound + feasible construction, достигающая bound, = certificate оптимальности.</div>
 </section>
 
 <section class="lecture-section" id="template">
