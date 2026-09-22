@@ -90,7 +90,7 @@
 <tr><td>3</td><td>Новый item веса 1 может превратить это состояние в лучший ответ для capacity 4.</td></tr>
 <tr><td>4</td><td>Финальная цель строится из меньших ответов.</td></tr>
 </tbody></table></div>
-<div class="predict-card"><span class="predict-kicker">Настоящая разница</span><h3>Greedy выбрасывает альтернативные будущие; DP хранит те, которые ещё могут понадобиться.</h3><p>Именно этот структурный вопрос полезно задавать до выбора техники.</p></div>
+<div class="predict-card"><span class="predict-kicker">Сохранение состояний</span><h3>Greedy выбрасывает альтернативные будущие; DP хранит те, которые ещё могут понадобиться.</h3><p>Именно этот структурный вопрос полезно задавать до выбора техники.</p></div>
 </section>
 
 <!-- skiena-round-gvdp -->
@@ -114,7 +114,7 @@
 <p class="lead">Earliest finish точен при одинаковой ценности intervals. После добавления profits приходится сохранять несколько несовместимых partial schedules, что приводит к DP.</p>
 <div class="mini-example-grid"><article class="mini-example bad"><h3>Без весов</h3><p>Нас интересует только число совместимых интервалов, поэтому раннее окончание оставляет место для большего числа будущих выборов.</p></article><article class="mini-example good"><h3>С весами</h3><p>Теперь нужно сравнивать два состояния: «взять интервал j» и «пропустить j». После сортировки по окончанию DP хранит оба варианта.</p></article></div>
 <div class="inline-recurrence">OPT(j) = max( wⱼ + OPT(p(j)), OPT(j−1) )</div>
-<div class="source-note"><h3>Сортировка всё ещё полезна</h3><p>Это гибридный случай: сортировка по окончанию не решает задачу, но делает DP аккуратным. <span class="math">p(j)</span> — последний интервал, заканчивающийся до начала <span class="math">j</span>. Отдельной страницы про Weighted Interval Scheduling в handbook пока нет.</p></div>
+<div class="source-note"><h3>Роль сортировки</h3><p>Это гибридный случай: сортировка по окончанию не решает задачу, но делает DP аккуратным. <span class="math">p(j)</span> — последний интервал, заканчивающийся до начала <span class="math">j</span>. Отдельной страницы про Weighted Interval Scheduling в handbook пока нет.</p></div>
 </section>
 
 <!-- book-synthesis-gvdp -->
