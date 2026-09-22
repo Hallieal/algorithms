@@ -8,7 +8,7 @@
 <body class="lecture-page"><div aria-hidden="true" class="progress-track"><div class="progress-bar" id="reading-progress"></div></div>
 <header class="topbar"><a class="brand" href="../"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name">Allan's Handbook of Algorithms</span></a>
 <nav aria-label="Primary navigation" class="topnav"><a href="./">Greedy overview</a><div aria-label="Language" class="language-switch"><span class="current">EN</span><span class="language-separator">·</span><a href="huffman-ru.html">RU</a></div></nav></header>
-<aside aria-label="Section navigation" class="sidebar"><div class="sidebar-title">Chapter 9 · Section 8</div><a href="#problem">Problem</a><a href="#prefix">Prefix codes</a><a href="#algorithm">Algorithm</a><a href="#tree">Tree and codes</a><a href="#merge">Optimal merge pattern</a><a href="#entropy">Entropy</a><a href="#proof">Correctness</a><a href="#implementation">Implementation</a><a href="#limits">What it optimizes</a><a href="#exercises">Exercises</a></aside>
+<aside aria-label="Section navigation" class="sidebar"><div class="sidebar-title">Chapter 9 · Section 8</div><a href="#problem">Problem</a><a href="#bit-baseline">Why variable length helps</a><a href="#prefix">Prefix codes</a><a href="#decode">Decode one bit at a time</a><a href="#algorithm">Algorithm</a><a href="#tree">Tree and codes</a><a href="#merge">Optimal merge pattern</a><a href="#entropy">Entropy</a><a href="#proof">Correctness</a><a href="#implementation">Implementation</a><a href="#limits">What it optimizes</a><a href="#exercises">Exercises</a></aside>
 <main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Chapter 9 · Section 8</div><h1>Huffman Coding</h1><p class="chapter-topics">Frequent symbols should get short codes. Huffman achieves this by repeatedly merging the two least frequent nodes.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-huffman.svg"/></div></section>
 <section class="lecture-section" id="problem">
 <h2>Frequent symbols should be cheap to encode</h2>
@@ -28,6 +28,18 @@
 <div class="greedy-definition"><span>Goal</span><p>Construct a binary prefix code minimizing the weighted code length <span class="math">∑ fᵢ · ℓᵢ</span>, where <span class="math">fᵢ</span> is a symbol frequency and <span class="math">ℓᵢ</span> is its codeword length.</p></div>
 </section>
 
+<!-- grokking-pass-huffman -->
+<section class="lecture-section" id="bit-baseline">
+<h2>Start with the storage question, not the tree</h2>
+<p class="lead">Why allow codewords to have different lengths at all? Because a fixed-width code spends the same number of bits on common and rare symbols. A frequency-aware code can spend bits where they matter.</p>
+<div class="bit-baseline">
+<div class="bit-side"><h3>Fixed width</h3><p>Suppose A appears 6 times, B twice, and C once. Three symbols need 2 bits each, so 9 symbols cost <strong>18 bits</strong>.</p></div>
+<div class="bit-arrow">→</div>
+<div class="bit-side good"><h3>Variable length</h3><p>Use A=<code>1</code>, B=<code>01</code>, C=<code>00</code>. The same frequencies cost <strong>12 bits</strong>: 6·1 + 2·2 + 1·2.</p></div>
+</div>
+<div class="one-line"><strong>The idea before Huffman:</strong> frequent symbols deserve shorter root-to-leaf paths. Huffman’s greedy merge rule is the systematic way to build the best prefix tree for that objective.</div>
+</section>
+
 <section class="lecture-section" id="prefix">
 <h2>Prefix-free means no separators</h2>
 <p class="lead">If no codeword begins with another complete codeword, the decoder always knows when one symbol ends. That is exactly what a binary prefix tree guarantees.</p>
@@ -43,6 +55,13 @@
 <div class="prefix-code-row"><span>C</span><code>11</code></div>
 <p>Every completed codeword corresponds to a leaf of a binary tree, so decoding is immediate.</p></article>
 </div>
+</section>
+
+<section class="lecture-section" id="decode">
+<h2>Variable-length codes are decoded by walking the tree</h2>
+<p class="lead">With fixed-width codes, a decoder can split the bit stream into equal chunks. Huffman codewords have different lengths, so the decoder reads one bit at a time and uses the tree itself to find symbol boundaries.</p>
+<div class="predict-card"><span class="predict-kicker">Example code</span><h3>A = 1 · B = 01 · C = 00</h3><div class="decode-tape"><span class="decode-bit leaf">1</span><span class="decode-bit">0</span><span class="decode-bit leaf">1</span><span class="decode-bit">0</span><span class="decode-bit leaf">0</span></div><p class="decode-rule">Read from the root. A bit 0 goes left, a bit 1 goes right. Whenever a leaf is reached, emit that symbol and restart at the root. The tape above decodes as A, B, C.</p></div>
+<div class="bridge-note"><h3>Why leaf-only symbols matter</h3><p>If a symbol could appear at an internal node, its code would be a prefix of every code below it and decoding would become ambiguous. Putting symbols only at leaves gives prefix-free codes automatically.</p></div>
 </section>
 
 <section class="lecture-section" id="algorithm">
