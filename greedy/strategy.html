@@ -3,9 +3,9 @@
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1" name="viewport"/>
-<meta content="What makes an algorithm greedy, how local choices build a global solution, and what must be true for this approach to work." name="description"/>
+<meta content="Greedy algorithms commit to one locally best feasible choice at a time. The hard part is proving that the choice is safe." name="description"/>
 <meta content="Greedy Strategy | Allan's Handbook of Algorithms" property="og:title"/>
-<meta content="What makes an algorithm greedy, how local choices build a global solution, and what must be true for this approach to work." property="og:description"/>
+<meta content="Greedy algorithms commit to one locally best feasible choice at a time. The hard part is proving that the choice is safe." property="og:description"/>
 <meta content="article" property="og:type"/>
 <title>Greedy Strategy | Allan's Handbook of Algorithms</title>
 <link href="../assets/css/styles.css" rel="stylesheet"/>
@@ -33,14 +33,18 @@
 <div>
 <div class="chapter-label">Chapter 9 · Section 1</div>
 <h1>Greedy Strategy</h1>
-<p class="chapter-topics">What makes an algorithm greedy, how local choices build a global solution, and what must be true for this approach to work.</p>
+<p class="chapter-topics">Greedy algorithms commit to one locally best feasible choice at a time. The hard part is proving that the choice is safe.</p>
 </div>
 <div class="greedy-hero-icon"><img alt="" src="assets/greedy-strategy.svg"/></div>
 </section>
 
 <section class="lecture-section" id="idea">
-<h2>The basic idea</h2>
-<p class="lead">A greedy algorithm builds a solution one decision at a time. At each step it chooses the option that looks best according to a simple local rule, keeps the choice if it is feasible, and then moves on without reconsidering earlier decisions.</p>
+<h2>Greedy means committing early</h2>
+<p class="lead">A greedy algorithm makes one choice, commits to it, and never comes back. That can be extremely efficient—but only when the problem has enough structure that the local choice cannot destroy every optimal solution.</p><div class="concept-strip">
+<article class="concept-cell rule"><span>Rule</span><b>Pick the best feasible option now</b><p>The priority rule says what “best” means.</p></article>
+<article class="concept-cell proof"><span>Commitment</span><b>Do not undo accepted choices</b><p>That irreversibility is what makes greedy fast—and risky.</p></article>
+<article class="concept-cell cost"><span>Main question</span><b>Why is this choice safe?</b><p>Without that proof, the rule is only a heuristic.</p></article>
+</div>
 <div class="greedy-process-grid">
 <article class="greedy-process-card"><div class="greedy-process-num">1</div><h3>Look at the current state</h3><p>Use only the information relevant to the decision you need to make now.</p></article>
 <article class="greedy-process-card"><div class="greedy-process-num">2</div><h3>Choose locally</h3><p>Pick the candidate with the best priority according to the greedy rule.</p></article>
@@ -51,8 +55,8 @@
 </section>
 
 <section class="lecture-section" id="anatomy">
-<h2>Anatomy of a greedy algorithm</h2>
-<p class="lead">Most greedy algorithms can be understood through three separate questions. Keeping them separate is useful: a good priority rule is not the same thing as a feasibility condition, and neither one by itself proves optimality.</p>
+<h2>Three things to identify</h2>
+<p class="lead">Before writing code, separate three ideas: which candidate comes first, whether it is allowed, and what becomes permanent after you accept it.</p>
 <div class="greedy-anatomy-grid">
 <article class="greedy-anatomy-card"><div class="greedy-anatomy-icon">↕</div><h3>Priority rule</h3><p>Which candidate is considered first? Examples: smallest finishing time, cheapest edge, largest value density.</p></article>
 <article class="greedy-anatomy-card"><div class="greedy-anatomy-icon">✓</div><h3>Feasibility test</h3><p>Can we take this candidate without breaking the constraints? If not, skip it or choose another candidate.</p></article>
@@ -62,7 +66,7 @@
 </section>
 
 <section class="lecture-section" id="example">
-<h2>A first greedy example</h2>
+<h2>Example: fit as many jobs as possible</h2>
 <p class="lead">Suppose a machine is available for 10 minutes. Four independent jobs take 7, 4, 3, and 2 minutes. The goal is to complete as many jobs as possible.</p>
 <div class="greedy-job-example">
 <div class="greedy-job-head"><div><span class="example-kicker">Greedy rule</span><h3>Do the shortest remaining job first</h3></div><p>Choosing a shorter job uses no more time than choosing a longer one, so it leaves at least as much room for future jobs.</p></div>
@@ -74,8 +78,8 @@
 </section>
 
 <section class="lecture-section" id="failure">
-<h2>Local best does not always mean global best</h2>
-<p class="lead">Greedy algorithms are attractive because they are simple. They are also dangerous because a very natural local rule can be wrong.</p>
+<h2>A natural rule can still be wrong</h2>
+<p class="lead">A rule can be simple, deterministic, and always feasible—and still miss the optimum. Coin change gives a clean counterexample.</p>
 <div class="visualizer coin-greedy-demo">
 <div class="visualizer-head"><div><h3>Coin change: take the largest coin that fits</h3><p>Step through the greedy choices, then compare the result with the true minimum number of coins.</p></div><div class="step-nav-controls"><button class="previous-step" data-action="previous" type="button">← Previous step</button><button class="primary-step" data-action="next" type="button">Next step →</button></div></div>
 <div class="coin-preset-row"><button class="active" data-preset="trap" type="button">Counterexample: 1, 3, 4</button><button data-preset="canonical" type="button">Works here: 1, 5, 10, 25</button></div>
@@ -93,8 +97,8 @@
 </section>
 
 <section class="lecture-section" id="properties">
-<h2>What makes greediness possible?</h2>
-<p class="lead">Two structural ideas appear again and again in problems where greedy algorithms are correct.</p>
+<h2>What a proof has to establish</h2>
+<p class="lead">A correct greedy proof normally has to justify two facts: the next local choice is safe, and after fixing it the remainder is still the same kind of problem.</p>
 <div class="greedy-properties">
 <article class="greedy-property"><h3>Greedy-choice property</h3><p>There exists an optimal solution that is compatible with the greedy first choice. In other words, committing to that local choice does not destroy every optimal solution.</p></article>
 <article class="greedy-property"><h3>Optimal substructure</h3><p>After fixing the first choice, the rest of an optimal solution is itself optimal for the remaining subproblem.</p></article>
@@ -103,8 +107,8 @@
 </section>
 
 <section class="lecture-section" id="implementation">
-<h2>A generic implementation pattern</h2>
-<p class="lead">Many greedy algorithms are implemented by sorting candidates once and scanning them from best to worst.</p>
+<h2>The code is usually the easy part</h2>
+<p class="lead">Once the priority rule is known, the implementation is often just sort, scan, test, accept.</p>
 <div class="code-explainer">
 <div class="annotated-code">
 <div class="code-row"><span class="line-no">1</span><code>def greedy(candidates, priority, feasible):</code></div>
@@ -124,7 +128,7 @@
 </section>
 
 <section class="lecture-section" id="complexity">
-<h2>Efficiency</h2>
+<h2>Typical running time</h2>
 <p class="lead">“Greedy” describes a design strategy, not a running-time class. Still, many greedy algorithms are fast because they avoid exploring many alternative solutions.</p>
 <div class="table-wrap"><table class="greedy-runtime-table"><thead><tr><th>Implementation pattern</th><th>Typical cost</th><th>Where it appears</th></tr></thead><tbody>
 <tr><td>Sort once + scan</td><td>Usually O(n log n)</td><td>Scheduling, interval selection, Kruskal-style processing</td></tr>
