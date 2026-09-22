@@ -73,11 +73,11 @@
 <p class="lead">Жадные алгоритмы часто ускоряют задачу тем, что доказанно отбрасывают большую часть альтернатив. Главный вопрос — какую информацию можно забыть без потери оптимума.</p>
 <div class="runtime-ladder">
 <article class="runtime-step"><span>Текущая идея</span><h3>Сравнивать каждого кандидата со всеми</h3><p>Для поиска maximum в array проверка каждого числа против всех остальных стоит <span class="math">O(n²)</span>.</p></article>
-<article class="runtime-step"><span>Лучше, но косвенно</span><h3>Отсортировать и взять последний элемент</h3><p>Comparison sort даёт <span class="math">O(n log n)</span>, но сортировка вычисляет гораздо больше информации о порядке, чем требуется ответу.</p></article>
+<article class="runtime-step"><span>Лучше, но косвенно</span><h3>Сортировка и выбор максимума</h3><p>Comparison sort даёт <span class="math">O(n log n)</span>, но сортировка вычисляет гораздо больше информации о порядке, чем требуется ответу.</p></article>
 <article class="runtime-step best"><span>Best imaginable</span><h3>Хранить только лучшее из увиденного</h3><p>Достаточно одного прохода: обновляем текущий maximum, когда встречаем большее значение. Получаем <span class="math">O(n)</span>, а все элементы всё равно необходимо хотя бы посмотреть.</p></article>
 </div>
 <div class="optimization-gap"><b>Optimization-вопрос</b><p>Какую информацию медленный алгоритм вычисляет зря — то есть финальный ответ её вообще не использует? Greedy часто появляется, когда эту лишнюю работу можно заменить одним безопасным running summary.</p></div>
-<div class="source-note"><h3>Терминологическая оговорка</h3><p>Обычный scan для maximum редко называют greedy в формальных курсах оптимизации. Но как mental model он полезен: после каждого prefix хранится ровно тот лучший факт, который безопасно заменяет всё увиденное раньше.</p></div>
+<div class="source-note"><h3>Терминология</h3><p>Обычный scan для maximum редко называют greedy в формальных курсах оптимизации. Но как mental model он полезен: после каждого prefix хранится ровно тот лучший факт, который безопасно заменяет всё увиденное раньше.</p></div>
 </section>
 
 <section class="lecture-section" id="anatomy">
@@ -160,7 +160,7 @@
 <article class="design-loop-card"><span>4</span><h3>Назовите инвариант</h3><p>Что остаётся безопасным после шага: больше свободного времени, лес без циклов, окончательное расстояние, допустимый префикс?</p></article>
 <article class="design-loop-card"><span>5</span><h3>Докажите или понизьте claim</h3><p>Используйте exchange, staying ahead, induction или cut. Если доказательства нет, правило может остаться heuristic/approximation — но надо так его и называть.</p></article>
 </div>
-<div class="practice-note"><h3>Контрпример — часть дизайна, а не провал</h3><p>Попробовать earliest start и shortest duration перед earliest finish полезно: неправильные правила показывают, какая информация действительно важна, и делают правильное доказательство заметнее.</p></div>
+<div class="practice-note"><h3>Роль контрпримеров</h3><p>Попробовать earliest start и shortest duration перед earliest finish полезно: неправильные правила показывают, какая информация действительно важна, и делают правильное доказательство заметнее.</p></div>
 </section>
 
 <!-- karumanchi-round-strategy -->
