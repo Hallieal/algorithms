@@ -9,7 +9,7 @@
 <body class="lecture-page"><div aria-hidden="true" class="progress-track"><div class="progress-bar" id="reading-progress"></div></div>
 <header class="topbar"><a class="brand" href="../index-ru.html"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name ru-brand-name"><span class="ru-brand-lines"><span>Гайд по алгоритмам</span><span class="ru-brand-presented">presented by Аллан</span></span></span></a>
 <nav aria-label="Основная навигация" class="topnav"><a href="index-ru.html">Жадные алгоритмы</a><div aria-label="Язык" class="language-switch"><a href="proofs.html">EN</a><span class="language-separator">·</span><span class="current">RU</span></div></nav></header>
-<aside aria-label="Навигация по разделу" class="sidebar"><div class="sidebar-title">Глава 9 · Раздел 2</div><a href="#goal">Что нужно доказать?</a><a href="#patterns">Схемы доказательств</a><a href="#counterexamples">Лаборатория контрпримеров</a><a href="#exchange">Обменный аргумент</a><a href="#worked">Полное доказательство</a><a href="#ahead">«Жадный не отстаёт»</a><a href="#induction">Индукция</a><a href="#template">Шаблон доказательства</a><a href="#mistakes">Типичные ошибки</a><a href="#exercises">Задачи</a></aside>
+<aside aria-label="Навигация по разделу" class="sidebar"><div class="sidebar-title">Глава 9 · Раздел 2</div><a href="#goal">Что нужно доказать?</a><a href="#patterns">Схемы доказательств</a><a href="#counterexamples">Лаборатория контрпримеров</a><a href="#exchange">Обменный аргумент</a><a href="#worked">Полное доказательство</a><a href="#ahead">«Жадный не отстаёт»</a><a href="#induction">Индукция</a><a href="#template">Шаблон доказательства</a><a href="#intuition-proof">Интуиция и proof</a><a href="#mistakes">Типичные ошибки</a><a href="#exercises">Задачи</a></aside>
 <main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Глава 9 · Раздел 2</div><h1>Доказательства корректности</h1><p class="chapter-topics">У доказательства greedy одна главная задача: показать, что локальный выбор можно зафиксировать, не потеряв оптимальность.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-proofs.svg"/></div></section>
 <section class="lecture-section" id="goal">
 <h2>Что должно доказать жадное доказательство</h2>
@@ -105,6 +105,17 @@
 <article><b>4. Уменьшите задачу</b><p>После фиксации выбора докажите, что остаток имеет ту же форму. Закончите индукцией или инвариантом.</p></article>
 </div>
 <div class="practice-note"><h3>Перед QED проверьте граничные предположения</h3><p>Ties, нули, совпадающие endpoints, disconnected input, пустой input, отрицательные веса и смена objective с cardinality на weight — именно здесь часто прячется неверное доказательство.</p></div>
+</section>
+
+<!-- grokking-pass-proofs -->
+<section class="lecture-section" id="intuition-proof">
+<h2>Чем «очевиднее» greedy-rule, тем важнее доказательство</h2>
+<p class="lead">Два локальных правила могут выглядеть одинаково естественно и иметь совершенно разный статус. Картинка создаёт интуицию; только структурный argument показывает, безопасен ли commitment на любом input.</p>
+<div class="path-choice">
+<article class="good"><h3>Earliest finish</h3><p>В maximum-cardinality interval scheduling более ранний finish оставляет все варианты, которые оставил бы поздний. Интуиция превращается в exchange proof.</p></article>
+<article class="bad"><h3>Взять самый привлекательный целый item</h3><p>В 0/1 Knapsack первый хороший item может съесть capacity, нужную лучшей паре. Правило выглядит не менее естественным, но маленький counterexample его уничтожает.</p></article>
+</div>
+<div class="one-line"><strong>Педагогическое правило:</strong> пример помогает найти invariant, а затем invariant надо доказать. Сам пример доказательством не является.</div>
 </section>
 
 <section class="lecture-section" id="mistakes">
