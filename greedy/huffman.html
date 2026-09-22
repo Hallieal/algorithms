@@ -8,7 +8,7 @@
 <body class="lecture-page"><div aria-hidden="true" class="progress-track"><div class="progress-bar" id="reading-progress"></div></div>
 <header class="topbar"><a class="brand" href="../"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name">Allan's Handbook of Algorithms</span></a>
 <nav aria-label="Primary navigation" class="topnav"><a href="./">Greedy overview</a><div aria-label="Language" class="language-switch"><span class="current">EN</span><span class="language-separator">·</span><a href="huffman-ru.html">RU</a></div></nav></header>
-<aside aria-label="Section navigation" class="sidebar"><div class="sidebar-title">Chapter 9 · Section 8</div><a href="#problem">Problem</a><a href="#bits-first">Why variable-length codes?</a><a href="#prefix">Prefix codes</a><a href="#decode">Decode by walking the tree</a><a href="#algorithm">Algorithm</a><a href="#tree">Tree and codes</a><a href="#merge">Optimal merge pattern</a><a href="#entropy">Entropy</a><a href="#proof">Correctness</a><a href="#heap-pattern">Heap recognition pattern</a><a href="#heap-optimization">Why the heap changes everything</a><a href="#implementation">Implementation</a><a href="#limits">What it optimizes</a><a href="#exercises">Exercises</a></aside>
+<aside aria-label="Section navigation" class="sidebar"><div class="sidebar-title">Chapter 9 · Section 8</div><a href="#problem">Problem</a><a href="#bits-first">Why variable-length codes?</a><a href="#prefix">Prefix codes</a><a href="#decode">Decode by walking the tree</a><a href="#algorithm">Algorithm</a><a href="#tree">Tree and codes</a><a href="#merge">Optimal merge pattern</a><a href="#entropy">Entropy</a><a href="#proof">Correctness</a><a href="#heap-pattern">Heap recognition pattern</a><a href="#heap-optimization">Why the heap changes everything</a><a href="#implementation">Implementation</a><a href="#static-adaptive">Static code vs adaptive compression</a><a href="#limits">What it optimizes</a><a href="#exercises">Exercises</a></aside>
 <main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Chapter 9 · Section 8</div><h1>Huffman Coding</h1><p class="chapter-topics">Frequent symbols should get short codes. Huffman achieves this by repeatedly merging the two least frequent nodes.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-huffman.svg"/></div></section>
 <section class="lecture-section" id="problem">
 <h2>Frequent symbols should be cheap to encode</h2>
@@ -197,6 +197,22 @@
 <div class="code-note-item wide-note"><span>11–17</span><p>Remove two minimum-frequency trees, make them children of a new node, and push the sum back into the heap.</p></div>
 </div></div>
 <div class="complexity-strip"><div><span>Heap build</span><b>O(n)</b><small>initial nodes</small></div><div><span>Merges</span><b>n − 1</b><small>one per internal node</small></div><div><span>Each merge</span><b>O(log n)</b><small>heap operations</small></div><div><span>Total</span><b>O(n log n)</b><small>tree construction</small></div></div>
+</section>
+
+<!-- skiena-round-huffman -->
+<section class="lecture-section" id="static-adaptive">
+<h2>Huffman is a static model of the source</h2>
+<p class="lead">The tree is optimal for the symbol frequencies you give it, but a real compression system must also decide how those frequencies are learned, stored, and whether symbol-by-symbol statistics are rich enough.</p>
+<div class="recognition-grid">
+<article class="recognition-card"><span class="signal">First pass</span><h3>Learn the frequency table</h3><p>A static Huffman encoder normally inspects the input to count symbols before it can build the code tree.</p></article>
+<article class="recognition-card"><span class="signal">Metadata</span><h3>The decoder needs the code</h3><p>The coding table—or enough information to reconstruct it—must accompany the compressed payload. On a short file, that overhead can consume much of the savings.</p></article>
+<article class="recognition-card"><span class="signal">Model limit</span><h3>Single-symbol frequencies miss context</h3><p>A repeated pattern can be highly compressible even when individual-symbol frequencies are not very informative. Dictionary and adaptive methods can exploit longer repeated substrings or changing local distributions.</p></article>
+</div>
+<div class="two-column-block">
+<div class="text-panel"><h3>Static Huffman</h3><p>Analyze a document, build one frequency-based code, then encode with that fixed table.</p></div>
+<div class="proof-panel"><h3>Adaptive / dictionary methods</h3><p>Update the coding model while reading the stream, allowing repeated phrases and local changes in the source to influence later encoding.</p></div>
+</div>
+<div class="one-line"><strong>Separate the theorem from the system.</strong> Huffman solves the optimal prefix-code problem for a given frequency model; choosing the compression model itself is a different design decision.</div>
 </section>
 
 <section class="lecture-section" id="limits">
