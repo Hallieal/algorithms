@@ -1,57 +1,219 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1" name="viewport"/>
-<meta content="Жадное построение дерева, которое превращает частоты символов в компактный префиксный код." name="description"/>
-<meta content="Кодирование Хаффмана | Гайд по алгоритмам — presented by Аллан" property="og:title"/>
-<meta content="Жадное построение дерева, которое превращает частоты символов в компактный префиксный код." property="og:description"/>
-<meta content="article" property="og:type"/>
+<!DOCTYPE html><html lang="ru"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="Как построить оптимальный двоичный префиксный код, каждый раз объединяя два узла с минимальными частотами." name="description"/><meta content="Кодирование Хаффмана | Гайд по алгоритмам — presented by Аллан" property="og:title"/><meta content="Как построить оптимальный двоичный префиксный код, каждый раз объединяя два узла с минимальными частотами." property="og:description"/><meta content="article" property="og:type"/>
 <title>Кодирование Хаффмана | Гайд по алгоритмам — presented by Аллан</title>
-<link href="../assets/css/styles.css" rel="stylesheet"/>
-<link href="assets/greedy.css" rel="stylesheet"/>
-<link href="../assets/images/favicon-32.png" rel="icon" sizes="32x32" type="image/png"/>
-<link href="../assets/images/favicon.png" rel="icon" sizes="64x64" type="image/png"/>
-<link href="../assets/images/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180"/>
-<link href="huffman.html" hreflang="en" rel="alternate"/><link href="huffman-ru.html" hreflang="ru" rel="alternate"/>
-</head>
-<body class="lecture-page">
-<header class="topbar">
-<a class="brand" href="../index-ru.html"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name ru-brand-name"><span class="ru-brand-lines"><span>Гайд по алгоритмам</span><span class="ru-brand-presented">presented by Аллан</span></span></span></a>
-<nav aria-label="Основная навигация" class="topnav">
-<a href="index-ru.html">Жадные алгоритмы</a>
-<div aria-label="Язык" class="language-switch"><a href="huffman.html">EN</a><span class="language-separator">·</span><span class="current">RU</span></div>
-</nav>
-</header>
-<aside aria-label="Навигация по разделу" class="sidebar">
-<div class="sidebar-title">Глава 9 · Раздел 8</div>
-<a href="#coming-soon">Скоро</a>
-</aside>
-<main class="lecture">
-<section class="lecture-hero greedy-placeholder-hero">
-<div>
-<div class="chapter-label">Глава 9 · Раздел 8</div>
-<h1>Кодирование Хаффмана</h1>
-<p class="chapter-topics">Жадное построение дерева, которое превращает частоты символов в компактный префиксный код.</p>
+<link href="../assets/css/styles.css" rel="stylesheet"/><link href="assets/greedy.css" rel="stylesheet"/>
+<link href="../assets/images/favicon-32.png" rel="icon" sizes="32x32" type="image/png"/><link href="../assets/images/favicon.png" rel="icon" sizes="64x64" type="image/png"/><link href="../assets/images/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180"/>
+<link href="huffman.html" hreflang="en" rel="alternate"/><link href="huffman-ru.html" hreflang="ru" rel="alternate"/></head>
+<body class="lecture-page"><div aria-hidden="true" class="progress-track"><div class="progress-bar" id="reading-progress"></div></div>
+<header class="topbar"><a class="brand" href="../index-ru.html"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name ru-brand-name"><span class="ru-brand-lines"><span>Гайд по алгоритмам</span><span class="ru-brand-presented">presented by Аллан</span></span></span></a>
+<nav aria-label="Основная навигация" class="topnav"><a href="index-ru.html">Жадные алгоритмы</a><div aria-label="Язык" class="language-switch"><a href="huffman.html">EN</a><span class="language-separator">·</span><span class="current">RU</span></div></nav></header>
+<aside aria-label="Навигация по разделу" class="sidebar"><div class="sidebar-title">Глава 9 · Раздел 8</div><a href="#problem">Постановка</a><a href="#prefix">Префиксные коды</a><a href="#algorithm">Алгоритм</a><a href="#tree">Дерево и коды</a><a href="#proof">Корректность</a><a href="#implementation">Реализация</a><a href="#limits">Что оптимизируется</a><a href="#exercises">Задачи</a></aside>
+<main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Глава 9 · Раздел 8</div><h1>Кодирование Хаффмана</h1><p class="chapter-topics">Как построить оптимальный двоичный префиксный код, каждый раз объединяя два узла с минимальными частотами.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-huffman.svg"/></div></section>
+<section class="lecture-section" id="problem">
+<h2>От частот к двоичным кодам</h2>
+<p class="lead">Пусть сообщение состоит из символов с разными частотами. Код фиксированной длины тратит одинаковое число бит на каждый символ. Если некоторые символы встречаются намного чаще, выгодно дать им более короткие кодовые слова.</p>
+<div class="huffman-frequency-grid">
+<div class="huffman-symbol"><b>A</b><span>45</span></div>
+<div class="huffman-symbol"><b>B</b><span>13</span></div>
+<div class="huffman-symbol"><b>C</b><span>12</span></div>
+<div class="huffman-symbol"><b>D</b><span>16</span></div>
+<div class="huffman-symbol"><b>E</b><span>9</span></div>
+<div class="huffman-symbol"><b>F</b><span>5</span></div>
 </div>
-<div class="greedy-hero-icon"><img alt="" src="assets/greedy-huffman.svg"/></div>
+<div class="greedy-definition"><span>Цель</span><p>Построить двоичный префиксный код, минимизирующий взвешенную длину <span class="math">∑ fᵢ · ℓᵢ</span>, где <span class="math">fᵢ</span> — частота символа, а <span class="math">ℓᵢ</span> — длина его кодового слова.</p></div>
 </section>
-<section class="lecture-section" id="coming-soon">
-<div class="coming-soon-panel">
-<span class="coming-soon-kicker">В разработке</span>
-<h2>Страница скоро будет заполнена</h2>
-<p>Здесь построим дерево Хаффмана с помощью min-heap, получим двоичные коды и разберём, почему безопасно каждый раз объединять два узла с наименьшими частотами. Свяжем алгоритм со сжатием без потерь.</p>
-</div>
-<div class="placeholder-navigation">
-<a href="fractional-knapsack-ru.html">← Дробная задача о рюкзаке</a>
-<a href="mst-ru.html">Минимальные остовные деревья →</a>
+
+<section class="lecture-section" id="prefix">
+<h2>Зачем нужны префиксные коды?</h2>
+<p class="lead">Код называется префиксным, если ни одно кодовое слово не является префиксом другого. Тогда поток битов можно декодировать слева направо без разделителей.</p>
+<div class="prefix-example">
+<article class="prefix-card bad"><h3>Не префиксный</h3>
+<div class="prefix-code-row"><span>A</span><code>0</code></div>
+<div class="prefix-code-row"><span>B</span><code>01</code></div>
+<div class="prefix-code-row"><span>C</span><code>11</code></div>
+<p>При чтении <code>01...</code> после первого бита непонятно, это уже A или начало B.</p></article>
+<article class="prefix-card good"><h3>Префиксный</h3>
+<div class="prefix-code-row"><span>A</span><code>0</code></div>
+<div class="prefix-code-row"><span>B</span><code>10</code></div>
+<div class="prefix-code-row"><span>C</span><code>11</code></div>
+<p>Каждое завершённое кодовое слово соответствует листу двоичного дерева, поэтому декодирование однозначно.</p></article>
 </div>
 </section>
-</main>
-<footer class="lecture-footer">
-<div>Гайд по алгоритмам · presented by Аллан</div>
-<div>© 2026 Allan Allemand</div>
-</footer>
-<script src="../assets/js/language-switch.js"></script>
-</body>
-</html>
+
+<section class="lecture-section" id="algorithm">
+<h2>Жадное правило Хаффмана</h2>
+<p class="lead">Алгоритм снова и снова объединяет два узла с минимальными частотами. Их сумма становится весом нового внутреннего узла, который возвращается в min-heap.</p>
+<div class="step-flow">
+<article class="step-item"><div class="step-number">1</div><div><h3>Создаём лист для каждого символа</h3><p>Вес листа равен частоте символа.</p></div></article>
+<article class="step-item"><div class="step-number">2</div><div><h3>Извлекаем два минимума</h3><p>Они станут соседними листьями на наибольшей глубине текущего дерева.</p></div></article>
+<article class="step-item"><div class="step-number">3</div><div><h3>Объединяем</h3><p>Создаём родителя с весом, равным сумме двух детей.</p></div></article>
+<article class="step-item"><div class="step-number">4</div><div><h3>Возвращаем и повторяем</h3><p>Продолжаем, пока не останется одно дерево.</p></div></article>
+</div>
+<div class="visualizer huffman-demo">
+<div class="visualizer-head"><div><h3>Построим дерево по шагам</h3><p>Оранжевым выделены два текущих минимума. Фиолетовым — только что объединённый узел.</p></div><div class="step-nav-controls"><button class="previous-step" data-action="previous" type="button">← Назад</button><button class="primary-step" data-action="next" type="button">Дальше →</button></div></div>
+<div class="coin-panel-label">Текущее состояние min-heap</div>
+<div class="heap-chips" data-role="heap"></div>
+<div class="merge-equation" data-role="merge"></div>
+<div class="secondary-controls"><button data-action="reset" type="button">Сбросить</button></div>
+</div>
+</section>
+
+<section class="lecture-section" id="tree">
+<h2>Получившееся дерево и коды</h2>
+<p class="lead">Каждому левому ребру присвоим 0, каждому правому — 1. Код символа — последовательность битов на пути от корня до его листа. Левые и правые поддеревья можно менять местами: длины кодов и оптимальность от этого не меняются.</p>
+<div class="huffman-tree-simple">
+<div class="huffman-level"><div class="tree-node root">100</div></div>
+<div class="huffman-level"><div class="tree-node leaf">A · 45</div><div class="tree-node">55</div></div>
+<div class="huffman-level"><div class="tree-node">25</div><div class="tree-node">30</div></div>
+<div class="huffman-level"><div class="tree-node leaf">C · 12</div><div class="tree-node leaf">B · 13</div><div class="tree-node">14</div><div class="tree-node leaf">D · 16</div></div>
+<div class="huffman-level"><div class="tree-node leaf">F · 5</div><div class="tree-node leaf">E · 9</div></div>
+</div>
+<div class="table-wrap"><table class="codeword-table"><thead><tr><th>Символ</th><th>Частота</th><th>Один из кодов Хаффмана</th></tr></thead><tbody>
+<tr><td>A</td><td>45</td><td><code>0</code></td></tr>
+<tr><td>C</td><td>12</td><td><code>100</code></td></tr>
+<tr><td>B</td><td>13</td><td><code>101</code></td></tr>
+<tr><td>F</td><td>5</td><td><code>1100</code></td></tr>
+<tr><td>E</td><td>9</td><td><code>1101</code></td></tr>
+<tr><td>D</td><td>16</td><td><code>111</code></td></tr>
+</tbody></table></div>
+<div class="bit-summary">
+<div class="bit-card"><span>Код фиксированной длины</span><b>300 бит</b><small>Для 6 символов нужно 3 бита на символ, а суммарная частота равна 100.</small></div>
+<div class="bit-card good"><span>Код Хаффмана</span><b>224 бита</b><small>Взвешенная длина: 45·1 + 12·3 + 13·3 + 5·4 + 9·4 + 16·3.</small></div>
+</div>
+</section>
+
+<section class="lecture-section" id="proof">
+<h2>Почему безопасно объединять два минимума</h2>
+<p class="lead">Доказательство Хаффмана состоит из двух идей: обменного аргумента, который помещает два минимальных символа рядом, и сведения задачи к меньшей после их объединения.</p>
+<div class="huffman-proof-steps">
+<article class="huffman-proof-card"><h3>1. Глубокие листья должны быть дешёвыми</h3><p>Если символ с большей частотой находится глубже символа с меньшей частотой, обмен их меток не увеличивает стоимость. Поэтому маленькие частоты можно отправить на максимальную глубину.</p></article>
+<article class="huffman-proof-card"><h3>2. Два минимума можно сделать соседями</h3><p>Берём два самых глубоких соседних листа. Обменом меток можно добиться, чтобы именно две глобально минимальные частоты занимали эти позиции, не ухудшая стоимость.</p></article>
+<article class="huffman-proof-card"><h3>3. Сжимаем пару</h3><p>Заменяем листья с частотами <span class="math">x</span> и <span class="math">y</span> одним псевдосимволом частоты <span class="math">x+y</span>. Оптимальное дерево для меньшей задачи после раскрытия пары даёт оптимальное дерево исходной задачи.</p></article>
+</div>
+<div class="proof-goal"><h3>Оптимальная подструктура</h3><p>После того как два минимальных символа зафиксированы как соседи, остаётся ровно ещё одна задача Хаффмана с меньшим числом узлов. Поэтому тот же жадный шаг можно повторять.</p></div>
+</section>
+
+<section class="lecture-section" id="implementation">
+<h2>Реализация на Python</h2>
+<p class="lead">Min-heap делает шаг «взять два минимума и вставить их сумму» эффективным. Счётчик нужен, чтобы Python не пытался сравнивать сами деревья при равных частотах.</p>
+<div class="code-explainer">
+<div class="annotated-code">
+<div class="code-row"><span class="line-no">1</span><code>import heapq</code></div>
+<div class="code-row"><span class="line-no">2</span><code>from itertools import count</code></div>
+<div class="code-row"><span class="line-no">3</span><code></code></div>
+<div class="code-row"><span class="line-no">4</span><code>def huffman_tree(freq):</code></div>
+<div class="code-row"><span class="line-no">5</span><code>    order = count()</code></div>
+<div class="code-row marked"><span class="line-no">6</span><code>    heap = [</code></div>
+<div class="code-row"><span class="line-no">7</span><code>        (f, next(order), symbol)</code></div>
+<div class="code-row"><span class="line-no">8</span><code>        for symbol, f in freq.items()</code></div>
+<div class="code-row"><span class="line-no">9</span><code>    ]</code></div>
+<div class="code-row"><span class="line-no">10</span><code>    heapq.heapify(heap)</code></div>
+<div class="code-row marked"><span class="line-no">11</span><code>    while len(heap) > 1:</code></div>
+<div class="code-row"><span class="line-no">12</span><code>        f1, _, left = heapq.heappop(heap)</code></div>
+<div class="code-row"><span class="line-no">13</span><code>        f2, _, right = heapq.heappop(heap)</code></div>
+<div class="code-row marked"><span class="line-no">14</span><code>        node = (left, right)</code></div>
+<div class="code-row marked"><span class="line-no">15</span><code>        heapq.heappush(</code></div>
+<div class="code-row"><span class="line-no">16</span><code>            heap, (f1 + f2, next(order), node)</code></div>
+<div class="code-row"><span class="line-no">17</span><code>        )</code></div>
+<div class="code-row"><span class="line-no">18</span><code>    return heap[0][2]</code></div>
+</div>
+<div class="code-notes"><h3>Главные операции</h3>
+<div class="code-note-item wide-note"><span>6–10</span><p>Создаём min-heap из частот всех листьев.</p></div>
+<div class="code-note-item wide-note"><span>11–17</span><p>Удаляем два дерева с минимальными частотами, делаем их детьми нового узла и возвращаем сумму в heap.</p></div>
+</div></div>
+<div class="complexity-strip"><div><span>Построение heap</span><b>O(n)</b><small>начальные узлы</small></div><div><span>Объединений</span><b>n − 1</b><small>по одному на внутренний узел</small></div><div><span>Одно объединение</span><b>O(log n)</b><small>операции heap</small></div><div><span>Итого</span><b>O(n log n)</b><small>построение дерева</small></div></div>
+</section>
+
+<section class="lecture-section" id="limits">
+<h2>Что именно оптимизирует Хаффман</h2>
+<div class="decision-grid">
+<article class="decision-card greedy-signal"><h3>Оптимум среди двоичных префиксных кодов</h3><p>При заданных частотах символов Хаффман минимизирует ожидаемую или суммарную длину кода именно в этой модели.</p></article>
+<article class="decision-card dp-signal"><h3>Но это не «абсолютно лучшее сжатие»</h3><p>Более сложные методы могут использовать блоки символов, контекст или вероятностную структуру, которой нет в простой модели независимых символов.</p></article>
+</div>
+</section>
+
+<section class="lecture-section" id="exercises">
+<h2>Задачи</h2>
+<div class="exercise-list">
+<article class="exercise"><div class="exercise-num">1</div><div><h3>Первое объединение</h3><p>Для частот 2, 3, 7 и 8 какие два узла Хаффман объединит первыми?</p><button class="reveal" data-reveal="hf-ru-1" type="button">Показать ответ</button><div class="answer-box" hidden id="hf-ru-1">Две минимальные частоты 2 и 3. Они превращаются в узел веса 5.</div></div></article>
+<article class="exercise"><div class="exercise-num">2</div><div><h3>Префиксное свойство</h3><p>Почему код одного листа двоичного дерева не может быть префиксом кода другого листа?</p><button class="reveal" data-reveal="hf-ru-2" type="button">Показать ответ</button><div class="answer-box" hidden id="hf-ru-2">Тогда один лист должен был бы лежать на пути от корня к другому листу. Но у листа нет детей, поэтому это невозможно.</div></div></article>
+<article class="exercise"><div class="exercise-num">3</div><div><h3>Взвешенная длина</h3><p>Символ встречается 20 раз и получает код длины 3. Каков его вклад в общую длину?</p><button class="reveal" data-reveal="hf-ru-3" type="button">Показать ответ</button><div class="answer-box" hidden id="hf-ru-3">20·3 = 60 бит.</div></div></article>
+</div>
+<div class="next-part"><h3>Следующий блок: жадные алгоритмы на графах</h3><p>Подсекция Choosing and Building закончена. Остались Minimum Spanning Trees и алгоритм Дейкстры.</p><a class="next-part-link" href="mst-ru.html">Минимальные остовные деревья →</a></div>
+</section></main>
+<footer class="lecture-footer"><div>Гайд по алгоритмам · presented by Аллан</div><div>© 2026 Allan Allemand</div></footer>
+<script src="../assets/js/lecture-core.js"></script><script>
+(() => {
+  "use strict";
+  const initial=[
+    {label:"A",freq:45},
+    {label:"B",freq:13},
+    {label:"C",freq:12},
+    {label:"D",freq:16},
+    {label:"E",freq:9},
+    {label:"F",freq:5}
+  ];
+  let heap=initial.slice().sort((a,b)=>a.freq-b.freq || a.label.localeCompare(b.label));
+  const states=[{heap:heap.slice(),pick:[],merged:null,done:false}];
+
+  while(heap.length>1){
+    const a=heap[0], b=heap[1];
+    states.push({heap:heap.slice(),pick:[a.label,b.label],merged:null,done:false});
+    heap=heap.slice(2);
+    const merged={label:"("+a.label+"+"+b.label+")",freq:a.freq+b.freq};
+    heap.push(merged);
+    heap.sort((x,y)=>x.freq-y.freq || x.label.localeCompare(y.label));
+    states.push({heap:heap.slice(),pick:[],merged:merged.label,done:false});
+  }
+  states.push({heap:heap.slice(),pick:[],merged:null,done:true});
+
+  let index=0;
+  const root=document.querySelector(".huffman-demo");
+  if(!root) return;
+
+  function render(){
+    const s=states[index];
+    const ru=document.documentElement.lang.toLowerCase().startsWith("ru");
+    const chips=root.querySelector("[data-role='heap']");
+    chips.replaceChildren();
+    s.heap.forEach(node=>{
+      const el=document.createElement("span");
+      let cls="heap-chip";
+      if(s.pick.includes(node.label)) cls+=" pick";
+      if(s.merged===node.label) cls+=" merged";
+      el.className=cls;
+      el.textContent=node.label+" : "+node.freq;
+      chips.appendChild(el);
+    });
+    const eq=root.querySelector("[data-role='merge']");
+    if(s.done){
+      eq.textContent=ru ? "Дерево построено: суммарная частота в корне равна 100." : "Tree complete: the root has total frequency 100.";
+    }else if(s.pick.length===2){
+      const a=s.heap.find(x=>x.label===s.pick[0]);
+      const b=s.heap.find(x=>x.label===s.pick[1]);
+      eq.textContent=ru
+        ? "Берём два минимума: "+a.label+" ("+a.freq+") и "+b.label+" ("+b.freq+")."
+        : "Take the two minima: "+a.label+" ("+a.freq+") and "+b.label+" ("+b.freq+").";
+    }else if(s.merged){
+      const m=s.heap.find(x=>x.label===s.merged);
+      eq.textContent=ru
+        ? "Объединяем их в новый узел "+m.label+" с частотой "+m.freq+"."
+        : "Merge them into "+m.label+" with frequency "+m.freq+".";
+    }else{
+      eq.textContent=ru ? "Начинаем с шести листьев в min-heap." : "Start with the six leaves in a min-heap.";
+    }
+    root.querySelector("[data-action='previous']").disabled=index===0;
+    root.querySelector("[data-action='next']").disabled=index===states.length-1;
+  }
+
+  root.addEventListener("click",e=>{
+    const b=e.target.closest("[data-action]");
+    if(!b) return;
+    if(b.dataset.action==="next") index=Math.min(index+1,states.length-1);
+    if(b.dataset.action==="previous") index=Math.max(index-1,0);
+    if(b.dataset.action==="reset") index=0;
+    render();
+  });
+  render();
+})();
+</script><script src="../assets/js/language-switch.js"></script></body></html>
