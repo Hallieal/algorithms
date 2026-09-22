@@ -8,7 +8,7 @@
 <body class="lecture-page"><div aria-hidden="true" class="progress-track"><div class="progress-bar" id="reading-progress"></div></div>
 <header class="topbar"><a class="brand" href="../"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name">Allan's Handbook of Algorithms</span></a>
 <nav aria-label="Primary navigation" class="topnav"><a href="./">Greedy overview</a><div aria-label="Language" class="language-switch"><span class="current">EN</span><span class="language-separator">·</span><a href="minimizing-lateness-ru.html">RU</a></div></nav></header>
-<aside aria-label="Section navigation" class="sidebar"><div class="sidebar-title">Chapter 9 · Section 6</div><a href="#problem">Problem</a><a href="#example">Example</a><a href="#same-looking">Same-looking schedule, new objective</a><a href="#model">Model the scheduling problem</a><a href="#algorithm">EDF algorithm</a><a href="#proof">Correctness</a><a href="#runtime">Choose once, then scan</a><a href="#implementation">Implementation</a><a href="#interview-recognition">Recognition checklist</a><a href="#boundaries">Model boundaries</a><a href="#exercises">Exercises</a></aside>
+<aside aria-label="Section navigation" class="sidebar"><div class="sidebar-title">Chapter 9 · Section 6</div><a href="#problem">Problem</a><a href="#example">Example</a><a href="#same-looking">Same-looking schedule, new objective</a><a href="#spt">Another scheduling objective: SPT</a><a href="#model">Model the scheduling problem</a><a href="#algorithm">EDF algorithm</a><a href="#proof">Correctness</a><a href="#runtime">Choose once, then scan</a><a href="#implementation">Implementation</a><a href="#interview-recognition">Recognition checklist</a><a href="#boundaries">Model boundaries</a><a href="#exercises">Exercises</a></aside>
 <main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Chapter 9 · Section 6</div><h1>Minimizing Maximum Lateness</h1><p class="chapter-topics">On one machine, minimizing the worst lateness has a crisp greedy rule: do the earliest deadline first.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-lateness.svg"/></div></section>
 <section class="lecture-section" id="problem">
 <h2>Put the most urgent deadline first</h2>
@@ -52,6 +52,22 @@
 </div>
 <div class="predict-card"><span class="predict-kicker">Try the rule before seeing it</span><h3>What should move to the front: the shortest job, the earliest-starting job, or the earliest deadline?</h3><p>Only one of these priorities is tied directly to the quantity we are minimizing. The proof section will show why that link is enough.</p></div>
 <div class="one-line"><strong>Transfer the question, not the old answer.</strong> Greedy algorithms are easy to misuse when two problems share the same story but optimize different quantities.</div>
+</section>
+
+<!-- karumanchi-round-lateness -->
+<section class="lecture-section" id="spt">
+<h2>Another correct greedy rule lives next door: Shortest Processing Time first</h2>
+<p class="lead">Karumanchi’s tape and customer-service examples are a useful contrast. If the objective is total waiting time rather than maximum lateness, sorting by processing time—not deadline—is the natural greedy rule.</p>
+<div class="objective-swap">
+<article><h3>Minimize total waiting time</h3><p>Serve shorter jobs first. A long job placed early delays every job behind it, so swapping an inversion with <span class="math">p_i&gt;p_j</span> reduces the waiting time contributed by that pair.</p></article>
+<div class="objective-arrow">≠</div>
+<article><h3>Minimize maximum lateness</h3><p>Serve earlier deadlines first. Processing time alone does not measure which job is most at risk of violating the worst deadline.</p></article>
+</div>
+<div class="two-column-block">
+<div class="text-panel"><h3>Tape analogy</h3><p>If songs are equally likely to be requested from a sequential tape, placing shorter songs earlier reduces how much material later requests must scan past.</p></div>
+<div class="proof-panel"><h3>Queue analogy</h3><p>If service times are known, serving customers in increasing service time minimizes total waiting time under the simple single-server model.</p></div>
+</div>
+<div class="one-line"><strong>Greedy keys are objective-specific.</strong> SPT and EDD/EDF are both exact greedy rules—but for different objective functions.</div>
 </section>
 
 <section class="lecture-section" id="model">
