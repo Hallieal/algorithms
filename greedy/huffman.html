@@ -114,12 +114,13 @@
 <!-- book-synthesis-huffman -->
 <section class="lecture-section" id="merge">
 <h2>The same greedy structure: optimal file merging</h2>
-<p class="lead">Huffman’s “merge the two smallest weights” rule is not only about characters. The identical priority-queue pattern minimizes total work when repeatedly merging files whose merge cost is the sum of their sizes.</p>
+<p class="lead">Huffman’s “merge the two smallest weights” rule also solves the optimal merge pattern problem: repeatedly merging files costs the sum of their sizes, so early merge choices get paid again later.</p>
 <div class="two-column-block">
-<div class="text-panel"><h3>A bad merge order</h3><p>Files have sizes 4, 50, 5, 6. If we keep merging the current result with the next file in that order, the costs are 54, then 59, then 65.</p><div class="formula-line">54 + 59 + 65 = 178</div></div>
-<div class="proof-panel"><h3>Two-smallest-first</h3><p>Merge 4+5=9, then 6+9=15, then 15+50=65.</p><div class="formula-line">9 + 15 + 65 = 89</div></div>
+<div class="text-panel"><h3>Contiguous merge order</h3><p>For file sizes <span class="math">{10,5,100,50,20,15}</span>, repeatedly merge the current result with the next file. The merge costs are</p><div class="formula-line">15 + 115 + 165 + 185 + 200 = 680</div><p>Feasible—but far from optimal.</p></div>
+<div class="proof-panel"><h3>Two-smallest-first</h3><p>Use a min-priority queue and repeatedly merge the two smallest current files:</p><div class="formula-line">15 + 30 + 50 + 100 + 200 = 395</div><p>The total work drops dramatically.</p></div>
 </div>
-<div class="bridge-note"><h3>Why this is Huffman in disguise</h3><p>Every time an item is merged, its weight is paid again at the next level. Small weights should therefore be pushed deeper into the merge tree. Huffman does exactly this for symbol frequencies.</p></div>
+<div class="bridge-note"><h3>Why this is Huffman in disguise</h3><p>Every leaf weight is paid once for each merge level above it. The total merge cost is therefore a weighted external path length—the same objective <span class="math">∑wᵢ·depthᵢ</span> minimized by a Huffman tree.</p></div>
+<div class="one-line"><strong>Same priority-queue skeleton, different story.</strong> Extract two minima → combine them → reinsert the sum → repeat.</div>
 </section>
 
 <section class="lecture-section" id="entropy">
