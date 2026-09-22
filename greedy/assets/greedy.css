@@ -278,3 +278,66 @@
 .greedy-rule-strip,.depth-illustration{grid-template-columns:1fr}.timeline-proof,.swap-proof{grid-template-columns:1fr}.timeline-proof-arrow,.swap-arrow{transform:rotate(90deg)}
 .room-row{grid-template-columns:54px 1fr}.lateness-sequence{display:grid;grid-template-columns:1fr 1fr}.swap-jobs{flex-wrap:wrap}
 }
+
+/* =========================================================
+   Greedy choosing and building lectures
+   ========================================================= */
+.density-table td:nth-child(n+2),.density-table th:nth-child(n+2){text-align:center}
+.density-pill{display:inline-block;min-width:54px;padding:5px 8px;border-radius:999px;background:#edf5df;color:#56742d;font-size:11px;font-weight:850}
+.knapsack-demo .visualizer-head,.huffman-demo .visualizer-head{margin-bottom:22px}
+.knapsack-demo-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:18px}
+.knapsack-item-list{display:grid;gap:10px}
+.knapsack-demo-item{display:grid;grid-template-columns:46px 1fr 88px;gap:12px;align-items:center;padding:13px 14px;border:1px solid var(--line);border-radius:13px;background:#faf9f6}
+.knapsack-demo-item.current{border-color:#e2c894;background:#fff8e9}
+.knapsack-demo-item.taken{border-color:#d7e5bd;background:#f8fbf2}
+.knapsack-demo-item b{font-size:13px}
+.knapsack-demo-item small{display:block;color:#7b848b;font-size:11px}
+.knapsack-fraction{text-align:right;color:#68727d;font-size:11px;font-weight:800}
+.knapsack-bag{padding:20px;border:1px solid var(--line);border-radius:16px;background:#fff}
+.bag-meter{position:relative;height:42px;margin:14px 0 12px;border:1px solid #d8d5ce;border-radius:12px;background:#f2f0eb;overflow:hidden}
+.bag-fill{height:100%;width:var(--fill);background:linear-gradient(90deg,#dfecc9,#bcd58c);transition:width .2s ease}
+.bag-label{position:absolute;inset:0;display:grid;place-items:center;font-size:12px;font-weight:850;color:#4f5f3d}
+.bag-stats{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.bag-stat{padding:13px;border-radius:11px;background:#f7f6f2}
+.bag-stat span,.bag-stat b{display:block}.bag-stat span{color:#899198;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.06em}.bag-stat b{margin-top:3px;font-size:19px}
+.exchange-density{display:grid;grid-template-columns:1fr 58px 1fr;gap:14px;align-items:center;margin-top:28px}
+.density-side{padding:22px;border:1px solid var(--line);border-radius:16px;background:#fff}
+.density-side h3{font-size:17px}
+.density-bars{display:grid;gap:9px;margin-top:15px}
+.density-bar{display:grid;grid-template-columns:92px 1fr 58px;gap:10px;align-items:center;font-size:11px}
+.density-track{height:14px;border-radius:999px;background:#ece9e3;overflow:hidden}.density-track span{display:block;height:100%;width:var(--fill);border-radius:999px;background:#8573d4}
+.density-side.good .density-track span{background:#739b2e}
+.density-arrow{text-align:center;font-size:28px;color:#9ba2a8}
+.boundary-example{display:grid;grid-template-columns:1fr 1fr;gap:15px;margin-top:28px}
+.boundary-card{padding:22px;border:1px solid var(--line);border-radius:17px;background:#fff}
+.boundary-card.good{border-color:#d7e5bd;background:#f8fbf2}.boundary-card.bad{border-color:#eadada;background:#fff8f8}
+.boundary-card h3{font-size:17px}.boundary-card p{margin-bottom:0;color:var(--muted);font-size:13px}
+.huffman-frequency-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin-top:25px}
+.huffman-symbol{padding:16px 8px;border:1px solid var(--line);border-radius:14px;background:#fff;text-align:center}
+.huffman-symbol b,.huffman-symbol span{display:block}.huffman-symbol b{font-size:22px}.huffman-symbol span{margin-top:3px;color:#778088;font-size:11px}
+.prefix-example{display:grid;grid-template-columns:1fr 1fr;gap:15px;margin-top:28px}
+.prefix-card{padding:21px;border:1px solid var(--line);border-radius:16px;background:#fff}
+.prefix-card.bad{border-color:#eadada;background:#fff8f8}.prefix-card.good{border-color:#d7e5bd;background:#f8fbf2}
+.prefix-code-row{display:flex;justify-content:space-between;gap:15px;padding:7px 0;border-bottom:1px solid #eeece7;font-size:12px}.prefix-code-row:last-child{border-bottom:0}.prefix-code-row code{font-weight:850}
+.heap-chips{display:flex;gap:9px;flex-wrap:wrap;min-height:48px;margin-top:14px}
+.heap-chip{padding:10px 12px;border:1px solid #dce2d1;border-radius:999px;background:#f6f9f0;color:#597136;font-size:12px;font-weight:820}
+.heap-chip.pick{border-color:#e3c28e;background:#fff4df;color:#8a612a;transform:translateY(-2px)}
+.heap-chip.merged{border-color:#d7d1ea;background:#f3effa;color:#6a5b8b}
+.merge-equation{min-height:38px;margin:18px 0 4px;text-align:center;color:#626c73;font-size:14px;font-weight:760}
+.huffman-tree-simple{display:grid;gap:10px;margin-top:26px}
+.huffman-level{display:flex;justify-content:center;gap:22px;flex-wrap:wrap}
+.tree-node{min-width:72px;padding:9px 12px;border:1px solid #d9d4e8;border-radius:12px;background:#f6f2fb;text-align:center;color:#685a88;font-size:11px;font-weight:800}
+.tree-node.root{background:#eee8f7;font-size:13px}.tree-node.leaf{border-color:#d9e5c5;background:#f6faef;color:#55752d}
+.codeword-table td:nth-child(2),.codeword-table td:nth-child(3),.codeword-table th:nth-child(2),.codeword-table th:nth-child(3){text-align:center}
+.bit-summary{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:25px}
+.bit-card{padding:22px;border:1px solid var(--line);border-radius:16px;background:#fff}.bit-card.good{border-color:#d7e5bd;background:#f8fbf2}
+.bit-card span,.bit-card b,.bit-card small{display:block}.bit-card span{color:#8a9298;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.07em}.bit-card b{margin:5px 0;font-size:27px}.bit-card small{color:#68727d}
+.huffman-proof-steps{display:grid;grid-template-columns:repeat(3,1fr);gap:13px;margin-top:28px}
+.huffman-proof-card{padding:21px;border:1px solid var(--line);border-radius:16px;background:#fff}.huffman-proof-card h3{font-size:16px}.huffman-proof-card p{margin:0;color:var(--muted);font-size:12.5px}
+@media(max-width:900px){.huffman-frequency-grid{grid-template-columns:repeat(3,1fr)}.huffman-proof-steps{grid-template-columns:1fr}}
+@media(max-width:760px){
+.knapsack-demo-grid,.boundary-example,.prefix-example,.bit-summary{grid-template-columns:1fr}
+.knapsack-demo-item{grid-template-columns:40px 1fr}.knapsack-fraction{grid-column:2;text-align:left}
+.exchange-density{grid-template-columns:1fr}.density-arrow{transform:rotate(90deg)}
+.huffman-frequency-grid{grid-template-columns:repeat(2,1fr)}
+}
