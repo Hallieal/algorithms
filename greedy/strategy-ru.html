@@ -14,6 +14,7 @@
 <link href="../assets/images/favicon.png" rel="icon" sizes="64x64" type="image/png"/>
 <link href="../assets/images/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180"/>
 <link href="strategy.html" hreflang="en" rel="alternate"/><link href="strategy-ru.html" hreflang="ru" rel="alternate"/>
+<noscript><style>.answer-box[hidden]{display:block!important}.reveal{display:none!important}</style></noscript>
 </head>
 <body class="lecture-page">
 <div aria-hidden="true" class="progress-track"><div class="progress-bar" id="reading-progress"></div></div>
@@ -134,6 +135,7 @@
 <tr><td>Одна сортировка + проход</td><td>Обычно O(n log n)</td><td>Расписания, интервалы, обработка рёбер в стиле Краскала</td></tr>
 <tr><td>Очередь с приоритетом</td><td>Часто O(n log n), а на графах O((n + m) log n)</td><td>Хаффман, Прим, Дейкстра</td></tr>
 <tr><td>Простой проход</td><td>Иногда O(n)</td><td>Если кандидаты уже приходят в нужном порядке</td></tr>
+<tr><td>Меняющиеся приоритеты / повторные обновления</td><td>O(n²) при повторном поиске; часто O((n+u) log n) с heap при u обновлениях</td><td>Задачи, где приоритет кандидата меняется после каждого выбора</td></tr>
 </tbody></table></div>
 <p class="caption">Точная оценка всегда зависит от конкретной задачи и структур данных. Жадный алгоритм вполне может быть медленным, если вычисление локального выбора дорого.</p>
 </section>
@@ -142,7 +144,7 @@
 <h2>Задачи</h2>
 <div class="exercise-list">
 <article class="exercise"><div class="exercise-num">1</div><div><h3>Разберите жадные компоненты</h3><p>В примере с 10 минутами назовите правило приоритета, условие допустимости и необратимое решение.</p><button aria-expanded="false" class="reveal" data-reveal="gs-ru-1" type="button">Показать ответ</button><div class="answer-box" hidden id="gs-ru-1">Приоритет: самая короткая оставшаяся задача. Допустимость: задача должна помещаться в оставшееся время. Фиксация: выбранная задача остаётся в расписании.</div></div></article>
-<article class="exercise"><div class="exercise-num">2</div><div><h3>Сломайте правило монет</h3><p>Для монет 1, 5 и 6 и суммы 10 что выдаст правило «бери крупнейшую монету»? Каков оптимум?</p><button aria-expanded="false" class="reveal" data-reveal="gs-ru-2" type="button">Показать ответ</button><div class="answer-box" hidden id="gs-ru-2">Жадный алгоритм даст 6 + 1 + 1 + 1 + 1 — пять монет. Оптимум: 5 + 5 — две монеты.</div></div></article>
+<article class="exercise"><div class="exercise-num">2</div><div><h3>Сломайте правило монет</h3><p>Для монет 1, 5 и 6 и суммы 10 что выдаст правило «бери крупнейшую монету»? Каков оптимум? Затем сформулируйте, что означает термин <em>canonical coin system</em>.</p><button aria-expanded="false" class="reveal" data-reveal="gs-ru-2" type="button">Показать ответ</button><div class="answer-box" hidden id="gs-ru-2">Greedy даст 6 + 1 + 1 + 1 + 1 — пять монет. Оптимум: 5 + 5 — две монеты. Система монет называется канонической, если правило «каждый раз брать крупнейшую подходящую монету» даёт минимальное число монет для любой суммы.</div></div></article>
 <article class="exercise"><div class="exercise-num">3</div><div><h3>Допустимость — не оптимальность</h3><p>Почему проверка допустимости после каждого выбора не доказывает оптимальность итогового решения?</p><button aria-expanded="false" class="reveal" data-reveal="gs-ru-3" type="button">Показать ответ</button><div class="answer-box" hidden id="gs-ru-3">Допустимость говорит только о том, что частичное решение не нарушает ограничения. Она ничего не говорит о том, сохраняет ли выбор возможность прийти к глобально лучшему ответу.</div></div></article>
 <article class="exercise"><div class="exercise-num">4</div><div><h3>Сложность</h3><p>Если жадный алгоритм сортирует n кандидатов, а затем проверяет каждого за O(1), какова общая сложность?</p><button aria-expanded="false" class="reveal" data-reveal="gs-ru-4" type="button">Показать ответ</button><div class="answer-box" hidden id="gs-ru-4">O(n log n): сортировка доминирует над последующим линейным проходом O(n).</div></div></article>
 </div>
