@@ -8,7 +8,7 @@
 <body class="lecture-page"><div aria-hidden="true" class="progress-track"><div class="progress-bar" id="reading-progress"></div></div>
 <header class="topbar"><a class="brand" href="../"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name">Allan's Handbook of Algorithms</span></a>
 <nav aria-label="Primary navigation" class="topnav"><a href="./">Greedy overview</a><div aria-label="Language" class="language-switch"><span class="current">EN</span><span class="language-separator">·</span><a href="interval-scheduling-ru.html">RU</a></div></nav></header>
-<aside aria-label="Section navigation" class="sidebar"><div class="sidebar-title">Chapter 9 · Section 4</div><a href="#problem">Problem</a><a href="#choices">Choosing the rule</a><a href="#classroom-walk">Classroom walkthrough</a><a href="#frontier">Why earliest finish dominates</a><a href="#algorithm">Algorithm</a><a href="#proof">Correctness</a><a href="#implementation">Implementation</a><a href="#recognition">Recognition checklist</a><a href="#variants">Variants</a><a href="#exercises">Exercises</a></aside>
+<aside aria-label="Section navigation" class="sidebar"><div class="sidebar-title">Chapter 9 · Section 4</div><a href="#problem">Problem</a><a href="#choices">Choosing the rule</a><a href="#classroom-walk">Classroom walkthrough</a><a href="#frontier">Why earliest finish dominates</a><a href="#algorithm">Algorithm</a><a href="#proof">Correctness</a><a href="#runtime">Where the O(n log n) comes from</a><a href="#implementation">Implementation</a><a href="#recognition">Recognition checklist</a><a href="#variants">Variants</a><a href="#exercises">Exercises</a></aside>
 <main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Chapter 9 · Section 4</div><h1>Interval Scheduling</h1><p class="chapter-topics">Choose as many non-overlapping intervals as possible. The right greedy move is simple: finish early and leave room for what comes next.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-interval-scheduling.svg"/></div></section>
 <section class="lecture-section" id="problem">
 <h2>Choose as many intervals as possible</h2>
@@ -94,6 +94,18 @@
 </div>
 <div class="proof-goal"><h3>Conclusion</h3><p>There is an optimal solution whose first interval is exactly the greedy choice <span class="math">g</span>. After choosing it, the remaining problem consists only of intervals that start after <span class="math">f(g)</span>.</p></div>
 <div class="compact-proof"><h3>The induction hidden inside “repeat”</h3><p>Let <span class="math">P(k)</span> mean: some optimal solution agrees with greedy on its first <span class="math">k</span> chosen intervals. The exchange above proves <span class="math">P(1)</span>. If <span class="math">P(k)</span> holds, remove those first <span class="math">k</span> intervals and every interval that conflicts with them. What remains is another interval-scheduling instance, so the same exchange proves <span class="math">P(k+1)</span>. Therefore greedy can be matched by an optimal solution at every step.</p></div>
+</section>
+
+<!-- common-sense-round-interval -->
+<section class="lecture-section" id="runtime">
+<h2>The greedy decision is linear; finding the order is the expensive part</h2>
+<p class="lead">A useful optimization habit is to separate the mathematical rule from the work needed to make that rule cheap to execute.</p>
+<div class="runtime-ladder">
+<article class="runtime-step"><span>Naive selection</span><h3>Rescan for the earliest finish every time</h3><p>After each accepted interval, scan all remaining candidates to find the next compatible one with minimum finish time. In the worst case this repeats linear work many times: <span class="math">O(n²)</span>.</p></article>
+<article class="runtime-step best"><span>Preprocess once</span><h3>Sort by finish time</h3><p>Pay <span class="math">O(n log n)</span> once, then scan left-to-right and accept compatible intervals in <span class="math">O(n)</span>.</p></article>
+<article class="runtime-step"><span>Already ordered input</span><h3>Skip the sorting entirely</h3><p>If intervals arrive already sorted by finish time, the greedy algorithm itself is just one pass: <span class="math">O(n)</span>.</p></article>
+</div>
+<div class="optimization-gap"><b>Optimization lesson</b><p>Do not attribute the whole runtime to “greedy”. The proof says which order is safe; the implementation decides how much work it takes to expose that order.</p></div>
 </section>
 
 <section class="lecture-section" id="implementation">
