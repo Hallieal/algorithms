@@ -279,7 +279,6 @@
 <article class="exercise"><div class="exercise-num">3</div><div><h3>Недостижимая вершина</h3><p>Какое расстояние останется у вершины, до которой нельзя добраться из источника?</p><button class="reveal" data-reveal="dj-ru-3" type="button">Показать ответ</button><div class="answer-box" hidden id="dj-ru-3">Бесконечность.</div></div></article>
 <article class="exercise"><div class="exercise-num">4</div><div><h3>Устаревшие записи</h3><p>Почему в heap может лежать несколько записей для одной вершины? До какого размера может вырасти ленивый heap в худшем случае?</p><button class="reveal" data-reveal="dj-ru-4" type="button">Показать ответ</button><div class="answer-box" hidden id="dj-ru-4">Каждая успешная релаксация добавляет новую пару, потому что в heapq нет decrease-key. Старые пары остаются и пропускаются. Успешных улучшений и push может быть O(E), поэтому heap способен вырасти до O(E); отсюда точная оценка этой реализации O((V+E) log E).</div></div></article>
 </div>
-<div class="next-part"><h3>Остался последний вопрос: что объединяет эти примеры?</h3><p>У MST действительно есть матроидная структура, другие страницы используют exchange arguments без матроида, а иногда greedy ценен даже тогда, когда даёт лишь приближение.</p><a class="next-part-link" href="greedy-beyond-ru.html">Матроиды и дальше →</a></div>
 </section></main>
 <footer class="lecture-footer"><div>Гайд по алгоритмам · presented by Аллан</div><div>© 2026 Allan Allemand</div></footer>
 <script src="../assets/js/lecture-core.js"></script><script>
