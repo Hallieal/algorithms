@@ -8,7 +8,7 @@
 <body class="lecture-page"><div aria-hidden="true" class="progress-track"><div class="progress-bar" id="reading-progress"></div></div>
 <header class="topbar"><a class="brand" href="../"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name">Allan's Handbook of Algorithms</span></a>
 <nav aria-label="Primary navigation" class="topnav"><a href="./">Greedy overview</a><div aria-label="Language" class="language-switch"><span class="current">EN</span><span class="language-separator">·</span><a href="fractional-knapsack-ru.html">RU</a></div></nav></header>
-<aside aria-label="Section navigation" class="sidebar"><div class="sidebar-title">Chapter 9 · Section 7</div><a href="#problem">Problem</a><a href="#whole-vs-fractional">Whole vs fractional</a><a href="#density">Value density</a><a href="#algorithm">Algorithm</a><a href="#proof">Correctness</a><a href="#lp-view">Why only one fraction?</a><a href="#divisibility">One assumption changes everything</a><a href="#boundary">0/1 boundary</a><a href="#implementation-choice">Sort or heap?</a><a href="#implementation">Implementation</a><a href="#exercises">Exercises</a></aside>
+<aside aria-label="Section navigation" class="sidebar"><div class="sidebar-title">Chapter 9 · Section 7</div><a href="#problem">Problem</a><a href="#whole-vs-fractional">Whole vs fractional</a><a href="#density">Value density</a><a href="#algorithm">Algorithm</a><a href="#proof">Correctness</a><a href="#lp-view">Why only one fraction?</a><a href="#divisibility">One assumption changes everything</a><a href="#boundary">0/1 boundary</a><a href="#runtime">Avoid repeated density search</a><a href="#implementation-choice">Sort or heap?</a><a href="#implementation">Implementation</a><a href="#exercises">Exercises</a></aside>
 <main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Chapter 9 · Section 7</div><h1>Fractional Knapsack</h1><p class="chapter-topics">When items are divisible, every unit of capacity should go to the item that pays the most per unit of weight.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-fractional-knapsack.svg"/></div></section>
 <section class="lecture-section" id="problem">
 <h2>Spend capacity where it pays most</h2>
@@ -122,6 +122,18 @@
 </div>
 <div class="greedy-caution"><strong>Lesson.</strong> A tiny modeling change can destroy the greedy-choice property. Never transfer a greedy proof from one problem variant to another without checking its key assumption.</div>
 <div class="bridge-note"><h3>Greedy is still useful around 0/1 Knapsack</h3><p>The fractional optimum is an <strong>upper bound</strong> on the 0/1 optimum: allowing fractions can only help. That bound is useful in branch-and-bound. For exact 0/1 Knapsack, a standard DP over capacity is pseudo-polynomial. A plain density-greedy choice by itself has no constant-factor guarantee; approximation needs an additional idea, such as also comparing against the best single item.</p></div>
+</section>
+
+<!-- common-sense-round-fractional -->
+<section class="lecture-section" id="runtime">
+<h2>The rule is “take max density”; do not search for it from scratch every time</h2>
+<p class="lead">Once the proof says the next unit of capacity should come from the highest remaining density, implementation becomes an optimization problem of its own.</p>
+<div class="runtime-ladder">
+<article class="runtime-step"><span>Naive</span><h3>Scan all remaining items for maximum density</h3><p>Repeating a linear maximum search after every item can cost <span class="math">O(n²)</span>.</p></article>
+<article class="runtime-step best"><span>Sort once</span><h3>Order all densities up front</h3><p>Compute ratios in <span class="math">O(n)</span>, sort in <span class="math">O(n log n)</span>, then consume the ordered list in one pass.</p></article>
+<article class="runtime-step"><span>Heap alternative</span><h3>Expose only the next maximum</h3><p>If capacity fills after only <span class="math">c</span> extracted items, a max-heap can build in <span class="math">O(n)</span> and perform <span class="math">c</span> extractions in <span class="math">O(c log n)</span>.</p></article>
+</div>
+<div class="one-line"><strong>The proof specifies an order relation, not a sorting algorithm.</strong> Once “largest density next” is justified, choose the data structure that supports the operations your input actually needs.</div>
 </section>
 
 <section class="lecture-section" id="implementation-choice">
