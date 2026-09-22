@@ -8,7 +8,7 @@
 <body class="lecture-page"><div aria-hidden="true" class="progress-track"><div class="progress-bar" id="reading-progress"></div></div>
 <header class="topbar"><a class="brand" href="../"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name">Allan's Handbook of Algorithms</span></a>
 <nav aria-label="Primary navigation" class="topnav"><a href="./">Greedy overview</a><div aria-label="Language" class="language-switch"><span class="current">EN</span><span class="language-separator">·</span><a href="fractional-knapsack-ru.html">RU</a></div></nav></header>
-<aside aria-label="Section navigation" class="sidebar"><div class="sidebar-title">Chapter 9 · Section 7</div><a href="#problem">Problem</a><a href="#density">Value density</a><a href="#algorithm">Algorithm</a><a href="#proof">Correctness</a><a href="#lp-view">Why only one fraction?</a><a href="#divisibility">One assumption changes everything</a><a href="#boundary">0/1 boundary</a><a href="#implementation-choice">Sort or heap?</a><a href="#implementation">Implementation</a><a href="#exercises">Exercises</a></aside>
+<aside aria-label="Section navigation" class="sidebar"><div class="sidebar-title">Chapter 9 · Section 7</div><a href="#problem">Problem</a><a href="#whole-vs-fractional">Whole vs fractional</a><a href="#density">Value density</a><a href="#algorithm">Algorithm</a><a href="#proof">Correctness</a><a href="#lp-view">Why only one fraction?</a><a href="#divisibility">One assumption changes everything</a><a href="#boundary">0/1 boundary</a><a href="#implementation-choice">Sort or heap?</a><a href="#implementation">Implementation</a><a href="#exercises">Exercises</a></aside>
 <main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Chapter 9 · Section 7</div><h1>Fractional Knapsack</h1><p class="chapter-topics">When items are divisible, every unit of capacity should go to the item that pays the most per unit of weight.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-fractional-knapsack.svg"/></div></section>
 <section class="lecture-section" id="problem">
 <h2>Spend capacity where it pays most</h2>
@@ -19,6 +19,22 @@
 </div>
 <div class="greedy-definition"><span>Fractional Knapsack</span><p>Choose fractions <span class="math">0 ≤ xᵢ ≤ 1</span> to maximize <span class="math">∑ xᵢvᵢ</span> subject to <span class="math">∑ xᵢwᵢ ≤ W</span>.</p></div>
 <div class="source-note"><h3>Standard assumptions</h3><p>The mathematical version normally assumes <span class="math">wᵢ &gt; 0</span> and <span class="math">vᵢ ≥ 0</span>. The implementation below is slightly more defensive: negative weights are rejected, nonpositive-value items are skipped, and positive-value zero-weight items are taken for free.</p></div>
+</section>
+
+<!-- grokking-round-fractional -->
+<section class="lecture-section" id="whole-vs-fractional">
+<h2>The knapsack story changes completely when items become divisible</h2>
+<p class="lead">A useful way to understand Fractional Knapsack is to start from the famous greedy failure in 0/1 Knapsack and change exactly one assumption.</p>
+<div class="mini-example-grid">
+<article class="mini-example bad"><h3>Whole items only</h3><p>In the classic thief example, grabbing the most expensive single item gives value 3000, while a different pair is worth 3500. Once the first whole item is taken, its capacity cannot be reclaimed in smaller pieces.</p></article>
+<article class="mini-example good"><h3>Fractions allowed</h3><p>Now capacity can be spent continuously. Instead of asking “which whole object is best?”, ask “where should the next unit of weight go?” The answer is the remaining item with highest value density.</p></article>
+</div>
+<div class="bit-baseline">
+<div class="bit-side"><h3>0/1 decision</h3><p>Take item <span class="math">i</span> or do not take it: <span class="math">xᵢ∈{0,1}</span>. One early choice may block a better combination.</p></div>
+<div class="bit-arrow">→</div>
+<div class="bit-side good"><h3>Fractional decision</h3><p>Take any fraction <span class="math">0≤xᵢ≤1</span>. Equal units of weight can be exchanged between items, which is exactly what makes the density proof work.</p></div>
+</div>
+<div class="predict-card"><span class="predict-kicker">Key modeling lesson</span><h3>The greedy rule did not magically improve. The feasible set changed.</h3><p>Divisibility is the assumption that turns a plausible density heuristic into an exact greedy algorithm.</p></div>
 </section>
 
 <section class="lecture-section" id="density">
