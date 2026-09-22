@@ -1,57 +1,224 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1" name="viewport"/>
-<meta content="Two classic greedy algorithms for connecting every vertex with minimum total edge weight." name="description"/>
-<meta content="Minimum Spanning Trees | Allan's Handbook of Algorithms" property="og:title"/>
-<meta content="Two classic greedy algorithms for connecting every vertex with minimum total edge weight." property="og:description"/>
-<meta content="article" property="og:type"/>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="Build a minimum-weight spanning tree with the cut property, Kruskal’s algorithm, Prim’s algorithm, DSU, and priority queues." name="description"/><meta content="Minimum Spanning Trees | Allan's Handbook of Algorithms" property="og:title"/><meta content="Build a minimum-weight spanning tree with the cut property, Kruskal’s algorithm, Prim’s algorithm, DSU, and priority queues." property="og:description"/><meta content="article" property="og:type"/>
 <title>Minimum Spanning Trees | Allan's Handbook of Algorithms</title>
-<link href="../assets/css/styles.css" rel="stylesheet"/>
-<link href="assets/greedy.css" rel="stylesheet"/>
-<link href="../assets/images/favicon-32.png" rel="icon" sizes="32x32" type="image/png"/>
-<link href="../assets/images/favicon.png" rel="icon" sizes="64x64" type="image/png"/>
-<link href="../assets/images/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180"/>
-<link href="mst.html" hreflang="en" rel="alternate"/><link href="mst-ru.html" hreflang="ru" rel="alternate"/>
-</head>
-<body class="lecture-page">
-<header class="topbar">
-<a class="brand" href="../"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name">Allan's Handbook of Algorithms</span></a>
-<nav aria-label="Primary navigation" class="topnav">
-<a href="./">Greedy overview</a>
-<div aria-label="Language" class="language-switch"><span class="current">EN</span><span class="language-separator">·</span><a href="mst-ru.html">RU</a></div>
-</nav>
-</header>
-<aside aria-label="Section navigation" class="sidebar">
-<div class="sidebar-title">Chapter 9 · Section 9</div>
-<a href="#coming-soon">Coming soon</a>
-</aside>
-<main class="lecture">
-<section class="lecture-hero greedy-placeholder-hero">
-<div>
-<div class="chapter-label">Chapter 9 · Section 9</div>
-<h1>Minimum Spanning Trees</h1>
-<p class="chapter-topics">Two classic greedy algorithms for connecting every vertex with minimum total edge weight.</p>
-</div>
-<div class="greedy-hero-icon"><img alt="" src="assets/greedy-mst.svg"/></div>
+<link href="../assets/css/styles.css" rel="stylesheet"/><link href="assets/greedy.css" rel="stylesheet"/>
+<link href="../assets/images/favicon-32.png" rel="icon" sizes="32x32" type="image/png"/><link href="../assets/images/favicon.png" rel="icon" sizes="64x64" type="image/png"/><link href="../assets/images/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180"/>
+<link href="mst.html" hreflang="en" rel="alternate"/><link href="mst-ru.html" hreflang="ru" rel="alternate"/></head>
+<body class="lecture-page"><div aria-hidden="true" class="progress-track"><div class="progress-bar" id="reading-progress"></div></div>
+<header class="topbar"><a class="brand" href="../"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name">Allan's Handbook of Algorithms</span></a>
+<nav aria-label="Primary navigation" class="topnav"><a href="./">Greedy overview</a><div aria-label="Language" class="language-switch"><span class="current">EN</span><span class="language-separator">·</span><a href="mst-ru.html">RU</a></div></nav></header>
+<aside aria-label="Section navigation" class="sidebar"><div class="sidebar-title">Chapter 9 · Section 9</div><a href="#problem">Problem</a><a href="#cut">Cut property</a><a href="#kruskal">Kruskal</a><a href="#prim">Prim</a><a href="#implementation">Implementations</a><a href="#complexity">Complexity</a><a href="#properties">Useful facts</a><a href="#exercises">Exercises</a></aside>
+<main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Chapter 9 · Section 9</div><h1>Minimum Spanning Trees</h1><p class="chapter-topics">Build a minimum-weight spanning tree with the cut property, Kruskal’s algorithm, Prim’s algorithm, DSU, and priority queues.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-mst.svg"/></div></section>
+<section class="lecture-section" id="problem">
+<h2>The problem</h2>
+<p class="lead">Given a connected, undirected, weighted graph, we want to connect every vertex while paying as little total edge weight as possible.</p>
+<div class="greedy-definition"><span>Minimum Spanning Tree</span><p>A spanning tree contains every vertex, is connected, has no cycles, and therefore uses exactly <span class="math">|V|−1</span> edges. An MST is a spanning tree of minimum total edge weight.</p></div>
+<div class="greedy-caution"><strong>MST is not a shortest-path tree.</strong> It minimizes the sum of all selected edge weights, not the distance from one source to every vertex.</div>
 </section>
-<section class="lecture-section" id="coming-soon">
-<div class="coming-soon-panel">
-<span class="coming-soon-kicker">In development</span>
-<h2>This page will be filled soon</h2>
-<p>We will develop the minimum spanning tree problem, prove the cut property, and derive both Kruskal’s and Prim’s algorithms. The implementations will connect greedy reasoning with disjoint-set union and heaps.</p>
+
+<section class="lecture-section" id="cut">
+<h2>The cut property</h2>
+<p class="lead">The central greedy fact behind both Kruskal and Prim is about cuts. A cut partitions the vertices into two nonempty sets <span class="math">S</span> and <span class="math">V\S</span>. An edge crosses the cut if its endpoints lie on different sides.</p>
+<div class="cut-diagram">
+<div class="cut-side"><h3>Side S</h3><p>Some vertices and the partial tree already fixed on this side.</p></div>
+<div class="cut-bridge">lightest edge<br/>across the cut</div>
+<div class="cut-side"><h3>Side V \ S</h3><p>The remaining vertices on the other side of the partition.</p></div>
 </div>
-<div class="placeholder-navigation">
-<a href="huffman.html">← Huffman Coding</a>
-<a href="dijkstra.html">Dijkstra’s Algorithm →</a>
+<div class="proof-goal"><h3>Cut property</h3><p>If a cut respects the edges already chosen, then a minimum-weight edge crossing that cut is safe: there exists an MST containing all previously chosen edges plus that edge.</p></div>
+<div class="subsection"><h3>Why it is true</h3><p>Take an MST <span class="math">T</span> consistent with the current choices. If the light edge <span class="math">e</span> is already in <span class="math">T</span>, we are done. Otherwise add <span class="math">e</span>; this creates a cycle. That cycle must contain another edge <span class="math">f</span> crossing the same cut. Because <span class="math">e</span> is the lightest crossing edge, <span class="math">w(e) ≤ w(f)</span>. Remove <span class="math">f</span>. The tree remains spanning and its weight does not increase.</p></div>
+</section>
+
+<section class="lecture-section" id="kruskal">
+<h2>Kruskal’s algorithm</h2>
+<p class="lead">Kruskal looks at edges globally from lightest to heaviest. It adds an edge exactly when that edge connects two currently different components.</p>
+<div class="visualizer kruskal-demo">
+<div class="visualizer-head"><div><h3>Run Kruskal step by step</h3><p>The edge list is sorted by weight. Green edges enter the forest; faded edges are rejected because they close a cycle.</p></div><div class="step-nav-controls"><button class="previous-step" data-action="previous" type="button">← Previous</button><button class="primary-step" data-action="next" type="button">Next →</button></div></div>
+<div class="edge-list" data-role="edges"></div>
+<div class="coin-panel-label">Current components</div><div class="component-chips" data-role="components"></div>
+<div class="greedy-job-result">Current forest weight: <strong data-role="weight">0</strong></div>
+<div class="step-caption"></div><div class="secondary-controls"><button data-action="reset" type="button">Reset</button></div>
+</div>
+<div class="subsection"><h3>Why the next accepted edge is safe</h3><p>Immediately before Kruskal accepts an edge <span class="math">(u,v)</span>, vertices <span class="math">u</span> and <span class="math">v</span> lie in different components. Consider the cut formed by one of those components versus the rest. The accepted edge is a lightest available edge crossing a cut that respects the current forest, so the cut property applies.</p></div>
+</section>
+
+<section class="lecture-section" id="prim">
+<h2>Prim’s algorithm</h2>
+<p class="lead">Prim grows one tree rather than many components. Start at any vertex. At every step, add the minimum-weight edge that leaves the current tree and reaches an unvisited vertex.</p>
+<div class="algo-compare-grid">
+<article class="algo-compare-card kruskal"><h3>Kruskal</h3><p>Greedy object: globally cheapest edge that joins two different components.</p><div class="method-state-row"><span class="method-state active">forest</span><span class="method-state">sort edges</span><span class="method-state">DSU</span></div></article>
+<article class="algo-compare-card prim"><h3>Prim</h3><p>Greedy object: cheapest edge crossing from the current tree to an outside vertex.</p><div class="method-state-row"><span class="method-state active">one tree</span><span class="method-state">heap</span><span class="method-state">frontier</span></div></article>
+</div>
+<p>Prim’s correctness is almost a direct reading of the cut property: take the cut “vertices already in the tree” versus “vertices not yet in the tree”. The cheapest crossing edge is safe.</p>
+</section>
+
+<section class="lecture-section" id="implementation">
+<h2>Python implementations</h2>
+<div class="dual-code">
+<div class="dual-code-block"><h3>Kruskal + DSU</h3><pre><code>def kruskal(n, edges):
+    parent = list(range(n))
+    rank = [0] * n
+
+    def find(x):
+        while parent[x] != x:
+            parent[x] = parent[parent[x]]
+            x = parent[x]
+        return x
+
+    def union(a, b):
+        a, b = find(a), find(b)
+        if a == b:
+            return False
+        if rank[a] < rank[b]:
+            a, b = b, a
+        parent[b] = a
+        if rank[a] == rank[b]:
+            rank[a] += 1
+        return True
+
+    mst = []
+    for w, u, v in sorted(edges):
+        if union(u, v):
+            mst.append((u, v, w))
+    return mst</code></pre></div>
+<div class="dual-code-block"><h3>Prim + heap</h3><pre><code>import heapq
+
+def prim(graph, start=0):
+    seen = {start}
+    heap = []
+
+    for v, w in graph[start]:
+        heapq.heappush(heap, (w, start, v))
+
+    mst = []
+    while heap and len(seen) < len(graph):
+        w, u, v = heapq.heappop(heap)
+        if v in seen:
+            continue
+
+        seen.add(v)
+        mst.append((u, v, w))
+
+        for to, weight in graph[v]:
+            if to not in seen:
+                heapq.heappush(heap, (weight, v, to))
+
+    return mst</code></pre></div>
 </div>
 </section>
-</main>
-<footer class="lecture-footer">
-<div>Allan's Handbook of Algorithms</div>
-<div>© 2026 Allan Allemand</div>
-</footer>
-<script src="../assets/js/language-switch.js"></script>
-</body>
-</html>
+
+<section class="lecture-section" id="complexity">
+<h2>Complexity and when to use which</h2>
+<div class="table-wrap"><table class="graph-code-table"><thead><tr><th>Algorithm</th><th>Main structure</th><th>Typical complexity</th><th>Often convenient when</th></tr></thead><tbody>
+<tr><td>Kruskal</td><td>Sort edges + DSU</td><td>O(E log E)</td><td>You already have an edge list; graph may be sparse</td></tr>
+<tr><td>Prim with binary heap</td><td>Adjacency list + heap</td><td>O(E log V)</td><td>You naturally store neighbors by vertex</td></tr>
+</tbody></table></div>
+<p class="caption">Since <span class="math">E ≤ V²</span>, the logarithmic factors are closely related. In practice, representation and surrounding code often matter more than the asymptotic distinction.</p>
+</section>
+
+<section class="lecture-section" id="properties">
+<h2>Useful MST facts</h2>
+<div class="decision-grid">
+<article class="decision-card greedy-signal"><h3>Distinct weights imply uniqueness</h3><p>If every edge weight is different, the graph has a unique MST.</p></article>
+<article class="decision-card greedy-signal"><h3>Ties may give several MSTs</h3><p>Different safe choices of equal weight can lead to different spanning trees with the same minimum total weight.</p></article>
+<article class="decision-card dp-signal"><h3>Disconnected graph</h3><p>There is no spanning tree. Kruskal instead produces a minimum spanning forest, one tree per connected component.</p></article>
+<article class="decision-card dp-signal"><h3>Negative edge weights are fine</h3><p>Unlike Dijkstra, MST algorithms have no problem with negative weights. They simply prefer them when they are safe.</p></article>
+</div>
+</section>
+
+<section class="lecture-section" id="exercises">
+<h2>Exercises</h2>
+<div class="exercise-list">
+<article class="exercise"><div class="exercise-num">1</div><div><h3>Tree edge count</h3><p>How many edges must a spanning tree on 17 vertices contain?</p><button class="reveal" data-reveal="mst-en-1" type="button">Show answer</button><div class="answer-box" hidden id="mst-en-1">Exactly 16 edges.</div></div></article>
+<article class="exercise"><div class="exercise-num">2</div><div><h3>Kruskal decision</h3><p>Why does Kruskal reject an edge whose endpoints are already in the same DSU component?</p><button class="reveal" data-reveal="mst-en-2" type="button">Show answer</button><div class="answer-box" hidden id="mst-en-2">There is already a path between the endpoints. Adding the edge would create a cycle, so it cannot belong to the current forest.</div></div></article>
+<article class="exercise"><div class="exercise-num">3</div><div><h3>Cut property</h3><p>If several minimum-weight edges cross the same cut, must every MST contain all of them?</p><button class="reveal" data-reveal="mst-en-3" type="button">Show answer</button><div class="answer-box" hidden id="mst-en-3">No. Each such light edge is safe in the sense that some MST can contain it, but different MSTs may choose different tied edges.</div></div></article>
+</div>
+<div class="next-part"><h3>Next: Dijkstra’s Algorithm</h3><p>MST greedily finalizes edges. Dijkstra instead greedily finalizes shortest-path distances to vertices.</p><a class="next-part-link" href="dijkstra.html">Dijkstra’s Algorithm →</a></div>
+</section></main>
+<footer class="lecture-footer"><div>Allan's Handbook of Algorithms</div><div>© 2026 Allan Allemand</div></footer>
+<script src="../assets/js/lecture-core.js"></script><script>
+(() => {
+  "use strict";
+  const vertices=["A","B","C","D","E"];
+  const edges=[
+    {u:"A",v:"B",w:1},{u:"B",v:"C",w:2},{u:"A",v:"C",w:3},
+    {u:"B",v:"D",w:4},{u:"C",v:"D",w:5},{u:"C",v:"E",w:6},
+    {u:"D",v:"E",w:7},{u:"B",v:"E",w:8}
+  ];
+  const parent={}; vertices.forEach(v=>parent[v]=v);
+  function find(x){ while(parent[x]!==x){ parent[x]=parent[parent[x]]; x=parent[x]; } return x; }
+  function union(a,b){ a=find(a); b=find(b); if(a!==b) parent[b]=a; }
+  function components(){
+    const groups={};
+    vertices.forEach(v=>{ const r=find(v); (groups[r]??=[]).push(v); });
+    return Object.values(groups).map(g=>g.slice().sort());
+  }
+  const states=[{i:-1,accepted:[],rejected:[],components:components(),weight:0,phase:"start"}];
+  const accepted=[], rejected=[];
+  let total=0;
+  edges.forEach((e,i)=>{
+    states.push({i:i,accepted:accepted.slice(),rejected:rejected.slice(),components:components(),weight:total,phase:"consider"});
+    if(find(e.u)!==find(e.v)){
+      union(e.u,e.v); accepted.push(i); total+=e.w;
+      states.push({i:i,accepted:accepted.slice(),rejected:rejected.slice(),components:components(),weight:total,phase:"accept"});
+    }else{
+      rejected.push(i);
+      states.push({i:i,accepted:accepted.slice(),rejected:rejected.slice(),components:components(),weight:total,phase:"reject"});
+    }
+  });
+  states.push({i:edges.length,accepted:accepted.slice(),rejected:rejected.slice(),components:components(),weight:total,phase:"done"});
+
+  const root=document.querySelector(".kruskal-demo");
+  if(!root) return;
+  let index=0;
+  function render(){
+    const s=states[index];
+    const ru=document.documentElement.lang.toLowerCase().startsWith("ru");
+    const list=root.querySelector("[data-role='edges']");
+    list.replaceChildren();
+    edges.forEach((e,i)=>{
+      const row=document.createElement("div");
+      let cls="edge-row";
+      if(s.accepted.includes(i)) cls+=" accepted";
+      if(s.rejected.includes(i)) cls+=" rejected";
+      if(i===s.i && s.phase==="consider") cls+=" current";
+      row.className=cls;
+      const name=document.createElement("b"); name.textContent=e.u+"—"+e.v;
+      const w=document.createElement("div"); w.className="edge-weight"; w.textContent=e.w;
+      const reason=document.createElement("div"); reason.className="edge-reason";
+      if(s.accepted.includes(i)) reason.textContent=ru?"добавлено":"accepted";
+      else if(s.rejected.includes(i)) reason.textContent=ru?"цикл — пропуск":"cycle — skip";
+      else if(i===s.i) reason.textContent=ru?"рассматриваем":"consider";
+      row.append(name,w,reason); list.appendChild(row);
+    });
+    const comps=root.querySelector("[data-role='components']");
+    comps.replaceChildren();
+    s.components.forEach(g=>{
+      const el=document.createElement("span");
+      el.className="component-chip"+(g.length>1?" joined":"");
+      el.textContent="{"+g.join(", ")+"}";
+      comps.appendChild(el);
+    });
+    root.querySelector("[data-role='weight']").textContent=s.weight;
+    const caption=root.querySelector(".step-caption");
+    if(s.phase==="start") caption.textContent=ru?"Сортируем рёбра по весу и начинаем с пяти отдельных компонент.":"Sort edges by weight and start with five separate components.";
+    else if(s.phase==="done") caption.textContent=ru?"Остов готов: выбрано 4 ребра, суммарный вес "+s.weight+".":"The spanning tree is complete: 4 edges, total weight "+s.weight+".";
+    else {
+      const e=edges[s.i];
+      if(s.phase==="consider") caption.textContent=ru?"Рассматриваем самое дешёвое оставшееся ребро "+e.u+"—"+e.v+" веса "+e.w+".":"Consider the cheapest remaining edge "+e.u+"—"+e.v+" of weight "+e.w+".";
+      if(s.phase==="accept") caption.textContent=ru?"Концы лежат в разных компонентах — добавляем ребро.":"Its endpoints are in different components, so accept it.";
+      if(s.phase==="reject") caption.textContent=ru?"Концы уже соединены — ребро создало бы цикл, поэтому пропускаем.":"Its endpoints are already connected; adding it would create a cycle, so skip it.";
+    }
+    root.querySelector("[data-action='previous']").disabled=index===0;
+    root.querySelector("[data-action='next']").disabled=index===states.length-1;
+  }
+  root.addEventListener("click",e=>{
+    const b=e.target.closest("[data-action]");
+    if(!b) return;
+    if(b.dataset.action==="next") index=Math.min(index+1,states.length-1);
+    if(b.dataset.action==="previous") index=Math.max(index-1,0);
+    if(b.dataset.action==="reset") index=0;
+    render();
+  });
+  render();
+})();
+</script><script src="../assets/js/language-switch.js"></script></body></html>
