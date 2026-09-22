@@ -109,3 +109,99 @@
     font-size: 23px;
   }
 }
+
+
+/* =========================================================
+   Greedy foundations lectures
+   ========================================================= */
+
+.greedy-lecture-hero{display:grid;grid-template-columns:minmax(0,1fr) 116px;gap:34px;align-items:start}
+.greedy-lecture-hero .chapter-topics{max-width:760px}
+.greedy-process-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:30px 0}
+.greedy-process-card{min-height:180px;padding:20px;border:1px solid var(--line);border-radius:17px;background:#fff}
+.greedy-process-num{width:34px;height:34px;display:grid;place-items:center;margin-bottom:18px;border-radius:50%;background:var(--ink);color:#fff;font-family:Georgia,serif;font-size:15px}
+.greedy-process-card h3{margin-bottom:7px;font-size:17px}
+.greedy-process-card p{margin:0;color:var(--muted);font-size:13px;line-height:1.55}
+.greedy-definition{margin-top:30px;padding:26px 28px;border:1px solid #dfe5d4;border-left:4px solid var(--green);border-radius:17px;background:#f8faf3}
+.greedy-definition span{display:inline-block;margin-bottom:9px;color:var(--green);font-size:10px;font-weight:850;letter-spacing:.09em;text-transform:uppercase}
+.greedy-definition p{margin:0;color:#4f5b64;font-size:17px;line-height:1.65}
+.greedy-anatomy-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:30px}
+.greedy-anatomy-card{padding:22px;border:1px solid var(--line);border-radius:17px;background:#fff}
+.greedy-anatomy-icon{width:42px;height:42px;display:grid;place-items:center;margin-bottom:16px;border-radius:12px;background:#edf3df;color:#5f7d2f;font-weight:850}
+.greedy-anatomy-card h3{font-size:17px}
+.greedy-anatomy-card p{margin:0;color:var(--muted);font-size:13px;line-height:1.55}
+.greedy-job-example{margin-top:32px;padding:26px;border:1px solid var(--line);border-radius:20px;background:#fff}
+.greedy-job-head{display:flex;justify-content:space-between;gap:24px;align-items:end;margin-bottom:22px}
+.greedy-job-head p{max-width:460px;margin:0;color:var(--muted);font-size:13px}
+.job-row{display:grid;grid-template-columns:120px 1fr;gap:16px;align-items:center;margin-top:11px}
+.job-row>span{color:#7c858c;font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase}
+.job-chips{display:flex;gap:8px;flex-wrap:wrap}
+.job-chip{min-width:52px;padding:10px 12px;border:1px solid #e5e2dc;border-radius:10px;background:#f7f6f2;text-align:center;font-size:13px;font-weight:800}
+.job-chip.chosen{border-color:#d7e5bd;background:#edf5df;color:#55752d}
+.job-chip.rejected{opacity:.5;text-decoration:line-through}
+.greedy-job-result{margin-top:20px;padding:15px 17px;border-radius:12px;background:#f5f7ef;color:#56616a;font-size:13px}
+.coin-greedy-demo .visualizer-head{margin-bottom:22px}
+.coin-preset-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+.coin-preset-row button{appearance:none;padding:8px 11px;border:1px solid #d7d9d8;border-radius:9px;background:#fafafa;color:var(--ink);font:inherit;font-size:12px;font-weight:730;cursor:pointer}
+.coin-preset-row button.active{border-color:var(--ink);background:var(--ink);color:#fff}
+.coin-demo-grid{display:grid;grid-template-columns:.85fr 1.15fr;gap:16px}
+.coin-panel{padding:20px;border:1px solid var(--line);border-radius:15px;background:#faf9f6}
+.coin-panel-label{margin-bottom:11px;color:#899198;font-size:10px;font-weight:830;letter-spacing:.08em;text-transform:uppercase}
+.coin-target{margin-bottom:14px;font-size:28px;font-weight:850;letter-spacing:-.03em}
+.coin-bank,.coin-picks{display:flex;gap:8px;flex-wrap:wrap;min-height:44px;margin-top:10px}
+.coin-chip{width:42px;height:42px;display:grid;place-items:center;border:2px solid #c8d6ad;border-radius:50%;background:#eff5e5;color:#58732f;font-size:12px;font-weight:850}
+.coin-chip.next{border-color:#c58d47;background:#faead6;color:#8c5f25;transform:translateY(-2px)}
+.coin-empty{color:#91989d;font-size:13px}
+.coin-result-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px}
+.coin-result-card{padding:16px;border:1px solid var(--line);border-radius:13px;background:#fff}
+.coin-result-card span,.coin-result-card b,.coin-result-card small{display:block}
+.coin-result-card span{color:#878f95;font-size:10px;font-weight:800;letter-spacing:.07em;text-transform:uppercase}
+.coin-result-card b{margin:5px 0 2px;font-size:18px}
+.coin-result-card small{color:#69737b;font-size:12px}
+.coin-result-card.fail{border-color:#ebd4d4;background:#fff7f7}
+.coin-result-card.pass{border-color:#dce7c8;background:#f8fbf2}
+.greedy-properties{display:grid;grid-template-columns:1fr 1fr;gap:15px;margin-top:28px}
+.greedy-property{padding:24px;border:1px solid var(--line);border-radius:18px;background:#fff}
+.greedy-property h3{margin-bottom:8px}
+.greedy-property p{margin:0;color:var(--muted);font-size:14px}
+.greedy-caution{margin-top:18px;padding:18px 20px;border:1px solid #ead9c6;border-left:4px solid var(--orange);border-radius:14px;background:#fffaf3;color:#646b70;font-size:13.5px}
+.greedy-runtime-table td:first-child{width:28%;font-weight:750}
+.proof-goal{margin-top:30px;padding:26px;border:1px solid #ddd8ec;border-left:4px solid var(--purple);border-radius:18px;background:#faf8fd}
+.proof-goal h3{margin-bottom:8px}.proof-goal p{margin:0;color:#626b73}
+.proof-pattern-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:15px;margin-top:30px}
+.proof-pattern-card{min-height:215px;padding:23px;border:1px solid var(--line);border-radius:18px;background:#fff}
+.proof-pattern-mark{width:40px;height:40px;display:grid;place-items:center;margin-bottom:17px;border-radius:12px;background:#eee9f7;color:#6f5aa4;font-weight:850}
+.proof-pattern-card h3{font-size:18px}.proof-pattern-card p{margin:0;color:var(--muted);font-size:13.5px}
+.exchange-demo{display:grid;grid-template-columns:1fr 58px 1fr;gap:14px;align-items:center;margin:28px 0}
+.exchange-side{padding:20px;border:1px solid var(--line);border-radius:15px;background:#fff}
+.exchange-side>span{display:block;margin-bottom:10px;color:#899198;font-size:10px;font-weight:820;letter-spacing:.07em;text-transform:uppercase}
+.exchange-set{display:flex;gap:8px;flex-wrap:wrap}.exchange-item{padding:9px 11px;border-radius:9px;background:#f0edf7;color:#675c82;font-size:12px;font-weight:800}
+.exchange-item.greedy{background:#edf5df;color:#56742d}.exchange-arrow{text-align:center;color:#9aa1a6;font-size:30px}
+.proof-checklist{display:grid;gap:10px;margin-top:24px}
+.proof-check{display:grid;grid-template-columns:34px 1fr;gap:13px;align-items:start;padding:16px 18px;border:1px solid var(--line);border-radius:13px;background:#fff}
+.proof-check>span{width:30px;height:30px;display:grid;place-items:center;border-radius:50%;background:var(--ink);color:#fff;font-size:12px;font-weight:850}
+.proof-check p{margin:2px 0 0;color:#626c74;font-size:13.5px}
+.proof-mistakes{display:grid;grid-template-columns:repeat(3,1fr);gap:13px;margin-top:25px}
+.proof-mistake{padding:20px;border:1px solid #eadcdc;border-radius:15px;background:#fff9f9}
+.proof-mistake h3{margin-bottom:7px;color:#7b4d4d;font-size:16px}.proof-mistake p{margin:0;color:#73797d;font-size:12.5px}
+.method-compare{display:grid;grid-template-columns:1fr 56px 1fr;gap:14px;align-items:stretch;margin:30px 0}
+.method-lane{padding:24px;border:1px solid var(--line);border-radius:18px;background:#fff}.method-lane.greedy-lane{border-top:4px solid var(--green)}.method-lane.dp-lane{border-top:4px solid var(--purple)}
+.method-lane h3{margin-bottom:10px}.method-lane p{color:var(--muted);font-size:13.5px}
+.method-state-row{display:flex;gap:7px;flex-wrap:wrap;margin-top:17px}.method-state{min-width:42px;padding:8px 9px;border-radius:9px;background:#f4f2ed;color:#626b72;text-align:center;font-size:11px;font-weight:800}
+.greedy-lane .method-state.active{background:#edf5df;color:#55752d}.dp-lane .method-state.active{background:#eee9f7;color:#6b58a3}
+.method-vs{display:grid;place-items:center;color:#9ca3a8;font-size:12px;font-weight:850}
+.knapsack-example{margin-top:28px;padding:24px;border:1px solid var(--line);border-radius:18px;background:#fff}
+.knapsack-items{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:18px}
+.knapsack-item{padding:17px;border:1px solid var(--line);border-radius:13px;background:#faf9f6}.knapsack-item span,.knapsack-item b,.knapsack-item small{display:block}
+.knapsack-item span{color:#899198;font-size:10px;font-weight:820;letter-spacing:.07em;text-transform:uppercase}.knapsack-item b{margin:5px 0 3px;font-size:17px}.knapsack-item small{color:#6d767d;font-size:12px}
+.knapsack-outcome{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px}.knapsack-outcome>div{padding:16px;border-radius:13px;background:#f5f3ee;color:#5f6870;font-size:13px}.knapsack-outcome .better{background:#edf5df;color:#506a2c}
+.decision-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-top:28px}.decision-card{padding:21px;border:1px solid var(--line);border-radius:16px;background:#fff}.decision-card h3{margin-bottom:7px;font-size:17px}.decision-card p{margin:0;color:var(--muted);font-size:13.5px}
+.decision-card.greedy-signal{border-left:4px solid var(--green)}.decision-card.dp-signal{border-left:4px solid var(--purple)}
+.dual-code{display:grid;grid-template-columns:1fr 1fr;gap:15px;margin-top:28px}.dual-code-block{overflow:hidden;border:1px solid var(--line);border-radius:17px;background:#fff}
+.dual-code-block h3{margin:0;padding:16px 18px;border-bottom:1px solid var(--line);font-size:16px}.dual-code-block pre{margin:0;min-height:300px;padding:18px;overflow-x:auto;background:#20262d;color:#e9edf1;font:12px/1.65 "SFMono-Regular",Consolas,monospace}
+@media(max-width:900px){.greedy-process-grid{grid-template-columns:1fr 1fr}.greedy-anatomy-grid{grid-template-columns:1fr}.proof-mistakes{grid-template-columns:1fr}}
+@media(max-width:760px){
+.greedy-lecture-hero{grid-template-columns:1fr;gap:14px}.greedy-lecture-hero .greedy-hero-icon{order:-1;width:82px;height:82px;margin-top:0}.greedy-lecture-hero .greedy-hero-icon img{width:82px;height:82px}
+.greedy-process-grid,.greedy-properties,.proof-pattern-grid,.decision-grid,.dual-code,.coin-demo-grid,.coin-result-grid,.knapsack-items,.knapsack-outcome{grid-template-columns:1fr}
+.greedy-job-head{align-items:flex-start;flex-direction:column}.job-row{grid-template-columns:1fr;gap:6px}.exchange-demo,.method-compare{grid-template-columns:1fr}.exchange-arrow{transform:rotate(90deg)}.method-vs{min-height:28px}
+}
