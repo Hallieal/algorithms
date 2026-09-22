@@ -14,6 +14,7 @@
 <link href="../assets/images/favicon.png" rel="icon" sizes="64x64" type="image/png"/>
 <link href="../assets/images/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180"/>
 <link href="strategy.html" hreflang="en" rel="alternate"/><link href="strategy-ru.html" hreflang="ru" rel="alternate"/>
+<noscript><style>.answer-box[hidden]{display:block!important}.reveal{display:none!important}</style></noscript>
 </head>
 <body class="lecture-page">
 <div aria-hidden="true" class="progress-track"><div class="progress-bar" id="reading-progress"></div></div>
@@ -74,7 +75,8 @@
 <div class="job-row"><span>Greedy order</span><div class="job-chips"><div class="job-chip chosen">2 min</div><div class="job-chip chosen">3 min</div><div class="job-chip chosen">4 min</div><div class="job-chip rejected">7 min</div></div></div>
 <div class="greedy-job-result">The first three jobs use 2 + 3 + 4 = 9 minutes, so we complete 3 jobs. The remaining 7-minute job no longer fits.</div>
 </div>
-<div class="subsection"><h3>Why this local choice is promising</h3><p>If a solution contains a longer job while a shorter unchosen job exists, replacing the longer job by the shorter one cannot increase the total time. This exchange idea is exactly the kind of reasoning we need to justify a greedy rule. The next page develops such proofs systematically.</p></div>
+<div class="subsection"><h3>Why this local choice is promising</h3><p>If a solution contains a longer job while a shorter unchosen job exists, replacing the longer job by the shorter one cannot increase the total time. This exchange idea is exactly the kind of reasoning we need to justify a greedy rule.</p></div>
+<div class="compact-proof"><h3>A complete proof in three lines</h3><p>Let <span class="math">d₁ ≤ d₂ ≤ ··· ≤ dₙ</span>, and suppose greedy fits exactly the first <span class="math">k</span> jobs. Then <span class="math">d₁+···+dₖ ≤ T</span> but <span class="math">d₁+···+dₖ₊₁ &gt; T</span>. Any set of <span class="math">k+1</span> jobs has total duration at least that of the <span class="math">k+1</span> shortest jobs, so no solution can complete <span class="math">k+1</span> jobs.</p></div>
 </section>
 
 <section class="lecture-section" id="failure">
@@ -94,6 +96,7 @@
 </div>
 </div>
 <p>For amount 6 with coins 1, 3, and 4, the greedy rule chooses 4 + 1 + 1: three coins. But 3 + 3 uses only two coins. The local rule is clear and feasible, yet it is not globally optimal.</p>
+<div class="mini-example-grid"><article class="mini-example bad"><h3>Another failure: maximum matching</h3><p>On the path 1—2—3—4, a rule that happens to choose the middle edge (2,3) first gets a matching of size 1.</p></article><article class="mini-example good"><h3>The optimum</h3><p>Choosing (1,2) and (3,4) gives size 2. The failure is not specific to coins: irreversible local choices can destroy future compatibility.</p></article></div>
 </section>
 
 <section class="lecture-section" id="properties">
@@ -134,6 +137,7 @@
 <tr><td>Sort once + scan</td><td>Usually O(n log n)</td><td>Scheduling, interval selection, Kruskal-style processing</td></tr>
 <tr><td>Priority queue</td><td>Often O(n log n), or O((n + m) log n) on graphs</td><td>Huffman coding, Prim, Dijkstra</td></tr>
 <tr><td>Simple scan</td><td>Sometimes O(n)</td><td>When candidates already arrive in the required order</td></tr>
+<tr><td>Dynamic priorities / repeated updates</td><td>O(n²) with repeated scans; often O((n+u) log n) with a heap for u updates</td><td>Greedy rules whose priorities change after each choice</td></tr>
 </tbody></table></div>
 <p class="caption">The exact bound always depends on the problem and data structures. A greedy algorithm can even be slow if its local choice is expensive to compute.</p>
 </section>
@@ -142,7 +146,7 @@
 <h2>Exercises</h2>
 <div class="exercise-list">
 <article class="exercise"><div class="exercise-num">1</div><div><h3>Identify the greedy components</h3><p>In the 10-minute job example, what are the priority rule, feasibility condition, and commitment?</p><button aria-expanded="false" class="reveal" data-reveal="gs-en-1" type="button">Show answer</button><div class="answer-box" hidden id="gs-en-1">Priority: shortest remaining job first. Feasibility: the job must fit in the remaining time. Commitment: once a job is selected, it stays in the schedule.</div></div></article>
-<article class="exercise"><div class="exercise-num">2</div><div><h3>Break the coin heuristic</h3><p>For coins 1, 5, and 6 and amount 10, what does “take the largest coin” return? What is optimal?</p><button aria-expanded="false" class="reveal" data-reveal="gs-en-2" type="button">Show answer</button><div class="answer-box" hidden id="gs-en-2">Greedy gives 6 + 1 + 1 + 1 + 1, five coins. The optimum is 5 + 5, two coins.</div></div></article>
+<article class="exercise"><div class="exercise-num">2</div><div><h3>Break the coin heuristic</h3><p>For coins 1, 5, and 6 and amount 10, what does “take the largest coin” return? What is optimal? Then define what it would mean for a coin system to be <em>canonical</em>.</p><button aria-expanded="false" class="reveal" data-reveal="gs-en-2" type="button">Show answer</button><div class="answer-box" hidden id="gs-en-2">Greedy gives 6 + 1 + 1 + 1 + 1, five coins. The optimum is 5 + 5, two coins. A coin system is called canonical when the largest-coin-first greedy algorithm gives a minimum-cardinality change for every target amount.</div></div></article>
 <article class="exercise"><div class="exercise-num">3</div><div><h3>Feasible is not optimal</h3><p>Why does checking feasibility after each choice not prove that the final solution is optimal?</p><button aria-expanded="false" class="reveal" data-reveal="gs-en-3" type="button">Show answer</button><div class="answer-box" hidden id="gs-en-3">Feasibility only says the partial solution obeys the constraints. It does not say that the choice preserves the possibility of reaching a globally best solution.</div></div></article>
 <article class="exercise"><div class="exercise-num">4</div><div><h3>Complexity</h3><p>If a greedy algorithm sorts n candidates and then checks each candidate in O(1), what is its total running time?</p><button aria-expanded="false" class="reveal" data-reveal="gs-en-4" type="button">Show answer</button><div class="answer-box" hidden id="gs-en-4">O(n log n): sorting dominates the subsequent O(n) scan.</div></div></article>
 </div>
