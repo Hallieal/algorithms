@@ -279,7 +279,6 @@
 <article class="exercise"><div class="exercise-num">3</div><div><h3>Unreachable vertex</h3><p>What distance does Dijkstra return for a vertex that cannot be reached from the source?</p><button class="reveal" data-reveal="dj-en-3" type="button">Show answer</button><div class="answer-box" hidden id="dj-en-3">Its distance remains infinity.</div></div></article>
 <article class="exercise"><div class="exercise-num">4</div><div><h3>Why skip stale entries?</h3><p>Why can the heap contain several entries for the same vertex? In the worst case, how large can the lazy heap become?</p><button class="reveal" data-reveal="dj-en-4" type="button">Show answer</button><div class="answer-box" hidden id="dj-en-4">Each successful relaxation pushes a new pair because heapq has no decrease-key. Older pairs remain and are ignored when popped. There can be O(E) successful improvements/pushes, so the lazy heap may contain O(E) entries; this is why the precise bound for this implementation is O((V+E) log E).</div></div></article>
 </div>
-<div class="next-part"><h3>One last question: what unifies these examples?</h3><p>MST has a genuine matroid structure, several other pages use exchange arguments without being matroids, and greedy can also be valuable when it only approximates the optimum.</p><a class="next-part-link" href="greedy-beyond.html">Matroids and Beyond →</a></div>
 </section></main>
 <footer class="lecture-footer"><div>Allan's Handbook of Algorithms</div><div>© 2026 Allan Allemand</div></footer>
 <script src="../assets/js/lecture-core.js"></script><script>
