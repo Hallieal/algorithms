@@ -18,6 +18,7 @@
 <article class="concept-cell cost"><span>Сложность</span><b>O(n log n)</b><p>Посчитать отношения, отсортировать, пройти один раз.</p></article>
 </div>
 <div class="greedy-definition"><span>Дробный рюкзак</span><p>Нужно выбрать доли <span class="math">0 ≤ xᵢ ≤ 1</span>, максимизируя <span class="math">∑ xᵢvᵢ</span> при ограничении <span class="math">∑ xᵢwᵢ ≤ W</span>.</p></div>
+<div class="formula-line">maximize&nbsp; ∑ xᵢvᵢ &nbsp;&nbsp; subject to &nbsp;&nbsp; ∑ xᵢwᵢ ≤ W, &nbsp; 0 ≤ xᵢ ≤ 1</div>
 <div class="source-note"><h3>Стандартные предположения</h3><p>В математической постановке обычно предполагают <span class="math">wᵢ &gt; 0</span> и <span class="math">vᵢ ≥ 0</span>. Код ниже чуть устойчивее: отрицательный вес запрещён, предметы с неположительной ценностью пропускаются, а положительная ценность при нулевом весе берётся бесплатно.</p></div>
 </section>
 
@@ -66,6 +67,7 @@
 <section class="lecture-section" id="density">
 <h2>Плотность ценности</h2>
 <p class="lead">Для item i определим density как v_i / w_i. Это value, получаемый с единицы capacity, и именно по этой величине сортируются делимые items.</p>
+<div class="formula-line">ρᵢ = vᵢ / wᵢ</div>
 <div class="table-wrap"><table class="density-table"><thead><tr><th>Предмет</th><th>Вес</th><th>Ценность</th><th>Ценность / вес</th></tr></thead><tbody>
 <tr><td>A</td><td>10</td><td>60</td><td><span class="density-pill">6.0</span></td></tr>
 <tr><td>B</td><td>20</td><td>100</td><td><span class="density-pill">5.0</span></td></tr>
