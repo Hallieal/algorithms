@@ -9,7 +9,7 @@
 <body class="lecture-page"><div aria-hidden="true" class="progress-track"><div class="progress-bar" id="reading-progress"></div></div>
 <header class="topbar"><a class="brand" href="../"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name">Allan's Handbook of Algorithms</span></a>
 <nav aria-label="Primary navigation" class="topnav"><a href="./">Greedy overview</a><div aria-label="Language" class="language-switch"><span class="current">EN</span><span class="language-separator">·</span><a href="proofs-ru.html">RU</a></div></nav></header>
-<aside aria-label="Section navigation" class="sidebar"><div class="sidebar-title">Chapter 9 · Section 2</div><a href="#goal">What must be proved?</a><a href="#patterns">Proof patterns</a><a href="#counterexamples">Counterexample laboratory</a><a href="#exchange">Exchange arguments</a><a href="#worked">Worked proof</a><a href="#ahead">Staying ahead</a><a href="#induction">Induction</a><a href="#template">Proof template</a><a href="#mistakes">Common mistakes</a><a href="#exercises">Exercises</a></aside>
+<aside aria-label="Section navigation" class="sidebar"><div class="sidebar-title">Chapter 9 · Section 2</div><a href="#goal">What must be proved?</a><a href="#patterns">Proof patterns</a><a href="#counterexamples">Counterexample laboratory</a><a href="#exchange">Exchange arguments</a><a href="#worked">Worked proof</a><a href="#ahead">Staying ahead</a><a href="#induction">Induction</a><a href="#template">Proof template</a><a href="#intuition-proof">Intuition vs proof</a><a href="#mistakes">Common mistakes</a><a href="#exercises">Exercises</a></aside>
 <main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Chapter 9 · Section 2</div><h1>Proving Greedy Correctness</h1><p class="chapter-topics">A greedy proof has one job: show that the next local choice can be fixed without losing optimality.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-proofs.svg"/></div></section>
 <section class="lecture-section" id="goal">
 <h2>What a greedy proof must show</h2>
@@ -105,6 +105,17 @@
 <article><b>4. Reduce and repeat</b><p>After fixing that choice, prove the remaining instance has the same form. Finish by induction or an invariant.</p></article>
 </div>
 <div class="practice-note"><h3>Stress-test assumptions before writing QED</h3><p>Check ties, zero values, equal endpoints, disconnected inputs, empty inputs, negative weights, and whether the objective changed from cardinality to weight. Many “proofs” silently use one of these assumptions.</p></div>
+</section>
+
+<!-- grokking-pass-proofs -->
+<section class="lecture-section" id="intuition-proof">
+<h2>Simple enough to feel obvious is exactly when you need a proof</h2>
+<p class="lead">Two greedy rules can look equally natural and have completely different status. A visual example can build intuition; only the structural argument tells us whether the commitment is safe on every input.</p>
+<div class="path-choice">
+<article class="good"><h3>Earliest finish</h3><p>For maximum-cardinality interval scheduling, finishing earlier leaves every option that a later finish would leave. The intuition can be turned into an exchange proof.</p></article>
+<article class="bad"><h3>Take the best-looking whole item</h3><p>For 0/1 Knapsack, the first attractive item may consume capacity needed by a better pair. The rule feels just as natural, but a tiny counterexample destroys it.</p></article>
+</div>
+<div class="one-line"><strong>Pedagogical rule:</strong> use examples to discover the invariant, then prove the invariant. Never use the example itself as the proof.</div>
 </section>
 
 <section class="lecture-section" id="mistakes">
