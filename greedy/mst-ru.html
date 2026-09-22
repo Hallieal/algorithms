@@ -18,6 +18,7 @@
 <article class="concept-cell cost"><span>Сложность</span><b>O(E log E) или O(E log V)</b><p>DSU для Краскала, heap для Прима.</p></article>
 </div>
 <div class="greedy-definition"><span>Минимальное остовное дерево</span><p>Остовное дерево содержит все вершины, связно, не имеет циклов и поэтому содержит ровно <span class="math">|V|−1</span> рёбер. MST — остовное дерево минимального суммарного веса.</p></div>
+<div class="formula-line">w(T) = ∑<sub>e∈T</sub> w(e) &nbsp;&nbsp; → &nbsp;&nbsp; min</div>
 <div class="greedy-caution"><strong>MST — не дерево кратчайших путей.</strong> Оно минимизирует сумму весов всех выбранных рёбер, а не расстояние от одной исходной вершины до остальных.</div>
 </section>
 
@@ -48,6 +49,7 @@
 <section class="lecture-section" id="cut">
 <h2>Свойство разреза</h2>
 <p class="lead">Для любого cut минимальное по весу edge, пересекающее cut, безопасно для некоторого MST. На этом основаны и Kruskal, и Prim.</p>
+<div class="formula-line">e* = arg min<sub>e crosses the cut</sub> w(e)</div>
 <div class="cut-diagram">
 <div class="cut-side"><h3>Сторона S</h3><p>Часть вершин и уже зафиксированные безопасные рёбра.</p></div>
 <div class="cut-bridge">самое лёгкое ребро<br/>через разрез</div>
