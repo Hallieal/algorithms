@@ -9,10 +9,10 @@
 <header class="topbar"><a class="brand" href="../index-ru.html"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name ru-brand-name"><span class="ru-brand-lines"><span>Гайд по алгоритмам</span><span class="ru-brand-presented">presented by Аллан</span></span></span></a>
 <nav aria-label="Основная навигация" class="topnav"><a href="index-ru.html">Жадные алгоритмы</a><div aria-label="Язык" class="language-switch"><a href="huffman.html">EN</a><span class="language-separator">·</span><span class="current">RU</span></div></nav></header>
 <aside aria-label="Навигация по разделу" class="sidebar"><div class="sidebar-title">Глава 9 · Раздел 8</div><a href="#problem">Постановка</a><a href="#bits-first">Зачем variable-length codes?</a><a href="#prefix">Префиксные коды</a><a href="#decode">Декодирование по дереву</a><a href="#algorithm">Алгоритм</a><a href="#tree">Дерево и коды</a><a href="#merge">Optimal merge pattern</a><a href="#entropy">Энтропия</a><a href="#proof">Корректность</a><a href="#heap-pattern">Heap recognition pattern</a><a href="#heap-optimization">Почему heap всё меняет</a><a href="#implementation">Реализация</a><a href="#static-adaptive">Static code и adaptive compression</a><a href="#limits">Что оптимизируется</a><a href="#exercises">Задачи</a></aside>
-<main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Глава 9 · Раздел 8</div><h1>Кодирование Хаффмана</h1><p class="chapter-topics">Частые символы должны иметь короткие коды. Хаффман добивается этого, каждый раз объединяя два узла с минимальными частотами.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-huffman.svg"/></div></section>
+<main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Глава 9 · Раздел 8</div><h1>Кодирование Хаффмана</h1><p class="chapter-topics">Huffman coding строит optimal binary prefix code для заданных частот symbols, каждый раз объединяя два наименее частых nodes.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-huffman.svg"/></div></section>
 <section class="lecture-section" id="problem">
-<h2>Частые символы должны кодироваться дёшево</h2>
-<p class="lead">Если все символы кодируются одинаковым числом битов, частые и редкие символы стоят одинаково. Хаффман делает иначе: частые символы располагаются ближе к корню, редкие могут уйти глубже.</p><div class="concept-strip">
+<h2>Постановка задачи</h2>
+<p class="lead">По частотам symbols нужно построить binary prefix code с минимальной суммарной взвешенной длиной codewords. Частые symbols должны получать более короткие коды.</p><div class="concept-strip">
 <article class="concept-cell rule"><span>Правило</span><b>Объединяем два узла с минимальными частотами</b><p>Повторяем, пока не останется одно дерево.</p></article>
 <article class="concept-cell proof"><span>Почему работает</span><b>Редкие символы можно сделать самыми глубокими соседями</b><p>После этого пара сжимается в одну меньшую задачу Хаффмана.</p></article>
 <article class="concept-cell cost"><span>Сложность</span><b>O(n log n)</b><p>Все объединения эффективно делает min-heap.</p></article>
@@ -30,8 +30,8 @@
 
 <!-- grokking-pass-huffman -->
 <section class="lecture-section" id="bits-first">
-<h2>До дерева: сначала увидим, какие биты мы вообще экономим</h2>
-<p class="lead">Huffman становится гораздо понятнее, когда compression виден как задача подсчёта битов. Возьмём крошечное сообщение <code>tilt</code>: в нём всего три разных символа, причём один встречается дважды.</p>
+<h2>Стоимость кода в битах</h2>
+<p class="lead">Суммарное число encoded bits равно сумме frequency × codeword length. Именно эту величину минимизирует Huffman coding.</p>
 <div class="bit-baseline">
 <div class="bit-side"><h3>Фиксированное 8-битное представление</h3><p>Четыре символа требуют <strong>32 payload bits</strong>, если каждому символу отводить по 8 бит.</p></div>
 <div class="bit-arrow">→</div>
@@ -42,8 +42,8 @@
 </section>
 
 <section class="lecture-section" id="prefix">
-<h2>Префиксный код не требует разделителей</h2>
-<p class="lead">Если ни одно полное кодовое слово не является началом другого, декодер всегда понимает, где закончился символ. Именно это автоматически даёт двоичное префиксное дерево.</p>
+<h2>Префиксные коды</h2>
+<p class="lead">В prefix-free code ни одно полное codeword не является prefix другого. Поэтому binary tree позволяет декодировать поток без дополнительных separators.</p>
 <div class="prefix-example">
 <article class="prefix-card bad"><h3>Не префиксный</h3>
 <div class="prefix-code-row"><span>A</span><code>0</code></div>
@@ -59,8 +59,8 @@
 </section>
 
 <section class="lecture-section" id="decode">
-<h2>Variable-length code декодируется проходом по дереву, а не нарезкой на chunks</h2>
-<p class="lead">В fixed-width коде bit string можно разбить на одинаковые блоки. У Huffman длины различаются, поэтому decoder читает по одному bit, двигается по tree и выдаёт символ каждый раз, когда достигает leaf.</p>
+<h2>Декодирование variable-length code</h2>
+<p class="lead">Decoder читает bits по одному и идёт по соответствующим edges дерева. Достижение leaf завершает один symbol и возвращает traversal к root.</p>
 <div class="decode-tape">
 <span class="decode-bit leaf">1</span><span class="decode-bit">0</span><span class="decode-bit leaf">0</span><span class="decode-bit">0</span><span class="decode-bit leaf">1</span><span class="decode-bit leaf">1</span>
 </div>
@@ -69,8 +69,8 @@
 </section>
 
 <section class="lecture-section" id="algorithm">
-<h2>Объединяем два самых дешёвых поддерева</h2>
-<p class="lead">Берём две минимальные частоты, делаем их соседями, заменяем их суммой и повторяем. Каждое объединение означает, что эти два узла окажутся на один уровень глубже нового родителя.</p>
+<h2>Построение Huffman tree</h2>
+<p class="lead">Повторяем: извлекаем два nodes с минимальными frequencies, создаём parent с их суммой и возвращаем его в коллекцию.</p>
 <div class="step-flow">
 <article class="step-item"><div class="step-number">1</div><div><h3>Создаём лист для каждого символа</h3><p>Вес листа равен частоте символа.</p></div></article>
 <article class="step-item"><div class="step-number">2</div><div><h3>Извлекаем два минимума</h3><p>Они станут соседними листьями на наибольшей глубине текущего дерева.</p></div></article>
@@ -87,8 +87,8 @@
 </section>
 
 <section class="lecture-section" id="tree">
-<h2>Считываем коды от корня к листьям</h2>
-<p class="lead">Каждому левому ребру присвоим 0, каждому правому — 1. Код символа — последовательность битов на пути от корня до его листа. Левые и правые поддеревья можно менять местами: длины кодов и оптимальность от этого не меняются.</p>
+<h2>Получение codewords из дерева</h2>
+<p class="lead">Левым и правым edges назначаем 0 и 1. Codeword symbol — последовательность меток на пути от root к его leaf.</p>
 <div class="huffman-tree-simple">
 <div class="huffman-level"><div class="tree-node root">100</div></div>
 <div class="huffman-level"><div class="tree-node leaf">A · 45</div><div class="tree-node">55</div></div>
@@ -113,8 +113,8 @@
 
 <!-- book-synthesis-huffman -->
 <section class="lecture-section" id="merge">
-<h2>Та же greedy-структура: optimal file merging</h2>
-<p class="lead">Rule Huffman «объединяй два минимальных веса» решает и optimal merge pattern: merge двух files стоит сумму их sizes, поэтому ранние merge choices оплачиваются снова на следующих уровнях.</p>
+<h2>Optimal merge pattern</h2>
+<p class="lead">То же правило two-smallest-first минимизирует суммарную стоимость последовательных merges, потому что ранние суммы повторно участвуют в следующих merges.</p>
 <div class="two-column-block">
 <div class="text-panel"><h3>Contiguous merge order</h3><p>Для file sizes <span class="math">{10,5,100,50,20,15}</span> каждый раз merge текущий результат со следующим file. Получаем costs</p><div class="formula-line">15 + 115 + 165 + 185 + 200 = 680</div><p>Feasible, но далеко от optimum.</p></div>
 <div class="proof-panel"><h3>Two-smallest-first</h3><p>Используем min-priority queue и всегда merge два минимальных текущих files:</p><div class="formula-line">15 + 30 + 50 + 100 + 200 = 395</div><p>Total work резко уменьшается.</p></div>
@@ -124,8 +124,8 @@
 </section>
 
 <section class="lecture-section" id="entropy">
-<h2>Насколько Хаффман близок к пределу энтропии?</h2>
-<p class="lead">Нормируем частоты до вероятностей <span class="math">pᵢ</span>. Энтропия Шеннона <span class="math">H=-∑pᵢlog₂pᵢ</span> — нижняя граница на среднюю длину любого двоичного префиксного кода, а для Хаффмана выполняется <span class="math">H ≤ L &lt; H+1</span>.</p>
+<h2>Связь с энтропией</h2>
+<p class="lead">Для normalized probabilities p_i entropy H задаёт lower bound средней длины prefix code. Huffman даёт L, для которого H ≤ L < H + 1.</p>
 <div class="entropy-strip">
 <div class="entropy-cell"><span>Энтропия H</span><b>≈ 2.220 бит/символ</b><small>Для вероятностей 0.45, 0.13, 0.12, 0.16, 0.09, 0.05.</small></div>
 <div class="entropy-cell"><span>Средняя длина Хаффмана L</span><b>2.24 бит/символ</b><small>224 бита на 100 появлений символов.</small></div>
@@ -135,8 +135,8 @@
 </section>
 
 <section class="lecture-section" id="proof">
-<h2>Почему два минимума можно сделать соседями</h2>
-<p class="lead">В доказательстве всего два хода. Сначала две минимальные частоты можно без ухудшения поместить в пару самых глубоких соседних листьев. Затем эту пару сжимаем в один псевдосимвол и решаем меньшую задачу.</p>
+<h2>Доказательство оптимальности</h2>
+<p class="lead">В некотором optimal tree два наименее частых symbols можно расположить как deepest siblings. После contraction этой пары получаем меньшую задачу того же вида.</p>
 <div class="huffman-proof-steps">
 <article class="huffman-proof-card"><h3>1. Глубокие листья должны быть дешёвыми</h3><p>Если символ с большей частотой находится глубже символа с меньшей частотой, обмен их меток не увеличивает стоимость. Поэтому маленькие частоты можно отправить на максимальную глубину.</p></article>
 <article class="huffman-proof-card"><h3>2. Два минимума можно сделать соседями</h3><p>Берём два самых глубоких соседних листа. Обменом меток можно добиться, чтобы именно две глобально минимальные частоты занимали эти позиции, не ухудшая стоимость.</p></article>
@@ -148,8 +148,8 @@
 <!-- common-sense-round-huffman -->
 <!-- coding-patterns-round-huffman -->
 <section class="lecture-section" id="heap-pattern">
-<h2>Interview recognition: меняющаяся коллекция + repeated min extraction → подумайте о heap</h2>
-<p class="lead">Huffman — чистый пример более общего priority-queue pattern. Candidate set меняется после каждого выбора, но на каждом шаге нужны только один-два highest-priority elements.</p>
+<h2>Priority-queue pattern</h2>
+<p class="lead">После каждого merge набор candidates меняется, а на шаге нужны два минимальных веса. Эти операции естественно поддерживает min-heap.</p>
 <div class="recognition-grid">
 <article class="recognition-card"><span class="signal">Repeated query</span><h3>Какие два веса сейчас минимальны?</h3><p>Ответ меняется после каждого merge, потому что combined node возвращается в candidate set.</p></article>
 <article class="recognition-card"><span class="signal">Data structure</span><h3>Min-heap</h3><p><code>pop</code> показывает current minimum, а <code>push</code> восстанавливает структуру после вставки merged weight. Полный re-sort не нужен.</p></article>
@@ -159,8 +159,8 @@
 </section>
 
 <section class="lecture-section" id="heap-optimization">
-<h2>Очевидная реализация Huffman получается квадратичной</h2>
-<p class="lead">Математическое rule говорит: «многократно извлекай два минимальных веса». Первая implementation-идея — каждый раз сканировать всю коллекцию, но именно repeated minimum search становится bottleneck.</p>
+<h2>Почему обычный list медленнее</h2>
+<p class="lead">Повторный полный scan для поиска двух минимумов приводит к квадратичной работе. Heap делает extraction и reinsertion логарифмическими.</p>
 <div class="operation-profile">
 <article class="neutral"><h3>Обычный list</h3><p>Сканируем все текущие nodes, находим два минимальных, merge, возвращаем результат и повторяем. Примерно <span class="math">n</span> merges × linear search дают <span class="math">O(n²)</span>.</p></article>
 <article class="good"><h3>Min-heap</h3><p>Два минимальных веса всегда доступны наверху. Каждый pop или push стоит <span class="math">O(log n)</span>, поэтому все <span class="math">n−1</span> merges занимают <span class="math">O(n log n)</span>.</p></article>
@@ -169,8 +169,8 @@
 </section>
 
 <section class="lecture-section" id="implementation">
-<h2>Весь алгоритм — это min-heap</h2>
-<p class="lead">Min-heap делает шаг «взять два минимума и вставить их сумму» эффективным. Счётчик нужен, чтобы Python не пытался сравнивать сами деревья при равных частотах.</p>
+<h2>Реализация на min-heap</h2>
+<p class="lead">Текущие nodes хранятся в min-heap по frequency. На каждой итерации извлекаются два nodes и вставляется их parent.</p>
 <div class="code-explainer">
 <div class="annotated-code">
 <div class="code-row"><span class="line-no">1</span><code>import heapq</code></div>
@@ -201,8 +201,8 @@
 
 <!-- skiena-round-huffman -->
 <section class="lecture-section" id="static-adaptive">
-<h2>Huffman использует static model источника</h2>
-<p class="lead">Tree оптимален для заданных symbol frequencies, но реальная compression system ещё должна решить, как эти frequencies получить, как передать decoder и достаточно ли вообще symbol-by-symbol statistics.</p>
+<h2>Static Huffman и adaptive compression</h2>
+<p class="lead">Huffman оптимален для фиксированной frequency model. Реальная compression system дополнительно должна передать code table и решить, достаточно ли independent-symbol statistics.</p>
 <div class="recognition-grid">
 <article class="recognition-card"><span class="signal">First pass</span><h3>Сначала узнать frequency table</h3><p>Static Huffman encoder обычно сначала проходит input и считает symbols, а уже потом строит code tree.</p></article>
 <article class="recognition-card"><span class="signal">Metadata</span><h3>Decoder должен знать code</h3><p>Coding table — или достаточная информация для её восстановления — должна идти вместе с compressed payload. На коротком file overhead может съесть значительную часть выигрыша.</p></article>
@@ -216,7 +216,7 @@
 </section>
 
 <section class="lecture-section" id="limits">
-<h2>Оптимальность внутри конкретной модели</h2>
+<h2>Границы теоремы об оптимальности</h2>
 <div class="practice-note"><h3>Canonical Huffman codes в реальных форматах</h3><p>Канонический код Хаффмана хранит длины кодовых слов, а сами битовые слова восстанавливает по детерминированному правилу. DEFLATE — формат, лежащий в основе gzip и zlib, — использует эту идею: достаточно передать длины, явное дерево не требуется.</p></div>
 <div class="decision-grid">
 <article class="decision-card greedy-signal"><h3>Оптимум среди двоичных префиксных кодов</h3><p>При заданных частотах символов Хаффман минимизирует ожидаемую или суммарную длину кода именно в этой модели.</p></article>
