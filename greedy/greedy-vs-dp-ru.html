@@ -2,10 +2,11 @@
 <meta content="Greedy оставляет одно будущее. Динамическое программирование хранит несколько состояний, пока не станет ясно, какое из них победит." name="description"/><meta content="Жадные алгоритмы и динамическое программирование | Гайд по алгоритмам — presented by Аллан" property="og:title"/><meta content="Greedy оставляет одно будущее. Динамическое программирование хранит несколько состояний, пока не станет ясно, какое из них победит." property="og:description"/><meta content="article" property="og:type"/>
 <title>Жадные алгоритмы и динамическое программирование | Гайд по алгоритмам — presented by Аллан</title>
 <link href="../assets/css/styles.css" rel="stylesheet"/><link href="assets/greedy.css" rel="stylesheet"/><link href="../assets/images/favicon-32.png" rel="icon" sizes="32x32" type="image/png"/><link href="../assets/images/favicon.png" rel="icon" sizes="64x64" type="image/png"/><link href="../assets/images/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180"/>
-<link href="greedy-vs-dp.html" hreflang="en" rel="alternate"/><link href="greedy-vs-dp-ru.html" hreflang="ru" rel="alternate"/></head>
+<link href="greedy-vs-dp.html" hreflang="en" rel="alternate"/><link href="greedy-vs-dp-ru.html" hreflang="ru" rel="alternate"/><noscript><style>.answer-box[hidden]{display:block!important}.reveal{display:none!important}</style></noscript>
+</head>
 <body class="lecture-page"><div aria-hidden="true" class="progress-track"><div class="progress-bar" id="reading-progress"></div></div>
 <header class="topbar"><a class="brand" href="../index-ru.html"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name ru-brand-name"><span class="ru-brand-lines"><span>Гайд по алгоритмам</span><span class="ru-brand-presented">presented by Аллан</span></span></span></a><nav aria-label="Основная навигация" class="topnav"><a href="index-ru.html">Жадные алгоритмы</a><div aria-label="Язык" class="language-switch"><a href="greedy-vs-dp.html">EN</a><span class="language-separator">·</span><span class="current">RU</span></div></nav></header>
-<aside aria-label="Навигация по разделу" class="sidebar"><div class="sidebar-title">Глава 9 · Раздел 3</div><a href="#difference">Главное отличие</a><a href="#structure">Общая структура</a><a href="#coins">Размен монет</a><a href="#knapsack">Рюкзак 0/1</a><a href="#signals">Как выбрать метод?</a><a href="#code">Сравнение кода</a><a href="#comparison">Итоговая таблица</a><a href="#exercises">Задачи</a></aside>
+<aside aria-label="Навигация по разделу" class="sidebar"><div class="sidebar-title">Глава 9 · Раздел 3</div><a href="#difference">Главное отличие</a><a href="#structure">Общая структура</a><a href="#coins">Размен монет</a><a href="#knapsack">Рюкзак 0/1</a><a href="#weighted">Взвешенные интервалы</a><a href="#signals">Как выбрать метод?</a><a href="#code">Сравнение кода</a><a href="#comparison">Итоговая таблица</a><a href="#exercises">Задачи</a></aside>
 <main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Глава 9 · Раздел 3</div><h1>Жадные алгоритмы и динамическое программирование</h1><p class="chapter-topics">Greedy оставляет одно будущее. Динамическое программирование хранит несколько состояний, пока не станет ясно, какое из них победит.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-vs-dp.svg"/></div></section>
 <section class="lecture-section" id="difference">
 <h2>Один путь или несколько состояний?</h2>
@@ -59,6 +60,14 @@
 <p>Первый жадный выбор A локально выглядит лучше, но блокирует глобально лучшую комбинацию. DP по оставшейся или использованной вместимости умеет сравнивать такие варианты.</p>
 </section>
 
+<section class="lecture-section" id="weighted">
+<h2>Взвешенные интервалы: одно изменение меняет метод</h2>
+<p class="lead">В обычном Interval Scheduling достаточно раннего окончания. Добавим каждому интервалу прибыль — и правило сразу может сломаться: один длинный дорогой интервал иногда лучше нескольких коротких дешёвых.</p>
+<div class="mini-example-grid"><article class="mini-example bad"><h3>Без весов</h3><p>Нас интересует только число совместимых интервалов, поэтому раннее окончание оставляет место для большего числа будущих выборов.</p></article><article class="mini-example good"><h3>С весами</h3><p>Теперь нужно сравнивать два состояния: «взять интервал j» и «пропустить j». После сортировки по окончанию DP хранит оба варианта.</p></article></div>
+<div class="inline-recurrence">OPT(j) = max( wⱼ + OPT(p(j)), OPT(j−1) )</div>
+<div class="source-note"><h3>Сортировка всё ещё полезна</h3><p>Это гибридный случай: сортировка по окончанию не решает задачу, но делает DP аккуратным. <span class="math">p(j)</span> — последний интервал, заканчивающийся до начала <span class="math">j</span>. Отдельной страницы про Weighted Interval Scheduling в handbook пока нет.</p></div>
+</section>
+
 <section class="lecture-section" id="signals">
 <h2>Практический тест</h2>
 <p class="lead">Спросите, какая информация может понадобиться будущим решениям. Если два частичных ответа по-разному расходуют ресурс и ни один явно не доминирует, хранить только один опасно.</p>
@@ -67,6 +76,7 @@
 <article class="decision-card greedy-signal"><h3>Сигнал в пользу greedy: безопасный фронт</h3><p>Есть очевидное следующее ребро, интервал, предмет или вершина, которые можно окончательно зафиксировать.</p></article>
 <article class="decision-card dp-signal"><h3>Сигнал в пользу DP: компромисс по ресурсу</h3><p>Разные частичные решения тратят разное количество времени, вместимости, денег или другого ресурса, и ни одно явно не доминирует.</p></article>
 <article class="decision-card dp-signal"><h3>Сигнал в пользу DP: будущее зависит от прошлого</h3><p>Локально худший шаг может создать лучшую комбинацию позже, поэтому нужно сохранять несколько состояний.</p></article>
+<article class="decision-card dp-signal"><h3>Быстрый тест контрпримером</h3><p>Попробуйте быстро построить пример, где локально лучший greedy-шаг приводит к глобально худшему ответу. Если получилось, перестаньте искать доказательство greedy и ищите состояние, которое вы теряете.</p></article>
 </div>
 </section>
 
@@ -108,6 +118,7 @@
 <tr><td>Основная идея доказательства</td><td>Безопасный выбор / обмен / «не отстаёт»</td><td>Корректная рекуррентность + оптимальная подструктура</td></tr>
 <tr><td>Типичная память</td><td>Небольшая</td><td>Часто пропорциональна числу состояний</td></tr>
 <tr><td>Типичная скорость</td><td>Часто очень высокая</td><td>Часто медленнее, но метод более общий</td></tr>
+<tr><td>Гибридные случаи</td><td colspan="2">Жадная предварительная сортировка может упростить DP, но не заменить его. Weighted Interval Scheduling сортирует по окончанию, а затем запускает DP по этому порядку.</td></tr>
 </tbody></table></div>
 </section>
 
