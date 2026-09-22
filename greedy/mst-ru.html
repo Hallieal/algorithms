@@ -8,7 +8,7 @@
 <body class="lecture-page"><div aria-hidden="true" class="progress-track"><div class="progress-bar" id="reading-progress"></div></div>
 <header class="topbar"><a class="brand" href="../index-ru.html"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name ru-brand-name"><span class="ru-brand-lines"><span>Гайд по алгоритмам</span><span class="ru-brand-presented">presented by Аллан</span></span></span></a>
 <nav aria-label="Основная навигация" class="topnav"><a href="index-ru.html">Жадные алгоритмы</a><div aria-label="Язык" class="language-switch"><a href="mst.html">EN</a><span class="language-separator">·</span><span class="current">RU</span></div></nav></header>
-<aside aria-label="Навигация по разделу" class="sidebar"><div class="sidebar-title">Глава 9 · Раздел 9</div><a href="#problem">Постановка</a><a href="#model-story">Сначала смоделируйте сюжет</a><a href="#network-vs-route">Network и route</a><a href="#cut">Свойство разреза</a><a href="#first-bad">Доказательство через первую ошибку</a><a href="#kruskal">Краскал</a><a href="#prim">Прим</a><a href="#boruvka">Борувка</a><a href="#implementation">Реализации</a><a href="#complexity">Сложность</a><a href="#applications">Применения и варианты</a><a href="#properties">Полезные факты</a><a href="#exercises">Задачи</a></aside>
+<aside aria-label="Навигация по разделу" class="sidebar"><div class="sidebar-title">Глава 9 · Раздел 9</div><a href="#problem">Постановка</a><a href="#model-story">Сначала смоделируйте сюжет</a><a href="#network-vs-route">Network и route</a><a href="#cut">Свойство разреза</a><a href="#first-bad">Доказательство через первую ошибку</a><a href="#kruskal">Краскал</a><a href="#prim">Прим</a><a href="#boruvka">Борувка</a><a href="#data-structure">Один proof, разные implementations</a><a href="#implementation">Реализации</a><a href="#complexity">Сложность</a><a href="#applications">Применения и варианты</a><a href="#properties">Полезные факты</a><a href="#exercises">Задачи</a></aside>
 <main class="lecture"><section class="lecture-hero greedy-lecture-hero"><div><div class="chapter-label">Глава 9 · Раздел 9</div><h1>Минимальные остовные деревья</h1><p class="chapter-topics">Нужно соединить все вершины с минимальным суммарным весом. Краскал и Прим выглядят по-разному, но оба основаны на свойстве разреза.</p></div><div class="greedy-hero-icon"><img alt="" src="assets/greedy-mst.svg"/></div></section>
 <section class="lecture-section" id="problem">
 <h2>Соединить всё как можно дешевле</h2>
@@ -102,6 +102,22 @@
 <article><h3>3. Сжимаем компоненты</h3><p>Объединяем связанные выбранными рёбрами компоненты и повторяем. За раунд число компонент уменьшается как минимум вдвое.</p></article>
 </div>
 <div class="practice-note"><h3>Зачем нужен Борувка</h3><p>Выборы для разных компонент можно искать одновременно, поэтому алгоритм естественно параллелизуется и используется как основа распределённых MST-алгоритмов. Простая последовательная версия просматривает все рёбра в каждом из <span class="math">O(log V)</span> раундов и работает за <span class="math">O(E log V)</span>.</p></div>
+</section>
+
+<!-- common-sense-round-mst -->
+<section class="lecture-section" id="data-structure">
+<h2>Proof выбирает safe edge; data structure определяет скорость</h2>
+<p class="lead">Kruskal и Prim оба greedy, но повторяют разные операции. После того как операция названа явно, выбор подходящей структуры данных становится гораздо проще.</p>
+<div class="table-wrap"><table><thead><tr><th>Algorithm</th><th>Повторяющаяся операция</th><th>Естественная структура</th><th>Типичная стоимость</th></tr></thead><tbody>
+<tr><td>Kruskal</td><td>Следующее lightest edge + «создаст ли оно cycle?»</td><td>Sorted edge list + DSU</td><td><span class="math">O(E log E)</span></td></tr>
+<tr><td>Prim, simple</td><td>Найти cheapest vertex/edge через frontier</td><td>Arrays / linear scan</td><td><span class="math">O(V²)</span></td></tr>
+<tr><td>Prim, sparse graph</td><td>Repeated minimum frontier edge</td><td>Min-heap + adjacency list</td><td><span class="math">O(E log V)</span></td></tr>
+</tbody></table></div>
+<div class="operation-profile">
+<article class="neutral"><h3>Не сортируйте полностью то, что не требуется</h3><p>Prim никогда не просит полный sorted order всех frontier edges. Ему каждый раз нужен только current minimum.</p></article>
+<article class="good"><h3>Weak ordering достаточно</h3><p>Heap держит minimum доступным и позволяет обновления без поддержки глобально отсортированного списка. Именно такой operation profile нужен Prim.</p></article>
+</div>
+<div class="one-line"><strong>У algorithm design два слоя.</strong> Сначала докажите, какой local edge безопасен; затем выберите representation, которое быстро этот edge показывает.</div>
 </section>
 
 <section class="lecture-section" id="implementation">
