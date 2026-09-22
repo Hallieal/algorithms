@@ -24,7 +24,7 @@
 </header>
 <aside aria-label="Навигация по разделу" class="sidebar">
 <div class="sidebar-title">Глава 9 · Раздел 11</div>
-<a href="#map">Общая картина</a><a href="#matroid">Матроиды</a><a href="#mst">Краскал</a><a href="#limits">Что не является матроидом</a><a href="#exact-vs-fast">Exact search и fast greedy</a><a href="#guarantees">Heuristic vs approximation</a><a href="#approx">Приближения</a><a href="#setcover">Пример Set Cover</a><a href="#set-code">Set Cover в коде</a><a href="#optimization">Greedy как state compression</a><a href="#decision">Как выбирать подход</a><a href="#reading">Что читать дальше</a><a href="#exercises">Задачи</a>
+<a href="#map">Общая картина</a><a href="#matroid">Матроиды</a><a href="#mst">Краскал</a><a href="#limits">Что не является матроидом</a><a href="#exact-vs-fast">Exact search и fast greedy</a><a href="#guarantees">Heuristic vs approximation</a><a href="#approx">Приближения</a><a href="#setcover">Пример Set Cover</a><a href="#set-code">Set Cover в коде</a><a href="#optimization">Greedy как state compression</a><a href="#pattern-library">Pattern library, а не один template</a><a href="#decision">Как выбирать подход</a><a href="#reading">Что читать дальше</a><a href="#exercises">Задачи</a>
 </aside>
 <main class="lecture">
 <section class="lecture-hero greedy-lecture-hero">
@@ -182,6 +182,21 @@ while uncovered:
 <div class="one-line"><strong>Компактное state — награда за доказательство.</strong> Сначала покажите, какие альтернативы больше никогда не понадобятся; только потом удаляйте их из алгоритма.</div>
 </section>
 
+<!-- coding-patterns-round-beyond -->
+<section class="lecture-section" id="pattern-library">
+<h2>У greedy нет одного универсального template — собирайте pattern library</h2>
+<p class="lead">Для интервью полезнее помнить несколько структурных moves и proof obligation за каждым из них.</p>
+<div class="recognition-grid">
+<article class="recognition-card"><span class="signal">Backward frontier</span><h3>Reachability</h3><p>Заменяем далёкий destination более ранним index, который уже умеет его достигать. Proof показывает, что ранние решения при этом не теряются.</p></article>
+<article class="recognition-card"><span class="signal">Block elimination</span><h3>Circular feasibility</h3><p>Failed prefix может сертифицировать невозможность сразу многих starting points, поэтому candidate прыгает вперёд без backtracking.</p></article>
+<article class="recognition-card"><span class="signal">Directional passes</span><h3>Local inequalities</h3><p>Если constraints приходят от left/right neighbors, удовлетворяем направления отдельно и объединяем необходимые lower bounds.</p></article>
+<article class="recognition-card"><span class="signal">Sorted intervals</span><h3>Ordering создаёт locality</h3><p>Правильный endpoint sort key превращает глобальную overlap-задачу в сравнение с одним текущим frontier.</p></article>
+<article class="recognition-card"><span class="signal">Priority queue</span><h3>Repeated best candidate</h3><p>Если changing candidate set постоянно просит current minimum/maximum, heap часто показывает ровно тот choice, который нужен greedy rule.</p></article>
+<article class="recognition-card"><span class="signal">Union-Find</span><h3>Dynamic components</h3><p>Если greedy перебирает edges и постоянно спрашивает «same component?», DSU отделяет feasibility maintenance от greedy priority rule.</p></article>
+</div>
+<div class="interview-answer"><h3>Во что pattern recognition не должен превращаться</h3><p>Не сопоставляйте keywords с заученным кодом. Сопоставляйте задачу с invariant: какой frontier безопасен, какие candidates dominated, какой constraint обеспечивается и какую информацию можно удалить навсегда?</p></div>
+</section>
+
 <section class="lecture-section" id="decision">
 <h2>Чек-лист для новой задачи</h2>
 <div class="proof-checklist">
@@ -195,6 +210,7 @@ while uncovered:
 <section class="lecture-section" id="reading">
 <h2>Что читать дальше</h2>
 <div class="reference-list">
+<div class="reference-item"><b>Alex Xu & Shaun Gunawardane — Coding Interview Patterns</b><span>Chapter 16 показывает три complementary greedy forms: backward destination movement, candidate elimination на circular route и два directional passes. Chapter 9 даёт interval/sweep-line pattern, а Chapters 8 и 13 усиливают supporting structures — heaps и Union-Find.</span></div>
 <div class="reference-item"><b>Jay Wengrow — A Common-Sense Guide to Data Structures and Algorithms in Python</b><span>Chapter 20 строит optimization workflow от current Big O к best-imaginable Big O и показывает greedy state compression на array maximum, maximum-subarray sum и increasing triplet; Chapter 18 подробно разбирает Dijkstra и сравнивает simple array frontier с priority queue.</span></div>
 <div class="reference-item"><b>Aditya Y. Bhargava — Grokking Algorithms, 2nd ed.</b><span>Chapter 10 проводит от classroom scheduling к провалу greedy для 0/1 Knapsack и затем к greedy Set Cover как approximation; Chapters 7 и 9 дают визуальные объяснения Huffman и Dijkstra.</span></div>
 <a class="reference-item" href="https://www.pearson.com/en-us/subject-catalog/p/algorithm-design/P200000003259" target="_blank" rel="noopener"><b>Jon Kleinberg & Eva Tardos — Algorithm Design</b><span>Более proof-oriented изложение scheduling, MST и greedy design.</span></a>
