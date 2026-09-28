@@ -1,0 +1,20 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><title>Topological Sorting | Allan's Handbook of Algorithms</title><link href="../assets/css/styles.css" rel="stylesheet"/><link href="assets/graphs.css" rel="stylesheet"/><link href="../assets/images/favicon-32.png" rel="icon" sizes="32x32" type="image/png"/><link href="topological.html" hreflang="en" rel="alternate"/><link href="topological-ru.html" hreflang="ru" rel="alternate"/></head><body class="lecture-page"><header class="topbar"><a class="brand" href="../"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name">Allan's Handbook of Algorithms</span></a><nav class="topnav"><a href="./">Graphs overview</a><div class="language-switch"><span class="current">EN</span><span class="language-separator">·</span><a href="topological-ru.html">RU</a></div></nav></header><main class="lecture"><section class="lecture-hero graph-hero"><div><div class="chapter-label">Chapter 8 · Section 6</div><h1>Topological Sorting</h1><p class="chapter-topics">Graphs turn problems about connections, routes, and dependencies into standard algorithmic models.</p></div><div class="graph-hero-art"><div class="network"><i></i><i></i><i></i><i></i><b></b><b></b><b></b><b></b><b></b></div></div></section><section class="lecture-section"><section id="idea"><h2>Ordering dependencies</h2><p class="lead">A topological order lists the vertices of a directed graph so that every edge <span class="math">u → v</span> places <span class="math">u</span> before <span class="math">v</span>. Such an order exists exactly for directed acyclic graphs (DAGs).</p><div class="graph-example"><h3>Example</h3><p><code>Foundations → Sorting → Greedy</code> means Foundations must appear before Sorting, and Sorting before Greedy. Independent topics may appear in either order, so a DAG can have many valid topological orders.</p></div></section><section id="kahn"><h2>Kahn's algorithm: remove zero-indegree vertices</h2><div class="algo-steps"><div class="algo-step"><h3>Compute indegrees</h3><p>Count incoming edges for every vertex.</p></div><div class="algo-step"><h3>Queue all zero-indegree vertices</h3><p>They currently have no unmet prerequisites.</p></div><div class="algo-step"><h3>Remove one</h3><p>Append it to the order and decrement the indegree of its outgoing neighbors.</p></div><div class="algo-step"><h3>Check the count</h3><p>If fewer than V vertices were removed, a directed cycle exists.</p></div></div><div class="code-simple"><pre>from collections import deque
+
+def topo_sort(graph):
+    indeg = {u: 0 for u in graph}
+    for u in graph:
+        for v in graph[u]:
+            indeg[v] += 1
+
+    q = deque(u for u in graph if indeg[u] == 0)
+    order = []
+
+    while q:
+        u = q.popleft()
+        order.append(u)
+        for v in graph[u]:
+            indeg[v] -= 1
+            if indeg[v] == 0:
+                q.append(v)
+
+    return order if len(order) == len(graph) else None</pre></div><div class="complexity-box"><div><span>Time</span><b>O(V + E)</b></div><div><span>Space</span><b>O(V)</b></div><div><span>Cycle test</span><b>Built in</b></div></div></section><section id="dfs"><h2>DFS alternative</h2><p>DFS can also topologically sort a DAG: append each vertex after all its outgoing neighbors are finished, then reverse the finishing order. Kahn's algorithm is often easier when the problem is phrased in terms of prerequisites and indegrees.</p></section></section><div class="chapter-nav"><a href="connectivity.html">← Previous section</a><a href="shortest-paths.html">Next section →</a></div></main><footer class="overview-footer"><div>Allan's Handbook of Algorithms</div><div>© 2026 Allan Allemand</div></footer><script src="../assets/js/language-switch.js"></script></body></html>
