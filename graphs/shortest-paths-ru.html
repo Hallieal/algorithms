@@ -1,0 +1,17 @@
+<!DOCTYPE html><html lang="ru"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><title>Кратчайшие пути | Allan's Handbook of Algorithms</title><link href="../assets/css/styles.css" rel="stylesheet"/><link href="assets/graphs.css" rel="stylesheet"/><link href="../assets/images/favicon-32.png" rel="icon" sizes="32x32" type="image/png"/><link href="shortest-paths.html" hreflang="en" rel="alternate"/><link href="shortest-paths-ru.html" hreflang="ru" rel="alternate"/></head><body class="lecture-page"><header class="topbar"><a class="brand" href="../"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name">Allan's Handbook of Algorithms</span></a><nav class="topnav"><a href="index-ru.html">Обзор графов</a><div class="language-switch"><a href="shortest-paths.html">EN</a><span class="language-separator">·</span><span class="current">RU</span></div></nav></header><main class="lecture"><section class="lecture-hero graph-hero"><div><div class="chapter-label">Глава 8 · Раздел 7</div><h1>Кратчайшие пути</h1><p class="chapter-topics">Графы превращают задачи о связях, маршрутах и зависимостях в стандартные алгоритмические модели.</p></div><div class="graph-hero-art"><div class="network"><i></i><i></i><i></i><i></i><b></b><b></b><b></b><b></b><b></b></div></div></section><section class="lecture-section"><section id="choose"><h2>Выбор зависит от весов</h2><p class="lead">«Кратчайший путь» — не один алгоритм. Метод определяется допустимыми весами.</p><table class="decision-table"><tr><th>Граф</th><th>Алгоритм</th><th>Время</th></tr><tr><td>Невзвешенный / равные веса</td><td>BFS</td><td>O(V + E)</td></tr><tr><td>Неотрицательные веса</td><td>Дейкстра + куча</td><td>O((V + E) log V)</td></tr><tr><td>Есть отрицательные рёбра</td><td>Беллман–Форд</td><td>O(VE)</td></tr><tr><td>DAG</td><td>Релаксации в топологическом порядке</td><td>O(V + E)</td></tr></table></section><section id="relax"><h2>Общая операция: релаксация</h2><div class="graph-formula">if dist[u] + w(u,v) &lt; dist[v], update dist[v]</div><p>Алгоритмы различаются прежде всего порядком релаксаций и моментом, когда расстояние можно считать окончательным.</p></section><section id="dijkstra"><h2>Алгоритм Дейкстры</h2><p>Каждый раз окончательно фиксируем ещё не обработанную вершину с минимальным известным расстоянием.</p><div class="code-simple"><pre>import heapq
+
+def dijkstra(graph, start):
+    dist = {u: float("inf") for u in graph}
+    dist[start] = 0
+    pq = [(0, start)]
+
+    while pq:
+        d, u = heapq.heappop(pq)
+        if d != dist[u]:
+            continue
+        for v, w in graph[u]:
+            nd = d + w
+            if nd < dist[v]:
+                dist[v] = nd
+                heapq.heappush(pq, (nd, v))
+    return dist</pre></div><div class="warning"><b>Отрицательные рёбра ломают Дейкстру.</b> Используйте Беллмана–Форда или структуру DAG.</div><p>Полное доказательство и восстановление пути: <a href="../greedy/dijkstra-ru.html">алгоритм Дейкстры в главе о жадных алгоритмах →</a>.</p></section></section><div class="chapter-nav"><a href="topological-ru.html">← Предыдущий раздел</a><a href="mst-ru.html">Следующий раздел →</a></div></main><footer class="overview-footer"><div>Allan's Handbook of Algorithms</div><div>© 2026 Allan Allemand</div></footer><script src="../assets/js/language-switch.js"></script></body></html>
