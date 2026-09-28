@@ -1,0 +1,19 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><title>Shortest Paths | Allan's Handbook of Algorithms</title><link href="../assets/css/styles.css" rel="stylesheet"/><link href="assets/graphs.css" rel="stylesheet"/><link href="../assets/images/favicon-32.png" rel="icon" sizes="32x32" type="image/png"/><link href="shortest-paths.html" hreflang="en" rel="alternate"/><link href="shortest-paths-ru.html" hreflang="ru" rel="alternate"/></head><body class="lecture-page"><header class="topbar"><a class="brand" href="../"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name">Allan's Handbook of Algorithms</span></a><nav class="topnav"><a href="./">Graphs overview</a><div class="language-switch"><span class="current">EN</span><span class="language-separator">·</span><a href="shortest-paths-ru.html">RU</a></div></nav></header><main class="lecture"><section class="lecture-hero graph-hero"><div><div class="chapter-label">Chapter 8 · Section 7</div><h1>Shortest Paths</h1><p class="chapter-topics">Graphs turn problems about connections, routes, and dependencies into standard algorithmic models.</p></div><div class="graph-hero-art"><div class="network"><i></i><i></i><i></i><i></i><b></b><b></b><b></b><b></b><b></b></div></div></section><section class="lecture-section"><section id="choose"><h2>Choose by edge weights</h2><p class="lead">“Shortest path” is not one algorithm. The right method depends on what weights are allowed.</p><table class="decision-table"><tr><th>Graph</th><th>Algorithm</th><th>Time</th></tr><tr><td>Unweighted / equal weights</td><td>BFS</td><td>O(V + E)</td></tr><tr><td>Nonnegative weights</td><td>Dijkstra + heap</td><td>O((V + E) log V)</td></tr><tr><td>Negative edges, no negative cycle</td><td>Bellman–Ford</td><td>O(VE)</td></tr><tr><td>DAG, arbitrary weights</td><td>Topological relaxation</td><td>O(V + E)</td></tr></table></section><section id="relax"><h2>The common operation: relaxation</h2><p>Shortest-path algorithms repeatedly ask whether going through <span class="math">u</span> improves the best known route to <span class="math">v</span>.</p><div class="graph-formula">if dist[u] + w(u,v) &lt; dist[v], update dist[v]</div><p>The algorithms differ mainly in the order in which they relax edges and in when a distance can be considered final.</p></section><section id="dijkstra"><h2>Dijkstra's algorithm</h2><p>Maintain tentative distances and repeatedly finalize the not-yet-finalized vertex with the smallest tentative distance. With nonnegative weights, no later path can make that finalized distance smaller.</p><div class="code-simple"><pre>import heapq
+
+def dijkstra(graph, start):
+    dist = {u: float("inf") for u in graph}
+    dist[start] = 0
+    pq = [(0, start)]
+
+    while pq:
+        d, u = heapq.heappop(pq)
+        if d != dist[u]:
+            continue
+
+        for v, w in graph[u]:
+            nd = d + w
+            if nd < dist[v]:
+                dist[v] = nd
+                heapq.heappush(pq, (nd, v))
+
+    return dist</pre></div><div class="warning"><b>Negative edges break Dijkstra.</b> A vertex that looked final can later receive a cheaper path through a negative edge. Use Bellman–Ford or exploit DAG structure instead.</div><p>For the full greedy proof, path reconstruction, and implementation details, see <a href="../greedy/dijkstra.html">Dijkstra's Algorithm in the Greedy chapter →</a>.</p></section></section><div class="chapter-nav"><a href="topological.html">← Previous section</a><a href="mst.html">Next section →</a></div></main><footer class="overview-footer"><div>Allan's Handbook of Algorithms</div><div>© 2026 Allan Allemand</div></footer><script src="../assets/js/language-switch.js"></script></body></html>
