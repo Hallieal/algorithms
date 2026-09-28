@@ -1,0 +1,23 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><title>Connectivity and Cycles | Allan's Handbook of Algorithms</title><link href="../assets/css/styles.css" rel="stylesheet"/><link href="assets/graphs.css" rel="stylesheet"/><link href="../assets/images/favicon-32.png" rel="icon" sizes="32x32" type="image/png"/><link href="connectivity.html" hreflang="en" rel="alternate"/><link href="connectivity-ru.html" hreflang="ru" rel="alternate"/></head><body class="lecture-page"><header class="topbar"><a class="brand" href="../"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name">Allan's Handbook of Algorithms</span></a><nav class="topnav"><a href="./">Graphs overview</a><div class="language-switch"><span class="current">EN</span><span class="language-separator">·</span><a href="connectivity-ru.html">RU</a></div></nav></header><main class="lecture"><section class="lecture-hero graph-hero"><div><div class="chapter-label">Chapter 8 · Section 5</div><h1>Connectivity and Cycles</h1><p class="chapter-topics">Graphs turn problems about connections, routes, and dependencies into standard algorithmic models.</p></div><div class="graph-hero-art"><div class="network"><i></i><i></i><i></i><i></i><b></b><b></b><b></b><b></b><b></b></div></div></section><section class="lecture-section"><section id="components"><h2>Connected components</h2><p class="lead">In an undirected graph, one BFS or DFS discovers exactly one connected component. To find them all, start a new traversal from every still-unvisited vertex.</p><div class="code-simple"><pre>def components(graph):
+    seen = set()
+    result = []
+
+    for start in graph:
+        if start in seen:
+            continue
+
+        part = []
+        stack = [start]
+        seen.add(start)
+
+        while stack:
+            u = stack.pop()
+            part.append(u)
+            for v in graph[u]:
+                if v not in seen:
+                    seen.add(v)
+                    stack.append(v)
+
+        result.append(part)
+
+    return result</pre></div><div class="complexity-box"><div><span>Time</span><b>O(V + E)</b></div><div><span>Traversals</span><b>One per component</b></div><div><span>Visited once?</span><b>Yes</b></div></div></section><section id="cycles"><h2>Cycle detection</h2><p>In an undirected graph, seeing an already visited neighbor is a cycle only when that neighbor is not the current vertex's parent. In a directed graph, we need three states: unseen, active, and finished. An edge to an active vertex is a back edge and proves that a directed cycle exists.</p><div class="warning"><b>Common bug.</b> A single boolean <code>visited</code> array is enough for undirected cycle detection with parent tracking, but not for directed cycle detection. Directed DFS must distinguish active recursion-stack vertices from finished vertices.</div></section><section id="tree"><h2>Recognizing a tree</h2><div class="graph-definition"><p>An undirected graph is a tree exactly when it is connected and acyclic. Equivalently, a connected graph with <span class="math">V</span> vertices is a tree if and only if it has <span class="math">V − 1</span> edges.</p></div></section></section><div class="chapter-nav"><a href="dfs.html">← Previous section</a><a href="topological.html">Next section →</a></div></main><footer class="overview-footer"><div>Allan's Handbook of Algorithms</div><div>© 2026 Allan Allemand</div></footer><script src="../assets/js/language-switch.js"></script></body></html>
