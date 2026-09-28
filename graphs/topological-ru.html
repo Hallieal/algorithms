@@ -1,0 +1,20 @@
+<!DOCTYPE html><html lang="ru"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><title>Топологическая сортировка | Allan's Handbook of Algorithms</title><link href="../assets/css/styles.css" rel="stylesheet"/><link href="assets/graphs.css" rel="stylesheet"/><link href="../assets/images/favicon-32.png" rel="icon" sizes="32x32" type="image/png"/><link href="topological.html" hreflang="en" rel="alternate"/><link href="topological-ru.html" hreflang="ru" rel="alternate"/></head><body class="lecture-page"><header class="topbar"><a class="brand" href="../"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name">Allan's Handbook of Algorithms</span></a><nav class="topnav"><a href="index-ru.html">Обзор графов</a><div class="language-switch"><a href="topological.html">EN</a><span class="language-separator">·</span><span class="current">RU</span></div></nav></header><main class="lecture"><section class="lecture-hero graph-hero"><div><div class="chapter-label">Глава 8 · Раздел 6</div><h1>Топологическая сортировка</h1><p class="chapter-topics">Графы превращают задачи о связях, маршрутах и зависимостях в стандартные алгоритмические модели.</p></div><div class="graph-hero-art"><div class="network"><i></i><i></i><i></i><i></i><b></b><b></b><b></b><b></b><b></b></div></div></section><section class="lecture-section"><section id="idea"><h2>Порядок зависимостей</h2><p class="lead">Топологический порядок располагает вершины ориентированного графа так, что для каждого ребра <span class="math">u → v</span> вершина <span class="math">u</span> стоит раньше <span class="math">v</span>. Такой порядок существует ровно для DAG.</p></section><section id="kahn"><h2>Алгоритм Кана: удаляем вершины с нулевой входящей степенью</h2><div class="algo-steps"><div class="algo-step"><h3>Считаем indegree</h3><p>Число входящих рёбер каждой вершины.</p></div><div class="algo-step"><h3>Кладём в очередь indegree = 0</h3><p>У этих вершин нет невыполненных зависимостей.</p></div><div class="algo-step"><h3>Удаляем вершину</h3><p>Добавляем в ответ и уменьшаем indegree её соседей.</p></div><div class="algo-step"><h3>Проверяем число вершин</h3><p>Если обработано меньше V, в графе есть цикл.</p></div></div><div class="code-simple"><pre>from collections import deque
+
+def topo_sort(graph):
+    indeg = {u: 0 for u in graph}
+    for u in graph:
+        for v in graph[u]:
+            indeg[v] += 1
+
+    q = deque(u for u in graph if indeg[u] == 0)
+    order = []
+
+    while q:
+        u = q.popleft()
+        order.append(u)
+        for v in graph[u]:
+            indeg[v] -= 1
+            if indeg[v] == 0:
+                q.append(v)
+
+    return order if len(order) == len(graph) else None</pre></div><div class="complexity-box"><div><span>Время</span><b>O(V + E)</b></div><div><span>Память</span><b>O(V)</b></div><div><span>Цикл</span><b>Проверяется</b></div></div></section></section><div class="chapter-nav"><a href="connectivity-ru.html">← Предыдущий раздел</a><a href="shortest-paths-ru.html">Следующий раздел →</a></div></main><footer class="overview-footer"><div>Allan's Handbook of Algorithms</div><div>© 2026 Allan Allemand</div></footer><script src="../assets/js/language-switch.js"></script></body></html>
