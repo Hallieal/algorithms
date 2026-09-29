@@ -1,6 +1,6 @@
 <!DOCTYPE html><html lang="ru"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
 <title>Представление графов | Allan's Handbook of Algorithms</title><link href="../assets/css/styles.css" rel="stylesheet"/><link href="assets/graphs.css" rel="stylesheet"/><link href="../assets/images/favicon-32.png" rel="icon" sizes="32x32" type="image/png"/><link href="representation.html" hreflang="en" rel="alternate"/><link href="representation-ru.html" hreflang="ru" rel="alternate"/></head>
-<body class="lecture-page graph-content-page"><header class="topbar"><a class="brand" href="../"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name">Allan's Handbook of Algorithms</span></a><nav class="topnav"><a href="./">Обзор графов</a><div class="language-switch"><a href="representation.html">EN</a><span class="language-separator">·</span><span class="current">RU</span></div></nav></header>
+<body class="lecture-page graph-content-page"><header class="topbar"><a class="brand" href="../"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name">Allan's Handbook of Algorithms</span></a><nav class="topnav"><a href="index-ru.html">Обзор графов</a><div class="language-switch"><a href="representation.html">EN</a><span class="language-separator">·</span><span class="current">RU</span></div></nav></header>
 <aside aria-label="Section navigation" class="sidebar"><div class="sidebar-title">Графы · Представление графов</div><a href="#section-1">Размер графа</a><a href="#section-2">Два представления</a><a href="#section-3">Матрица смежности</a><a href="#section-4">Список смежности</a><a href="#section-5">Списки смежности для разреженных графов</a><a href="#section-6">Выбор представления</a><a href="#section-7">Ориентированные и взвешенные графы</a><a href="#section-8">Представление и обход</a></aside><main class="lecture"><section class="lecture-hero graph-hero"><div><h1>Представление графов</h1><p class="chapter-topics">Два основных способа хранить граф — матрица смежности и список смежности. От выбора зависят и расход памяти, и время работы алгоритмов.</p></div><div class="graph-hero-art"><svg class="graph-svg hero-representation" viewBox="0 0 220 170"><g class="edge"><line x1="40" y1="85" x2="105" y2="35"/><line x1="105" y1="35" x2="180" y2="82"/><line x1="40" y1="85" x2="105" y2="140"/><line x1="105" y1="140" x2="180" y2="82"/></g><g class="node"><circle cx="40" cy="85" r="13"/><circle cx="105" cy="35" r="13"/><circle cx="180" cy="82" r="13"/><circle cx="105" cy="140" r="13"/></g></svg></div></section>
 <section class="lecture-section">
 <section id="parameters"><h2 id="section-1">Размер графа</h2>
@@ -17,14 +17,14 @@
 </div></section>
 
 <section id="matrix"><h2 id="section-3">Матрица смежности</h2>
-<p>Самое простое представление — <span class="math">n × n</span> матрица <span class="math">A</span>Элемент <span class="math">A[u, v]</span> равен 1, если в графе есть ребро <span class="math">(u,v)</span>, and 0 otherwise. For an undirected graph the matrix is symmetric: <span class="math">A[u, v]=A[v,u]</span>.</p>
+<p>Самое простое представление — <span class="math">n × n</span> матрица <span class="math">A</span>Элемент <span class="math">A[u, v]</span> равен 1, если в графе есть ребро <span class="math">(u,v)</span>, и 0 в противном случае. Для неориентированного графа матрица симметрична: <span class="math">A[u, v]=A[v,u]</span>.</p>
 <div class="compare-grid"><article class="compare-card"><span class="tag">Преимущество</span><h3>Проверка ребра за O(1)</h3><p>Чтобы проверить, существует ли <span class="math">(u,v)</span> достаточно посмотреть один элемент матрицы. Операция занимает <span class="complexity-box">O(1)</span> времени.</p></article><article class="compare-card"><span class="tag">Цена</span><h3>Квадратичная память</h3><p>Матрица всегда содержит <span class="math">n²</span> элементов — независимо от того, десять в графе рёбер или почти все возможные.</p></article></div>
-<p>Чтобы перечислить соседей <span class="math">v</span>, a matrix must scan the entire row <span class="math">A[v, *]</span>: <span class="complexity-box">Θ(n)</span> даже если у <span class="math">v</span> всего один сосед.</p>
+<p>Чтобы перечислить соседей <span class="math">v</span>, по матрице приходится просмотреть всю строку <span class="math">A[v, *]</span>: <span class="complexity-box">Θ(n)</span> даже если у <span class="math">v</span> всего один сосед.</p>
 </section>
 
 <section id="list"><h2 id="section-4">Список смежности</h2>
 <p>В представлении списками смежности для каждой вершины хранится список её соседей. Можно считать, что есть массив <span class="math">Adj</span> в котором <span class="math">Adj[v]</span> содержит в точности вершины, смежные с <span class="math">v</span>.</p>
-<p>В неориентированном графе каждое ребро встречается дважды: если <span class="math">{u,v}</span> — ребро, то <span class="math">v</span> входит в <span class="math">Adj[u]</span> и <span class="math">u</span> входит в <span class="math">Adj[v]</span>. Consequently, the total length of all adjacency lists is <span class="math">2m</span>.</p>
+<p>В неориентированном графе каждое ребро встречается дважды: если <span class="math">{u,v}</span> — ребро, то <span class="math">v</span> входит в <span class="math">Adj[u]</span> и <span class="math">u</span> входит в <span class="math">Adj[v]</span>. Поэтому суммарная длина всех списков смежности равна <span class="math">2m</span>.</p>
 <div class="graph-formula">память = Θ(n + m)</div>
 <p>При списках смежности перебор соседей <span class="math">v</span> занимает время, пропорциональное степени этой вершины.</p>
 <div class="code-simple"><pre><code>graph = {
@@ -33,7 +33,7 @@
     2: [0, 1, 3],
     3: [0, 2],
 }</code></pre></div>
-<p>В Python словарь списков удобен, когда вершины имеют произвольные метки. Если вершины пронумерованы <span class="math">0,1,…,n−1</span>, a list of lists is usually enough.</p>
+<p>В Python словарь списков удобен, когда вершины имеют произвольные метки. Если вершины пронумерованы <span class="math">0,1,…,n−1</span>, обычно достаточно списка списков.</p>
 </section>
 
 <section id="manhattan"><h2 id="section-5">Списки смежности для разреженных графов</h2>
@@ -66,5 +66,5 @@
 <section id="next"><h2 id="section-8">Представление и обход</h2>
 <p>BFS и DFS постоянно перебирают соседей текущей вершины. При списках смежности суммарная работа по просмотру всех списков пропорциональна <span class="math">n+m</span>При матрице смежности просмотр строк может потребовать <span class="math">n²</span> операций. В следующем разделе список смежности позволит реализовать BFS за линейное время.</p></section>
 </section>
-<div class="chapter-nav"><a href="models.html">← Модели графов</a><a href="bfs.html">Поиск в ширину →</a></div></main>
+<div class="chapter-nav"><a href="models-ru.html">← Модели графов</a><a href="bfs-ru.html">Поиск в ширину →</a></div></main>
 <footer class="overview-footer"><div>Allan's Handbook of Algorithms</div><div>© 2026 Allan Allemand</div></footer><script src="../assets/js/language-switch.js"></script></body></html>
