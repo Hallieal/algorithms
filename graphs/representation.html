@@ -1,15 +1,15 @@
 <!DOCTYPE html><html lang="en"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
 <title>Representing Graphs | Allan's Handbook of Algorithms</title><link href="../assets/css/styles.css" rel="stylesheet"/><link href="assets/graphs.css" rel="stylesheet"/><link href="../assets/images/favicon-32.png" rel="icon" sizes="32x32" type="image/png"/><link href="representation.html" hreflang="en" rel="alternate"/><link href="representation-ru.html" hreflang="ru" rel="alternate"/></head>
-<body class="lecture-page"><header class="topbar"><a class="brand" href="../"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name">Allan's Handbook of Algorithms</span></a><nav class="topnav"><a href="./">Graphs overview</a><div class="language-switch"><span class="current">EN</span><span class="language-separator">·</span><a href="representation-ru.html">RU</a></div></nav></header>
+<body class="lecture-page graph-content-page"><header class="topbar"><a class="brand" href="../"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name">Allan's Handbook of Algorithms</span></a><nav class="topnav"><a href="./">Graphs overview</a><div class="language-switch"><span class="current">EN</span><span class="language-separator">·</span><a href="representation-ru.html">RU</a></div></nav></header>
 <main class="lecture"><section class="lecture-hero graph-hero"><div><div class="chapter-label">Chapter 8 · Section 3</div><h1>Representing Graphs</h1><p class="chapter-topics">The two basic representations are adjacency matrices and adjacency lists. The choice changes both memory use and the running time of graph algorithms.</p></div><div class="graph-hero-art"><svg class="graph-svg hero-representation" viewBox="0 0 220 170"><g class="edge"><line x1="40" y1="85" x2="105" y2="35"/><line x1="105" y1="35" x2="180" y2="82"/><line x1="40" y1="85" x2="105" y2="140"/><line x1="105" y1="140" x2="180" y2="82"/></g><g class="node"><circle cx="40" cy="85" r="13"/><circle cx="105" cy="35" r="13"/><circle cx="180" cy="82" r="13"/><circle cx="105" cy="140" r="13"/></g></svg></div></section>
 <section class="lecture-section">
 <section id="parameters"><h2>Two parameters: vertices and edges</h2>
 <p>For a graph <span class="math">G=(V,E)</span>, write <span class="math">n=|V|</span> for the number of vertices and <span class="math">m=|E|</span> for the number of edges. Running times for graph algorithms are usually expressed in terms of both <span class="math">n</span> and <span class="math">m</span>.</p>
-<p>This distinction matters because graphs with the same number of vertices can contain very different numbers of edges. A graph with relatively few edges is <b>sparse</b>; a graph containing a large fraction of all possible edges is <b>dense</b>.</p>
+<p>Graphs with the same number of vertices may have very different numbers of edges. A graph with few edges is <b>sparse</b>; one with a large fraction of the possible edges is <b>dense</b>.</p>
 <div class="graph-definition"><p>For many graph algorithms, <span class="math">O(n+m)</span> is called <b>linear time</b>: even reading an adjacency-list representation of the whole input already takes this much time.</p></div></section>
 
 <section id="same-graph"><h2>One graph, two representations</h2>
-<p>Consider the undirected graph below. The picture is useful to us, but an algorithm needs a concrete data structure.</p>
+<p>A drawing is useful for us; an algorithm needs a data structure.</p>
 <div class="representation-triptych">
 <figure class="representation-panel"><h3>Graph</h3><svg class="graph-svg repr-graph" viewBox="0 0 260 210"><g class="edge"><line x1="48" y1="105" x2="128" y2="42"/><line x1="128" y1="42" x2="215" y2="105"/><line x1="215" y1="105" x2="128" y2="170"/><line x1="128" y1="170" x2="48" y2="105"/><line x1="48" y1="105" x2="215" y2="105"/></g><g class="node labelled"><circle cx="48" cy="105" r="14"/><text x="23" y="110">0</text><circle cx="128" cy="42" r="14"/><text x="123" y="19">1</text><circle cx="215" cy="105" r="14"/><text x="235" y="110">2</text><circle cx="128" cy="170" r="14"/><text x="123" y="201">3</text></g></svg></figure>
 <figure class="representation-panel"><h3>Adjacency list</h3><div class="adj-list big-list"><div><b>0</b> → 1, 2, 3</div><div><b>1</b> → 0, 2</div><div><b>2</b> → 0, 1, 3</div><div><b>3</b> → 0, 2</div></div></figure>
@@ -19,14 +19,14 @@
 <section id="matrix"><h2>Adjacency matrix</h2>
 <p>The simplest representation is an <span class="math">n × n</span> matrix <span class="math">A</span>. The entry <span class="math">A[u,v]</span> is 1 when the graph contains the edge <span class="math">(u,v)</span>, and 0 otherwise. For an undirected graph the matrix is symmetric: <span class="math">A[u,v]=A[v,u]</span>.</p>
 <div class="compare-grid"><article class="compare-card"><span class="tag">Strength</span><h3>Constant-time edge test</h3><p>To ask whether <span class="math">(u,v)</span> is present, inspect one matrix entry. The operation takes <span class="math">O(1)</span> time.</p></article><article class="compare-card"><span class="tag">Cost</span><h3>Quadratic space</h3><p>The matrix always contains <span class="math">n²</span> entries, whether the graph has ten edges or almost every possible edge.</p></article></div>
-<p>There is another disadvantage for sparse graphs. To find all neighbors of a vertex <span class="math">v</span>, the algorithm must scan the entire row <span class="math">A[v,*]</span>. This takes <span class="math">Θ(n)</span> time even if <span class="math">v</span> has only one neighbor.</p>
+<p>To list the neighbors of <span class="math">v</span>, a matrix must scan the entire row <span class="math">A[v,*]</span>: <span class="math">Θ(n)</span> time even when <span class="math">v</span> has one neighbor.</p>
 </section>
 
 <section id="list"><h2>Adjacency list</h2>
 <p>In an adjacency-list representation, every vertex stores a list of its neighbors. We can think of an array <span class="math">Adj</span> in which <span class="math">Adj[v]</span> contains exactly the vertices adjacent to <span class="math">v</span>.</p>
 <p>For an undirected graph, each edge appears twice: if <span class="math">{u,v}</span> is an edge, then <span class="math">v</span> appears in <span class="math">Adj[u]</span> and <span class="math">u</span> appears in <span class="math">Adj[v]</span>. Consequently, the total length of all adjacency lists is <span class="math">2m</span>.</p>
 <div class="graph-formula">space = Θ(n + m)</div>
-<p>This is why adjacency lists are particularly effective for sparse graphs. Iterating over all neighbors of <span class="math">v</span> takes time proportional to the degree of <span class="math">v</span>, rather than to the total number of vertices.</p>
+<p>With adjacency lists, iterating over the neighbors of <span class="math">v</span> takes time proportional to its degree.</p>
 <div class="code-simple"><pre><code>graph = {
     0: [1, 2, 3],
     1: [0, 2],
