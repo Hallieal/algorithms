@@ -381,3 +381,20 @@
   transform:none !important;
   font:700 13px ui-sans-serif,system-ui,sans-serif !important;
 }
+
+/* v14 definitive vertex-label centering */
+.graph-content-page svg.centered-label-svg text.vertex-label{
+  transform:none !important;
+  text-anchor:middle !important;
+  dominant-baseline:middle !important;
+  alignment-baseline:middle;
+  font-family:ui-sans-serif,system-ui,sans-serif;
+  font-weight:700;
+}
+.graph-content-page .weighted-svg.centered-label-svg text.vertex-label{
+  fill:#fff !important;
+  font-size:13px;
+}
+.graph-content-page .tree-pair-svg.centered-label-svg text.vertex-label{
+  font-size:14px;
+}
