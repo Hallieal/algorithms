@@ -1,1 +1,63 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><title>Sequences and Strings | Allan's Handbook of Algorithms</title><link href="../assets/css/styles.css" rel="stylesheet"/><link href="assets/dp.css" rel="stylesheet"/><link href="../assets/images/favicon-32.png" rel="icon" sizes="32x32" type="image/png"/></head><body class="lecture-page dp-content-page"><header class="topbar"><a class="brand" href="../"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name">Allan's Handbook of Algorithms</span></a><nav class="topnav"><a href="./">DP overview</a><div class="language-switch"><span class="current">EN</span><span class="language-separator">·</span><a href="sequences-ru.html">RU</a></div></nav></header><aside class="sidebar"><div class="sidebar-title">Dynamic Programming · Sequences and Strings</div><a href="#overview">Overview</a></aside><main class="lecture"><article><div class="lecture-kicker">Chapter 10 · Section 5</div><h1>Sequences and Strings</h1><p class="lecture-lead">Subsequences, alignments, and two-index states.</p><h2 id="overview">Section structure</h2><div class="dp-placeholder">This page is in place as part of the chapter structure. Its full lesson will be written in the next pass after the chapter structure is settled.</div><div class="chapter-nav"><a href="grids.html">← Grid and Path DP</a><a href="knapsack.html">Knapsack and Subset DP →</a></div></article></main><footer class="overview-footer"><div>Allan's Handbook of Algorithms</div><div>© 2026 Allan Allemand</div></footer><script src="../assets/js/language-switch.js"></script></body></html>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><title>Sequences and Strings | Allan's Handbook of Algorithms</title><link href="../assets/css/styles.css" rel="stylesheet"/><link href="assets/dp.css" rel="stylesheet"/></head><body class="lecture-page dp-content-page"><header class="topbar"><a class="brand" href="../"><span class="brand-name">Allan's Handbook of Algorithms</span></a><nav class="topnav"><a href="./">DP overview</a><div class="language-switch"><span class="current">EN</span> · <a href="sequences-ru.html">RU</a></div></nav></header><aside class="sidebar"><div class="sidebar-title">Dynamic Programming · Sequences and Strings</div><a href="#s1">Two prefixes</a><a href="#s2">LCS</a><a href="#s3">The LCS matrix</a><a href="#s4">Reconstruction</a><a href="#s5">Edit distance</a><a href="#s6">The general pattern</a></aside><main class="lecture"><article><div class="lecture-kicker">Chapter 10 · Section 5</div><h1>Sequences and Strings</h1><p class="lecture-lead">Comparing two sequences usually requires two state parameters: how much of the first sequence and how much of the second sequence have already been considered.</p>
+<h2 id="s1">Two indices represent two prefixes</h2><p>Let X and Y be two strings. Define dp[i][j] as the length of the longest common subsequence of the first i characters of X and the first j characters of Y. Empty prefixes give the boundary immediately: if either prefix is empty, the common subsequence has length 0.</p><div class="dp-definition"><p><b>dp[i][j]</b> = the answer for the pair of prefixes X[:i] and Y[:j].</p></div>
+<h2 id="s2">Longest Common Subsequence</h2><p>Look only at the final characters of the two prefixes. If they match, they can extend the best answer for the two shorter prefixes. If they differ, at least one of these two final characters is absent from the chosen common subsequence.</p><div class="dp-formula">if X[i − 1] = Y[j − 1]: &nbsp; dp[i][j] = dp[i − 1][j − 1] + 1</div><div class="dp-formula">otherwise: &nbsp; dp[i][j] = max(dp[i − 1][j], dp[i][j − 1])</div><div class="dp-code"><div class="dp-code-head">Python · LCS length</div><pre><code>def lcs_length(x, y):
+    n, m = len(x), len(y)
+    dp = [[0] * (m + 1) for _ in range(n + 1)]
+
+    for i in range(1, n + 1):
+        for j in range(1, m + 1):
+            if x[i - 1] == y[j - 1]:
+                dp[i][j] = dp[i - 1][j - 1] + 1
+            else:
+                dp[i][j] = max(
+                    dp[i - 1][j],
+                    dp[i][j - 1]
+                )
+
+    return dp[n][m]</code></pre></div>
+<h2 id="s3">How to read the LCS matrix</h2><p>For X = ABCD and Y = ACBD, the final length is 3. An entry (i,j) is not about one pair of characters; it summarizes the entire pair of prefixes X[:i] and Y[:j]. That is why neighboring cells contain exactly the subproblems needed by the recurrence.</p><div style="overflow-x:auto"><table class="dp-table"><thead><tr><th></th><th>∅</th><th>A</th><th>C</th><th>B</th><th>D</th></tr></thead><tbody><tr><th>∅</th><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr><tr><th>A</th><td>0</td><td>1</td><td>1</td><td>1</td><td>1</td></tr><tr><th>B</th><td>0</td><td>1</td><td>1</td><td>2</td><td>2</td></tr><tr><th>C</th><td>0</td><td>1</td><td>2</td><td>2</td><td>2</td></tr><tr><th>D</th><td>0</td><td>1</td><td>2</td><td>2</td><td><b>3</b></td></tr></tbody></table></div><figure class="dp-figure"><svg class="dp-svg" viewBox="0 0 650 250"><defs><marker id="seqarr" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L7,3 z" fill="#20262d"/></marker></defs><rect x="270" y="155" width="110" height="60" rx="10" class="green"/><rect x="270" y="45" width="110" height="60" rx="10" class="yellow"/><rect x="90" y="155" width="110" height="60" rx="10" class="blue"/><rect x="90" y="45" width="110" height="60" rx="10" class="violet"/><text x="325" y="185">dp[i][j]</text><text x="325" y="75">dp[i−1][j]</text><text x="145" y="185">dp[i][j−1]</text><text x="145" y="75">dp[i−1][j−1]</text><path d="M325 105 V145" class="edge" marker-end="url(#seqarr)"/><path d="M200 185 H260" class="edge" marker-end="url(#seqarr)"/><path d="M200 90 L265 155" class="edge" marker-end="url(#seqarr)"/></svg><figcaption>The three neighboring cells correspond to three ways of shortening the pair of prefixes.</figcaption></figure>
+<h2 id="s4">The length is not yet the subsequence</h2><p>The table answers the length question. To recover the characters themselves, walk backward from dp[n][m]. When the final characters match, record that character and move diagonally. Otherwise move to a neighboring cell whose value produced the current optimum.</p><div class="dp-code"><div class="dp-code-head">Python · reconstruct an LCS</div><pre><code>def lcs(x, y):
+    n, m = len(x), len(y)
+    dp = [[0] * (m + 1) for _ in range(n + 1)]
+
+    for i in range(1, n + 1):
+        for j in range(1, m + 1):
+            if x[i - 1] == y[j - 1]:
+                dp[i][j] = dp[i - 1][j - 1] + 1
+            else:
+                dp[i][j] = max(dp[i - 1][j], dp[i][j - 1])
+
+    answer = []
+    i, j = n, m
+
+    while i > 0 and j > 0:
+        if x[i - 1] == y[j - 1]:
+            answer.append(x[i - 1])
+            i -= 1
+            j -= 1
+        elif dp[i - 1][j] >= dp[i][j - 1]:
+            i -= 1
+        else:
+            j -= 1
+
+    return "".join(reversed(answer))</code></pre></div><p>When the values above and to the left are tied, several different LCSs of the same length may exist. The tie-breaking rule returns one of them.</p>
+<h2 id="s5">Edit distance: change the final operations</h2><p>For edit distance we can keep the same state coordinates: dp[i][j] is the minimum number of operations that transforms the first i characters of X into the first j characters of Y. The final step now has three possibilities: delete a character, insert a character, or align the final characters and possibly pay for a substitution.</p><div class="dp-formula">dp[i][j] = min(delete, insert, match / substitute)</div><div class="dp-code"><div class="dp-code-head">Python · Levenshtein distance</div><pre><code>def edit_distance(x, y):
+    n, m = len(x), len(y)
+    dp = [[0] * (m + 1) for _ in range(n + 1)]
+
+    for i in range(n + 1):
+        dp[i][0] = i
+    for j in range(m + 1):
+        dp[0][j] = j
+
+    for i in range(1, n + 1):
+        for j in range(1, m + 1):
+            substitution = 0 if x[i - 1] == y[j - 1] else 1
+            dp[i][j] = min(
+                dp[i - 1][j] + 1,
+                dp[i][j - 1] + 1,
+                dp[i - 1][j - 1] + substitution
+            )
+
+    return dp[n][m]</code></pre></div><table class="dp-table"><thead><tr><th>Final operation</th><th>Previous state</th><th>Cost</th></tr></thead><tbody><tr><td>Delete</td><td>dp[i−1][j]</td><td>+1</td></tr><tr><td>Insert</td><td>dp[i][j−1]</td><td>+1</td></tr><tr><td>Match / substitute</td><td>dp[i−1][j−1]</td><td>+0 / +1</td></tr></tbody></table>
+<h2 id="s6">One matrix, several problems</h2><p>LCS and edit distance look like different problems, but they use the same state geometry. A row means a prefix of X and a column means a prefix of Y. The problem itself is encoded by the allowed transitions and by how their values are combined.</p><div class="dp-compare"><article><h3>LCS</h3><p>Maximize the number of matching characters preserved in order.</p></article><article><h3>Edit distance</h3><p>Minimize the cost of a sequence of allowed transformations.</p></article></div><p>For strings of lengths n and m, both standard tables contain (n+1)(m+1) states and perform O(1) work per cell, so the running time is O(nm). If only the final value is required, rather than reconstruction, many variants can reduce memory to O(min(n,m)).</p><div class="chapter-nav"><a href="grids.html">← Grid and Path DP</a><a href="knapsack.html">Next: Knapsack and Subset DP →</a></div></article></main><footer class="overview-footer"><div>Allan's Handbook of Algorithms</div><div>© 2026 Allan Allemand</div></footer></body></html>
