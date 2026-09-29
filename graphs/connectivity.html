@@ -31,7 +31,7 @@
 <p>Across all searches, each vertex and edge is processed only a constant number of times, so the total running time with adjacency lists is <span class="math">Θ(n+m)</span>.</p>
 </section>
 
-<section id="partition"><h2>Why components form a partition</h2>
+<section id="partition"><h2>Component Partition</h2>
 <p>For any two vertices <span class="math">s</span> and <span class="math">t</span>, their connected components are either identical or disjoint. They cannot partially overlap.</p>
 <p>If the component of <span class="math">s</span> and the component of <span class="math">t</span> shared a vertex <span class="math">v</span>, there would be a path from <span class="math">s</span> to <span class="math">v</span> and a path from <span class="math">v</span> to <span class="math">t</span>. Concatenating them would give a path from <span class="math">s</span> to <span class="math">t</span>, so every vertex reachable from one would also be reachable from the other.</p>
 <div class="graph-definition"><p>Thus connected components are the maximal connected pieces of an undirected graph, and every vertex belongs to exactly one of them.</p></div>
@@ -53,7 +53,7 @@
 <figure><h3>Not bipartite</h3><svg class="graph-svg odd-cycle-svg" viewBox="0 0 330 220"><g class="edge"><line x1="165" y1="35" x2="75" y2="170"/><line x1="75" y1="170" x2="255" y2="170"/><line class="conflict-edge" x1="255" y1="170" x2="165" y2="35"/></g><g class="node"><circle class="side-a" cx="165" cy="35" r="15"/><circle class="side-b" cx="75" cy="170" r="15"/><circle class="side-b" cx="255" cy="170" r="15"/></g><text class="conflict-label" x="212" y="93">conflict</text></svg><figcaption>An odd cycle cannot be two-colored.</figcaption></figure></div>
 </section>
 
-<section id="odd-cycle"><h2>Odd cycles are exactly the obstruction</h2>
+<section id="odd-cycle"><h2>Odd Cycles and Bipartiteness</h2>
 <p>Walk around any cycle in a bipartite graph. Colors must alternate at every edge. After an even number of steps the color returns to the starting color; after an odd number it is the opposite color. Therefore an odd cycle cannot occur in a bipartite graph.</p>
 <p>The converse is also true: if a graph contains no odd cycle, then it is bipartite. BFS gives a direct algorithm and proof.</p>
 <div class="graph-definition theorem"><p><b>Bipartite characterization.</b> An undirected graph is bipartite if and only if it contains no odd cycle.</p></div>
@@ -94,7 +94,7 @@ def is_bipartite(graph):
 <p>All three procedures run in linear time with adjacency lists.</p>
 </section>
 
-<section id="directed-note"><h2>A note on directed connectivity</h2>
+<section id="directed-note"><h2>Directed Connectivity</h2>
 <p>For directed graphs, “connected” splits into two notions. A graph is <b>weakly connected</b> if it becomes connected after edge directions are ignored. It is <b>strongly connected</b> if every vertex can reach every other vertex by directed paths.</p>
 <p>Strong connectivity requires additional machinery. We postpone strongly connected components until after directed graphs and topological ordering, where DFS finishing times will already be familiar.</p>
 </section>
