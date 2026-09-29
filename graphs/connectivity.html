@@ -1,9 +1,9 @@
 <!DOCTYPE html><html lang="en"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
 <title>Connectivity, Cycles, and Bipartite Graphs | Allan's Handbook of Algorithms</title><link href="../assets/css/styles.css" rel="stylesheet"/><link href="assets/graphs.css" rel="stylesheet"/><link href="../assets/images/favicon-32.png" rel="icon" sizes="32x32" type="image/png"/><link href="connectivity.html" hreflang="en" rel="alternate"/><link href="connectivity-ru.html" hreflang="ru" rel="alternate"/></head>
 <body class="lecture-page graph-content-page"><header class="topbar"><a class="brand" href="../"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name">Allan's Handbook of Algorithms</span></a><nav class="topnav"><a href="./">Graphs overview</a><div class="language-switch"><span class="current">EN</span><span class="language-separator">·</span><a href="connectivity-ru.html">RU</a></div></nav></header>
-<main class="lecture"><section class="lecture-hero graph-hero"><div><div class="chapter-label">Chapter 8 · Section 6</div><h1>Connectivity, Cycles, and Bipartite Graphs</h1><p class="chapter-topics">BFS and DFS can find connected components, detect cycles, and test bipartiteness.</p></div><div class="graph-hero-art"><svg class="graph-svg connectivity-hero-svg" viewBox="0 0 230 170"><g class="edge"><line x1="35" y1="50" x2="82" y2="27"/><line x1="82" y1="27" x2="95" y2="78"/><line x1="95" y1="78" x2="35" y2="50"/><line x1="140" y1="45" x2="190" y2="30"/><line x1="190" y1="30" x2="200" y2="90"/><line x1="200" y1="90" x2="150" y2="112"/><line x1="150" y1="112" x2="140" y2="45"/></g><g class="node"><circle class="c1" cx="35" cy="50" r="11"/><circle class="c1" cx="82" cy="27" r="11"/><circle class="c1" cx="95" cy="78" r="11"/><circle class="c2" cx="140" cy="45" r="11"/><circle class="c2" cx="190" cy="30" r="11"/><circle class="c2" cx="200" cy="90" r="11"/><circle class="c2" cx="150" cy="112" r="11"/></g></svg></div></section>
+<aside aria-label="Section navigation" class="sidebar"><div class="sidebar-title">Graphs · Connectivity, Cycles, and Bipartite Graphs</div><a href="#section-1">Connected components</a><a href="#section-2">Component Partition</a><a href="#section-3">Cycles and trees</a><a href="#section-4">Bipartite graphs</a><a href="#section-5">Odd Cycles and Bipartiteness</a><a href="#section-6">Testing bipartiteness with BFS</a><a href="#section-7">Running time</a><a href="#section-8">Directed Connectivity</a></aside><main class="lecture"><section class="lecture-hero graph-hero"><div><div class="chapter-label">Chapter 8 · Section 6</div><h1>Connectivity, Cycles, and Bipartite Graphs</h1><p class="chapter-topics">BFS and DFS can find connected components, detect cycles, and test bipartiteness.</p></div><div class="graph-hero-art"><svg class="graph-svg connectivity-hero-svg" viewBox="0 0 230 170"><g class="edge"><line x1="35" y1="50" x2="82" y2="27"/><line x1="82" y1="27" x2="95" y2="78"/><line x1="95" y1="78" x2="35" y2="50"/><line x1="140" y1="45" x2="190" y2="30"/><line x1="190" y1="30" x2="200" y2="90"/><line x1="200" y1="90" x2="150" y2="112"/><line x1="150" y1="112" x2="140" y2="45"/></g><g class="node"><circle class="c1" cx="35" cy="50" r="11"/><circle class="c1" cx="82" cy="27" r="11"/><circle class="c1" cx="95" cy="78" r="11"/><circle class="c2" cx="140" cy="45" r="11"/><circle class="c2" cx="190" cy="30" r="11"/><circle class="c2" cx="200" cy="90" r="11"/><circle class="c2" cx="150" cy="112" r="11"/></g></svg></div></section>
 <section class="lecture-section">
-<section id="components"><h2>Connected components</h2>
+<section id="components"><h2 id="section-1">Connected components</h2>
 <p class="lead">In an undirected graph, the connected component containing a vertex <span class="math">s</span> is exactly the set of vertices reachable from <span class="math">s</span>.</p>
 <p>A single BFS or DFS from <span class="math">s</span> therefore discovers precisely one component. If some vertex remains unvisited after the search finishes, start another traversal there; it discovers a different component. Repeating this process partitions all vertices.</p>
 <figure class="graph-figure components-figure"><svg class="graph-svg components-svg" viewBox="0 0 760 270">
@@ -31,13 +31,13 @@
 <p>Across all searches, each vertex and edge is processed only a constant number of times, so the total running time with adjacency lists is <span class="math">Θ(n+m)</span>.</p>
 </section>
 
-<section id="partition"><h2>Component Partition</h2>
+<section id="partition"><h2 id="section-2">Component Partition</h2>
 <p>For any two vertices <span class="math">s</span> and <span class="math">t</span>, their connected components are either identical or disjoint. They cannot partially overlap.</p>
 <p>If the component of <span class="math">s</span> and the component of <span class="math">t</span> shared a vertex <span class="math">v</span>, there would be a path from <span class="math">s</span> to <span class="math">v</span> and a path from <span class="math">v</span> to <span class="math">t</span>. Concatenating them would give a path from <span class="math">s</span> to <span class="math">t</span>, so every vertex reachable from one would also be reachable from the other.</p>
 <div class="graph-definition"><p>Thus connected components are the maximal connected pieces of an undirected graph, and every vertex belongs to exactly one of them.</p></div>
 </section>
 
-<section id="cycles"><h2>Cycles and trees</h2>
+<section id="cycles"><h2 id="section-3">Cycles and trees</h2>
 <p>A <b>cycle</b> is a closed path that returns to its starting vertex without repeating intermediate vertices. A connected undirected graph with no cycle is a <b>tree</b>.</p>
 <div class="cycle-tree-pair">
 <figure><h3>Tree</h3><svg class="graph-svg" viewBox="0 0 280 190"><g class="edge"><line x1="140" y1="28" x2="75" y2="90"/><line x1="140" y1="28" x2="205" y2="90"/><line x1="75" y1="90" x2="45" y2="155"/><line x1="75" y1="90" x2="110" y2="155"/><line x1="205" y1="90" x2="230" y2="155"/></g><g class="node"><circle cx="140" cy="28" r="12"/><circle cx="75" cy="90" r="12"/><circle cx="205" cy="90" r="12"/><circle cx="45" cy="155" r="12"/><circle cx="110" cy="155" r="12"/><circle cx="230" cy="155" r="12"/></g></svg><figcaption>Connected, no cycles.</figcaption></figure>
@@ -46,20 +46,20 @@
 <div class="graph-definition theorem"><p>For a connected undirected graph with <span class="math">n</span> vertices, the following are equivalent: it is a tree; it is connected and acyclic; it is connected and has exactly <span class="math">n−1</span> edges.</p></div>
 </section>
 
-<section id="bipartite"><h2>Bipartite graphs</h2>
+<section id="bipartite"><h2 id="section-4">Bipartite graphs</h2>
 <p>A graph is <b>bipartite</b> if its vertices can be divided into two sets <span class="math">X</span> and <span class="math">Y</span> so that every edge has one endpoint in each set. Equivalently, the vertices can be colored with two colors so that adjacent vertices always receive different colors.</p>
 <div class="bipartite-pair">
 <figure><h3>Bipartite</h3><svg class="graph-svg bip-svg" viewBox="0 0 330 220"><g class="edge"><line x1="75" y1="45" x2="255" y2="45"/><line x1="75" y1="45" x2="255" y2="110"/><line x1="75" y1="110" x2="255" y2="45"/><line x1="75" y1="110" x2="255" y2="175"/><line x1="75" y1="175" x2="255" y2="110"/></g><g class="node"><circle class="side-a" cx="75" cy="45" r="14"/><circle class="side-a" cx="75" cy="110" r="14"/><circle class="side-a" cx="75" cy="175" r="14"/><circle class="side-b" cx="255" cy="45" r="14"/><circle class="side-b" cx="255" cy="110" r="14"/><circle class="side-b" cx="255" cy="175" r="14"/></g><text class="set-label" x="62" y="210">X</text><text class="set-label" x="246" y="210">Y</text></svg></figure>
 <figure><h3>Not bipartite</h3><svg class="graph-svg odd-cycle-svg" viewBox="0 0 330 220"><g class="edge"><line x1="165" y1="35" x2="75" y2="170"/><line x1="75" y1="170" x2="255" y2="170"/><line class="conflict-edge" x1="255" y1="170" x2="165" y2="35"/></g><g class="node"><circle class="side-a" cx="165" cy="35" r="15"/><circle class="side-b" cx="75" cy="170" r="15"/><circle class="side-b" cx="255" cy="170" r="15"/></g><text class="conflict-label" x="212" y="93">conflict</text></svg><figcaption>An odd cycle cannot be two-colored.</figcaption></figure></div>
 </section>
 
-<section id="odd-cycle"><h2>Odd Cycles and Bipartiteness</h2>
+<section id="odd-cycle"><h2 id="section-5">Odd Cycles and Bipartiteness</h2>
 <p>Walk around any cycle in a bipartite graph. Colors must alternate at every edge. After an even number of steps the color returns to the starting color; after an odd number it is the opposite color. Therefore an odd cycle cannot occur in a bipartite graph.</p>
 <p>The converse is also true: if a graph contains no odd cycle, then it is bipartite. BFS gives a direct algorithm and proof.</p>
 <div class="graph-definition theorem"><p><b>Bipartite characterization.</b> An undirected graph is bipartite if and only if it contains no odd cycle.</p></div>
 </section>
 
-<section id="bfs-color"><h2>Testing bipartiteness with BFS</h2>
+<section id="bfs-color"><h2 id="section-6">Testing bipartiteness with BFS</h2>
 <p>Choose any vertex <span class="math">s</span> in a connected component and run BFS. Color the even-numbered layers one color and the odd-numbered layers the other. Edges between consecutive layers automatically have opposite-colored endpoints.</p>
 <figure class="graph-figure"><svg class="graph-svg bip-layers-svg" viewBox="0 0 720 260"><g class="layer-bands"><rect class="even-band" x="20" y="25" width="145" height="205" rx="20"/><rect class="odd-band" x="185" y="25" width="145" height="205" rx="20"/><rect class="even-band" x="350" y="25" width="170" height="205" rx="20"/><rect class="odd-band" x="540" y="25" width="155" height="205" rx="20"/></g><g class="edge"><line x1="90" y1="130" x2="255" y2="75"/><line x1="90" y1="130" x2="255" y2="180"/><line x1="255" y1="75" x2="420" y2="75"/><line x1="255" y1="75" x2="450" y2="165"/><line x1="255" y1="180" x2="450" y2="165"/><line x1="420" y1="75" x2="615" y2="125"/></g><g class="node"><circle class="side-a" cx="90" cy="130" r="14"/><circle class="side-b" cx="255" cy="75" r="14"/><circle class="side-b" cx="255" cy="180" r="14"/><circle class="side-a" cx="420" cy="75" r="14"/><circle class="side-a" cx="450" cy="165" r="14"/><circle class="side-b" cx="615" cy="125" r="14"/></g><g class="layer-label"><text x="75" y="52">L₀</text><text x="240" y="52">L₁</text><text x="420" y="52">L₂</text><text x="600" y="52">L₃</text></g></svg><figcaption>Even BFS layers receive one color; odd layers receive the other.</figcaption></figure>
 <p>If BFS finds an edge whose endpoints have the same color, the coloring fails. More importantly, this edge certifies an odd cycle: the two endpoints lie at the same parity of distance from the root, and their paths toward a common ancestor together with the edge form an odd cycle.</p>
@@ -89,15 +89,15 @@ def is_bipartite(graph):
 <p>The outer loop is necessary because the graph may have several connected components. Every component must admit a valid two-coloring.</p>
 </section>
 
-<section id="complexity"><h2>Running time</h2>
+<section id="complexity"><h2 id="section-7">Running time</h2>
 <p>Connected components, cycle detection, and bipartite testing all require only a constant amount of work per vertex and per adjacency-list entry. Each therefore runs in</p><div class="graph-formula">Θ(n + m)</div>
 <p>All three procedures run in linear time with adjacency lists.</p>
 </section>
 
-<section id="directed-note"><h2>Directed Connectivity</h2>
-<p>For directed graphs, “connected” splits into two notions. A graph is <b>weakly connected</b> if it becomes connected after edge directions are ignored. It is <b>strongly connected</b> if every vertex can reach every other vertex by directed paths.</p>
+<section id="directed-note"><h2 id="section-8">Directed Connectivity</h2>
+<p>For directed graphs, connected splits into two notions. A graph is <b>weakly connected</b> if it becomes connected after edge directions are ignored. It is <b>strongly connected</b> if every vertex can reach every other vertex by directed paths.</p>
 <p>Strong connectivity requires additional machinery. We postpone strongly connected components until after directed graphs and topological ordering, where DFS finishing times will already be familiar.</p>
 </section>
 </section>
-<div class="chapter-nav"><a href="dfs.html">← Depth-First Search</a><a href="topological.html">Next: Topological Sorting →</a></div></main>
+<div class="chapter-nav"><a href="dfs.html">← Depth-First Search</a><a href="topological.html">Topological Ordering →</a></div></main>
 <footer class="overview-footer"><div>Allan's Handbook of Algorithms</div><div>© 2026 Allan Allemand</div></footer><script src="../assets/js/language-switch.js"></script></body></html>
