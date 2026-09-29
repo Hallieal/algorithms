@@ -1,9 +1,9 @@
 <!DOCTYPE html><html lang="en"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
 <title>Breadth-First Search | Allan's Handbook of Algorithms</title><link href="../assets/css/styles.css" rel="stylesheet"/><link href="assets/graphs.css" rel="stylesheet"/><link href="../assets/images/favicon-32.png" rel="icon" sizes="32x32" type="image/png"/><link href="bfs.html" hreflang="en" rel="alternate"/><link href="bfs-ru.html" hreflang="ru" rel="alternate"/></head>
 <body class="lecture-page graph-content-page"><header class="topbar"><a class="brand" href="../"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name">Allan's Handbook of Algorithms</span></a><nav class="topnav"><a href="./">Graphs overview</a><div class="language-switch"><span class="current">EN</span><span class="language-separator">·</span><a href="bfs-ru.html">RU</a></div></nav></header>
-<main class="lecture"><section class="lecture-hero graph-hero"><div><div class="chapter-label">Chapter 8 · Section 4</div><h1>Breadth-First Search</h1><p class="chapter-topics">BFS explores outward from a source one layer at a time. The layers are exactly the shortest-path distances in an unweighted graph.</p></div><div class="graph-hero-art"><svg class="graph-svg bfs-hero-svg" viewBox="0 0 220 175"><g class="bfs-tree-lines"><line x1="110" y1="27" x2="62" y2="77"/><line x1="110" y1="27" x2="158" y2="77"/><line x1="62" y1="77" x2="30" y2="137"/><line x1="62" y1="77" x2="85" y2="137"/><line x1="158" y1="77" x2="137" y2="137"/><line x1="158" y1="77" x2="190" y2="137"/></g><g class="node"><circle class="l0" cx="110" cy="27" r="13"/><circle class="l1" cx="62" cy="77" r="13"/><circle class="l1" cx="158" cy="77" r="13"/><circle class="l2" cx="30" cy="137" r="13"/><circle class="l2" cx="85" cy="137" r="13"/><circle class="l2" cx="137" cy="137" r="13"/><circle class="l2" cx="190" cy="137" r="13"/></g></svg></div></section>
+<aside aria-label="Section navigation" class="sidebar"><div class="sidebar-title">Graphs · Breadth-First Search</div><a href="#section-1">Layered Exploration</a><a href="#section-2">Layers are shortest-path distances</a><a href="#section-3">The BFS tree</a><a href="#section-4">The BFS Queue</a><a href="#section-5">The algorithm</a><a href="#section-6">Traversal Example</a><a href="#section-7">Reconstructing a shortest path</a><a href="#section-8">Running time</a><a href="#section-9">BFS Results</a><a href="#section-10">BFS in directed graphs</a></aside><main class="lecture"><section class="lecture-hero graph-hero"><div><div class="chapter-label">Chapter 8 · Section 4</div><h1>Breadth-First Search</h1><p class="chapter-topics">BFS explores outward from a source one layer at a time. The layers are exactly the shortest-path distances in an unweighted graph.</p></div><div class="graph-hero-art"><svg class="graph-svg bfs-hero-svg" viewBox="0 0 220 175"><g class="bfs-tree-lines"><line x1="110" y1="27" x2="62" y2="77"/><line x1="110" y1="27" x2="158" y2="77"/><line x1="62" y1="77" x2="30" y2="137"/><line x1="62" y1="77" x2="85" y2="137"/><line x1="158" y1="77" x2="137" y2="137"/><line x1="158" y1="77" x2="190" y2="137"/></g><g class="node"><circle class="l0" cx="110" cy="27" r="13"/><circle class="l1" cx="62" cy="77" r="13"/><circle class="l1" cx="158" cy="77" r="13"/><circle class="l2" cx="30" cy="137" r="13"/><circle class="l2" cx="85" cy="137" r="13"/><circle class="l2" cx="137" cy="137" r="13"/><circle class="l2" cx="190" cy="137" r="13"/></g></svg></div></section>
 <section class="lecture-section">
-<section id="idea"><h2>Layered Exploration</h2>
+<section id="idea"><h2 id="section-1">Layered Exploration</h2>
 <p class="lead">Breadth-first search starts at a source vertex <span class="math">s</span> and explores outward in all possible directions, adding vertices one layer at a time.</p>
 <p>The first layer contains all neighbors of <span class="math">s</span>. The second contains all previously unseen vertices adjacent to the first layer. The third is formed from the second in the same way, and the process continues until no new vertices are found.</p>
 <div class="graph-definition"><p><span class="math">L₀={s}</span>. For <span class="math">j≥0</span>, layer <span class="math">L<sub>j+1</sub></span> consists of the vertices not in an earlier layer that have an edge to a vertex in <span class="math">L<sub>j</sub></span>.</p></div>
@@ -15,14 +15,14 @@
 <figcaption>BFS behaves like an expanding wave. A vertex's layer is the moment at which the wave first reaches it.</figcaption></figure>
 </section>
 
-<section id="distance"><h2>Layers are shortest-path distances</h2>
+<section id="distance"><h2 id="section-2">Layers are shortest-path distances</h2>
 <p>If distance is the minimum number of edges on a path, every vertex in <span class="math">L<sub>j</sub></span> is at distance exactly <span class="math">j</span> from <span class="math">s</span>.</p>
 <div class="graph-definition theorem"><p><b>BFS distance property.</b> For every <span class="math">j≥1</span>, <span class="math">L<sub>j</sub></span> consists precisely of the vertices whose distance from <span class="math">s</span> is <span class="math">j</span>. A vertex <span class="math">t</span> is reachable from <span class="math">s</span> if and only if it appears in some BFS layer.</p></div>
 <p>Why? Every vertex placed in <span class="math">L<sub>j</sub></span> is reached by extending a path to <span class="math">L<sub>j−1</sub></span>, so there is a path of <span class="math">j</span> edges. It cannot have a shorter path: if it did, BFS would have encountered it in an earlier layer.</p>
 <div class="warning"><b>Important:</b> this shortest-path statement counts edges. It applies directly to unweighted graphs, or to graphs in which every edge has the same cost. Different edge weights require a weighted shortest-path algorithm.</div>
 </section>
 
-<section id="tree"><h2>The BFS tree</h2>
+<section id="tree"><h2 id="section-3">The BFS tree</h2>
 <p>When a previously unseen vertex <span class="math">v</span> is discovered while examining a vertex <span class="math">u</span>, record <span class="math">u</span> as the parent of <span class="math">v</span>. These parent edges form a tree rooted at <span class="math">s</span>.</p>
 <div class="bfs-tree-pair">
 <figure><h3>Original graph</h3><svg class="graph-svg tree-pair-svg" viewBox="0 0 330 245"><g class="edge"><line x1="165" y1="35" x2="85" y2="100"/><line x1="165" y1="35" x2="245" y2="100"/><line x1="85" y1="100" x2="45" y2="190"/><line x1="85" y1="100" x2="135" y2="190"/><line x1="245" y1="100" x2="205" y2="190"/><line x1="245" y1="100" x2="285" y2="190"/><line class="extra-edge" x1="85" y1="100" x2="245" y2="100"/><line class="extra-edge" x1="135" y1="190" x2="205" y2="190"/></g><g class="node numbered"><circle class="l0" cx="165" cy="35" r="14"/><text x="160" y="40">s</text><circle class="l1" cx="85" cy="100" r="14"/><text x="80" y="105">a</text><circle class="l1" cx="245" cy="100" r="14"/><text x="240" y="105">b</text><circle class="l2" cx="45" cy="190" r="14"/><text x="40" y="195">c</text><circle class="l2" cx="135" cy="190" r="14"/><text x="130" y="195">d</text><circle class="l2" cx="205" cy="190" r="14"/><text x="200" y="195">e</text><circle class="l2" cx="285" cy="190" r="14"/><text x="280" y="195">f</text></g></svg></figure>
@@ -30,13 +30,13 @@
 <p>The unique tree path from <span class="math">s</span> to any reachable vertex uses the minimum possible number of edges. The parent array therefore stores shortest paths from the source.</p>
 </section>
 
-<section id="queue"><h2>The BFS Queue</h2>
+<section id="queue"><h2 id="section-4">The BFS Queue</h2>
 <p>The vertices that have been discovered but not yet explored are kept in a <b>first-in, first-out (FIFO) queue</b>. The oldest discovered vertex is processed first. This is what forces the search to finish the current layer before moving farther from the source.</p>
 <div class="queue-demo"><div class="queue-label">front</div><div class="queue-cells"><span>a</span><span>b</span><span>c</span><span>d</span></div><div class="queue-label">back</div></div>
 <p>A vertex should be marked as discovered <b>when it enters the queue</b>, not when it leaves. Otherwise the same vertex can be inserted several times by different neighbors.</p>
 </section>
 
-<section id="algorithm"><h2>The algorithm</h2>
+<section id="algorithm"><h2 id="section-5">The algorithm</h2>
 <div class="code-simple"><pre><code>from collections import deque
 
 def bfs(graph, start):
@@ -57,7 +57,7 @@ def bfs(graph, start):
 <p>The dictionary <code>distance</code> also serves as the discovered set. When a vertex first appears there, its shortest distance is fixed. The <code>parent</code> dictionary records the BFS tree.</p>
 </section>
 
-<section id="walkthrough"><h2>Traversal Example</h2>
+<section id="walkthrough"><h2 id="section-6">Traversal Example</h2>
 <p>For the layered graph above, start with <span class="math">s</span>. The queue evolves as follows; the exact order inside a layer can depend on the order of adjacency lists.</p>
 <div class="bfs-steps">
 <div class="bfs-step"><b>Start</b><span class="queue-inline"><i>s</i></span><p>Discover <span class="math">s</span>, with distance 0.</p></div>
@@ -68,7 +68,7 @@ def bfs(graph, start):
 </div>
 </section>
 
-<section id="paths"><h2>Reconstructing a shortest path</h2>
+<section id="paths"><h2 id="section-7">Reconstructing a shortest path</h2>
 <p>Suppose BFS starts at <span class="math">s</span> and we want a shortest path to <span class="math">t</span>. Follow parent pointers backward from <span class="math">t</span> until reaching <span class="math">s</span>, then reverse the sequence.</p>
 <div class="code-simple"><pre><code>def build_path(parent, start, target):
     if target not in parent:
@@ -86,20 +86,20 @@ def bfs(graph, start):
 <p>The BFS tree is tied to its root: to obtain shortest paths <em>from</em> <span class="math">x</span>, BFS must be run with <span class="math">x</span> as the source.</p>
 </section>
 
-<section id="time"><h2>Running time</h2>
+<section id="time"><h2 id="section-8">Running time</h2>
 <p>With an adjacency-list representation, each vertex is discovered at most once and each adjacency-list entry is examined once. Hence BFS runs in</p>
 <div class="graph-formula">Θ(n + m)</div>
 <p>for both directed and undirected graphs. In an undirected graph each edge occurs in two adjacency lists, but this changes only the constant factor. The queue, distance table, and parent table use <span class="math">O(n)</span> additional space.</p>
 </section>
 
-<section id="uses"><h2>BFS Results</h2>
+<section id="uses"><h2 id="section-9">BFS Results</h2>
 <div class="pattern-grid"><article class="pattern-card"><span class="tag">Reachability</span><h3>Reachability</h3><p>A vertex is reachable from the source exactly when BFS discovers it.</p></article><article class="pattern-card"><span class="tag">Distance</span><h3>Fewest edges</h3><p>The layer number is the minimum number of edges from the source.</p></article><article class="pattern-card"><span class="tag">Path</span><h3>Recover the route</h3><p>Parent pointers reconstruct one shortest path to every reachable vertex.</p></article><article class="pattern-card"><span class="tag">Structure</span><h3>Components and two-coloring</h3><p>Repeated BFS finds connected components; alternating colors by layers gives the standard bipartite test.</p></article></div>
 </section>
 
-<section id="directed"><h2>BFS in directed graphs</h2>
+<section id="directed"><h2 id="section-10">BFS in directed graphs</h2>
 <p>The algorithm is essentially unchanged: from <span class="math">u</span>, follow only edges directed out of <span class="math">u</span>. The vertices in layer <span class="math">L<sub>j</sub></span> are precisely those reachable from <span class="math">s</span> by a shortest directed path of <span class="math">j</span> edges.</p>
 <p>Reachability need not be symmetric: <span class="math">s</span> may reach <span class="math">t</span> even when <span class="math">t</span> cannot reach <span class="math">s</span>.</p>
 </section>
 </section>
-<div class="chapter-nav"><a href="representation.html">← Representing Graphs</a><a href="dfs.html">Next: Depth-First Search →</a></div></main>
+<div class="chapter-nav"><a href="representation.html">← Representing Graphs</a><a href="dfs.html">Depth-First Search →</a></div></main>
 <footer class="overview-footer"><div>Allan's Handbook of Algorithms</div><div>© 2026 Allan Allemand</div></footer><script src="../assets/js/language-switch.js"></script></body></html>
