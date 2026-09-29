@@ -101,11 +101,11 @@
 
 <section id="complexity"><h2 id="section-9">Running time</h2>
 <p>With adjacency lists, every vertex is entered once and each adjacency-list entry is examined a constant number of times. Therefore DFS runs in</p><div class="graph-formula">Θ(n + m)</div>
-<p>The visited/parent/timestamp arrays use <span class="math">O(n)</span> space. The recursion stack can also contain <span class="math">O(n)</span> vertices in the worst case, for example when the DFS tree is one long path.</p>
+<p>The visited/parent/timestamp arrays use <span class="complexity-box">O(n)</span> space. The recursion stack can also contain <span class="complexity-box">O(n)</span> vertices in the worst case, for example when the DFS tree is one long path.</p>
 </section>
 
 <section id="bfs-vs-dfs"><h2 id="section-10">BFS and DFS</h2>
-<div class="model-table-wrap"><table class="decision-table"><thead><tr><th></th><th>BFS</th><th>DFS</th></tr></thead><tbody><tr><td>Pending vertices</td><td>FIFO queue</td><td>Stack / recursion</td></tr><tr><td>Shape of exploration</td><td>Layer by layer</td><td>Deep path, then backtrack</td></tr><tr><td>Unweighted shortest paths</td><td>Yes</td><td>No</td></tr><tr><td>Characteristic information</td><td>Distances and layers</td><td>Entry/exit times and edge types</td></tr><tr><td>Running time</td><td><span class="math">Θ(n+m)</span></td><td><span class="math">Θ(n+m)</span></td></tr></tbody></table></div>
+<div class="model-table-wrap"><table class="decision-table"><thead><tr><th></th><th>BFS</th><th>DFS</th></tr></thead><tbody><tr><td>Pending vertices</td><td>FIFO queue</td><td>Stack / recursion</td></tr><tr><td>Shape of exploration</td><td>Layer by layer</td><td>Deep path, then backtrack</td></tr><tr><td>Unweighted shortest paths</td><td>Yes</td><td>No</td></tr><tr><td>Characteristic information</td><td>Distances and layers</td><td>Entry/exit times and edge types</td></tr><tr><td>Running time</td><td><span class="complexity-box">Θ(n+m)</span></td><td><span class="complexity-box">Θ(n+m)</span></td></tr></tbody></table></div>
 <p>BFS and DFS discover the same reachable vertices, but in a different order.</p>
 </section>
 </section>
