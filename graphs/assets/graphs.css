@@ -52,3 +52,11 @@
 .intro-usecases{max-width:760px}
 .graph-definition{max-width:720px}
 @media(max-width:760px){.lecture>h2{margin-top:40px}.intro-figure,.intro-figure.compact{width:100%;padding:12px 10px 10px}.intro-figure .graph-svg{max-height:250px}.intro-code{width:100%}.intro-code pre{font-size:12px;padding:15px!important}.intro-labels.names text{font-size:11px}}
+
+/* v3 graph introduction alignment */
+.graph-introduction-page .lecture{width:min(860px,calc(100% - 72px));max-width:860px;margin-left:auto;margin-right:auto;padding-left:0;padding-right:0}
+.graph-introduction-page .sidebar{width:220px}
+.graph-introduction-page .sidebar + .lecture{margin-left:max(calc((100vw - 860px)/2),280px);margin-right:auto}
+.graph-introduction-page .sf-route .intro-labels text{dominant-baseline:middle}
+@media(max-width:1180px) and (min-width:761px){.graph-introduction-page .sidebar + .lecture{width:calc(100% - 330px);margin-left:290px;margin-right:40px}}
+@media(max-width:760px){.graph-introduction-page .lecture,.graph-introduction-page .sidebar + .lecture{width:auto;margin-left:0;margin-right:0;padding-left:20px;padding-right:20px}}
