@@ -6,7 +6,7 @@
 <section id="parameters"><h2 id="section-1">Graph Size</h2>
 <p>For a graph <span class="math">G=(V,E)</span>, write <span class="math">n=|V|</span> for the number of vertices and <span class="math">m=|E|</span> for the number of edges. Running times for graph algorithms are usually expressed in terms of both <span class="math">n</span> and <span class="math">m</span>.</p>
 <p>Graphs with the same number of vertices may have very different numbers of edges. A graph with few edges is <b>sparse</b>; one with a large fraction of the possible edges is <b>dense</b>.</p>
-<div class="graph-definition"><p>For many graph algorithms, <span class="math">O(n+m)</span> is called <b>linear time</b>: even reading an adjacency-list representation of the whole input already takes this much time.</p></div></section>
+<div class="graph-definition"><p>For many graph algorithms, <span class="complexity-box">O(n+m)</span> is called <b>linear time</b>: even reading an adjacency-list representation of the whole input already takes this much time.</p></div></section>
 
 <section id="same-graph"><h2 id="section-2">Two Representations</h2>
 <p>A drawing is useful for us; an algorithm needs a data structure.</p>
@@ -18,8 +18,8 @@
 
 <section id="matrix"><h2 id="section-3">Adjacency matrix</h2>
 <p>The simplest representation is an <span class="math">n × n</span> matrix <span class="math">A</span>. The entry <span class="math">A[u,v]</span> is 1 when the graph contains the edge <span class="math">(u,v)</span>, and 0 otherwise. For an undirected graph the matrix is symmetric: <span class="math">A[u,v]=A[v,u]</span>.</p>
-<div class="compare-grid"><article class="compare-card"><span class="tag">Strength</span><h3>Constant-time edge test</h3><p>To ask whether <span class="math">(u,v)</span> is present, inspect one matrix entry. The operation takes <span class="math">O(1)</span> time.</p></article><article class="compare-card"><span class="tag">Cost</span><h3>Quadratic space</h3><p>The matrix always contains <span class="math">n²</span> entries, whether the graph has ten edges or almost every possible edge.</p></article></div>
-<p>To list the neighbors of <span class="math">v</span>, a matrix must scan the entire row <span class="math">A[v,*]</span>: <span class="math">Θ(n)</span> time even when <span class="math">v</span> has one neighbor.</p>
+<div class="compare-grid"><article class="compare-card"><span class="tag">Strength</span><h3>Constant-time edge test</h3><p>To ask whether <span class="math">(u,v)</span> is present, inspect one matrix entry. The operation takes <span class="complexity-box">O(1)</span> time.</p></article><article class="compare-card"><span class="tag">Cost</span><h3>Quadratic space</h3><p>The matrix always contains <span class="math">n²</span> entries, whether the graph has ten edges or almost every possible edge.</p></article></div>
+<p>To list the neighbors of <span class="math">v</span>, a matrix must scan the entire row <span class="math">A[v,*]</span>: <span class="complexity-box">Θ(n)</span> time even when <span class="math">v</span> has one neighbor.</p>
 </section>
 
 <section id="list"><h2 id="section-4">Adjacency list</h2>
@@ -44,10 +44,10 @@
 
 <section id="comparison"><h2 id="section-6">Representation Choice</h2>
 <div class="model-table-wrap"><table class="decision-table"><thead><tr><th>Operation / property</th><th>Adjacency list</th><th>Adjacency matrix</th></tr></thead><tbody>
-<tr><td>Space</td><td><span class="math">Θ(n+m)</span></td><td><span class="math">Θ(n²)</span></td></tr>
-<tr><td>Test whether <span class="math">(u,v)</span> is an edge</td><td>Search <span class="math">Adj[u]</span></td><td><span class="math">Θ(1)</span></td></tr>
-<tr><td>Enumerate neighbors of <span class="math">u</span></td><td><span class="math">Θ(deg(u))</span></td><td><span class="math">Θ(n)</span></td></tr>
-<tr><td>Traverse whole graph</td><td><span class="math">Θ(n+m)</span></td><td><span class="math">Θ(n²)</span></td></tr>
+<tr><td>Space</td><td><span class="complexity-box">Θ(n+m)</span></td><td><span class="complexity-box">Θ(n²)</span></td></tr>
+<tr><td>Test whether <span class="math">(u,v)</span> is an edge</td><td>Search <span class="math">Adj[u]</span></td><td><span class="complexity-box">Θ(1)</span></td></tr>
+<tr><td>Enumerate neighbors of <span class="math">u</span></td><td><span class="complexity-box">Θ(deg(u))</span></td><td><span class="complexity-box">Θ(n)</span></td></tr>
+<tr><td>Traverse whole graph</td><td><span class="complexity-box">Θ(n+m)</span></td><td><span class="complexity-box">Θ(n²)</span></td></tr>
 <tr><td>Natural choice</td><td>Sparse graphs; most graph algorithms</td><td>Dense graphs; frequent edge-existence queries</td></tr>
 </tbody></table></div>
 <div class="warning good"><b>Default choice:</b> adjacency lists are the standard representation for most graph algorithms. Adjacency matrices are attractive when the graph is dense or constant-time edge lookup is especially important.</div>
