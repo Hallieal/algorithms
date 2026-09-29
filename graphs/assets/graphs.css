@@ -217,3 +217,41 @@
   .graph-content-page .sidebar{width:220px}
   .graph-content-page .sidebar + .lecture{width:calc(100% - 350px);margin-left:310px;margin-right:40px}
 }
+
+/* v9 section navigation buttons and active state */
+.graph-content-page .sidebar a{
+  position:relative;
+  display:block;
+  margin:6px 0;
+  padding:9px 11px;
+  border:1px solid #e4e0d9;
+  border-radius:10px;
+  background:#f8f7f4;
+  color:#59636b;
+  transition:background-color .14s ease,border-color .14s ease,color .14s ease,transform .14s ease;
+}
+.graph-content-page .sidebar a:hover{
+  border-color:#d4cfc6;
+  background:#f1efe9;
+  color:#20262d;
+}
+.graph-content-page .sidebar a:active{
+  transform:translateY(1px);
+  background:#e9efe9;
+  border-color:#b9c8bb;
+  color:#263b2c;
+}
+.graph-content-page .sidebar a:focus-visible{
+  outline:2px solid #8fa997;
+  outline-offset:2px;
+}
+.graph-content-page .sidebar a:target,
+.graph-content-page .sidebar a[aria-current="true"]{
+  background:#e9efe9;
+  border-color:#b9c8bb;
+  color:#263b2c;
+}
+.uf-svg .node text{
+  text-anchor:middle;
+  dominant-baseline:central;
+}
