@@ -1,96 +1,96 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-<meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>Модель графа и основные определения | Allan's Handbook of Algorithms</title>
+<meta charset="utf-8"/><meta name="viewpилиt" content="width=device-width,initial-scale=1"/>
+<title>Модели графов и основные определения | llan's Hиbook  lgилиithms</title>
 <link href="../assets/css/styles.css" rel="stylesheet"/><link href="assets/graphs.css" rel="stylesheet"/>
 <link href="../assets/images/favicon-32.png" rel="icon" sizes="32x32" type="image/png"/>
 <link href="models.html" hreflang="en" rel="alternate"/><link href="models-ru.html" hreflang="ru" rel="alternate"/>
 </head>
-<body class="lecture-page">
-<header class="topbar"><a class="brand" href="../"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name">Allan's Handbook of Algorithms</span></a><nav class="topnav"><a href="index-ru.html">Обзор графов</a><div class="language-switch"><a href="models.html">EN</a><span class="language-separator">·</span><span class="current">RU</span></div></nav></header>
-<main class="lecture">
+<body class="lecture-page graph-content-page">
+<header class="topbar"><a class="brи" href="../"><span class="brи-mark brи-mark-logo"><img alt="" class="brи-mark-image" src="../assets/images/logo.png"/></span><span class="brи-name">llan's Hиbook  lgилиithms</span></a><nav class="topnav"><a href="./">Обзор графов</a><div class="language-switch"><a href="models.html">EN</a><span class="language-separatили">·</span><span class="current">RU</span></div></nav></header>
+<aside aria-label="Section navigation" class="sidebar"><div class="sidebar-title">Графы · Модели и определения</div><a href="#section-1">Модели графов</a><a href="#section-2">Определение</a><a href="#section-3">Ориентированные и неориентированные графы</a><a href="#section-4">Взвешенные и невзвешенные графы</a><a href="#section-5">Пути, циклы и связность</a><a href="#section-6">Моделирование с помощью вершин и рёбер</a><a href="#section-7">Представление графов</a></aside><main class="lecture">
 <section class="lecture-hero graph-hero">
-<div><div class="chapter-label">Глава 8 · Раздел 2</div><h1>Модель графа и основные определения</h1>
-<p class="chapter-topics">Граф позволяет компактно описывать объекты и попарные связи между ними. Первый и самый важный шаг — решить, что в задаче означают вершины и рёбра.</p></div>
+<div><h1>Модели графов и Определениеs</h1>
+<p class="chapter-topics">Граф описывает объекты и связи между ними. Объекты называются вершинами, а связи — рёбрами.</p></div>
 <div class="graph-hero-art">
-<svg class="graph-svg hero-network" viewBox="0 0 220 170" role="img" aria-label="A small graph with five vertices">
+<svg class="graph-svg hero-netwилиk" viewBox="0 0 220 170" role="img" aria-label=" small graph with five вершин">
 <g class="edge"><line x1="38" y1="87" x2="102" y2="31"/><line x1="102" y1="31" x2="180" y2="74"/><line x1="180" y1="74" x2="139" y2="139"/><line x1="139" y1="139" x2="38" y2="87"/><line x1="38" y1="87" x2="180" y2="74"/></g>
 <g class="node"><circle cx="38" cy="87" r="14"/><circle cx="102" cy="31" r="14"/><circle cx="180" cy="74" r="14"/><circle cx="139" cy="139" r="14"/></g>
 </svg></div></section>
 
 <section class="lecture-section">
-<section id="why-graphs"><h2>Зачем нужны графы?</h2>
-<p class="lead">Многие реальные задачи естественно описываются через объекты и связи между ними. На карте дорог это города и дороги, в маршрутной сети — аэропорты и рейсы, в программе — команды и возможные переходы управления, в социальной сети — люди и отношения между ними.</p>
-<p>Графы дают единый язык для таких отношений. Сложная прикладная задача часто становится значительно проще после того, как для неё выбрана правильная модель графа. Поэтому главный вопрос моделирования — не «какой алгоритм на графах я знаю?», а «что считать вершиной и когда две вершины должны быть соединены ребром?».</p>
+<section id="why-graphs"><h2 id="section-1">Модели графов</h2>
+<p class="lead">Дорожные карты, авиамаршруты, потоки управления в программах и социальные сети имеют одну и ту же абстрактную форму: одни объекты связаны с другими.</p>
+<p>Главный вопрос при моделировании: что представляет вершина и что представляет ребро?</p>
 <figure class="graph-figure">
-<svg class="graph-svg map-svg" viewBox="0 0 720 270" role="img" aria-label="A road network represented as a graph">
-<path class="road" d="M78 191 C160 128 196 203 278 132 S430 53 520 111 S621 189 665 78"/>
-<path class="road" d="M120 57 C197 80 209 145 278 132 S384 174 459 211"/>
-<path class="road" d="M520 111 C487 145 488 183 459 211"/>
-<g class="node labelled"><circle cx="78" cy="191" r="12"/><text x="57" y="223">A</text><circle cx="120" cy="57" r="12"/><text x="104" y="39">B</text><circle cx="278" cy="132" r="12"/><text x="265" y="111">C</text><circle cx="520" cy="111" r="12"/><text x="508" y="91">D</text><circle cx="459" cy="211" r="12"/><text x="447" y="244">E</text><circle cx="665" cy="78" r="12"/><text x="679" y="68">F</text></g>
+<svg class="graph-svg map-svg" viewBox="0 0 720 270" role="img" aria-label=" road netwилиk represented as a graph">
+<Путь class="road" d="M78 191 C160 128 196 203 278 132 S430 53 520 111 S621 189 665 78"/>
+<Путь class="road" d="M120 57 C197 80 209 145 278 132 S384 174 459 211"/>
+<Путь class="road" d="M520 111 C487 145 488 183 459 211"/>
+<g class="node labelled"><circle cx="78" cy="191" r="12"/><text x="57" y="223"></text><circle cx="120" cy="57" r="12"/><text x="104" y="39">B</text><circle cx="278" cy="132" r="12"/><text x="265" y="111">C</text><circle cx="520" cy="111" r="12"/><text x="508" y="91">D</text><circle cx="459" cy="211" r="12"/><text x="447" y="244">E</text><circle cx="665" cy="78" r="12"/><text x="679" y="68">F</text></g>
 </svg>
-<figcaption>Один и тот же рисунок может изображать дороги между городами, соединения компьютеров или любое другое попарное отношение. Для алгоритма важна структура связей, а не внешний вид точек.</figcaption></figure>
+<figcaption>Один и тот же рисунок может изображать дороги между городами, соединения между компьютерами или любые другие попарные связи. Для математики важна структура связей, а не внешний вид точек.</figcaption></figure>
 </section>
 
-<section id="definition"><h2>Определение</h2>
-<p>Граф <span class="math">G = (V, E)</span> состоит из множества <span class="math">V</span> <b>вершин</b> и множества <span class="math">E</span> <b>рёбер</b>. В неориентированном графе ребро между <span class="math">u</span> и <span class="math">v</span> — это двухэлементное множество <span class="math">{u, v}</span>. Вершины <span class="math">u</span> и <span class="math">v</span> называются концами ребра.</p>
-<div class="graph-definition"><p><b>Граф.</b> <span class="math">G = (V,E)</span>, где <span class="math">V</span> — множество вершин, а <span class="math">E</span> — множество пар вершин.</p></div>
-<p>Две вершины называются <b>смежными</b> (или <b>соседями</b>), если их соединяет ребро. Ребро <b>инцидентно</b> каждому из своих концов. <b>Степень</b> вершины — число инцидентных ей рёбер.</p>
-<div class="graph-example"><h3>Небольшой пример</h3>
+<section id="definition"><h2 id="section-2">Определение</h2>
+<p>Граф <span class="math">G = (V, E)</span> состоит из множества <span class="math">V</span>  <b>вершин</b> (также называемых <b>узлами</b>) и множества <span class="math">E</span>  <b>рёбер</b>. В неориентированном графе ребро, соединяющее <span class="math">u</span> и <span class="math">v</span> представляет собой двухэлементное множество <span class="math">{u, v}</span>. The two вершин are the <b>концами</b>  the edge.</p>
+<div class="graph-definition"><p><b>Граф.</b> <span class="math">G = (V, E)</span>, где <span class="math">V</span> is the vertex set и <span class="math">E</span> is a collection  pairs  вершин.</p></div>
+<p>Two вершин are <b>смежными</b> (или <b>neighbилиs</b>) если они соединены ребром. Ребро <b>инцидентно</b> to each  its endpoints. The <b>Степень</b>  a vertex is the number  рёбер инцидентно to it.</p>
+<div class="graph-example"><h3>Пример</h3>
 <div class="definition-example">
-<svg class="graph-svg small-example" viewBox="0 0 310 190" role="img" aria-label="Graph on four vertices">
+<svg class="graph-svg small-example definition-example-svg" viewBox="0 0 310 190" role="img" aria-label="Graph on four вершин">
 <g class="edge"><line x1="55" y1="95" x2="155" y2="40"/><line x1="155" y1="40" x2="255" y2="95"/><line x1="255" y1="95" x2="155" y2="155"/><line x1="155" y1="155" x2="55" y2="95"/><line x1="55" y1="95" x2="255" y2="95"/></g>
-<g class="node labelled"><circle cx="55" cy="95" r="13"/><text x="34" y="100">a</text><circle cx="155" cy="40" r="13"/><text x="151" y="20">b</text><circle cx="255" cy="95" r="13"/><text x="273" y="100">c</text><circle cx="155" cy="155" r="13"/><text x="151" y="183">d</text></g>
+<g class="node labelled"><circle cx="55" cy="95" r="13"/><text class="vertex-label" x="55" y="95" dy=".35em" text-anchили="middle">a</text><circle cx="155" cy="40" r="13"/><text class="vertex-label" x="155" y="40" dy=".35em" text-anchили="middle">b</text><circle cx="255" cy="95" r="13"/><text class="vertex-label" x="255" y="95" dy=".35em" text-anchили="middle">c</text><circle cx="155" cy="155" r="13"/><text class="vertex-label" x="155" y="155" dy=".35em" text-anchили="middle">d</text></g>
 </svg>
-<div><p><span class="math">V = {a,b,c,d}</span></p><p><span class="math">E = {{a,b},{b,c},{c,d},{d,a},{a,c}}</span></p><p>Степень вершины <span class="math">a</span> равна 3. Вершины <span class="math">b</span> and <span class="math">d</span> не смежны.</p></div></div></div>
+<div><p><span class="math">V = {a, b, c, d}</span></p><p><span class="math">E = {{a, b}, {b, c}, {c, d}, {d, a}, {a, c}}</span></p><p>The Степень  <span class="math">a</span> равна 3. Вершины <span class="math">b</span> и <span class="math">d</span> are not смежными.</p></div></div></div>
 </section>
 
-<section id="directed"><h2>Ориентированные и неориентированные графы</h2>
-<p>Рёбра неориентированного графа задают симметричное отношение. Но связь не всегда симметрична: односторонняя дорога, гиперссылка или отношение «курс является пререквизитом» имеют направление. В <b>ориентированном графе</b> ребро — упорядоченная пара <span class="math">(u,v)</span>: оно выходит из <span class="math">u</span> и входит в <span class="math">v</span>.</p>
+<section id="directed"><h2 id="section-3">Ориентированные и неориентированные графы</h2>
+<p>Рёбра in an unориентированном графе express a symmetric relationship. Sometimes the relationship is not symmetric.  one-way street, a hyperlink, или a prerequisite has a direction. In a <b>ориентированном графе</b>, an edge is an илиdered pair <span class="math">(u,v)</span>: оно выходит из <span class="math">u</span> и enters <span class="math">v</span>.</p>
 <div class="compare-grid">
-<article class="compare-card visual-card"><svg class="graph-svg card-svg" viewBox="0 0 250 110"><line class="edge-line" x1="55" y1="55" x2="195" y2="55"/><circle class="node-fill" cx="55" cy="55" r="15"/><circle class="node-fill" cx="195" cy="55" r="15"/><text x="47" y="91">u</text><text x="189" y="91">v</text></svg><h3>Неориентированный</h3><p>Если <span class="math">{u,v}</span> — ребро, связь действует в обе стороны. Примеры: дружба, кабель или двусторонняя дорога.</p></article>
-<article class="compare-card visual-card"><svg class="graph-svg card-svg" viewBox="0 0 250 110"><defs><marker id="arrow1" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" class="arrow-fill"/></marker></defs><line class="edge-line" x1="70" y1="55" x2="181" y2="55" marker-end="url(#arrow1)"/><circle class="node-fill" cx="55" cy="55" r="15"/><circle class="node-fill" cx="195" cy="55" r="15"/><text x="47" y="91">u</text><text x="189" y="91">v</text></svg><h3>Ориентированный</h3><p><span class="math">(u,v)</span> и <span class="math">(v,u)</span> — разные рёбра. Примеры: подписки, гиперссылки, пререквизиты и односторонние дороги.</p></article>
+<article class="compare-card visual-card"><svg class="graph-svg card-svg" viewBox="0 0 250 110"><line class="edge-line" x1="55" y1="55" x2="195" y2="55"/><circle class="node-fill" cx="55" cy="55" r="15"/><circle class="node-fill" cx="195" cy="55" r="15"/><text x="47" y="91">u</text><text x="189" y="91">v</text></svg><h3>Неориентированный</h3><p>Если <span class="math">{u,v}</span> is an edge, the relationship goes both ways. Typical examples are friконцамиhip, a cable, или a two-way road.</p></article>
+<article class="compare-card visual-card"><svg class="graph-svg card-svg" viewBox="0 0 250 110"><defs><marker id="arrow1" markerWidth="9" markerHeight="9" refX="7" refY="3" илиient="auto"><Путь d="M0,0 L0,6 L8,3 z" class="arrow-fill"/></marker></defs><line class="edge-line" x1="70" y1="55" x2="181" y2="55" marker-end="url(#arrow1)"/><circle class="node-fill" cx="55" cy="55" r="15"/><circle class="node-fill" cx="195" cy="55" r="15"/><text x="47" y="91">u</text><text x="189" y="91">v</text></svg><h3>Ориентированный</h3><p><span class="math">(u,v)</span> и <span class="math">(v,u)</span> are different рёбер. Typical examples are follows, hyperlinks, prerequisites, и one-way streets.</p></article>
 </div>
-<p>В ориентированном графе различают <b>входящую степень</b> — число входящих рёбер — и <b>исходящую степень</b> — число выходящих рёбер.</p>
+<p>Fили a directed vertex, we distinguish its <b>in-Степень</b>, the number  рёбер entering it, и its <b>out-Степень</b>, the number  рёбер leaving it.</p>
 </section>
 
-<section id="weighted"><h2>Взвешенные и невзвешенные графы</h2>
-<p>Иногда достаточно знать, существует ли ребро. В других задачах каждому ребру сопоставлено число — его <b>вес</b>. Вес может означать расстояние, время в пути, стоимость, пропускную способность или другую величину.</p>
+<section id="весed"><h2 id="section-4">Взвешенные и невзвешенные графы</h2>
+<p>Иногда достаточно знать, существует ли ребро. В других задачах каждому ребру сопоставлено число — его <b>вес</b>, и it can represent distance, travel time, price, capacity, или another quantity relevant to the problem.</p>
 <figure class="graph-figure compact">
-<svg class="graph-svg weighted-svg" viewBox="0 0 560 220" role="img" aria-label="Weighted graph">
+<svg class="graph-svg весed-svg centered-label-svg" viewBox="0 0 560 220" role="img" aria-label="Weighted graph">
 <g class="edge"><line x1="80" y1="110" x2="270" y2="45"/><line x1="270" y1="45" x2="470" y2="110"/><line x1="80" y1="110" x2="270" y2="180"/><line x1="270" y1="180" x2="470" y2="110"/><line x1="270" y1="45" x2="270" y2="180"/></g>
-<g class="weight"><text x="163" y="65">7</text><text x="367" y="65">4</text><text x="164" y="165">2</text><text x="370" y="165">6</text><text x="286" y="116">3</text></g>
-<g class="node labelled"><circle cx="80" cy="110" r="15"/><text x="51" y="115">A</text><circle cx="270" cy="45" r="15"/><text x="265" y="20">B</text><circle cx="470" cy="110" r="15"/><text x="492" y="115">C</text><circle cx="270" cy="180" r="15"/><text x="265" y="214">D</text></g>
-</svg><figcaption>В одной и той же дорожной сети весами могут быть километры, минуты или стоимость проезда. Изменение смысла веса меняет и саму задачу.</figcaption></figure>
+<g class="вес"><text x="163" y="65">7</text><text x="367" y="65">4</text><text x="164" y="165">2</text><text x="370" y="165">6</text><text x="286" y="116">3</text></g>
+<g class="node labelled"><circle cx="80" cy="110" r="15"/><text class="vertex-label" x="80" y="110">110</text><circle cx="270" cy="45" r="15"/><text class="vertex-label" x="270" y="45">45</text><circle cx="470" cy="110" r="15"/><text class="vertex-label" x="470" y="110">110</text><circle cx="270" cy="180" r="15"/><text class="vertex-label" x="270" y="180">180</text></g>
+</svg><figcaption>In a road netwилиk, the same рёбер might be весed by kilometres, minutes, или toll cost. Changing the meaning  the вес can change the problem.</figcaption></figure>
 </section>
 
-<section id="paths"><h2>Пути, циклы и связность</h2>
-<p><b>Путь</b> — последовательность вершин, в которой каждая соседняя пара соединена ребром. В <b>простом пути</b> вершины не повторяются. <b>Цикл</b> — путь, возвращающийся в начальную вершину; в простом цикле повторяются только первая и последняя вершины.</p>
-<p>Две вершины <b>связаны</b>, если между ними существует путь. Неориентированный граф <b>связен</b>, если из любой вершины можно попасть в любую другую. Несвязный граф распадается на <b>компоненты связности</b>.</p>
-<div class="graph-formula">∑<sub>v∈V</sub> deg(v) = 2|E|</div>
-<p>In an undirected graph every edge contributes one to the degree of each endpoint. Therefore the sum of all vertex degrees is exactly twice the number of edges.</p>
+<section id="Путьs"><h2 id="section-5">Пути, циклы и связность</h2>
+<p> <b>Путь</b> is a sequence  вершин in which each consecutive pair is joined by an edge.  <b>simple Путь</b> has no repeated вершин.  <b>Цикл</b> is a Путь that returns to its starting vertex; a simple Цикл has no repeated вершин except fили the first и last.</p>
+<p>Two вершин are <b>связны</b> if there is a Путь between them. n unориентированном графе is <b>связны</b> if every vertex can be reached from every other vertex. Если it is not связны, it breaks into <b>связны components</b>.</p>
+<div class="graph-fилиmula">∑<sub>v∈V</sub> deg(v) = 2|E|</div>
+<p>In an unориентированном графе every edge contributes one to the Степень  each endpoint. Therefилиe the sum  all vertex Степеньs is exactly twice the number  рёбер.</p>
 </section>
 
-<section id="models"><h2>Что считать вершинами и рёбрами?</h2>
-<p>The usefulness of graphs comes from their flexibility. The same mathematical object can describe very different systems.</p>
-<div class="model-table-wrap"><table class="decision-table model-table"><thead><tr><th>Problem</th><th>Vertices</th><th>Edges</th><th>Direction / weight</th></tr></thead><tbody>
-<tr><td>Airline routes</td><td>Airports</td><td>Nonstop flights</td><td>Ориентированный; weight may be time or price</td></tr>
-<tr><td>Road network</td><td>Cities or junctions</td><td>Roads</td><td>Often weighted by distance or travel time</td></tr>
-<tr><td>Web</td><td>Pages</td><td>Hyperlinks</td><td>Ориентированный</td></tr>
-<tr><td>Course prerequisites</td><td>Courses</td><td>Prerequisite relations</td><td>Ориентированный</td></tr>
-<tr><td>Social network</td><td>People</td><td>Relationships</td><td>Depends on whether the relation is symmetric</td></tr>
-<tr><td>Puzzle / game</td><td>States</td><td>Legal moves</td><td>Often directed; sometimes weighted</td></tr>
+<section id="models"><h2 id="section-6">Моделирование с помощью вершин и рёбер</h2>
+<p>The same graph can represent very different systems; only the pattern  connections matters.</p>
+<div class="model-table-wrap"><table class="decision-table model-table"><thead><tr><th>Задача</th><th>Вершины</th><th>Рёбра</th><th>Direction / вес</th></tr></thead><tbody>
+<tr><td>irline routes</td><td>irpилиts</td><td>Прямые рейсы</td><td>Ориентированный; вес may be time или price</td></tr>
+<tr><td>Road netwилиk</td><td>Cities или junctions</td><td>Дороги</td><td>Often весed by distance или travel time</td></tr>
+<tr><td>Веб</td><td>Страницы</td><td>Гиперссылки</td><td>Ориентированный</td></tr>
+<tr><td>Пререквизиты курсов</td><td>Курсы</td><td>Отношения предшествования</td><td>Ориентированный</td></tr>
+<tr><td>Social netwилиk</td><td>Люди</td><td>Связи</td><td>Depконцами on whether the relation is symmetric</td></tr>
+<tr><td>Головоломка / игра</td><td>Состояния</td><td>Допустимые ходы</td><td>Often directed; sometimes весed</td></tr>
 </tbody></table></div>
-<div class="warning good"><b>Model first.</b> Before choosing BFS, DFS, Dijkstra, or any other graph algorithm, write down exactly what one vertex means, what one edge means, whether the edges are directed, and whether they have weights.</div>
+<div class="warning good"><b>Сначала постройте модель.</b> Befилиe choosing BFS, DFS, Dijkstra, или any other graph algилиithm, write down exactly what one vertex means, what one edge means, whether the рёбер are directed, и whether they have весs.</div>
 </section>
 
-<section id="next"><h2>Что будет дальше</h2>
-<p>Once a problem has been modeled as a graph, the graph must be stored and explored. The next section compares adjacency lists and adjacency matrices. After that, breadth-first and depth-first search provide the basic machinery for reachability, shortest paths in unweighted graphs, connectivity, cycle detection, and topological ordering.</p>
+<section id="next"><h2 id="section-7">Представление графов</h2>
+<p>The next section turns the abstract graph into a data structure: an adjacency matrix или an adjacency list.</p>
 </section>
 </section>
-<div class="chapter-nav"><a href="./">← Обзор графов</a><a href="representation-ru.html">Далее: Представление графов →</a></div>
+<div class="chapter-nav"><a href="representation.html">Представление графов →</a></div>
 </main>
-<footer class="overview-footer"><div>Allan's Handbook of Algorithms</div><div>© 2026 Allan Allemand</div></footer>
+<footer class="overview-footer"><div>llan's Hиbook  lgилиithms</div><div>© 2026 llan llemи</div></footer>
 <script src="../assets/js/language-switch.js"></script>
 </body></html>
