@@ -9,7 +9,7 @@
 </head>
 <body class="lecture-page graph-content-page">
 <header class="topbar"><a class="brand" href="../"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name">Allan's Handbook of Algorithms</span></a><nav class="topnav"><a href="./">Graphs overview</a><div class="language-switch"><span class="current">EN</span><span class="language-separator">·</span><a href="models-ru.html">RU</a></div></nav></header>
-<main class="lecture">
+<aside aria-label="Section navigation" class="sidebar"><div class="sidebar-title">Graphs · Graph Models and Definitions</div><a href="#section-1">Graph Models</a><a href="#section-2">Definition</a><a href="#section-3">Directed and undirected graphs</a><a href="#section-4">Weighted and unweighted graphs</a><a href="#section-5">Paths, cycles, and connectivity</a><a href="#section-6">Modeling with Vertices and Edges</a><a href="#section-7">Graph Representation</a></aside><main class="lecture">
 <section class="lecture-hero graph-hero">
 <div><div class="chapter-label">Chapter 8 · Section 2</div><h1>Graph Models and Definitions</h1>
 <p class="chapter-topics">A graph records objects and the relationships between them. The objects are vertices; the relationships are edges.</p></div>
@@ -20,7 +20,7 @@
 </svg></div></section>
 
 <section class="lecture-section">
-<section id="why-graphs"><h2>Graph Models</h2>
+<section id="why-graphs"><h2 id="section-1">Graph Models</h2>
 <p class="lead">Road maps, airline routes, program control flow, and social networks have the same abstract form: objects connected to other objects.</p>
 <p>The modeling question is: what does a vertex represent, and what does an edge represent?</p>
 <figure class="graph-figure">
@@ -33,7 +33,7 @@
 <figcaption>The same picture can stand for roads between cities, links between computers, or any other pairwise relationship. The mathematics depends on the pattern of connections, not on what the points look like.</figcaption></figure>
 </section>
 
-<section id="definition"><h2>Definition</h2>
+<section id="definition"><h2 id="section-2">Definition</h2>
 <p>A graph <span class="math">G = (V, E)</span> consists of a set <span class="math">V</span> of <b>vertices</b> (also called <b>nodes</b>) and a set <span class="math">E</span> of <b>edges</b>. In an undirected graph an edge joining <span class="math">u</span> and <span class="math">v</span> is the two-element set <span class="math">{u, v}</span>. The two vertices are the <b>ends</b> of the edge.</p>
 <div class="graph-definition"><p><b>Graph.</b> <span class="math">G = (V,E)</span>, where <span class="math">V</span> is the vertex set and <span class="math">E</span> is a collection of pairs of vertices.</p></div>
 <p>Two vertices are <b>adjacent</b> (or <b>neighbors</b>) if an edge connects them. An edge is <b>incident</b> to each of its endpoints. The <b>degree</b> of a vertex is the number of edges incident to it.</p>
@@ -46,7 +46,7 @@
 <div><p><span class="math">V = {a,b,c,d}</span></p><p><span class="math">E = {{a,b},{b,c},{c,d},{d,a},{a,c}}</span></p><p>The degree of <span class="math">a</span> is 3. Vertices <span class="math">b</span> and <span class="math">d</span> are not adjacent.</p></div></div></div>
 </section>
 
-<section id="directed"><h2>Directed and undirected graphs</h2>
+<section id="directed"><h2 id="section-3">Directed and undirected graphs</h2>
 <p>Edges in an undirected graph express a symmetric relationship. Sometimes the relationship is not symmetric. A one-way street, a hyperlink, or a prerequisite has a direction. In a <b>directed graph</b>, an edge is an ordered pair <span class="math">(u,v)</span>: it leaves <span class="math">u</span> and enters <span class="math">v</span>.</p>
 <div class="compare-grid">
 <article class="compare-card visual-card"><svg class="graph-svg card-svg" viewBox="0 0 250 110"><line class="edge-line" x1="55" y1="55" x2="195" y2="55"/><circle class="node-fill" cx="55" cy="55" r="15"/><circle class="node-fill" cx="195" cy="55" r="15"/><text x="47" y="91">u</text><text x="189" y="91">v</text></svg><h3>Undirected</h3><p>If <span class="math">{u,v}</span> is an edge, the relationship goes both ways. Typical examples are friendship, a cable, or a two-way road.</p></article>
@@ -55,7 +55,7 @@
 <p>For a directed vertex, we distinguish its <b>in-degree</b>, the number of edges entering it, and its <b>out-degree</b>, the number of edges leaving it.</p>
 </section>
 
-<section id="weighted"><h2>Weighted and unweighted graphs</h2>
+<section id="weighted"><h2 id="section-4">Weighted and unweighted graphs</h2>
 <p>Sometimes it is enough to know whether an edge exists. In other problems an edge carries a numerical value. This value is called its <b>weight</b>, and it can represent distance, travel time, price, capacity, or another quantity relevant to the problem.</p>
 <figure class="graph-figure compact">
 <svg class="graph-svg weighted-svg" viewBox="0 0 560 220" role="img" aria-label="Weighted graph">
@@ -65,14 +65,14 @@
 </svg><figcaption>In a road network, the same edges might be weighted by kilometres, minutes, or toll cost. Changing the meaning of the weight can change the problem.</figcaption></figure>
 </section>
 
-<section id="paths"><h2>Paths, cycles, and connectivity</h2>
+<section id="paths"><h2 id="section-5">Paths, cycles, and connectivity</h2>
 <p>A <b>path</b> is a sequence of vertices in which each consecutive pair is joined by an edge. A <b>simple path</b> has no repeated vertices. A <b>cycle</b> is a path that returns to its starting vertex; a simple cycle has no repeated vertices except for the first and last.</p>
 <p>Two vertices are <b>connected</b> if there is a path between them. An undirected graph is <b>connected</b> if every vertex can be reached from every other vertex. If it is not connected, it breaks into <b>connected components</b>.</p>
 <div class="graph-formula">∑<sub>v∈V</sub> deg(v) = 2|E|</div>
 <p>In an undirected graph every edge contributes one to the degree of each endpoint. Therefore the sum of all vertex degrees is exactly twice the number of edges.</p>
 </section>
 
-<section id="models"><h2>Modeling with Vertices and Edges</h2>
+<section id="models"><h2 id="section-6">Modeling with Vertices and Edges</h2>
 <p>The same graph can represent very different systems; only the pattern of connections matters.</p>
 <div class="model-table-wrap"><table class="decision-table model-table"><thead><tr><th>Problem</th><th>Vertices</th><th>Edges</th><th>Direction / weight</th></tr></thead><tbody>
 <tr><td>Airline routes</td><td>Airports</td><td>Nonstop flights</td><td>Directed; weight may be time or price</td></tr>
@@ -85,11 +85,11 @@
 <div class="warning good"><b>Model first.</b> Before choosing BFS, DFS, Dijkstra, or any other graph algorithm, write down exactly what one vertex means, what one edge means, whether the edges are directed, and whether they have weights.</div>
 </section>
 
-<section id="next"><h2>Graph Representation</h2>
+<section id="next"><h2 id="section-7">Graph Representation</h2>
 <p>The next section turns the abstract graph into a data structure: an adjacency matrix or an adjacency list.</p>
 </section>
 </section>
-<div class="chapter-nav"><a href="representation.html">Next: Representing Graphs →</a></div>
+<div class="chapter-nav"><a href="representation.html">Representing Graphs →</a></div>
 </main>
 <footer class="overview-footer"><div>Allan's Handbook of Algorithms</div><div>© 2026 Allan Allemand</div></footer>
 <script src="../assets/js/language-switch.js"></script>
