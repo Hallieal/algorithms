@@ -1,45 +1,45 @@
 <!DOCTYPE html><html lang="ru"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>Представление графов | Allan's Hиbook of Algorithms</title><link href="../assets/css/styles.css" rel="stylesheet"/><link href="assets/graphs.css" rel="stylesheet"/><link href="../assets/images/favicon-32.png" rel="icon" sizes="32x32" type="image/png"/><link href="representation.html" hreflang="en" rel="alternate"/><link href="representation-ru.html" hreflang="ru" rel="alternate"/></head>
-<body class="lecture-page graph-content-page"><header class="topbar"><a class="brи" href="../"><span class="brи-mark brи-mark-logo"><img alt="" class="brи-mark-image" src="../assets/images/logo.png"/></span><span class="brи-name">Allan's Hиbook of Algorithms</span></a><nav class="topnav"><a href="./">Обзор графов</a><div class="language-switch"><a href="representation.html">EN</a><span class="language-separator">·</span><span class="current">RU</span></div></nav></header>
-<aside aria-label="Section navigation" class="sidebar"><div class="sidebar-title">Графs · Представление графов</div><a href="#section-1">Размер графа</a><a href="#section-2">Два представления</a><a href="#section-3">Матрица смежности</a><a href="#section-4">Список смежности</a><a href="#section-5">Списки смежности для разреженных графов</a><a href="#section-6">Выбор представления</a><a href="#section-7">Ориентированные и взвешенные графы</a><a href="#section-8">Представление и обход</a></aside><main class="lecture"><section class="lecture-hero graph-hero"><div><h1>Представление графов</h1><p class="chapter-topics">Два основных способа хранить граф — матрица смежности и список смежности. От выбора зависят и расход памяти, и время работы алгоритмов.</p></div><div class="graph-hero-art"><svg class="graph-svg hero-representation" viewBox="0 0 220 170"><g class="edge"><line x1="40" y1="85" x2="105" y2="35"/><line x1="105" y1="35" x2="180" y2="82"/><line x1="40" y1="85" x2="105" y2="140"/><line x1="105" y1="140" x2="180" y2="82"/></g><g class="node"><circle cx="40" cy="85" r="13"/><circle cx="105" cy="35" r="13"/><circle cx="180" cy="82" r="13"/><circle cx="105" cy="140" r="13"/></g></svg></div></section>
+<title>Представление графов | Allan's Handbook of Algorithms</title><link href="../assets/css/styles.css" rel="stylesheet"/><link href="assets/graphs.css" rel="stylesheet"/><link href="../assets/images/favicon-32.png" rel="icon" sizes="32x32" type="image/png"/><link href="representation.html" hreflang="en" rel="alternate"/><link href="representation-ru.html" hreflang="ru" rel="alternate"/></head>
+<body class="lecture-page graph-content-page"><header class="topbar"><a class="brand" href="../"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name">Allan's Handbook of Algorithms</span></a><nav class="topnav"><a href="./">Обзор графов</a><div class="language-switch"><a href="representation.html">EN</a><span class="language-separator">·</span><span class="current">RU</span></div></nav></header>
+<aside aria-label="Section navigation" class="sidebar"><div class="sidebar-title">Графы · Представление графов</div><a href="#section-1">Размер графа</a><a href="#section-2">Два представления</a><a href="#section-3">Матрица смежности</a><a href="#section-4">Список смежности</a><a href="#section-5">Списки смежности для разреженных графов</a><a href="#section-6">Выбор представления</a><a href="#section-7">Ориентированные и взвешенные графы</a><a href="#section-8">Представление и обход</a></aside><main class="lecture"><section class="lecture-hero graph-hero"><div><h1>Представление графов</h1><p class="chapter-topics">Два основных способа хранить граф — матрица смежности и список смежности. От выбора зависят и расход памяти, и время работы алгоритмов.</p></div><div class="graph-hero-art"><svg class="graph-svg hero-representation" viewBox="0 0 220 170"><g class="edge"><line x1="40" y1="85" x2="105" y2="35"/><line x1="105" y1="35" x2="180" y2="82"/><line x1="40" y1="85" x2="105" y2="140"/><line x1="105" y1="140" x2="180" y2="82"/></g><g class="node"><circle cx="40" cy="85" r="13"/><circle cx="105" cy="35" r="13"/><circle cx="180" cy="82" r="13"/><circle cx="105" cy="140" r="13"/></g></svg></div></section>
 <section class="lecture-section">
 <section id="parameters"><h2 id="section-1">Размер графа</h2>
-<p>Для графа <span class="math">G = (V, E)</span>, обозначим <span class="math">n = |V|</span> — число вершин, а <span class="math">m = |E|</span> — число рёбер. Время работы алгоритмов на графах обычно выражают через обе величины— <span class="math">n</span> и <span class="math">m</span>.</p>
+<p>Для графа <span class="math">G = (V, E)</span>, write <span class="math">n = |V|</span> — число вершин, а <span class="math">m = |E|</span> — число рёбер. Время работы алгоритмов на графах обычно выражают через обе величины: <span class="math">n</span> и <span class="math">m</span>.</p>
 <p>Графы с одинаковым числом вершин могут сильно различаться числом рёбер. Граф с небольшим числом рёбер называют <b>разреженным</b>; граф, содержащий значительную долю всех возможных рёбер, — <b>плотным</b>.</p>
-<div class="graph-definition"><p>Для многих алгоритмов на графах <span class="complexity-box">O(n+m)</span> называют <b>линейным временем</b>— уже одно чтение всего графа, заданного списками смежности, требует столько времени.</p></div></section>
+<div class="graph-definition"><p>Для многих алгоритмов на графах <span class="complexity-box">O(n+m)</span> называют <b>линейным временем</b>: уже одно чтение всего графа, заданного списками смежности, требует столько времени.</p></div></section>
 
 <section id="same-graph"><h2 id="section-2">Два представления</h2>
 <p>Человеку удобно смотреть на рисунок; алгоритму нужна структура данных.</p>
 <div class="representation-triptych">
 <figure class="representation-panel"><h3>Граф</h3><svg class="graph-svg repr-graph" viewBox="0 0 260 210"><g class="edge"><line x1="48" y1="105" x2="128" y2="42"/><line x1="128" y1="42" x2="215" y2="105"/><line x1="215" y1="105" x2="128" y2="170"/><line x1="128" y1="170" x2="48" y2="105"/><line x1="48" y1="105" x2="215" y2="105"/></g><g class="node labelled"><circle cx="48" cy="105" r="14"/><text x="48" y="105">0</text><circle cx="128" cy="42" r="14"/><text x="128" y="42">1</text><circle cx="215" cy="105" r="14"/><text x="215" y="105">2</text><circle cx="128" cy="170" r="14"/><text x="128" y="170">3</text></g></svg></figure>
 <figure class="representation-panel"><h3>Список смежности</h3><div class="adj-list big-list"><div><b>0</b> → 1, 2, 3</div><div><b>1</b> → 0, 2</div><div><b>2</b> → 0, 1, 3</div><div><b>3</b> → 0, 2</div></div></figure>
-<figure class="representation-panel"><h3>Матрица смежности</h3><table class="матрица"><tr><th></th><th>0</th><th>1</th><th>2</th><th>3</th></tr><tr><th>0</th><td>0</td><td class="on">1</td><td class="on">1</td><td class="on">1</td></tr><tr><th>1</th><td class="on">1</td><td>0</td><td class="on">1</td><td>0</td></tr><tr><th>2</th><td class="on">1</td><td class="on">1</td><td>0</td><td class="on">1</td></tr><tr><th>3</th><td class="on">1</td><td>0</td><td class="on">1</td><td>0</td></tr></table></figure>
+<figure class="representation-panel"><h3>Матрица смежности</h3><table class="matrix"><tr><th></th><th>0</th><th>1</th><th>2</th><th>3</th></tr><tr><th>0</th><td>0</td><td class="on">1</td><td class="on">1</td><td class="on">1</td></tr><tr><th>1</th><td class="on">1</td><td>0</td><td class="on">1</td><td>0</td></tr><tr><th>2</th><td class="on">1</td><td class="on">1</td><td>0</td><td class="on">1</td></tr><tr><th>3</th><td class="on">1</td><td>0</td><td class="on">1</td><td>0</td></tr></table></figure>
 </div></section>
 
-<section id="матрица"><h2 id="section-3">Матрица смежности</h2>
-<p>Самое простое представление — <span class="math">n × n</span> матрица <span class="math">A</span>Размером <span class="math">A[u, v]</span> Элемент равен 1, если в графе есть ребро <span class="math">(u,v)</span>, и 0 otherwise. For an undirected graph the матрица is symmetric— <span class="math">A[u, v]=A[v,u]</span>.</p>
-<div class="compare-grid"><article class="compare-card"><span class="tag">Преимущество</span><h3>Проверка ребра за константное время</h3><p>Чтобы проверить, существует ли <span class="math">(u,v)</span> is present, inspect one матрица entry. The operation takes <span class="complexity-box">O(1)</span> времени.</p></article><article class="compare-card"><span class="tag">Цена</span><h3>Квадратичная память</h3><p>The матрица always contains <span class="math">n²</span> элементов — независимо от того, десять в графе рёбер или почти все возможные.</p></article></div>
-<p>Чтобы перечислить соседей <span class="math">v</span>, a матрица must scan the entire row <span class="math">A[v, *]</span>— <span class="complexity-box">Θ(n)</span> даже если у <span class="math">v</span> всего один сосед.</p>
+<section id="matrix"><h2 id="section-3">Матрица смежности</h2>
+<p>Самое простое представление — <span class="math">n × n</span> матрица <span class="math">A</span>Элемент <span class="math">A[u, v]</span> равен 1, если в графе есть ребро <span class="math">(u,v)</span>, and 0 otherwise. For an undirected graph the matrix is symmetric: <span class="math">A[u, v]=A[v,u]</span>.</p>
+<div class="compare-grid"><article class="compare-card"><span class="tag">Преимущество</span><h3>Проверка ребра за O(1)</h3><p>Чтобы проверить, существует ли <span class="math">(u,v)</span> достаточно посмотреть один элемент матрицы. Операция занимает <span class="complexity-box">O(1)</span> времени.</p></article><article class="compare-card"><span class="tag">Цена</span><h3>Квадратичная память</h3><p>Матрица всегда содержит <span class="math">n²</span> элементов — независимо от того, десять в графе рёбер или почти все возможные.</p></article></div>
+<p>Чтобы перечислить соседей <span class="math">v</span>, a matrix must scan the entire row <span class="math">A[v, *]</span>: <span class="complexity-box">Θ(n)</span> даже если у <span class="math">v</span> всего один сосед.</p>
 </section>
 
 <section id="list"><h2 id="section-4">Список смежности</h2>
 <p>В представлении списками смежности для каждой вершины хранится список её соседей. Можно считать, что есть массив <span class="math">Adj</span> в котором <span class="math">Adj[v]</span> содержит в точности вершины, смежные с <span class="math">v</span>.</p>
-<p>For an undirected graph, each edge appears twice— if <span class="math">{u,v}</span> — ребро, то <span class="math">v</span> входит в <span class="math">Adj[u]</span> и <span class="math">u</span> входит в <span class="math">Adj[v]</span>. Поэтому суммарная длина всех списков смежности равна <span class="math">2m</span>.</p>
+<p>В неориентированном графе каждое ребро встречается дважды: если <span class="math">{u,v}</span> — ребро, то <span class="math">v</span> входит в <span class="math">Adj[u]</span> и <span class="math">u</span> входит в <span class="math">Adj[v]</span>. Consequently, the total length of all adjacency lists is <span class="math">2m</span>.</p>
 <div class="graph-formula">память = Θ(n + m)</div>
 <p>При списках смежности перебор соседей <span class="math">v</span> занимает время, пропорциональное степени этой вершины.</p>
 <div class="code-simple"><pre><code>graph = {
-    0— [1, 2, 3],
-    1— [0, 2],
-    2— [0, 1, 3],
-    3— [0, 2],
+    0: [1, 2, 3],
+    1: [0, 2],
+    2: [0, 1, 3],
+    3: [0, 2],
 }</code></pre></div>
-<p>В Python словарь списков удобен, когда вершины имеют произвольные метки. Если вершины пронумерованы <span class="math">0,1,…,n−1</span>, обычно достаточно списка списков.</p>
+<p>В Python словарь списков удобен, когда вершины имеют произвольные метки. Если вершины пронумерованы <span class="math">0,1,…,n−1</span>, a list of lists is usually enough.</p>
 </section>
 
 <section id="manhattan"><h2 id="section-5">Списки смежности для разреженных графов</h2>
-<p>Skiena gives a useful scale example. Model Manhattan as a street graph— intersections are вершин и street segments between neighboring intersections are рёбер. Roughly 15 avenues crossing about 200 streets produce around 3,000 вершин и about 6,000 рёбер.</p>
-<div class="manhattan-demo"><div class="street-grid" aria-hidden="true"><i class="v" style="left—10%"></i><i class="v" style="left—21.4%"></i><i class="v" style="left—32.8%"></i><i class="v" style="left—44.2%"></i><i class="v" style="left—55.6%"></i><i class="v" style="left—67%"></i><i class="v" style="left—78.4%"></i><i class="v" style="left—89.8%"></i><i class="h" style="top—10%"></i><i class="h" style="top—26%"></i><i class="h" style="top—42%"></i><i class="h" style="top—58%"></i><i class="h" style="top—74%"></i><i class="h" style="top—90%"></i></div><div class="manhattan-numbers"><div><b>≈ 3,000</b><span>вершин</span></div><div><b>≈ 6,000</b><span>рёбер</span></div><div><b>9,000,000</b><span>матрица cells</span></div></div></div>
-<p>An adjacency матрица would allocate <span class="math">3,000 × 3,000 = 9,000,000</span> cells, almost all of them empty. An adjacency list stores essentially the вершин и the street segments that actually exist.</p>
+<p>У Скьены есть наглядный пример масштаба. Представим Манхэттен как граф улиц: перекрёстки — вершины, а участки улиц между соседними перекрёстками — рёбра. Примерно 15 авеню, пересекающих около 200 улиц, дают порядка 3000 вершин и 6000 рёбер.</p>
+<div class="manhattan-demo"><div class="street-grid" aria-hidden="true"><i class="v" style="left:10%"></i><i class="v" style="left:21.4%"></i><i class="v" style="left:32.8%"></i><i class="v" style="left:44.2%"></i><i class="v" style="left:55.6%"></i><i class="v" style="left:67%"></i><i class="v" style="left:78.4%"></i><i class="v" style="left:89.8%"></i><i class="h" style="top:10%"></i><i class="h" style="top:26%"></i><i class="h" style="top:42%"></i><i class="h" style="top:58%"></i><i class="h" style="top:74%"></i><i class="h" style="top:90%"></i></div><div class="manhattan-numbers"><div><b>≈ 3,000</b><span>вершин</span></div><div><b>≈ 6,000</b><span>рёбер</span></div><div><b>9,000,000</b><span>ячеек матрицы</span></div></div></div>
+<p>Матрица смежности потребовала бы <span class="math">3,000 × 3,000 = 9,000,000</span> ячеек, почти все из которых пусты. Список смежности хранит в основном только реально существующие вершины и участки улиц.</p>
 </section>
 
 <section id="comparison"><h2 id="section-6">Выбор представления</h2>
@@ -50,21 +50,21 @@
 <tr><td>Обойти весь граф</td><td><span class="complexity-box">Θ(n+m)</span></td><td><span class="complexity-box">Θ(n²)</span></td></tr>
 <tr><td>Обычно подходит для</td><td>Разреженных графов; большинства алгоритмов</td><td>Плотных графов; частых проверок наличия ребра</td></tr>
 </tbody></table></div>
-<div class="warning good"><b>Default choice—</b> adjacency lists are the stиard representation for most graph algorithms. Adjacency matrices are attractive when the graph is плотным or constant-time edge lookup is especially important.</div>
+<div class="warning good"><b>По умолчанию:</b> для большинства алгоритмов стандартный выбор — списки смежности. Матрица удобна для плотных графов или когда особенно важна проверка наличия ребра за O(1).</div>
 </section>
 
 <section id="directed-weighted"><h2 id="section-7">Ориентированные и взвешенные графы</h2>
-<p>Оба представления естественно переносятся на ориентированные графы. Ребро <span class="math">(u,v)</span> хранится только в списке исходящих рёбер вершины <span class="math">u</span>'s outgoing adjacency list, or only in матрица entry <span class="math">A[u, v]</span>. Симметрии теперь нет.</p>
-<p>Во взвешенном графе вместе с соседом хранится вес. Элемент списка смежности можно записать парой <span class="math">(v,w)</span>, где <span class="math">v</span> is the neighboring vertex и <span class="math">w</span> — вес ребра.</p>
+<p>Оба представления естественно переносятся на ориентированные графы. Ребро <span class="math">(u,v)</span> хранится только в <span class="math">u</span>списке исходящих рёбер или только в элементе матрицы <span class="math">A[u, v]</span>. Симметрии теперь нет.</p>
+<p>Во взвешенном графе вместе с соседом хранится вес. Элемент списка смежности можно записать парой <span class="math">(v,w)</span>, where <span class="math">v</span> — соседняя вершина, а <span class="math">w</span> — вес ребра.</p>
 <div class="code-simple"><pre><code>graph = {
-    0— [(1, 7), (2, 3)],
-    1— [(2, 4)],
-    2— []
+    0: [(1, 7), (2, 3)],
+    1: [(2, 4)],
+    2: []
 }</code></pre></div>
 </section>
 
 <section id="next"><h2 id="section-8">Представление и обход</h2>
-<p>Breadth-first search и depth-first search repeatedly ask for the neighbors of the current vertex. With adjacency lists, the total work of examining all lists is proportional to <span class="math">n+m</span>. With an adjacency матрица, scanning rows can require <span class="math">n²</span> операций. В следующем разделе список смежности позволит реализовать BFS за линейное время.</p></section>
+<p>BFS и DFS постоянно перебирают соседей текущей вершины. При списках смежности суммарная работа по просмотру всех списков пропорциональна <span class="math">n+m</span>При матрице смежности просмотр строк может потребовать <span class="math">n²</span> операций. В следующем разделе список смежности позволит реализовать BFS за линейное время.</p></section>
 </section>
-<div class="chapter-nav"><a href="models.html">← Граф Models</a><a href="bfs.html">Breadth-First Поиск в →</a></div></main>
-<footer class="overview-footer"><div>Allan's Hиbook of Algorithms</div><div>© 2026 Allan Allemи</div></footer><script src="../assets/js/language-switch.js"></script></body></html>
+<div class="chapter-nav"><a href="models.html">← Модели графов</a><a href="bfs.html">Поиск в ширину →</a></div></main>
+<footer class="overview-footer"><div>Allan's Handbook of Algorithms</div><div>© 2026 Allan Allemand</div></footer><script src="../assets/js/language-switch.js"></script></body></html>
