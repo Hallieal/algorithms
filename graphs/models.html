@@ -7,12 +7,12 @@
 <link href="../assets/images/favicon-32.png" rel="icon" sizes="32x32" type="image/png"/>
 <link href="models.html" hreflang="en" rel="alternate"/><link href="models-ru.html" hreflang="ru" rel="alternate"/>
 </head>
-<body class="lecture-page">
+<body class="lecture-page graph-content-page">
 <header class="topbar"><a class="brand" href="../"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name">Allan's Handbook of Algorithms</span></a><nav class="topnav"><a href="./">Graphs overview</a><div class="language-switch"><span class="current">EN</span><span class="language-separator">·</span><a href="models-ru.html">RU</a></div></nav></header>
 <main class="lecture">
 <section class="lecture-hero graph-hero">
 <div><div class="chapter-label">Chapter 8 · Section 2</div><h1>Graph Models and Basic Definitions</h1>
-<p class="chapter-topics">A graph is a compact way to encode objects and the pairwise relationships among them. The important first step is deciding what the vertices and edges mean.</p></div>
+<p class="chapter-topics">A graph records objects and the relationships between them. The objects are vertices; the relationships are edges.</p></div>
 <div class="graph-hero-art">
 <svg class="graph-svg hero-network" viewBox="0 0 220 170" role="img" aria-label="A small graph with five vertices">
 <g class="edge"><line x1="38" y1="87" x2="102" y2="31"/><line x1="102" y1="31" x2="180" y2="74"/><line x1="180" y1="74" x2="139" y2="139"/><line x1="139" y1="139" x2="38" y2="87"/><line x1="38" y1="87" x2="180" y2="74"/></g>
@@ -21,8 +21,8 @@
 
 <section class="lecture-section">
 <section id="why-graphs"><h2>Why graphs?</h2>
-<p class="lead">Many problems in the real world are naturally described in terms of objects and the connections between them. A road map has cities and roads; an airline map has airports and routes; a program has statements and possible transfers of control; a social network has people and relationships.</p>
-<p>Graphs give a language for talking about these relationships. A complicated applied problem often becomes much simpler once the right graph has been identified. The central modeling question is therefore not “Which graph algorithm do I know?” but “What should a vertex represent, and when should two vertices be joined by an edge?”</p>
+<p class="lead">Road maps, airline routes, program control flow, and social networks have the same abstract form: objects connected to other objects.</p>
+<p>The modeling question is: what does a vertex represent, and what does an edge represent?</p>
 <figure class="graph-figure">
 <svg class="graph-svg map-svg" viewBox="0 0 720 270" role="img" aria-label="A road network represented as a graph">
 <path class="road" d="M78 191 C160 128 196 203 278 132 S430 53 520 111 S621 189 665 78"/>
@@ -73,7 +73,7 @@
 </section>
 
 <section id="models"><h2>What do vertices and edges represent?</h2>
-<p>The usefulness of graphs comes from their flexibility. The same mathematical object can describe very different systems.</p>
+<p>The same graph can represent very different systems; only the pattern of connections matters.</p>
 <div class="model-table-wrap"><table class="decision-table model-table"><thead><tr><th>Problem</th><th>Vertices</th><th>Edges</th><th>Direction / weight</th></tr></thead><tbody>
 <tr><td>Airline routes</td><td>Airports</td><td>Nonstop flights</td><td>Directed; weight may be time or price</td></tr>
 <tr><td>Road network</td><td>Cities or junctions</td><td>Roads</td><td>Often weighted by distance or travel time</td></tr>
@@ -86,7 +86,7 @@
 </section>
 
 <section id="next"><h2>Where this chapter goes next</h2>
-<p>Once a problem has been modeled as a graph, the graph must be stored and explored. The next section compares adjacency lists and adjacency matrices. After that, breadth-first and depth-first search provide the basic machinery for reachability, shortest paths in unweighted graphs, connectivity, cycle detection, and topological ordering.</p>
+<p>The next section turns the abstract graph into a data structure: an adjacency matrix or an adjacency list.</p>
 </section>
 </section>
 <div class="chapter-nav"><a href="introduction.html">← Introduction to Graphs</a><a href="representation.html">Next: Representing Graphs →</a></div>
