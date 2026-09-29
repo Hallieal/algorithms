@@ -303,3 +303,50 @@
 .directed-example .dir-edge line{
   stroke-linecap:round;
 }
+
+/* v11 inline complexity and centered graph labels */
+.graph-content-page .complexity-box{
+  display:inline;
+  margin:0;
+  padding:0;
+  border:0;
+  border-radius:0;
+  background:transparent;
+  color:inherit;
+  box-shadow:none;
+  font-family:"Cambria Math","STIX Two Math","STIX Two Text",serif;
+  font-size:1em;
+  font-weight:500;
+  line-height:inherit;
+  letter-spacing:0;
+  white-space:nowrap;
+  vertical-align:baseline;
+}
+.graph-content-page .model-table-wrap .complexity-box{margin:0}
+.weighted-svg .node text,
+.bfs-layers .node text,
+.tree-pair-svg .node text,
+.dfs-walk .node text,
+.edge-types-svg .node text{
+  text-anchor:middle;
+  dominant-baseline:central;
+}
+.weighted-svg .node text{fill:#fff;font:700 13px ui-sans-serif,system-ui,sans-serif}
+.bfs-layers .node text,.tree-pair-svg .node text,.dfs-walk .node text,.edge-types-svg .node text{
+  transform:translate(5px,-5px);
+}
+.layer-definition{padding-top:18px}
+.layer-definition .layer-base{
+  width:fit-content;
+  margin:0 auto 13px;
+  padding:9px 18px;
+  border:1px solid #d9e4d5;
+  border-radius:10px;
+  background:#fff;
+  color:#263039;
+  font-family:"Cambria Math","STIX Two Math","STIX Two Text",serif;
+  font-size:20px;
+  font-weight:600;
+  line-height:1.25;
+}
+.layer-definition p{margin:0}
