@@ -127,3 +127,37 @@
   text-align:center;
 }
 .graph-content-page .graph-formula .math{display:inline;font-size:1em;font-style:normal}
+
+/* v7 graph navigation, formulas, and node labels */
+.graph-content-page .sidebar{padding-right:22px}
+.graph-content-page .sidebar a{line-height:1.32}
+.graph-content-page .graph-formula{
+  width:fit-content;
+  min-width:210px;
+  max-width:min(680px,100%);
+  margin:24px auto 28px;
+  padding:15px 24px;
+  border:1px solid #e2ded6;
+  border-radius:12px;
+  background:#fff;
+  box-shadow:0 2px 8px rgba(32,38,45,.025);
+  box-sizing:border-box;
+}
+.graph-content-page .math{
+  color:#263039;
+  font-family:"Cambria Math","STIX Two Text","Times New Roman",serif;
+  font-size:1.02em;
+  font-style:normal;
+  font-weight:400;
+  letter-spacing:-.005em;
+  white-space:nowrap;
+}
+.uf-svg .node text{
+  font:700 14px ui-sans-serif,system-ui,sans-serif;
+  fill:#20262d;
+  text-anchor:middle;
+  dominant-baseline:middle;
+}
+.chapter-nav{align-items:stretch}
+.chapter-nav a{display:flex;align-items:center;min-height:44px;padding:10px 14px;border:1px solid var(--line);border-radius:12px;background:#fff}
+.chapter-nav a:last-child{margin-left:auto}
