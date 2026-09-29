@@ -3,7 +3,7 @@
 <body class="lecture-page graph-content-page"><header class="topbar"><a class="brand" href="../"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name">Allan's Handbook of Algorithms</span></a><nav class="topnav"><a href="./">Graphs overview</a><div class="language-switch"><span class="current">EN</span><span class="language-separator">·</span><a href="dfs-ru.html">RU</a></div></nav></header>
 <main class="lecture"><section class="lecture-hero graph-hero"><div><div class="chapter-label">Chapter 8 · Section 5</div><h1>Depth-First Search</h1><p class="chapter-topics">DFS follows a path as far as possible, then backtracks. Its tree structure, entry and exit times, and back edges are the basis of many graph algorithms.</p></div><div class="graph-hero-art"><svg class="graph-svg dfs-hero-svg" viewBox="0 0 220 180"><path class="dfs-path" d="M42 28 L91 55 L72 103 L124 143 L178 111 L161 56"/><g class="node"><circle cx="42" cy="28" r="12"/><circle cx="91" cy="55" r="12"/><circle cx="72" cy="103" r="12"/><circle cx="124" cy="143" r="12"/><circle cx="178" cy="111" r="12"/><circle cx="161" cy="56" r="12"/></g></svg></div></section>
 <section class="lecture-section">
-<section id="idea"><h2>Go deep, then backtrack</h2>
+<section id="idea"><h2>Depth-First Traversal</h2>
 <p class="lead">Imagine that the graph is a maze. Start at <span class="math">s</span>, take an unexplored passage, and continue from the new room. Keep moving forward until there is nowhere new to go; then backtrack to the most recent room that still has an unexplored passage.</p>
 <p>DFS follows one branch before returning. BFS, by contrast, processes vertices layer by layer.</p>
 <figure class="graph-figure dfs-walk-figure"><svg class="graph-svg dfs-walk" viewBox="0 0 720 300" role="img" aria-label="A depth-first walk and backtracking">
@@ -93,7 +93,7 @@
 <div class="warning"><b>Neighbor order matters.</b> Recursive DFS and an iterative implementation may visit vertices in different orders unless the order in which neighbors are pushed onto the stack is chosen carefully.</div>
 </section>
 
-<section id="directed"><h2>Directed graphs have more edge types</h2>
+<section id="directed"><h2>Edge Types in Directed Graphs</h2>
 <p>For undirected graphs, tree and back edges are enough. In directed graphs, DFS can encounter four kinds of edges: <b>tree</b>, <b>back</b>, <b>forward</b>, and <b>cross</b> edges.</p>
 <div class="edge-type-grid"><article><b>Tree</b><p>Discovers a new vertex.</p></article><article><b>Back</b><p>Points to an active ancestor.</p></article><article><b>Forward</b><p>Points to an already processed descendant.</p></article><article><b>Cross</b><p>Connects vertices with no ancestor–descendant relation.</p></article></div>
 <p>This classification is central to DFS algorithms on directed graphs. In particular, a directed graph is acyclic exactly when DFS finds no back edge. Reverse exit order then produces a topological ordering; we will use this in the section on DAGs.</p>
