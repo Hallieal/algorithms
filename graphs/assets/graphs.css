@@ -60,3 +60,13 @@
 .graph-introduction-page .sf-route .intro-labels text{dominant-baseline:middle}
 @media(max-width:1180px) and (min-width:761px){.graph-introduction-page .sidebar + .lecture{width:calc(100% - 330px);margin-left:290px;margin-right:40px}}
 @media(max-width:760px){.graph-introduction-page .lecture,.graph-introduction-page .sidebar + .lecture{width:auto;margin-left:0;margin-right:0;padding-left:20px;padding-right:20px}}
+
+/* v4 consistent centered layout for all graph lessons */
+.graph-content-page .lecture{width:min(860px,calc(100% - 72px));max-width:860px;margin-left:auto;margin-right:auto;padding-left:0;padding-right:0}
+.graph-content-page .sidebar{width:220px}
+.graph-content-page .sidebar + .lecture{margin-left:max(calc((100vw - 860px)/2),280px);margin-right:auto}
+.graph-content-page .lecture>p{max-width:780px;font-size:16px;line-height:1.72;color:#4f5b63}
+.graph-content-page .lecture>h2{margin-top:52px;margin-bottom:14px;letter-spacing:-.025em}
+.graph-content-page .lecture .lead{max-width:780px;line-height:1.68}
+@media(max-width:1180px) and (min-width:761px){.graph-content-page .sidebar + .lecture{width:calc(100% - 330px);margin-left:290px;margin-right:40px}}
+@media(max-width:760px){.graph-content-page .lecture,.graph-content-page .sidebar + .lecture{width:auto;margin-left:0;margin-right:0;padding-left:20px;padding-right:20px}}
