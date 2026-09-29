@@ -372,3 +372,12 @@
 .path-type-grid article > span{
   margin-top:auto;
 }
+
+/* v13 weighted example labels: exact center of blue vertices */
+.weighted-svg .node.labelled text{
+  fill:#fff !important;
+  text-anchor:middle !important;
+  dominant-baseline:central !important;
+  transform:none !important;
+  font:700 13px ui-sans-serif,system-ui,sans-serif !important;
+}
