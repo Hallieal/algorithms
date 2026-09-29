@@ -1,11 +1,11 @@
 <!DOCTYPE html><html lang="en"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
 <title>Depth-First Search | Allan's Handbook of Algorithms</title><link href="../assets/css/styles.css" rel="stylesheet"/><link href="assets/graphs.css" rel="stylesheet"/><link href="../assets/images/favicon-32.png" rel="icon" sizes="32x32" type="image/png"/><link href="dfs.html" hreflang="en" rel="alternate"/><link href="dfs-ru.html" hreflang="ru" rel="alternate"/></head>
-<body class="lecture-page"><header class="topbar"><a class="brand" href="../"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name">Allan's Handbook of Algorithms</span></a><nav class="topnav"><a href="./">Graphs overview</a><div class="language-switch"><span class="current">EN</span><span class="language-separator">·</span><a href="dfs-ru.html">RU</a></div></nav></header>
+<body class="lecture-page graph-content-page"><header class="topbar"><a class="brand" href="../"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name">Allan's Handbook of Algorithms</span></a><nav class="topnav"><a href="./">Graphs overview</a><div class="language-switch"><span class="current">EN</span><span class="language-separator">·</span><a href="dfs-ru.html">RU</a></div></nav></header>
 <main class="lecture"><section class="lecture-hero graph-hero"><div><div class="chapter-label">Chapter 8 · Section 5</div><h1>Depth-First Search</h1><p class="chapter-topics">DFS follows a path as far as possible, then backtracks. Its tree structure, entry and exit times, and back edges are the basis of many graph algorithms.</p></div><div class="graph-hero-art"><svg class="graph-svg dfs-hero-svg" viewBox="0 0 220 180"><path class="dfs-path" d="M42 28 L91 55 L72 103 L124 143 L178 111 L161 56"/><g class="node"><circle cx="42" cy="28" r="12"/><circle cx="91" cy="55" r="12"/><circle cx="72" cy="103" r="12"/><circle cx="124" cy="143" r="12"/><circle cx="178" cy="111" r="12"/><circle cx="161" cy="56" r="12"/></g></svg></div></section>
 <section class="lecture-section">
 <section id="idea"><h2>Go deep, then backtrack</h2>
 <p class="lead">Imagine that the graph is a maze. Start at <span class="math">s</span>, take an unexplored passage, and continue from the new room. Keep moving forward until there is nowhere new to go; then backtrack to the most recent room that still has an unexplored passage.</p>
-<p>This is depth-first search. Unlike BFS, which spreads outward layer by layer, DFS can move far away from the source before returning to vertices that were discovered much earlier.</p>
+<p>DFS follows one branch before returning. BFS, by contrast, processes vertices layer by layer.</p>
 <figure class="graph-figure dfs-walk-figure"><svg class="graph-svg dfs-walk" viewBox="0 0 720 300" role="img" aria-label="A depth-first walk and backtracking">
 <g class="edge faint"><line x1="80" y1="150" x2="190" y2="70"/><line x1="80" y1="150" x2="190" y2="230"/><line x1="190" y1="70" x2="325" y2="55"/><line x1="190" y1="70" x2="330" y2="150"/><line x1="330" y1="150" x2="455" y2="80"/><line x1="330" y1="150" x2="455" y2="220"/><line x1="455" y1="80" x2="590" y2="115"/><line x1="455" y1="220" x2="590" y2="115"/></g>
 <path class="dfs-highlight" d="M80 150 L190 70 L325 55"/><path class="dfs-backtrack" d="M325 55 L190 70 L330 150 L455 80 L590 115"/>
@@ -37,7 +37,7 @@
 <p>DFS can attach two timestamps to every vertex. The <b>entry time</b> is recorded when the vertex is first reached. The <b>exit time</b> is recorded after all of its outgoing edges and descendants have been explored.</p>
 <div class="time-nesting"><div class="interval i1"><b>u</b><span>entry[u]</span><div class="interval i2"><b>v</b><span>entry[v]</span><div class="interval i3"><b>w</b><span>entry[w] … exit[w]</span></div><span>exit[v]</span></div><span>exit[u]</span></div></div>
 <div class="graph-definition theorem"><p>If <span class="math">u</span> is an ancestor of <span class="math">v</span> in the DFS tree, then <span class="math">entry[u] &lt; entry[v] &lt; exit[v] &lt; exit[u]</span>. The time interval of every descendant is nested inside the interval of its ancestor.</p></div>
-<p>This nesting is one of the reasons DFS is so useful. Later algorithms use entry/exit information to reason about ancestry, topological order, articulation points, bridges, and strongly connected components.</p>
+<p>Entry and exit times encode ancestry and are used in topological sorting, articulation-point, bridge, and strongly-connected-component algorithms.</p>
 </section>
 
 <section id="edges"><h2>Tree edges and back edges</h2>
@@ -106,7 +106,7 @@
 
 <section id="bfs-vs-dfs"><h2>BFS and DFS</h2>
 <div class="model-table-wrap"><table class="decision-table"><thead><tr><th></th><th>BFS</th><th>DFS</th></tr></thead><tbody><tr><td>Pending vertices</td><td>FIFO queue</td><td>Stack / recursion</td></tr><tr><td>Shape of exploration</td><td>Layer by layer</td><td>Deep path, then backtrack</td></tr><tr><td>Unweighted shortest paths</td><td>Yes</td><td>No</td></tr><tr><td>Characteristic information</td><td>Distances and layers</td><td>Entry/exit times and edge types</td></tr><tr><td>Running time</td><td><span class="math">Θ(n+m)</span></td><td><span class="math">Θ(n+m)</span></td></tr></tbody></table></div>
-<p>Both searches discover exactly the vertices reachable from the source. Their difference is the order of exploration—and that difference determines which structural facts are easiest to obtain.</p>
+<p>BFS and DFS discover the same reachable vertices, but in a different order.</p>
 </section>
 </section>
 <div class="chapter-nav"><a href="bfs.html">← Breadth-First Search</a><a href="connectivity.html">Next: Connectivity, Cycles, and Bipartite Graphs →</a></div></main>
