@@ -1,16 +1,105 @@
-<!DOCTYPE html><html lang="ru"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><title>Поиск в ширину | Allan's Handbook of Algorithms</title><link href="../assets/css/styles.css" rel="stylesheet"/><link href="assets/graphs.css" rel="stylesheet"/><link href="../assets/images/favicon-32.png" rel="icon" sizes="32x32" type="image/png"/><link href="bfs.html" hreflang="en" rel="alternate"/><link href="bfs-ru.html" hreflang="ru" rel="alternate"/></head><body class="lecture-page"><header class="topbar"><a class="brand" href="../"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name">Allan's Handbook of Algorithms</span></a><nav class="topnav"><a href="index-ru.html">Обзор графов</a><div class="language-switch"><a href="bfs.html">EN</a><span class="language-separator">·</span><span class="current">RU</span></div></nav></header><main class="lecture"><section class="lecture-hero graph-hero"><div><div class="chapter-label">Глава 8 · Раздел 4</div><h1>Поиск в ширину</h1><p class="chapter-topics">Графы превращают задачи о связях, маршрутах и зависимостях в стандартные алгоритмические модели.</p></div><div class="graph-hero-art"><div class="network"><i></i><i></i><i></i><i></i><b></b><b></b><b></b><b></b><b></b></div></div></section><section class="lecture-section"><section id="idea"><h2>Обход по расстоянию</h2><p class="lead">BFS идёт слоями: старт, затем все вершины на расстоянии одного ребра, затем двух и так далее. Этот порядок обеспечивает FIFO-очередь.</p><div class="algo-steps"><div class="algo-step"><h3>Старт</h3><p>Помечаем источник и кладём его в очередь.</p></div><div class="algo-step"><h3>Берём самую старую вершину</h3><p>Удаляем элемент из начала очереди.</p></div><div class="algo-step"><h3>Открываем непосещённых соседей</h3><p>Сразу помечаем их, запоминаем родителя и добавляем в очередь.</p></div><div class="algo-step"><h3>Повторяем</h3><p>До пустой очереди или нахождения цели.</p></div></div></section><section id="code"><h2>Реализация на Python</h2><div class="code-simple"><pre>from collections import deque
+<!DOCTYPE html><html lang="ru"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Поиск в ширину | Allan's Handbook of Algorithms</title><link href="../assets/css/styles.css" rel="stylesheet"/><link href="assets/graphs.css" rel="stylesheet"/><link href="../assets/images/favicon-32.png" rel="icon" sizes="32x32" type="image/png"/><link href="bfs.html" hreflang="en" rel="alternate"/><link href="bfs-ru.html" hreflang="ru" rel="alternate"/></head>
+<body class="lecture-page graph-content-page"><header class="topbar"><a class="brand" href="../"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name">Allan's Handbook of Algorithms</span></a><nav class="topnav"><a href="./">Обзор графов</a><div class="language-switch"><a href="bfs.html">EN</a><span class="language-separator">·</span><span class="current">RU</span></div></nav></header>
+<aside aria-label="Section navigation" class="sidebar"><div class="sidebar-title">Графы · Поиск в ширину</div><a href="#section-1">Послойный обход</a><a href="#section-2">Номер слоя — расстояние от источника</a><a href="#section-3">Дерево BFS</a><a href="#section-4">Очередь BFS</a><a href="#section-5">Алгоритм</a><a href="#section-6">Пример обхода</a><a href="#section-7">Восстановление кратчайшего пути</a><a href="#section-8">Время работы</a><a href="#section-9">Что даёт BFS</a><a href="#section-10">BFS в ориентированных графах</a></aside><main class="lecture"><section class="lecture-hero graph-hero"><div><h1>Поиск в ширину</h1><p class="chapter-topics">BFS распространяется от исходной вершины слой за слоем. В невзвешенном графе номер слоя в точности равен расстоянию кратчайшего пути от источника.</p></div><div class="graph-hero-art"><svg class="graph-svg bfs-hero-svg" viewBox="0 0 220 175"><g class="bfs-tree-lines"><line x1="110" y1="27" x2="62" y2="77"/><line x1="110" y1="27" x2="158" y2="77"/><line x1="62" y1="77" x2="30" y2="137"/><line x1="62" y1="77" x2="85" y2="137"/><line x1="158" y1="77" x2="137" y2="137"/><line x1="158" y1="77" x2="190" y2="137"/></g><g class="node"><circle class="l0" cx="110" cy="27" r="13"/><circle class="l1" cx="62" cy="77" r="13"/><circle class="l1" cx="158" cy="77" r="13"/><circle class="l2" cx="30" cy="137" r="13"/><circle class="l2" cx="85" cy="137" r="13"/><circle class="l2" cx="137" cy="137" r="13"/><circle class="l2" cx="190" cy="137" r="13"/></g></svg></div></section>
+<section class="lecture-section">
+<section id="idea"><h2 id="section-1">Послойный обход</h2>
+<p class="lead">Поиск в ширину начинается в исходной вершине <span class="math">s</span> и постепенно распространяется во всех направлениях, добавляя вершины слой за слоем.</p>
+<p>Первый слой содержит всех соседей <span class="math">s</span>. The second contains all previously unseen vertices adjacent to the first layer. The third is formed from the second in the same way, and the process continues until no new vertices are found.</p>
+<div class="graph-definition layer-definition"><div class="layer-base">L₀ = {s}</div><p>Для <span class="math">j ≥ 0</span>, layer <span class="math">L<sub>j+1</sub></span> состоит из вершин, не попавших в предыдущие слои и имеющих ребро в вершину из <span class="math">L<sub>j</sub></span>.</p></div>
+<figure class="graph-figure bfs-layers-figure"><svg class="graph-svg bfs-layers" viewBox="0 0 760 330" role="img" aria-label="Breadth-first search layers from source s">
+<g class="layer-bands"><rect x="18" y="25" width="150" height="280" rx="18" class="band0"/><rect x="190" y="25" width="150" height="280" rx="18" class="band1"/><rect x="362" y="25" width="190" height="280" rx="18" class="band2"/><rect x="574" y="25" width="168" height="280" rx="18" class="band3"/></g>
+<g class="edge"><line x1="92" y1="164" x2="255" y2="95"/><line x1="92" y1="164" x2="255" y2="230"/><line x1="255" y1="95" x2="420" y2="65"/><line x1="255" y1="95" x2="455" y2="155"/><line x1="255" y1="230" x2="455" y2="155"/><line x1="255" y1="230" x2="420" y2="260"/><line x1="420" y1="65" x2="455" y2="155"/><line x1="455" y1="155" x2="420" y2="260"/><line x1="455" y1="155" x2="655" y2="165"/></g>
+<g class="node labelled"><circle class="l0" cx="92" cy="164" r="15"/><text x="87" y="169">s</text><circle class="l1" cx="255" cy="95" r="15"/><text x="250" y="100">a</text><circle class="l1" cx="255" cy="230" r="15"/><text x="250" y="235">b</text><circle class="l2" cx="420" cy="65" r="15"/><text x="415" y="70">c</text><circle class="l2" cx="455" cy="155" r="15"/><text x="450" y="160">d</text><circle class="l2" cx="420" cy="260" r="15"/><text x="415" y="265">e</text><circle class="l3" cx="655" cy="165" r="15"/><text x="650" y="170">f</text></g>
+<g class="layer-label"><text x="75" y="53">L₀</text><text x="245" y="53">L₁</text><text x="445" y="53">L₂</text><text x="645" y="53">L₃</text></g></svg>
+<figcaption>BFS похож на расходящуюся волну: слой вершины показывает, когда волна впервые до неё дошла.</figcaption></figure>
+</section>
+
+<section id="distance"><h2 id="section-2">Номер слоя — расстояние от источника</h2>
+<p>Если расстояние — минимальное число рёбер в пути, то каждая вершина слоя <span class="math">L<sub>j</sub></span> находится от <span class="math">j</span> на расстоянии ровно <span class="math">s</span>.</p>
+<div class="graph-definition theorem"><p><b>Свойство расстояний BFS.</b> For every <span class="math">j ≥ 1</span>, <span class="math">L<sub>j</sub></span> состоит в точности из вершин, расстояние от которых до <span class="math">s</span> равно <span class="math">j</span>Вершина <span class="math">t</span> достижима из <span class="math">s</span> тогда и только тогда, когда она попадает в один из слоёв BFS.</p></div>
+<p>Почему? Для каждой вершины, попавшей в <span class="math">L<sub>j</sub></span> существует путь, полученный продолжением пути до <span class="math">L<sub>j−1</sub></span>, so there is a path of <span class="math">j</span> рёбер. Более короткого пути быть не может: иначе BFS обнаружил бы вершину в более раннем слое.</p>
+<div class="warning"><b>Важно:</b> здесь длина пути измеряется числом рёбер. Утверждение непосредственно применимо к невзвешенным графам и к графам, где все рёбра имеют одинаковую стоимость. При разных весах нужен алгоритм кратчайших путей для взвешенных графов.</div>
+</section>
+
+<section id="tree"><h2 id="section-3">Дерево BFS</h2>
+<p>Когда при просмотре вершины <span class="math">v</span> впервые обнаруживается вершина <span class="math">u</span>, record <span class="math">u</span> как родителя <span class="math">v</span>. Рёбра к родителям образуют дерево с корнем в <span class="math">s</span>.</p>
+<div class="bfs-tree-pair">
+<figure><h3>Исходный граф</h3><svg class="graph-svg tree-pair-svg centered-label-svg" viewBox="0 0 330 245"><g class="edge"><line x1="165" y1="35" x2="85" y2="100"/><line x1="165" y1="35" x2="245" y2="100"/><line x1="85" y1="100" x2="45" y2="190"/><line x1="85" y1="100" x2="135" y2="190"/><line x1="245" y1="100" x2="205" y2="190"/><line x1="245" y1="100" x2="285" y2="190"/><line class="extra-edge" x1="85" y1="100" x2="245" y2="100"/><line class="extra-edge" x1="135" y1="190" x2="205" y2="190"/></g><g class="node numbered"><circle class="l0" cx="165" cy="35" r="14"/><text class="vertex-label" x="165" y="35">s</text><circle class="l1" cx="85" cy="100" r="14"/><text class="vertex-label" x="85" y="100">a</text><circle class="l1" cx="245" cy="100" r="14"/><text class="vertex-label" x="245" y="100">b</text><circle class="l2" cx="45" cy="190" r="14"/><text class="vertex-label" x="45" y="190">c</text><circle class="l2" cx="135" cy="190" r="14"/><text class="vertex-label" x="135" y="190">d</text><circle class="l2" cx="205" cy="190" r="14"/><text class="vertex-label" x="205" y="190">e</text><circle class="l2" cx="285" cy="190" r="14"/><text class="vertex-label" x="285" y="190">f</text></g></svg></figure>
+<figure><h3>Дерево BFS</h3><svg class="graph-svg tree-pair-svg centered-label-svg" viewBox="0 0 330 245"><g class="edge"><line x1="165" y1="35" x2="85" y2="100"/><line x1="165" y1="35" x2="245" y2="100"/><line x1="85" y1="100" x2="45" y2="190"/><line x1="85" y1="100" x2="135" y2="190"/><line x1="245" y1="100" x2="205" y2="190"/><line x1="245" y1="100" x2="285" y2="190"/></g><g class="node numbered"><circle class="l0" cx="165" cy="35" r="14"/><text class="vertex-label" x="165" y="35">s</text><circle class="l1" cx="85" cy="100" r="14"/><text class="vertex-label" x="85" y="100">a</text><circle class="l1" cx="245" cy="100" r="14"/><text class="vertex-label" x="245" y="100">b</text><circle class="l2" cx="45" cy="190" r="14"/><text class="vertex-label" x="45" y="190">c</text><circle class="l2" cx="135" cy="190" r="14"/><text class="vertex-label" x="135" y="190">d</text><circle class="l2" cx="205" cy="190" r="14"/><text class="vertex-label" x="205" y="190">e</text><circle class="l2" cx="285" cy="190" r="14"/><text class="vertex-label" x="285" y="190">f</text></g></svg></figure></div>
+<p>Единственный путь в этом дереве от <span class="math">s</span> до любой достижимой вершины содержит минимально возможное число рёбер. Поэтому массив родителей кодирует кратчайшие пути от источника.</p>
+</section>
+
+<section id="queue"><h2 id="section-4">Очередь BFS</h2>
+<p>Обнаруженные, но ещё не обработанные вершины хранятся в <b>очереди FIFO (first in, first out)</b>. Первой обрабатывается вершина, обнаруженная раньше остальных. Благодаря этому BFS полностью заканчивает текущий слой, прежде чем перейти дальше от источника.</p>
+<div class="queue-demo"><div class="queue-label">начало</div><div class="queue-cells"><span>a</span><span>b</span><span>c</span><span>d</span></div><div class="queue-label">конец</div></div>
+<p>Вершину следует помечать как обнаруженную <b>при добавлении в очередь</b>а не при извлечении. Иначе разные соседи могут несколько раз добавить одну и ту же вершину.</p>
+</section>
+
+<section id="algorithm"><h2 id="section-5">Алгоритм</h2>
+<div class="code-simple"><pre><code>from collections import deque
 
 def bfs(graph, start):
-    dist = {start: 0}
+    distance = {start: 0}
     parent = {start: None}
-    q = deque([start])
+    queue = deque([start])
 
-    while q:
-        u = q.popleft()
+    while queue:
+        u = queue.popleft()
+
         for v in graph[u]:
-            if v not in dist:
-                dist[v] = dist[u] + 1
+            if v not in distance:
+                distance[v] = distance[u] + 1
                 parent[v] = u
-                q.append(v)
+                queue.append(v)
 
-    return dist, parent</pre></div><div class="complexity-box"><div><span>Время</span><b>O(V + E)</b></div><div><span>Память</span><b>O(V)</b></div><div><span>Структура</span><b>Очередь</b></div></div></section><section id="shortest"><h2>Почему BFS находит кратчайший путь</h2><p>Вершины попадают в очередь в порядке неубывания расстояния от источника. Поэтому при первом обнаружении вершины найдено минимальное число рёбер до неё.</p><div class="warning"><b>Только при одинаковой стоимости рёбер.</b> Для разных неотрицательных весов нужен алгоритм Дейкстры.</div></section></section><div class="chapter-nav"><a href="representation-ru.html">← Предыдущий раздел</a><a href="dfs-ru.html">Следующий раздел →</a></div></main><footer class="overview-footer"><div>Allan's Handbook of Algorithms</div><div>© 2026 Allan Allemand</div></footer><script src="../assets/js/language-switch.js"></script></body></html>
+    return distance, parent</code></pre></div>
+<p>Словарь <code>distance</code> одновременно служит множеством обнаруженных вершин. При первом появлении вершины в нём её кратчайшее расстояние уже определено. Словарь <code>parent</code> хранит дерево BFS.</p>
+</section>
+
+<section id="walkthrough"><h2 id="section-6">Пример обхода</h2>
+<p>Для графа со слоями выше начнём с <span class="math">s</span>. Очередь меняется следующим образом; порядок вершин внутри одного слоя может зависеть от порядка в списках смежности.</p>
+<div class="bfs-steps">
+<div class="bfs-step"><b>Старт</b><span class="queue-inline"><i>s</i></span><p>Обнаруживаем <span class="math">s</span>, with distance 0.</p></div>
+<div class="bfs-step"><b>Обрабатываем s</b><span class="queue-inline"><i>a</i><i>b</i></span><p>Обнаруживаем весь первый слой: <span class="math">a,b</span>.</p></div>
+<div class="bfs-step"><b>Обрабатываем a</b><span class="queue-inline"><i>b</i><i>c</i><i>d</i></span><p>Новые вершины <span class="math">c,d</span> попадают в слой 2.</p></div>
+<div class="bfs-step"><b>Обрабатываем b</b><span class="queue-inline"><i>c</i><i>d</i><i>e</i></span><p><span class="math">d</span> уже обнаружена, поэтому добавляется только <span class="math">e</span> </p></div>
+<div class="bfs-step"><b>Продолжаем</b><span class="queue-inline"><i>d</i><i>e</i><i>f</i></span><p>В конце концов <span class="math">f</span> обнаруживается в слое 3.</p></div>
+</div>
+</section>
+
+<section id="paths"><h2 id="section-7">Восстановление кратчайшего пути</h2>
+<p>Пусть BFS начинается в <span class="math">s</span> и требуется найти кратчайший путь до <span class="math">t</span>. Идём по указателям на родителей назад от <span class="math">t</span> пока не дойдём до <span class="math">s</span>, после чего разворачиваем полученную последовательность.</p>
+<div class="code-simple"><pre><code>def build_path(parent, start, target):
+    if target not in parent:
+        return None
+
+    path = []
+    v = target
+
+    while v is not None:
+        path.append(v)
+        v = parent[v]
+
+    path.reverse()
+    return path</code></pre></div>
+<p>Дерево BFS привязано к своему корню: чтобы получить кратчайшие пути <em>на расстоянии ровно</em> <span class="math">x</span>, BFS must be run with <span class="math">x</span> как из источника.</p>
+</section>
+
+<section id="time"><h2 id="section-8">Время работы</h2>
+<p>При списках смежности каждая вершина обнаруживается не более одного раза, а каждый элемент списка смежности просматривается один раз. Поэтому BFS работает за</p>
+<div class="graph-formula">Θ(n + m)</div>
+<p>как для ориентированных, так и для неориентированных графов. В неориентированном графе каждое ребро встречается в двух списках смежности, но это меняет лишь константу. Очередь, массив расстояний и массив родителей требуют <span class="complexity-box">O(n)</span> дополнительной памяти.</p>
+</section>
+
+<section id="uses"><h2 id="section-9">Что даёт BFS</h2>
+<div class="pattern-grid"><article class="pattern-card"><span class="tag">Достижимость</span><h3>Достижимость</h3><p>Вершина достижима из источника тогда и только тогда, когда BFS её обнаруживает.</p></article><article class="pattern-card"><span class="tag">Расстояние</span><h3>Минимум рёбер</h3><p>Номер слоя равен минимальному числу рёбер от источника.</p></article><article class="pattern-card"><span class="tag">Путь</span><h3>Восстановление маршрута</h3><p>Указатели на родителей позволяют восстановить один кратчайший путь до каждой достижимой вершины.</p></article><article class="pattern-card"><span class="tag">Структура</span><h3>Компоненты и двуцветность</h3><p>Повторные запуски BFS находят компоненты связности; чередование цветов по слоям даёт стандартную проверку двудольности.</p></article></div>
+</section>
+
+<section id="directed"><h2 id="section-10">BFS в ориентированных графах</h2>
+<p>Сам алгоритм почти не меняется: из <span class="math">u</span>, follow only edges directed out of <span class="math">u</span>Вершины слоя <span class="math">L<sub>j</sub></span> — в точности те, до которых из <span class="math">s</span> ведёт кратчайший ориентированный путь из <span class="math">j</span> рёбер.</p>
+<p>Достижимость не обязана быть симметричной: <span class="math">s</span> из одной вершины можно достичь <span class="math">t</span> даже если <span class="math">t</span> не может достичь <span class="math">s</span>.</p>
+</section>
+</section>
+<div class="chapter-nav"><a href="representation.html">← Представление графов</a><a href="dfs.html">Поиск в глубину →</a></div></main>
+<footer class="overview-footer"><div>Allan's Handbook of Algorithms</div><div>© 2026 Allan Allemand</div></footer><script src="../assets/js/language-switch.js"></script></body></html>
