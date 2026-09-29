@@ -70,3 +70,31 @@
 .graph-content-page .lecture .lead{max-width:780px;line-height:1.68}
 @media(max-width:1180px) and (min-width:761px){.graph-content-page .sidebar + .lecture{width:calc(100% - 330px);margin-left:290px;margin-right:40px}}
 @media(max-width:760px){.graph-content-page .lecture,.graph-content-page .sidebar + .lecture{width:auto;margin-left:0;margin-right:0;padding-left:20px;padding-right:20px}}
+
+/* v5 mathematical typography */
+.graph-content-page .math{
+  display:inline-block;
+  padding:0 .08em;
+  color:#20262d;
+  font-family:"STIX Two Text","Cambria Math","Times New Roman",serif;
+  font-size:1.06em;
+  font-style:italic;
+  letter-spacing:.005em;
+}
+.graph-content-page .graph-formula{
+  max-width:680px;
+  margin:28px auto;
+  padding:22px 26px;
+  border:1px solid #ddd9d1;
+  border-radius:14px;
+  background:#fff;
+  color:#20262d;
+  font-family:"STIX Two Text","Cambria Math","Times New Roman",serif;
+  font-size:25px;
+  line-height:1.45;
+  letter-spacing:.01em;
+  text-align:center;
+  box-shadow:0 3px 12px rgba(32,38,45,.035);
+}
+.graph-content-page .graph-formula .math{font-size:1em}
+.graph-content-page sub,.graph-content-page sup{font-size:.72em;line-height:0}
