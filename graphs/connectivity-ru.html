@@ -1,23 +1,103 @@
-<!DOCTYPE html><html lang="ru"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><title>Связность и циклы | Allan's Handbook of Algorithms</title><link href="../assets/css/styles.css" rel="stylesheet"/><link href="assets/graphs.css" rel="stylesheet"/><link href="../assets/images/favicon-32.png" rel="icon" sizes="32x32" type="image/png"/><link href="connectivity.html" hreflang="en" rel="alternate"/><link href="connectivity-ru.html" hreflang="ru" rel="alternate"/></head><body class="lecture-page"><header class="topbar"><a class="brand" href="../"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name">Allan's Handbook of Algorithms</span></a><nav class="topnav"><a href="index-ru.html">Обзор графов</a><div class="language-switch"><a href="connectivity.html">EN</a><span class="language-separator">·</span><span class="current">RU</span></div></nav></header><main class="lecture"><section class="lecture-hero graph-hero"><div><div class="chapter-label">Глава 8 · Раздел 6</div><h1>Связность и циклы</h1><p class="chapter-topics">Графы превращают задачи о связях, маршрутах и зависимостях в стандартные алгоритмические модели.</p></div><div class="graph-hero-art"><div class="network"><i></i><i></i><i></i><i></i><b></b><b></b><b></b><b></b><b></b></div></div></section><section class="lecture-section"><section id="components"><h2>Компоненты связности</h2><p class="lead">В неориентированном графе один BFS или DFS находит ровно одну компоненту связности. Затем запускаем обход из каждой ещё не посещённой вершины.</p><div class="code-simple"><pre>def components(graph):
-    seen = set()
-    result = []
+<!DOCTYPE html><html lang="ru"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Связность, циклы и двудольные графы | Allan's Handbook of Algorithms</title><link href="../assets/css/styles.css" rel="stylesheet"/><link href="assets/graphs.css" rel="stylesheet"/><link href="../assets/images/favicon-32.png" rel="icon" sizes="32x32" type="image/png"/><link href="connectivity.html" hreflang="en" rel="alternate"/><link href="connectivity-ru.html" hreflang="ru" rel="alternate"/></head>
+<body class="lecture-page graph-content-page"><header class="topbar"><a class="brand" href="../"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name">Allan's Handbook of Algorithms</span></a><nav class="topnav"><a href="./">Обзор графов</a><div class="language-switch"><a href="connectivity.html">EN</a><span class="language-separator">·</span><span class="current">RU</span></div></nav></header>
+<aside aria-label="Section navigation" class="sidebar"><div class="sidebar-title">Графы · Связность, циклы и двудольность</div><a href="#section-1">Компоненты связности</a><a href="#section-2">Разбиение на компоненты</a><a href="#section-3">Циклы и деревья</a><a href="#section-4">Двудольные графы</a><a href="#section-5">Нечётные циклы и двудольность</a><a href="#section-6">Проверка двудольности с помощью BFS</a><a href="#section-7">Время работы</a><a href="#section-8">Связность в ориентированных графах</a></aside><main class="lecture"><section class="lecture-hero graph-hero"><div><h1>Связность, циклы и двудольные графы</h1><p class="chapter-topics">BFS и DFS позволяют находить компоненты связности, обнаруживать циклы и проверять граф на двудольность.</p></div><div class="graph-hero-art"><svg class="graph-svg connectivity-hero-svg" viewBox="0 0 230 170"><g class="edge"><line x1="35" y1="50" x2="82" y2="27"/><line x1="82" y1="27" x2="95" y2="78"/><line x1="95" y1="78" x2="35" y2="50"/><line x1="140" y1="45" x2="190" y2="30"/><line x1="190" y1="30" x2="200" y2="90"/><line x1="200" y1="90" x2="150" y2="112"/><line x1="150" y1="112" x2="140" y2="45"/></g><g class="node"><circle class="c1" cx="35" cy="50" r="11"/><circle class="c1" cx="82" cy="27" r="11"/><circle class="c1" cx="95" cy="78" r="11"/><circle class="c2" cx="140" cy="45" r="11"/><circle class="c2" cx="190" cy="30" r="11"/><circle class="c2" cx="200" cy="90" r="11"/><circle class="c2" cx="150" cy="112" r="11"/></g></svg></div></section>
+<section class="lecture-section">
+<section id="components"><h2 id="section-1">Компоненты связности</h2>
+<p class="lead">В неориентированном графе компонента связности, содержащая вершину <span class="math">s</span> — это в точности множество вершин, достижимых из <span class="math">s</span>.</p>
+<p>Поэтому один запуск BFS или DFS из <span class="math">s</span> находит ровно одну компоненту. Если после завершения обхода осталась непосещённая вершина, запускаем обход из неё и получаем другую компоненту. Повторяя это, разбиваем на компоненты всё множество вершин.</p>
+<figure class="graph-figure components-figure"><svg class="graph-svg components-svg" viewBox="0 0 760 270">
+<g class="component-halo"><rect class="halo1" x="25" y="30" width="230" height="205" rx="34"/><rect class="halo2" x="285" y="30" width="205" height="205" rx="34"/><rect class="halo3" x="525" y="30" width="205" height="205" rx="34"/></g>
+<g class="edge"><line x1="75" y1="80" x2="175" y2="60"/><line x1="75" y1="80" x2="100" y2="180"/><line x1="175" y1="60" x2="205" y2="170"/><line x1="100" y1="180" x2="205" y2="170"/><line x1="335" y1="75" x2="435" y2="95"/><line x1="335" y1="75" x2="370" y2="185"/><line x1="435" y1="95" x2="370" y2="185"/><line x1="575" y1="80" x2="680" y2="80"/><line x1="680" y1="80" x2="625" y2="180"/></g>
+<g class="node"><circle class="c1" cx="75" cy="80" r="13"/><circle class="c1" cx="175" cy="60" r="13"/><circle class="c1" cx="100" cy="180" r="13"/><circle class="c1" cx="205" cy="170" r="13"/><circle class="c2" cx="335" cy="75" r="13"/><circle class="c2" cx="435" cy="95" r="13"/><circle class="c2" cx="370" cy="185" r="13"/><circle class="c3" cx="575" cy="80" r="13"/><circle class="c3" cx="680" cy="80" r="13"/><circle class="c3" cx="625" cy="180" r="13"/></g></svg><figcaption>Каждый обход остаётся внутри одной компоненты. Новый запуск из непосещённой вершины открывает следующую компоненту.</figcaption></figure>
+<div class="code-simple"><pre><code>def connected_components(graph):
+    visited = set()
+    components = []
+
+    def dfs(u, component):
+        visited.add(u)
+        component.append(u)
+        for v in graph[u]:
+            if v not in visited:
+                dfs(v, component)
+
+    for u in graph:
+        if u not in visited:
+            component = []
+            dfs(u, component)
+            components.append(component)
+
+    return components</code></pre></div>
+<p>Во всех запусках вместе каждая вершина и каждое ребро обрабатываются лишь константное число раз, поэтому при списках смежности суммарное время равно <span class="complexity-box">Θ(n+m)</span>.</p>
+</section>
+
+<section id="partition"><h2 id="section-2">Разбиение на компоненты</h2>
+<p>Для любых двух вершин <span class="math">s</span> и <span class="math">t</span>, their connected components are either identical or disjoint. They cannot partially overlap.</p>
+<p>Если бы компонента <span class="math">s</span> и компонента <span class="math">t</span> имели общую вершину <span class="math">v</span>, there would be a path from <span class="math">s</span> в <span class="math">v</span> and a path from <span class="math">v</span> в <span class="math">t</span>. Concatenating them would give a path from <span class="math">s</span> в <span class="math">t</span>, so every vertex reachable from one would also be reachable from the other.</p>
+<div class="graph-definition"><p>Итак, компоненты связности — максимальные связные части неориентированного графа, и каждая вершина принадлежит ровно одной компоненте.</p></div>
+</section>
+
+<section id="cycles"><h2 id="section-3">Циклы и деревья</h2>
+<p> <b>цикл</b> — замкнутый путь без повторения промежуточных вершин. Связный неориентированный граф без циклов называется <b>деревом</b>.</p>
+<div class="cycle-tree-pair">
+<figure><h3>Дерево</h3><svg class="graph-svg" viewBox="0 0 280 190"><g class="edge"><line x1="140" y1="28" x2="75" y2="90"/><line x1="140" y1="28" x2="205" y2="90"/><line x1="75" y1="90" x2="45" y2="155"/><line x1="75" y1="90" x2="110" y2="155"/><line x1="205" y1="90" x2="230" y2="155"/></g><g class="node"><circle cx="140" cy="28" r="12"/><circle cx="75" cy="90" r="12"/><circle cx="205" cy="90" r="12"/><circle cx="45" cy="155" r="12"/><circle cx="110" cy="155" r="12"/><circle cx="230" cy="155" r="12"/></g></svg><figcaption>Связно, циклов нет.</figcaption></figure>
+<figure><h3>Цикл</h3><svg class="graph-svg" viewBox="0 0 280 190"><g class="edge cycle-edges"><line x1="140" y1="28" x2="65" y2="95"/><line x1="65" y1="95" x2="105" y2="160"/><line x1="105" y1="160" x2="210" y2="145"/><line x1="210" y1="145" x2="215" y2="65"/><line x1="215" y1="65" x2="140" y2="28"/></g><g class="node"><circle cx="140" cy="28" r="12"/><circle cx="65" cy="95" r="12"/><circle cx="105" cy="160" r="12"/><circle cx="210" cy="145" r="12"/><circle cx="215" cy="65" r="12"/></g></svg><figcaption>Замкнутая цепочка рёбер.</figcaption></figure></div>
+<p>DFS обнаруживает цикл в неориентированном графе, когда встречает ребро из текущей вершины в уже обнаруженную вершину, отличную от её родителя. В терминах дерева DFS это обратное ребро; вместе с древесным путём между концами оно образует цикл.</p>
+<div class="graph-definition theorem"><p>Для связного неориентированного графа с <span class="math">n</span> вершинами эквивалентны три условия: граф является деревом; граф связен и ацикличен; граф связен и имеет ровно <span class="math">n−1</span> рёбер.</p></div>
+</section>
+
+<section id="bipartite"><h2 id="section-4">Двудольные графы</h2>
+<p>Граф называется <b>двудольным</b> если его вершины можно разбить на два множества <span class="math">X</span> и <span class="math">Y</span> так, чтобы концы каждого ребра лежали в разных множествах. Эквивалентно: вершины можно раскрасить в два цвета так, чтобы смежные вершины всегда имели разные цвета.</p>
+<div class="bipartite-pair">
+<figure><h3>Двудольный</h3><svg class="graph-svg bip-svg" viewBox="0 0 330 220"><g class="edge"><line x1="75" y1="45" x2="255" y2="45"/><line x1="75" y1="45" x2="255" y2="110"/><line x1="75" y1="110" x2="255" y2="45"/><line x1="75" y1="110" x2="255" y2="175"/><line x1="75" y1="175" x2="255" y2="110"/></g><g class="node"><circle class="side-a" cx="75" cy="45" r="14"/><circle class="side-a" cx="75" cy="110" r="14"/><circle class="side-a" cx="75" cy="175" r="14"/><circle class="side-b" cx="255" cy="45" r="14"/><circle class="side-b" cx="255" cy="110" r="14"/><circle class="side-b" cx="255" cy="175" r="14"/></g><text class="set-label" x="62" y="210">X</text><text class="set-label" x="246" y="210">Y</text></svg></figure>
+<figure><h3>Не двудольный</h3><svg class="graph-svg odd-cycle-svg" viewBox="0 0 330 220"><g class="edge"><line x1="165" y1="35" x2="75" y2="170"/><line x1="75" y1="170" x2="255" y2="170"/><line class="conflict-edge" x1="255" y1="170" x2="165" y2="35"/></g><g class="node"><circle class="side-a" cx="165" cy="35" r="15"/><circle class="side-b" cx="75" cy="170" r="15"/><circle class="side-b" cx="255" cy="170" r="15"/></g><text class="conflict-label" x="212" y="93">conflict</text></svg><figcaption>Нечётный цикл нельзя правильно раскрасить в два цвета.</figcaption></figure></div>
+</section>
+
+<section id="odd-cycle"><h2 id="section-5">Нечётные циклы и двудольность</h2>
+<p>Пройдём по циклу двудольного графа. На каждом ребре цвет меняется. После чётного числа шагов мы возвращаемся к исходному цвету, после нечётного — к противоположному. Поэтому в двудольном графе нечётных циклов быть не может.</p>
+<p>Верно и обратное: если в графе нет нечётных циклов, то он двудольный. BFS одновременно даёт алгоритм проверки и доказательство.</p>
+<div class="graph-definition theorem"><p><b>Критерий двудольности.</b> Неориентированный граф двудолен тогда и только тогда, когда в нём нет нечётных циклов.</p></div>
+</section>
+
+<section id="bfs-color"><h2 id="section-6">Проверка двудольности с помощью BFS</h2>
+<p>Выберем любую вершину <span class="math">s</span> в компоненте и запустим BFS. Чётные слои красим одним цветом, нечётные — другим. У рёбер между соседними слоями концы автоматически получают разные цвета.</p>
+<figure class="graph-figure"><svg class="graph-svg bip-layers-svg" viewBox="0 0 720 260"><g class="layer-bands"><rect class="even-band" x="20" y="25" width="145" height="205" rx="20"/><rect class="odd-band" x="185" y="25" width="145" height="205" rx="20"/><rect class="even-band" x="350" y="25" width="170" height="205" rx="20"/><rect class="odd-band" x="540" y="25" width="155" height="205" rx="20"/></g><g class="edge"><line x1="90" y1="130" x2="255" y2="75"/><line x1="90" y1="130" x2="255" y2="180"/><line x1="255" y1="75" x2="420" y2="75"/><line x1="255" y1="75" x2="450" y2="165"/><line x1="255" y1="180" x2="450" y2="165"/><line x1="420" y1="75" x2="615" y2="125"/></g><g class="node"><circle class="side-a" cx="90" cy="130" r="14"/><circle class="side-b" cx="255" cy="75" r="14"/><circle class="side-b" cx="255" cy="180" r="14"/><circle class="side-a" cx="420" cy="75" r="14"/><circle class="side-a" cx="450" cy="165" r="14"/><circle class="side-b" cx="615" cy="125" r="14"/></g><g class="layer-label"><text x="75" y="52">L₀</text><text x="240" y="52">L₁</text><text x="420" y="52">L₂</text><text x="600" y="52">L₃</text></g></svg><figcaption>Чётные слои BFS получают один цвет, нечётные — другой.</figcaption></figure>
+<p>Если BFS находит ребро с концами одного цвета, раскраска невозможна. Более того, это ребро свидетельствует о нечётном цикле: оба конца находятся на расстояниях одной чётности от корня, а их пути к общему предку вместе с этим ребром образуют нечётный цикл.</p>
+<div class="code-simple"><pre><code>from collections import deque
+
+def is_bipartite(graph):
+    color = {}
 
     for start in graph:
-        if start in seen:
+        if start in color:
             continue
 
-        part = []
-        stack = [start]
-        seen.add(start)
+        color[start] = 0
+        queue = deque([start])
 
-        while stack:
-            u = stack.pop()
-            part.append(u)
+        while queue:
+            u = queue.popleft()
+
             for v in graph[u]:
-                if v not in seen:
-                    seen.add(v)
-                    stack.append(v)
+                if v not in color:
+                    color[v] = 1 - color[u]
+                    queue.append(v)
+                elif color[v] == color[u]:
+                    return False
 
-        result.append(part)
+    return True</code></pre></div>
+<p>Внешний цикл нужен потому, что граф может иметь несколько компонент связности. Правильная двуцветная раскраска должна существовать в каждой из них.</p>
+</section>
 
-    return result</pre></div><div class="complexity-box"><div><span>Время</span><b>O(V + E)</b></div><div><span>Запусков</span><b>По числу компонент</b></div><div><span>Каждая вершина</span><b>Один раз</b></div></div></section><section id="cycles"><h2>Поиск циклов</h2><p>В неориентированном графе посещённый сосед образует цикл, если это не родитель текущей вершины. В ориентированном графе нужны три состояния: не посещена, активна, завершена. Ребро в активную вершину доказывает наличие цикла.</p><div class="warning"><b>Частая ошибка.</b> Одного массива <code>visited</code> недостаточно для поиска циклов в ориентированном графе.</div></section><section id="tree"><h2>Как распознать дерево</h2><div class="graph-definition"><p>Неориентированный граф — дерево тогда и только тогда, когда он связен и не содержит циклов. Для связного графа эквивалентно условие <span class="math">|E| = |V| − 1</span>.</p></div></section></section><div class="chapter-nav"><a href="dfs-ru.html">← Предыдущий раздел</a><a href="topological-ru.html">Следующий раздел →</a></div></main><footer class="overview-footer"><div>Allan's Handbook of Algorithms</div><div>© 2026 Allan Allemand</div></footer><script src="../assets/js/language-switch.js"></script></body></html>
+<section id="complexity"><h2 id="section-7">Время работы</h2>
+<p>Поиск компонент, обнаружение циклов и проверка двудольности требуют лишь константной работы на вершину и элемент списка смежности. Поэтому каждый алгоритм работает за</p><div class="graph-formula">Θ(n + m)</div>
+<p>Все три процедуры при списках смежности работают за линейное время.</p>
+</section>
+
+<section id="directed-note"><h2 id="section-8">Связность в ориентированных графах</h2>
+<p>Для ориентированных графов есть два понятия связности. Граф называется <b>слабо связным</b> если после удаления направлений рёбер он становится связным, и <b>сильно связным</b> если из каждой вершины существует ориентированный путь в любую другую.</p>
+<p>Для компонент сильной связности понадобится дополнительный аппарат. Вернёмся к ним после ориентированных графов и топологической сортировки, когда времена выхода DFS уже будут знакомы.</p>
+</section>
+</section>
+<div class="chapter-nav"><a href="dfs.html">← Поиск в глубину</a><a href="topological.html">Топологическая сортировка →</a></div></main>
+<footer class="overview-footer"><div>Allan's Handbook of Algorithms</div><div>© 2026 Allan Allemand</div></footer><script src="../assets/js/language-switch.js"></script></body></html>
