@@ -1,20 +1,96 @@
-<!DOCTYPE html><html lang="ru"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><title>Топологическая сортировка | Allan's Handbook of Algorithms</title><link href="../assets/css/styles.css" rel="stylesheet"/><link href="assets/graphs.css" rel="stylesheet"/><link href="../assets/images/favicon-32.png" rel="icon" sizes="32x32" type="image/png"/><link href="topological.html" hreflang="en" rel="alternate"/><link href="topological-ru.html" hreflang="ru" rel="alternate"/></head><body class="lecture-page"><header class="topbar"><a class="brand" href="../"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name">Allan's Handbook of Algorithms</span></a><nav class="topnav"><a href="index-ru.html">Обзор графов</a><div class="language-switch"><a href="topological.html">EN</a><span class="language-separator">·</span><span class="current">RU</span></div></nav></header><main class="lecture"><section class="lecture-hero graph-hero"><div><div class="chapter-label">Глава 8 · Раздел 6</div><h1>Топологическая сортировка</h1><p class="chapter-topics">Графы превращают задачи о связях, маршрутах и зависимостях в стандартные алгоритмические модели.</p></div><div class="graph-hero-art"><div class="network"><i></i><i></i><i></i><i></i><b></b><b></b><b></b><b></b><b></b></div></div></section><section class="lecture-section"><section id="idea"><h2>Порядок зависимостей</h2><p class="lead">Топологический порядок располагает вершины ориентированного графа так, что для каждого ребра <span class="math">u → v</span> вершина <span class="math">u</span> стоит раньше <span class="math">v</span>. Такой порядок существует ровно для DAG.</p></section><section id="kahn"><h2>Алгоритм Кана: удаляем вершины с нулевой входящей степенью</h2><div class="algo-steps"><div class="algo-step"><h3>Считаем indegree</h3><p>Число входящих рёбер каждой вершины.</p></div><div class="algo-step"><h3>Кладём в очередь indegree = 0</h3><p>У этих вершин нет невыполненных зависимостей.</p></div><div class="algo-step"><h3>Удаляем вершину</h3><p>Добавляем в ответ и уменьшаем indegree её соседей.</p></div><div class="algo-step"><h3>Проверяем число вершин</h3><p>Если обработано меньше V, в графе есть цикл.</p></div></div><div class="code-simple"><pre>from collections import deque
+<!DOCTYPE html><html lang="ru"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Ориентированные графы, DAG и топологическая сортировка | Allan's Handbook of Algorithms</title><link href="../assets/css/styles.css" rel="stylesheet"/><link href="assets/graphs.css" rel="stylesheet"/><link href="../assets/images/favicon-32.png" rel="icon" sizes="32x32" type="image/png"/><link href="topological.html" hreflang="en" rel="alternate"/><link href="topological-ru.html" hreflang="ru" rel="alternate"/></head>
+<body class="lecture-page graph-content-page"><header class="topbar"><a class="brand" href="../"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name">Allan's Handbook of Algorithms</span></a><nav class="topnav"><a href="./">Обзор графов</a><div class="language-switch"><a href="topological.html">EN</a><span class="language-separator">·</span><span class="current">RU</span></div></nav></header>
+<aside aria-label="Section navigation" class="sidebar"><div class="sidebar-title">Графы · Ориентированные графы и топологическая сортировка</div><a href="#section-1">Ограничения предшествования</a><a href="#section-2">Ориентированные ациклические графы</a><a href="#section-3">Топологический порядок</a><a href="#section-4">Истоки в DAG</a><a href="#section-5">Алгоритм Кана</a><a href="#section-6">Алгоритм Кана: пример</a><a href="#section-7">Топологическая сортировка с DFS</a><a href="#section-8">Обнаружение цикла</a><a href="#section-9">Время работы</a><a href="#section-10">Применения топологической сортировки</a><a href="#section-11">Неединственность топологического порядка</a></aside><main class="lecture"><section class="lecture-hero graph-hero"><div><h1>Ориентированные графы, DAG и топологическая сортировка</h1><p class="chapter-topics">Ориентированное ребро может задавать зависимость. Если в полученном графе нет ориентированных циклов, вершины можно расположить в порядке, соблюдающем все зависимости.</p></div><div class="graph-hero-art"><svg class="graph-svg topo-hero" viewBox="0 0 235 170"><defs><marker id="ah" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 z"/></marker></defs><g class="arrow-edge"><line x1="28" y1="85" x2="78" y2="42"/><line x1="28" y1="85" x2="78" y2="128"/><line x1="88" y1="42" x2="145" y2="75"/><line x1="88" y1="128" x2="145" y2="92"/><line x1="155" y1="83" x2="208" y2="83"/></g><g class="node"><circle class="t1" cx="25" cy="85" r="12"/><circle class="t2" cx="85" cy="38" r="12"/><circle class="t2" cx="85" cy="132" r="12"/><circle class="t3" cx="152" cy="83" r="12"/><circle class="t4" cx="215" cy="83" r="12"/></g></svg></div></section>
+<section class="lecture-section">
+<section id="constraints"><h2 id="section-1">Ограничения предшествования</h2>
+<p class="lead">Во многих системах встречаются требования вида выполнить <span class="math">u</span> стоит раньше <span class="math">v</span>Ориентированное ребро <span class="math">u→v</span> естественно кодирует такое ограничение предшествования.</p>
+<p>Вершины могут означать курсы, задачи системы сборки, этапы вычисления или работы проекта. Ребро направлено от предпосылки к тому, что от неё зависит.</p>
+<figure class="graph-figure prerequisite-figure"><svg class="graph-svg prerequisite-svg" viewBox="0 0 760 290"><g class="course-edge"><line x1="105" y1="75" x2="290" y2="75"/><line x1="105" y1="75" x2="290" y2="205"/><line x1="105" y1="205" x2="290" y2="205"/><line x1="330" y1="75" x2="500" y2="140"/><line x1="330" y1="205" x2="500" y2="140"/><line x1="540" y1="140" x2="675" y2="140"/></g>
+<g class="course-node"><rect x="45" y="52" width="100" height="46" rx="12"/><text x="95" y="80">Math I</text><rect x="45" y="182" width="100" height="46" rx="12"/><text x="95" y="210">CS I</text><rect x="270" y="52" width="100" height="46" rx="12"/><text x="320" y="80">Math II</text><rect x="270" y="182" width="100" height="46" rx="12"/><text x="320" y="210">Algorithms</text><rect x="475" y="117" width="110" height="46" rx="12"/><text x="530" y="145">Optimization</text><rect x="650" y="117" width="80" height="46" rx="12"/><text x="690" y="145">Project</text></g></svg><figcaption>Корректный порядок должен ставить каждый пререквизит раньше зависящего от него курса.</figcaption></figure>
+</section>
 
-def topo_sort(graph):
-    indeg = {u: 0 for u in graph}
+<section id="dag"><h2 id="section-2">Ориентированные ациклические графы</h2>
+<p> <b>ориентированный ациклический граф</b>, or <b>DAG</b>, is a directed graph containing no directed cycle. DAGs are the natural model for consistent precedence constraints.</p>
+<div class="cycle-tree-pair"><figure><h3>DAG</h3><svg class="graph-svg directed-example" viewBox="0 0 300 190"><defs><marker id="dagArrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z"/></marker></defs><g class="dir-edge"><line x1="50" y1="95" x2="120" y2="45"/><line x1="50" y1="95" x2="120" y2="145"/><line x1="139" y1="47" x2="224" y2="89"/><line x1="139" y1="143" x2="216" y2="100"/></g><g class="node"><circle cx="42" cy="95" r="12"/><circle cx="128" cy="40" r="12"/><circle cx="128" cy="150" r="12"/><circle cx="235" cy="95" r="12"/></g></svg><figcaption>Все зависимости можно направить вперёд.</figcaption></figure>
+<figure><h3>Ориентированный цикл</h3><svg class="graph-svg directed-example cycle-directed" viewBox="0 0 300 190"><defs><marker id="cycleArrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z"/></marker></defs><g class="dir-edge"><line x1="158" y1="38" x2="228" y2="135"/><line x1="221" y1="145" x2="81" y2="145"/><line x1="73" y1="134" x2="141" y2="40"/></g><g class="node"><circle cx="150" cy="28" r="12"/><circle cx="235" cy="145" r="12"/><circle cx="65" cy="145" r="12"/></g></svg><figcaption>Каждая задача в итоге должна была бы предшествовать самой себе.</figcaption></figure></div>
+<p>Ориентированный цикл делает такой порядок невозможным: двигаясь по циклу, мы требуем, чтобы каждый элемент стоял раньше следующего, и в конце получаем требование поставить элемент раньше самого себя.</p>
+</section>
+
+<section id="definition"><h2 id="section-3">Топологический порядок</h2>
+<div class="graph-definition"><p> <b>топологический порядок</b> ориентированного графа — линейный порядок его вершин, в котором каждое ребро <span class="math">u→v</span> идёт от более ранней вершины <span class="math">u</span> к более поздней вершине <span class="math">v</span>.</p></div>
+<div class="topo-order"><span></span><i>→</i><span>C</span><i>→</i><span>B</span><i>→</i><span>D</span><i>→</i><span>E</span></div>
+<p>Топологический порядок существует только у DAG, и у каждого DAG есть хотя бы один. Он не обязан быть единственным: если две задачи не связаны ограничениями, любую из них можно поставить раньше.</p>
+</section>
+
+<section id="source"><h2 id="section-4">Истоки в DAG</h2>
+<p> <b>исток</b> — вершина с нулевой входящей степенью. В любом непустом DAG есть хотя бы один исток.</p>
+<p>Предположим обратное: у каждой вершины есть входящее ребро. Начнём с любой вершины и будем каждый раз идти назад по входящему ребру. Вершин конечное число, поэтому какая-то вершина неизбежно повторится. Полученный замкнутый участок — ориентированный цикл, что противоречит ацикличности.</p>
+<div class="graph-definition theorem"><p>Алгоритм Кана последовательно удаляет истоки, добавляет их в ответ и удаляет исходящие рёбра. Удаление истока не может создать цикл.</p></div>
+</section>
+
+<section id="kahn"><h2 id="section-5">Алгоритм Кана</h2>
+<p>Один раз вычислим входящие степени и будем хранить вершины с текущей нулевой входящей степенью в очереди.</p>
+<div class="kahn-flow"><div><b>1</b><span>вычислить<br>входящие степени</span></div><i>→</i><div><b>2</b><span>добавить в очередь<br>нули</span></div><i>→</i><div><b>3</b><span>удалить<br>исток</span></div><i>→</i><div><b>4</b><span>уменьшить степени<br>соседей</span></div></div>
+<div class="code-simple"><pre><code>from collections import deque
+
+def topological_sort(graph):
+    indegree = {u: 0 for u in graph}
+
     for u in graph:
         for v in graph[u]:
-            indeg[v] += 1
+            indegree[v] += 1
 
-    q = deque(u for u in graph if indeg[u] == 0)
+    queue = deque(
+        u for u in graph if indegree[u] == 0
+    )
     order = []
 
-    while q:
-        u = q.popleft()
+    while queue:
+        u = queue.popleft()
         order.append(u)
-        for v in graph[u]:
-            indeg[v] -= 1
-            if indeg[v] == 0:
-                q.append(v)
 
-    return order if len(order) == len(graph) else None</pre></div><div class="complexity-box"><div><span>Время</span><b>O(V + E)</b></div><div><span>Память</span><b>O(V)</b></div><div><span>Цикл</span><b>Проверяется</b></div></div></section></section><div class="chapter-nav"><a href="connectivity-ru.html">← Предыдущий раздел</a><a href="shortest-paths-ru.html">Следующий раздел →</a></div></main><footer class="overview-footer"><div>Allan's Handbook of Algorithms</div><div>© 2026 Allan Allemand</div></footer><script src="../assets/js/language-switch.js"></script></body></html>
+        for v in graph[u]:
+            indegree[v] -= 1
+            if indegree[v] == 0:
+                queue.append(v)
+
+    if len(order) != len(graph):
+        return None
+
+    return order</code></pre></div>
+<p>Если удалены все вершины, <code>order</code> — топологический порядок. Если очередь опустела, а вершины остались, у каждой оставшейся вершины есть предшественник внутри остатка графа: продолжению мешает ориентированный цикл.</p>
+</section>
+
+<section id="walkthrough"><h2 id="section-6">Алгоритм Кана: пример</h2>
+<div class="topo-steps"><div class="topo-step"><b>Начальные истоки</b><div class="degree-row"><span><small>0</small></span><span>B<small>1</small></span><span>C<small>1</small></span><span>D<small>2</small></span><span>E<small>1</small></span></div><p>Сначала доступна только A.</p></div><div class="topo-step"><b>Удаляем A</b><div class="degree-row"><span class="done"></span><span>B<small>0</small></span><span>C<small>0</small></span><span>D<small>2</small></span><span>E<small>1</small></span></div><p>Теперь B и C можно выбрать в любом порядке.</p></div><div class="topo-step"><b>Удаляем B, C</b><div class="degree-row"><span class="done"></span><span class="done">B</span><span class="done">C</span><span>D<small>0</small></span><span>E<small>1</small></span></div><p>После удаления обоих предшественников D становится истоком.</p></div><div class="topo-step"><b>Завершение</b><div class="degree-row"><span class="done"></span><span class="done">B</span><span class="done">C</span><span class="done">D</span><span class="done">E</span></div><p>Один допустимый порядок: A, B, C, D, E.</p></div></div>
+</section>
+
+<section id="dfs"><h2 id="section-7">Топологическая сортировка с DFS</h2>
+<p>DFS даёт второй линейный алгоритм. Не добавляйте вершину в ответ при первом посещении. Добавляйте её только при завершении вызова DFS — после обработки всех вершин, достижимых по исходящим рёбрам. В конце разверните порядок завершения.</p>
+<div class="finish-order"><div><span class="vertex"></span><small>finishes 5</small></div><div><span class="vertex">B</span><small>finishes 4</small></div><div><span class="vertex">C</span><small>finishes 3</small></div><div><span class="vertex">D</span><small>finishes 2</small></div><div><span class="vertex">E</span><small>finishes 1</small></div></div>
+<div class="graph-formula">топологический порядок = убывание времени выхода DFS</div>
+<p>Для ребра <span class="math">u→v</span> в DAG вершина <span class="math">v</span> не может оказаться активным предком <span class="math">u</span>, because that would be a back edge and would close a directed cycle. The DFS structure therefore forces <span class="math">v</span> завершиться раньше <span class="math">u</span>, placing <span class="math">u</span> стоит раньше <span class="math">v</span> раньше.</p>
+</section>
+
+<section id="cycle-detection"><h2 id="section-8">Обнаружение цикла</h2>
+<p>Алгоритм Кана обнаруживает цикл, если удаётся удалить меньше <span class="math">n</span> вершин. DFS обнаруживает цикл по обратному ребру в вершину, рекурсивный вызов которой ещё активен.</p>
+<div class="compare-grid"><article class="compare-card"><span class="tag">Кан</span><h3>Истоков не осталось</h3><p>Очередь пуста, но часть вершин не обработана.</p></article><article class="compare-card"><span class="tag">DFS</span><h3>Появилось обратное ребро</h3><p>Ребро ведёт из текущей ветви DFS к одному из активных предков.</p></article></div>
+</section>
+
+<section id="complexity"><h2 id="section-9">Время работы</h2>
+<p>При списках смежности вычисление входящих степеней просматривает каждое ребро один раз. Затем алгоритм Кана один раз удаляет каждую вершину и один раз обрабатывает каждое исходящее ребро. Для DFS подсчёт тот же.</p><div class="graph-formula">Θ(n + m)</div>
+<p>Оба метода также используют <span class="complexity-box">O(n)</span> дополнительной памяти помимо хранения самого графа.</p>
+</section>
+
+<section id="uses"><h2 id="section-10">Применения топологической сортировки</h2>
+<div class="pattern-grid"><article class="pattern-card"><span class="tag">Планирование</span><h3>Зависимости</h3><p>Курсы, задания и работы проекта можно расположить без нарушения зависимостей.</p></article><article class="pattern-card"><span class="tag">Системы сборки</span><h3>Порядок зависимостей</h3><p>Зависимость обрабатывается раньше объекта, которому она нужна.</p></article><article class="pattern-card"><span class="tag">Алгоритмы на DAG</span><h3>Слева направо</h3><p>Динамические программы и алгоритмы путей могут обрабатывать вершину после всех нужных предшественников.</p></article><article class="pattern-card"><span class="tag">Проверка</span><h3>Поиск циклов</h3><p>Неудачная топологическая сортировка выявляет противоречивые циклические зависимости.</p></article></div>
+</section>
+
+<section id="not-unique"><h2 id="section-11">Неединственность топологического порядка</h2>
+<p>Топологическая сортировка учитывает только отношения порядка, заданные рёбрами и ориентированными путями. Если ни одна из двух вершин не обязана предшествовать другой, допустимы оба взаимных порядка.</p>
+<div class="warning good"><b>Не приписывайте результату лишней информации.</b> Если в одном допустимом топологическом порядке <span class="math">u</span> стоит раньше <span class="math">v</span>, that alone does not imply that the graph requires <span class="math">u</span> стоит раньше <span class="math">v</span>.</div>
+</section>
+</section>
+<div class="chapter-nav"><a href="connectivity.html">← Связность и двудольные графы</a><a href="shortest-paths.html">Кратчайшие пути →</a></div></main>
+<footer class="overview-footer"><div>Allan's Handbook of Algorithms</div><div>© 2026 Allan Allemand</div></footer><script src="../assets/js/language-switch.js"></script></body></html>
