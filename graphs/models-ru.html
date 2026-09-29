@@ -8,7 +8,7 @@
 <link href="models.html" hreflang="en" rel="alternate"/><link href="models-ru.html" hreflang="ru" rel="alternate"/>
 </head>
 <body class="lecture-page graph-content-page">
-<header class="topbar"><a class="brand" href="../"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name">Allan's Handbook of Algorithms</span></a><nav class="topnav"><a href="./">Обзор графов</a><div class="language-switch"><a href="models.html">EN</a><span class="language-separator">·</span><span class="current">RU</span></div></nav></header>
+<header class="topbar"><a class="brand" href="../"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name">Allan's Handbook of Algorithms</span></a><nav class="topnav"><a href="index-ru.html">Обзор графов</a><div class="language-switch"><a href="models.html">EN</a><span class="language-separator">·</span><span class="current">RU</span></div></nav></header>
 <aside aria-label="Section navigation" class="sidebar"><div class="sidebar-title">Графы · Модели и определения</div><a href="#section-1">Модели графов</a><a href="#section-2">Определение</a><a href="#section-3">Ориентированные и неориентированные графы</a><a href="#section-4">Взвешенные и невзвешенные графы</a><a href="#section-5">Пути, циклы и связность</a><a href="#section-6">Моделирование с помощью вершин и рёбер</a><a href="#section-7">Представление графов</a></aside><main class="lecture">
 <section class="lecture-hero graph-hero">
 <div><h1>Модели графов и определения</h1>
@@ -34,9 +34,9 @@
 </section>
 
 <section id="definition"><h2 id="section-2">Определение</h2>
-<p>Граф <span class="math">G = (V, E)</span> состоит из множества <span class="math">V</span> из <b>вершин</b> (also called <b>узлами</b>) and a set <span class="math">E</span> из <b>рёбер</b>. In an undirected graph an edge joining <span class="math">u</span> и <span class="math">v</span> представляет собой двухэлементное множество <span class="math">{u, v}</span>. The two vertices are the <b>концами</b> ребра.</p>
+<p>Граф <span class="math">G = (V, E)</span> состоит из множества <span class="math">V</span> из <b>вершин</b> (also called <b>узлами</b>) and a set <span class="math">E</span> из <b>рёбер</b>. In an undirected graph an edge joining <span class="math">u</span> и <span class="math">v</span> представляет собой двухэлементное множество <span class="math">{u, v}</span>. Эти две вершины называются <b>концами</b> ребра.</p>
 <div class="graph-definition"><p><b>Граф.</b> <span class="math">G = (V, E)</span>, where <span class="math">V</span> — множество вершин, а <span class="math">E</span> — набор пар вершин.</p></div>
-<p>Две вершины называются <b>смежными</b> (or <b>соседями</b>) if an edge connects them. An edge is <b>инцидентно</b> каждому из своих концов. <b>Степень</b> вершины — число рёбер, инцидентных этой вершине.</p>
+<p>Две вершины называются <b>смежными</b> (or <b>соседями</b>) если они соединены ребром. Ребро <b>инцидентно</b> каждому из своих концов. <b>Степень</b> вершины — число рёбер, инцидентных этой вершине.</p>
 <div class="graph-example"><h3>Пример</h3>
 <div class="definition-example">
 <svg class="graph-svg small-example definition-example-svg" viewBox="0 0 310 190" role="img" aria-label="Graph on four vertices">
@@ -47,16 +47,16 @@
 </section>
 
 <section id="directed"><h2 id="section-3">Ориентированные и неориентированные графы</h2>
-<p>Рёбра неориентированного графа задают симметричное отношение. Но связь бывает и несимметричной: у улицы с односторонним движением, гиперссылки или отношения предшествования есть направление. В <b>ориентированном графе</b>, an edge is an ordered pair <span class="math">(u,v)</span>: it leaves <span class="math">u</span> и входит в <span class="math">v</span>.</p>
+<p>Рёбра неориентированного графа задают симметричное отношение. Но связь бывает и несимметричной: у улицы с односторонним движением, гиперссылки или отношения предшествования есть направление. В <b>ориентированном графе</b>, ребро — это упорядоченная пара <span class="math">(u,v)</span>: it leaves <span class="math">u</span> и входит в <span class="math">v</span>.</p>
 <div class="compare-grid">
 <article class="compare-card visual-card"><svg class="graph-svg card-svg" viewBox="0 0 250 110"><line class="edge-line" x1="55" y1="55" x2="195" y2="55"/><circle class="node-fill" cx="55" cy="55" r="15"/><circle class="node-fill" cx="195" cy="55" r="15"/><text x="47" y="91">u</text><text x="189" y="91">v</text></svg><h3>Неориентированный</h3><p>Если <span class="math">{u,v}</span> — ребро, связь действует в обе стороны. Примеры: дружба, кабель или дорога с двусторонним движением.</p></article>
 <article class="compare-card visual-card"><svg class="graph-svg card-svg" viewBox="0 0 250 110"><defs><marker id="arrow1" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" class="arrow-fill"/></marker></defs><line class="edge-line" x1="70" y1="55" x2="181" y2="55" marker-end="url(#arrow1)"/><circle class="node-fill" cx="55" cy="55" r="15"/><circle class="node-fill" cx="195" cy="55" r="15"/><text x="47" y="91">u</text><text x="189" y="91">v</text></svg><h3>Ориентированный</h3><p><span class="math">(u,v)</span> и <span class="math">(v,u)</span> — разные рёбра. Примеры: подписки, гиперссылки, зависимости и улицы с односторонним движением.</p></article>
 </div>
-<p>Для вершины ориентированного графа различают <b>входящую степень</b>, the number of edges entering it, and its <b>исходящую степень</b>, the number of edges leaving it.</p>
+<p>Для вершины ориентированного графа различают <b>входящую степень</b>, то есть число входящих рёбер, и <b>исходящую степень</b>, то есть число исходящих рёбер.</p>
 </section>
 
 <section id="weighted"><h2 id="section-4">Взвешенные и невзвешенные графы</h2>
-<p>Иногда достаточно знать, существует ли ребро. В других задачах каждому ребру сопоставлено число — его <b>вес</b>, and it can represent distance, travel time, price, capacity, or another quantity relevant to the problem.</p>
+<p>Иногда достаточно знать, существует ли ребро. В других задачах каждому ребру сопоставлено число — его <b>вес</b>. Он может означать расстояние, время в пути, стоимость, пропускную способность или другую важную для задачи величину.</p>
 <figure class="graph-figure compact">
 <svg class="graph-svg weighted-svg centered-label-svg" viewBox="0 0 560 220" role="img" aria-label="Weighted graph">
 <g class="edge"><line x1="80" y1="110" x2="270" y2="45"/><line x1="270" y1="45" x2="470" y2="110"/><line x1="80" y1="110" x2="270" y2="180"/><line x1="270" y1="180" x2="470" y2="110"/><line x1="270" y1="45" x2="270" y2="180"/></g>
@@ -89,7 +89,7 @@
 <p>В следующем разделе абстрактный граф превращается в структуру данных: матрицу или список смежности.</p>
 </section>
 </section>
-<div class="chapter-nav"><a href="representation.html">Представление графов →</a></div>
+<div class="chapter-nav"><a href="representation-ru.html">Представление графов →</a></div>
 </main>
 <footer class="overview-footer"><div>Allan's Handbook of Algorithms</div><div>© 2026 Allan Allemand</div></footer>
 <script src="../assets/js/language-switch.js"></script>
