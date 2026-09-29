@@ -1,36 +1,36 @@
 <!DOCTYPE html><html lang="en"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
 <title>Directed Graphs, DAGs, and Topological Ordering | Allan's Handbook of Algorithms</title><link href="../assets/css/styles.css" rel="stylesheet"/><link href="assets/graphs.css" rel="stylesheet"/><link href="../assets/images/favicon-32.png" rel="icon" sizes="32x32" type="image/png"/><link href="topological.html" hreflang="en" rel="alternate"/><link href="topological-ru.html" hreflang="ru" rel="alternate"/></head>
 <body class="lecture-page graph-content-page"><header class="topbar"><a class="brand" href="../"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name">Allan's Handbook of Algorithms</span></a><nav class="topnav"><a href="./">Graphs overview</a><div class="language-switch"><span class="current">EN</span><span class="language-separator">·</span><a href="topological-ru.html">RU</a></div></nav></header>
-<main class="lecture"><section class="lecture-hero graph-hero"><div><div class="chapter-label">Chapter 8 · Section 6</div><h1>Directed Graphs, DAGs, and Topological Ordering</h1><p class="chapter-topics">A directed edge can encode a prerequisite. If the resulting graph has no directed cycle, its vertices can be placed in an order that respects every prerequisite.</p></div><div class="graph-hero-art"><svg class="graph-svg topo-hero" viewBox="0 0 235 170"><defs><marker id="ah" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 z"/></marker></defs><g class="arrow-edge"><line x1="28" y1="85" x2="78" y2="42"/><line x1="28" y1="85" x2="78" y2="128"/><line x1="88" y1="42" x2="145" y2="75"/><line x1="88" y1="128" x2="145" y2="92"/><line x1="155" y1="83" x2="208" y2="83"/></g><g class="node"><circle class="t1" cx="25" cy="85" r="12"/><circle class="t2" cx="85" cy="38" r="12"/><circle class="t2" cx="85" cy="132" r="12"/><circle class="t3" cx="152" cy="83" r="12"/><circle class="t4" cx="215" cy="83" r="12"/></g></svg></div></section>
+<aside aria-label="Section navigation" class="sidebar"><div class="sidebar-title">Graphs · Directed Graphs and Topological Ordering</div><a href="#section-1">Precedence Constraints</a><a href="#section-2">Directed acyclic graphs</a><a href="#section-3">Topological ordering</a><a href="#section-4">Sources in DAGs</a><a href="#section-5">Kahn's algorithm</a><a href="#section-6">Kahn's Algorithm: Example</a><a href="#section-7">Topological sorting with DFS</a><a href="#section-8">Cycle Detection</a><a href="#section-9">Running time</a><a href="#section-10">Applications of Topological Ordering</a><a href="#section-11">Non-uniqueness of Topological Orders</a></aside><main class="lecture"><section class="lecture-hero graph-hero"><div><div class="chapter-label">Chapter 8 · Section 6</div><h1>Directed Graphs, DAGs, and Topological Ordering</h1><p class="chapter-topics">A directed edge can encode a prerequisite. If the resulting graph has no directed cycle, its vertices can be placed in an order that respects every prerequisite.</p></div><div class="graph-hero-art"><svg class="graph-svg topo-hero" viewBox="0 0 235 170"><defs><marker id="ah" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 z"/></marker></defs><g class="arrow-edge"><line x1="28" y1="85" x2="78" y2="42"/><line x1="28" y1="85" x2="78" y2="128"/><line x1="88" y1="42" x2="145" y2="75"/><line x1="88" y1="128" x2="145" y2="92"/><line x1="155" y1="83" x2="208" y2="83"/></g><g class="node"><circle class="t1" cx="25" cy="85" r="12"/><circle class="t2" cx="85" cy="38" r="12"/><circle class="t2" cx="85" cy="132" r="12"/><circle class="t3" cx="152" cy="83" r="12"/><circle class="t4" cx="215" cy="83" r="12"/></g></svg></div></section>
 <section class="lecture-section">
-<section id="constraints"><h2>Precedence Constraints</h2>
-<p class="lead">Many systems are governed by statements of the form “do <span class="math">u</span> before <span class="math">v</span>.” A directed edge <span class="math">u→v</span> is a natural way to record such a precedence constraint.</p>
+<section id="constraints"><h2 id="section-1">Precedence Constraints</h2>
+<p class="lead">Many systems are governed by statements of the form do <span class="math">u</span> before <span class="math">v</span>. A directed edge <span class="math">u→v</span> is a natural way to record such a precedence constraint.</p>
 <p>Vertices might represent courses, jobs in a build system, stages of a computation, or tasks in a project. An edge points from a prerequisite to something that depends on it.</p>
 <figure class="graph-figure prerequisite-figure"><svg class="graph-svg prerequisite-svg" viewBox="0 0 760 290"><defs><marker id="arrowTopo" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z"/></marker></defs>
 <g class="course-edge"><line x1="105" y1="75" x2="290" y2="75"/><line x1="105" y1="75" x2="290" y2="205"/><line x1="105" y1="205" x2="290" y2="205"/><line x1="330" y1="75" x2="500" y2="140"/><line x1="330" y1="205" x2="500" y2="140"/><line x1="540" y1="140" x2="675" y2="140"/></g>
 <g class="course-node"><rect x="45" y="52" width="100" height="46" rx="12"/><text x="95" y="80">Math I</text><rect x="45" y="182" width="100" height="46" rx="12"/><text x="95" y="210">CS I</text><rect x="270" y="52" width="100" height="46" rx="12"/><text x="320" y="80">Math II</text><rect x="270" y="182" width="100" height="46" rx="12"/><text x="320" y="210">Algorithms</text><rect x="475" y="117" width="110" height="46" rx="12"/><text x="530" y="145">Optimization</text><rect x="650" y="117" width="80" height="46" rx="12"/><text x="690" y="145">Project</text></g></svg><figcaption>A legal schedule must place every prerequisite before the course that depends on it.</figcaption></figure>
 </section>
 
-<section id="dag"><h2>Directed acyclic graphs</h2>
+<section id="dag"><h2 id="section-2">Directed acyclic graphs</h2>
 <p>A <b>directed acyclic graph</b>, or <b>DAG</b>, is a directed graph containing no directed cycle. DAGs are the natural model for consistent precedence constraints.</p>
 <div class="cycle-tree-pair"><figure><h3>DAG</h3><svg class="graph-svg directed-example" viewBox="0 0 300 190"><defs><marker id="dagArrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z"/></marker></defs><g class="dir-edge"><line x1="50" y1="95" x2="120" y2="45"/><line x1="50" y1="95" x2="120" y2="145"/><line x1="135" y1="45" x2="225" y2="95"/><line x1="135" y1="145" x2="225" y2="95"/></g><g class="node"><circle cx="42" cy="95" r="12"/><circle cx="128" cy="40" r="12"/><circle cx="128" cy="150" r="12"/><circle cx="235" cy="95" r="12"/></g></svg><figcaption>All constraints can point forward.</figcaption></figure>
 <figure><h3>Directed cycle</h3><svg class="graph-svg directed-example cycle-directed" viewBox="0 0 300 190"><defs><marker id="cycleArrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z"/></marker></defs><g class="dir-edge"><line x1="150" y1="35" x2="230" y2="135"/><line x1="220" y1="150" x2="80" y2="150"/><line x1="72" y1="135" x2="140" y2="42"/></g><g class="node"><circle cx="150" cy="28" r="12"/><circle cx="235" cy="145" r="12"/><circle cx="65" cy="145" r="12"/></g></svg><figcaption>Each task would have to precede itself.</figcaption></figure></div>
 <p>A directed cycle makes a precedence schedule impossible: following the cycle says that each item must occur before the next, eventually requiring an item to occur before itself.</p>
 </section>
 
-<section id="definition"><h2>Topological ordering</h2>
+<section id="definition"><h2 id="section-3">Topological ordering</h2>
 <div class="graph-definition"><p>A <b>topological ordering</b> of a directed graph is a linear ordering of its vertices in which every directed edge <span class="math">u→v</span> goes from an earlier vertex <span class="math">u</span> to a later vertex <span class="math">v</span>.</p></div>
 <div class="topo-order"><span>A</span><i>→</i><span>C</span><i>→</i><span>B</span><i>→</i><span>D</span><i>→</i><span>E</span></div>
 <p>Only DAGs have topological orderings, and every DAG has at least one. The ordering need not be unique: if two tasks are unrelated by the constraints, either may be placed first.</p>
 </section>
 
-<section id="source"><h2>Sources in DAGs</h2>
+<section id="source"><h2 id="section-4">Sources in DAGs</h2>
 <p>A <b>source</b> is a vertex of in-degree zero. Every nonempty DAG has at least one source.</p>
 <p>Suppose instead that every vertex had an incoming edge. Start anywhere and repeatedly follow an incoming edge backward. Because the graph has finitely many vertices, eventually a vertex must repeat. The repeated segment is a directed cycle, contradicting the assumption that the graph is acyclic.</p>
 <div class="graph-definition theorem"><p>Kahn's algorithm repeatedly removes a source, appends it to the ordering, and deletes its outgoing edges. Removing a source cannot create a cycle.</p></div>
 </section>
 
-<section id="kahn"><h2>Kahn's algorithm</h2>
+<section id="kahn"><h2 id="section-5">Kahn's algorithm</h2>
 <p>Compute the in-degrees once and keep the current zero-in-degree vertices in a queue.</p>
 <div class="kahn-flow"><div><b>1</b><span>compute<br>in-degrees</span></div><i>→</i><div><b>2</b><span>queue all<br>zeroes</span></div><i>→</i><div><b>3</b><span>remove<br>a source</span></div><i>→</i><div><b>4</b><span>decrease its<br>neighbors</span></div></div>
 <div class="code-simple"><pre><code>from collections import deque
@@ -63,35 +63,35 @@ def topological_sort(graph):
 <p>If every vertex is removed, <code>order</code> is a topological ordering. If the queue becomes empty while vertices remain, every remaining vertex has a prerequisite inside the remaining graph; a directed cycle prevents further progress.</p>
 </section>
 
-<section id="walkthrough"><h2>Kahn's Algorithm: Example</h2>
+<section id="walkthrough"><h2 id="section-6">Kahn's Algorithm: Example</h2>
 <div class="topo-steps"><div class="topo-step"><b>Initial sources</b><div class="degree-row"><span>A<small>0</small></span><span>B<small>1</small></span><span>C<small>1</small></span><span>D<small>2</small></span><span>E<small>1</small></span></div><p>Only A is immediately available.</p></div><div class="topo-step"><b>Remove A</b><div class="degree-row"><span class="done">A</span><span>B<small>0</small></span><span>C<small>0</small></span><span>D<small>2</small></span><span>E<small>1</small></span></div><p>B and C can now be chosen in either order.</p></div><div class="topo-step"><b>Remove B, C</b><div class="degree-row"><span class="done">A</span><span class="done">B</span><span class="done">C</span><span>D<small>0</small></span><span>E<small>1</small></span></div><p>Once both prerequisites disappear, D becomes a source.</p></div><div class="topo-step"><b>Finish</b><div class="degree-row"><span class="done">A</span><span class="done">B</span><span class="done">C</span><span class="done">D</span><span class="done">E</span></div><p>One valid order is A, B, C, D, E.</p></div></div>
 </section>
 
-<section id="dfs"><h2>Topological sorting with DFS</h2>
+<section id="dfs"><h2 id="section-7">Topological sorting with DFS</h2>
 <p>DFS gives a second linear-time algorithm. Do not add a vertex to the answer when it is first discovered. Add it only when its DFS call finishes—after all vertices reachable through its outgoing edges have been processed. Reverse the finishing order at the end.</p>
 <div class="finish-order"><div><span class="vertex">A</span><small>finishes 5</small></div><div><span class="vertex">B</span><small>finishes 4</small></div><div><span class="vertex">C</span><small>finishes 3</small></div><div><span class="vertex">D</span><small>finishes 2</small></div><div><span class="vertex">E</span><small>finishes 1</small></div></div>
 <div class="graph-formula">topological order = decreasing DFS exit time</div>
 <p>For an edge <span class="math">u→v</span> in a DAG, DFS cannot encounter <span class="math">v</span> as an active ancestor of <span class="math">u</span>, because that would be a back edge and would close a directed cycle. The DFS structure therefore forces <span class="math">v</span> to finish before <span class="math">u</span>, placing <span class="math">u</span> before <span class="math">v</span> after reversal.</p>
 </section>
 
-<section id="cycle-detection"><h2>Cycle Detection</h2>
+<section id="cycle-detection"><h2 id="section-8">Cycle Detection</h2>
 <p>Kahn's algorithm detects a cycle when fewer than <span class="math">n</span> vertices can be removed. DFS detects a cycle when it encounters a back edge to a vertex whose recursive call is still active.</p>
 <div class="compare-grid"><article class="compare-card"><span class="tag">Kahn</span><h3>No source remains</h3><p>The queue is empty but some vertices have not been processed.</p></article><article class="compare-card"><span class="tag">DFS</span><h3>A back edge appears</h3><p>An edge points from the current DFS branch to one of its active ancestors.</p></article></div>
 </section>
 
-<section id="complexity"><h2>Running time</h2>
+<section id="complexity"><h2 id="section-9">Running time</h2>
 <p>With adjacency lists, computing all in-degrees examines every edge once. Kahn's algorithm then removes every vertex once and processes every outgoing edge once. DFS has the same accounting.</p><div class="graph-formula">Θ(n + m)</div>
 <p>Both methods also use <span class="math">O(n)</span> auxiliary space beyond the graph representation.</p>
 </section>
 
-<section id="uses"><h2>Applications of Topological Ordering</h2>
+<section id="uses"><h2 id="section-10">Applications of Topological Ordering</h2>
 <div class="pattern-grid"><article class="pattern-card"><span class="tag">Scheduling</span><h3>Prerequisites</h3><p>Courses, jobs, and project tasks can be executed without violating dependencies.</p></article><article class="pattern-card"><span class="tag">Build systems</span><h3>Dependency order</h3><p>A dependency is processed before the object that needs it.</p></article><article class="pattern-card"><span class="tag">DAG algorithms</span><h3>Left to right</h3><p>Dynamic programs and path algorithms can process a vertex only after all relevant predecessors.</p></article><article class="pattern-card"><span class="tag">Validation</span><h3>Cycle detection</h3><p>A failed topological sort reveals inconsistent circular dependencies.</p></article></div>
 </section>
 
-<section id="not-unique"><h2>Non-uniqueness of Topological Orders</h2>
+<section id="not-unique"><h2 id="section-11">Non-uniqueness of Topological Orders</h2>
 <p>Topological sorting respects only the comparisons encoded by directed paths and edges. If neither of two vertices must precede the other, the constraints may permit both relative orders.</p>
 <div class="warning good"><b>Do not read extra information into the output.</b> If one valid topological sort places <span class="math">u</span> before <span class="math">v</span>, that alone does not imply that the graph requires <span class="math">u</span> before <span class="math">v</span>.</div>
 </section>
 </section>
-<div class="chapter-nav"><a href="connectivity.html">← Connectivity and Bipartite Graphs</a><a href="shortest-paths.html">Next: Shortest Paths →</a></div></main>
+<div class="chapter-nav"><a href="connectivity.html">← Connectivity and Bipartite Graphs</a><a href="shortest-paths.html">Shortest Paths →</a></div></main>
 <footer class="overview-footer"><div>Allan's Handbook of Algorithms</div><div>© 2026 Allan Allemand</div></footer><script src="../assets/js/language-switch.js"></script></body></html>
