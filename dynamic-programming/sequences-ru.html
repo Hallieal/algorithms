@@ -1,1 +1,63 @@
-<!DOCTYPE html><html lang="ru"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><title>Последовательности и строки | Allan's Handbook of Algorithms</title><link href="../assets/css/styles.css" rel="stylesheet"/><link href="assets/dp.css" rel="stylesheet"/><link href="../assets/images/favicon-32.png" rel="icon"/></head><body class="lecture-page dp-content-page"><header class="topbar"><a class="brand" href="../"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name">Allan's Handbook of Algorithms</span></a><nav class="topnav"><a href="index-ru.html">Обзор DP</a><div class="language-switch"><a href="sequences.html">EN</a><span class="language-separator">·</span><span class="current">RU</span></div></nav></header><aside class="sidebar"><div class="sidebar-title">Динамическое программирование · Последовательности и строки</div><a href="#overview">Обзор</a></aside><main class="lecture"><article><h1>Последовательности и строки</h1><p class="lecture-lead">Подпоследовательности, выравнивания и состояния с двумя индексами.</p><h2 id="overview">Структура раздела</h2><div class="dp-placeholder">Страница создана в общем каркасе главы. Содержательная часть будет заполнена следующим проходом.</div><div class="chapter-nav"><a href="grids-ru.html">← Назад</a><a href="knapsack-ru.html">Далее →</a></div></article></main></body></html>
+<!DOCTYPE html><html lang="ru"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><title>Последовательности и строки | Allan's Handbook of Algorithms</title><link href="../assets/css/styles.css" rel="stylesheet"/><link href="assets/dp.css" rel="stylesheet"/></head><body class="lecture-page dp-content-page"><header class="topbar"><a class="brand" href="../"><span class="brand-name">Allan's Handbook of Algorithms</span></a><nav class="topnav"><a href="index-ru.html">Обзор DP</a><div class="language-switch"><a href="sequences.html">EN</a> · <span class="current">RU</span></div></nav></header><aside class="sidebar"><div class="sidebar-title">Динамическое программирование · Последовательности и строки</div><a href="#s1">Два префикса</a><a href="#s2">LCS</a><a href="#s3">Матрица LCS</a><a href="#s4">Восстановление</a><a href="#s5">Edit distance</a><a href="#s6">Общая схема</a></aside><main class="lecture"><article><div class="lecture-kicker">Chapter 10 · Section 5</div><h1>Последовательности и строки</h1><p class="lecture-lead">Для сравнения двух последовательностей обычно нужны два параметра состояния: сколько элементов первой последовательности и сколько элементов второй уже рассмотрено.</p>
+<h2 id="s1">Два индекса — два префикса</h2><p>Пусть X и Y — две строки. Определим dp[i][j] как длину longest common subsequence первых i символов X и первых j символов Y. Пустой префикс сразу даёт границу: если одна строка пуста, общая подпоследовательность имеет длину 0.</p><div class="dp-definition"><p><b>dp[i][j]</b> = ответ для пары префиксов X[:i] и Y[:j].</p></div>
+<h2 id="s2">Longest Common Subsequence</h2><p>Посмотрим только на последние символы двух префиксов. Если они совпадают, их можно добавить к лучшему ответу для двух более коротких префиксов. Если не совпадают, хотя бы один из этих двух последних символов не используется в выбранной общей подпоследовательности.</p><div class="dp-formula">если X[i − 1] = Y[j − 1]: &nbsp; dp[i][j] = dp[i − 1][j − 1] + 1</div><div class="dp-formula">иначе: &nbsp; dp[i][j] = max(dp[i − 1][j], dp[i][j − 1])</div><div class="dp-code"><div class="dp-code-head">Python · LCS length</div><pre><code>def lcs_length(x, y):
+    n, m = len(x), len(y)
+    dp = [[0] * (m + 1) for _ in range(n + 1)]
+
+    for i in range(1, n + 1):
+        for j in range(1, m + 1):
+            if x[i - 1] == y[j - 1]:
+                dp[i][j] = dp[i - 1][j - 1] + 1
+            else:
+                dp[i][j] = max(
+                    dp[i - 1][j],
+                    dp[i][j - 1]
+                )
+
+    return dp[n][m]</code></pre></div>
+<h2 id="s3">Как читать матрицу LCS</h2><p>Для X = ABCD и Y = ACBD итоговая длина равна 3. Число в клетке (i,j) относится не к отдельной паре символов, а ко всей паре префиксов X[:i] и Y[:j]. Именно поэтому соседние клетки содержат ответы на нужные подзадачи.</p><div style="overflow-x:auto"><table class="dp-table"><thead><tr><th></th><th>∅</th><th>A</th><th>C</th><th>B</th><th>D</th></tr></thead><tbody><tr><th>∅</th><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr><tr><th>A</th><td>0</td><td>1</td><td>1</td><td>1</td><td>1</td></tr><tr><th>B</th><td>0</td><td>1</td><td>1</td><td>2</td><td>2</td></tr><tr><th>C</th><td>0</td><td>1</td><td>2</td><td>2</td><td>2</td></tr><tr><th>D</th><td>0</td><td>1</td><td>2</td><td>2</td><td><b>3</b></td></tr></tbody></table></div><figure class="dp-figure"><svg class="dp-svg" viewBox="0 0 650 250"><defs><marker id="seqarr" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L7,3 z" fill="#20262d"/></marker></defs><rect x="270" y="155" width="110" height="60" rx="10" class="green"/><rect x="270" y="45" width="110" height="60" rx="10" class="yellow"/><rect x="90" y="155" width="110" height="60" rx="10" class="blue"/><rect x="90" y="45" width="110" height="60" rx="10" class="violet"/><text x="325" y="185">dp[i][j]</text><text x="325" y="75">dp[i−1][j]</text><text x="145" y="185">dp[i][j−1]</text><text x="145" y="75">dp[i−1][j−1]</text><path d="M325 105 V145" class="edge" marker-end="url(#seqarr)"/><path d="M200 185 H260" class="edge" marker-end="url(#seqarr)"/><path d="M200 90 L265 155" class="edge" marker-end="url(#seqarr)"/></svg><figcaption>Три соседние клетки соответствуют трём способам укоротить пару префиксов.</figcaption></figure>
+<h2 id="s4">Длина — ещё не сама подпоследовательность</h2><p>Таблица отвечает на вопрос о длине. Чтобы получить сами символы, идём назад от dp[n][m]. При совпадении последних символов берём этот символ и двигаемся по диагонали. Иначе переходим в соседнюю клетку, из которой пришло текущее оптимальное значение.</p><div class="dp-code"><div class="dp-code-head">Python · reconstruct an LCS</div><pre><code>def lcs(x, y):
+    n, m = len(x), len(y)
+    dp = [[0] * (m + 1) for _ in range(n + 1)]
+
+    for i in range(1, n + 1):
+        for j in range(1, m + 1):
+            if x[i - 1] == y[j - 1]:
+                dp[i][j] = dp[i - 1][j - 1] + 1
+            else:
+                dp[i][j] = max(dp[i - 1][j], dp[i][j - 1])
+
+    answer = []
+    i, j = n, m
+
+    while i > 0 and j > 0:
+        if x[i - 1] == y[j - 1]:
+            answer.append(x[i - 1])
+            i -= 1
+            j -= 1
+        elif dp[i - 1][j] >= dp[i][j - 1]:
+            i -= 1
+        else:
+            j -= 1
+
+    return "".join(reversed(answer))</code></pre></div><p>При равных значениях сверху и слева может существовать несколько разных LCS одной длины. Выбранное правило разрешения равенства возвращает одну из них.</p>
+<h2 id="s5">Edit distance: изменить последние операции</h2><p>В edit distance состояние можно оставить тем же: dp[i][j] — минимальное число операций, превращающих первые i символов X в первые j символов Y. Но теперь у последнего шага три варианта: удалить символ, вставить символ или сопоставить последние символы, возможно заплатив за замену.</p><div class="dp-formula">dp[i][j] = min(delete, insert, match / substitute)</div><div class="dp-code"><div class="dp-code-head">Python · Levenshtein distance</div><pre><code>def edit_distance(x, y):
+    n, m = len(x), len(y)
+    dp = [[0] * (m + 1) for _ in range(n + 1)]
+
+    for i in range(n + 1):
+        dp[i][0] = i
+    for j in range(m + 1):
+        dp[0][j] = j
+
+    for i in range(1, n + 1):
+        for j in range(1, m + 1):
+            substitution = 0 if x[i - 1] == y[j - 1] else 1
+            dp[i][j] = min(
+                dp[i - 1][j] + 1,
+                dp[i][j - 1] + 1,
+                dp[i - 1][j - 1] + substitution
+            )
+
+    return dp[n][m]</code></pre></div><table class="dp-table"><thead><tr><th>Последняя операция</th><th>Предыдущее состояние</th><th>Стоимость</th></tr></thead><tbody><tr><td>Удаление</td><td>dp[i−1][j]</td><td>+1</td></tr><tr><td>Вставка</td><td>dp[i][j−1]</td><td>+1</td></tr><tr><td>Совпадение / замена</td><td>dp[i−1][j−1]</td><td>+0 / +1</td></tr></tbody></table>
+<h2 id="s6">Одна матрица, разные задачи</h2><p>LCS и edit distance выглядят как разные задачи, но используют одну геометрию состояний. Строка матрицы означает один префикс X, столбец — один префикс Y. Содержание задачи задаётся тем, какие переходы разрешены и как их значения объединяются.</p><div class="dp-compare"><article><h3>LCS</h3><p>Максимизируем число сохранённых совпадающих символов.</p></article><article><h3>Edit distance</h3><p>Минимизируем стоимость последовательности разрешённых преобразований.</p></article></div><p>Для строк длины n и m обе стандартные таблицы содержат (n+1)(m+1) состояний и выполняют O(1) работы в каждой клетке. Поэтому время — O(nm). Если нужна только величина ответа, а не восстановление пути, память во многих вариантах можно сократить до O(min(n,m)).</p><div class="chapter-nav"><a href="grids-ru.html">← DP на сетках и путях</a><a href="knapsack-ru.html">Далее: Knapsack и subset DP →</a></div></article></main><footer class="overview-footer"><div>Allan's Handbook of Algorithms</div><div>© 2026 Allan Allemand</div></footer></body></html>
