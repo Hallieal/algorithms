@@ -98,3 +98,32 @@
 }
 .graph-content-page .graph-formula .math{font-size:1em}
 .graph-content-page sub,.graph-content-page sup{font-size:.72em;line-height:0}
+
+/* v6 restrained mathematical typography */
+.graph-content-page .math{
+  display:inline;
+  padding:0;
+  font-family:"Cambria Math","STIX Two Text","Times New Roman",serif;
+  font-size:1.04em;
+  font-style:normal;
+  font-weight:400;
+  letter-spacing:0;
+}
+.graph-content-page .graph-formula{
+  max-width:none;
+  margin:20px 0 22px;
+  padding:0;
+  border:0;
+  border-radius:0;
+  background:transparent;
+  box-shadow:none;
+  color:#20262d;
+  font-family:"Cambria Math","STIX Two Text","Times New Roman",serif;
+  font-size:22px;
+  font-style:normal;
+  font-weight:400;
+  line-height:1.55;
+  letter-spacing:0;
+  text-align:center;
+}
+.graph-content-page .graph-formula .math{display:inline;font-size:1em;font-style:normal}
