@@ -350,3 +350,25 @@
   line-height:1.25;
 }
 .layer-definition p{margin:0}
+
+/* v12 requested DFS and shortest-path alignment */
+.tree-pair-svg .node text,
+.edge-types-svg .node text,
+.dijkstra-svg .node text,
+.negative-svg .node text{
+  transform:none;
+  text-anchor:middle;
+  dominant-baseline:central;
+}
+.path-length-formula{
+  font-size:24px;
+  font-weight:500;
+  padding:17px 26px;
+}
+.path-type-grid article{
+  display:flex;
+  flex-direction:column;
+}
+.path-type-grid article > span{
+  margin-top:auto;
+}
