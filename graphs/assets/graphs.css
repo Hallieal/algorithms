@@ -32,3 +32,23 @@
 @media(max-width:760px){.intro-compare{grid-template-columns:1fr}.intro-hero,.social-svg,.sf-route{min-width:620px}.graph-figure:has(.intro-hero),.graph-figure:has(.social-svg),.graph-figure:has(.sf-route){overflow-x:auto}}
 
 .intro-usecases{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:22px 0 30px}.intro-usecases article{padding:15px 16px;border:1px solid var(--line);border-radius:14px;background:#fff}.intro-usecases b,.intro-usecases span{display:block}.intro-usecases span{margin-top:5px;color:#69737a;font-size:13px}.poker-svg .poker-edge line{stroke:#20262d;stroke-width:3;marker-end:url(#pokerArrow)}.poker-svg .node circle{stroke:#20262d;stroke-width:2.5}@media(max-width:760px){.intro-usecases{grid-template-columns:1fr}}
+
+/* v2 introduction layout cleanup */
+.lecture{max-width:860px}
+.lecture>p{max-width:780px;font-size:16px;line-height:1.72;color:#4f5b63}
+.lecture>h2{margin-top:52px;margin-bottom:14px;letter-spacing:-.025em}
+.lecture-lead{max-width:760px!important;font-size:19px!important;line-height:1.62!important;color:#56616a!important}
+.intro-figure{width:min(100%,700px);margin:26px auto 32px;padding:18px 18px 13px;border:1px solid #e5e1da;border-radius:18px;background:#fff;box-sizing:border-box}
+.intro-figure.compact{width:min(100%,620px)}
+.intro-figure .graph-svg{display:block;width:100%;height:auto;max-height:300px;margin:auto}
+.intro-figure figcaption{max-width:620px;margin:10px auto 0;color:#747e85;font-size:12.5px;line-height:1.5;text-align:center}
+.intro-labels.names text{font-size:12px}
+.social-svg .intro-labels.names text{font-size:11.5px}
+.intro-code{width:min(100%,720px);margin:22px auto 30px;overflow:hidden;border:1px solid #dcd9d2;border-radius:14px;background:#20262d;box-shadow:0 7px 20px rgba(31,38,45,.06)}
+.intro-code-head{padding:8px 14px;border-bottom:1px solid #394149;background:#2a3138;color:#bfc8ce;font:700 10px/1.2 ui-sans-serif,system-ui,sans-serif;letter-spacing:.08em;text-transform:uppercase}
+.intro-code pre{margin:0!important;padding:17px 19px!important;overflow-x:auto!important;border:0!important;border-radius:0!important;background:#20262d!important;color:#f3f4f2!important;font:13px/1.62 "SFMono-Regular",Consolas,"Liberation Mono",monospace!important}
+.intro-code code{padding:0!important;border:0!important;background:transparent!important;color:inherit!important;font:inherit!important}
+.definition-example{max-width:720px;margin:26px auto}
+.intro-usecases{max-width:760px}
+.graph-definition{max-width:720px}
+@media(max-width:760px){.lecture>h2{margin-top:40px}.intro-figure,.intro-figure.compact{width:100%;padding:12px 10px 10px}.intro-figure .graph-svg{max-height:250px}.intro-code{width:100%}.intro-code pre{font-size:12px;padding:15px!important}.intro-labels.names text{font-size:11px}}
