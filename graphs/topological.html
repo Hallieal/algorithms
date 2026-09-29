@@ -3,7 +3,7 @@
 <body class="lecture-page graph-content-page"><header class="topbar"><a class="brand" href="../"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name">Allan's Handbook of Algorithms</span></a><nav class="topnav"><a href="./">Graphs overview</a><div class="language-switch"><span class="current">EN</span><span class="language-separator">·</span><a href="topological-ru.html">RU</a></div></nav></header>
 <main class="lecture"><section class="lecture-hero graph-hero"><div><div class="chapter-label">Chapter 8 · Section 6</div><h1>Directed Graphs, DAGs, and Topological Ordering</h1><p class="chapter-topics">A directed edge can encode a prerequisite. If the resulting graph has no directed cycle, its vertices can be placed in an order that respects every prerequisite.</p></div><div class="graph-hero-art"><svg class="graph-svg topo-hero" viewBox="0 0 235 170"><defs><marker id="ah" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 z"/></marker></defs><g class="arrow-edge"><line x1="28" y1="85" x2="78" y2="42"/><line x1="28" y1="85" x2="78" y2="128"/><line x1="88" y1="42" x2="145" y2="75"/><line x1="88" y1="128" x2="145" y2="92"/><line x1="155" y1="83" x2="208" y2="83"/></g><g class="node"><circle class="t1" cx="25" cy="85" r="12"/><circle class="t2" cx="85" cy="38" r="12"/><circle class="t2" cx="85" cy="132" r="12"/><circle class="t3" cx="152" cy="83" r="12"/><circle class="t4" cx="215" cy="83" r="12"/></g></svg></div></section>
 <section class="lecture-section">
-<section id="constraints"><h2>From prerequisites to directed graphs</h2>
+<section id="constraints"><h2>Precedence Constraints</h2>
 <p class="lead">Many systems are governed by statements of the form “do <span class="math">u</span> before <span class="math">v</span>.” A directed edge <span class="math">u→v</span> is a natural way to record such a precedence constraint.</p>
 <p>Vertices might represent courses, jobs in a build system, stages of a computation, or tasks in a project. An edge points from a prerequisite to something that depends on it.</p>
 <figure class="graph-figure prerequisite-figure"><svg class="graph-svg prerequisite-svg" viewBox="0 0 760 290"><defs><marker id="arrowTopo" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z"/></marker></defs>
@@ -24,7 +24,7 @@
 <p>Only DAGs have topological orderings, and every DAG has at least one. The ordering need not be unique: if two tasks are unrelated by the constraints, either may be placed first.</p>
 </section>
 
-<section id="source"><h2>Every DAG has a source</h2>
+<section id="source"><h2>Sources in DAGs</h2>
 <p>A <b>source</b> is a vertex of in-degree zero. Every nonempty DAG has at least one source.</p>
 <p>Suppose instead that every vertex had an incoming edge. Start anywhere and repeatedly follow an incoming edge backward. Because the graph has finitely many vertices, eventually a vertex must repeat. The repeated segment is a directed cycle, contradicting the assumption that the graph is acyclic.</p>
 <div class="graph-definition theorem"><p>Kahn's algorithm repeatedly removes a source, appends it to the ordering, and deletes its outgoing edges. Removing a source cannot create a cycle.</p></div>
@@ -63,7 +63,7 @@ def topological_sort(graph):
 <p>If every vertex is removed, <code>order</code> is a topological ordering. If the queue becomes empty while vertices remain, every remaining vertex has a prerequisite inside the remaining graph; a directed cycle prevents further progress.</p>
 </section>
 
-<section id="walkthrough"><h2>Removing prerequisites step by step</h2>
+<section id="walkthrough"><h2>Kahn's Algorithm: Example</h2>
 <div class="topo-steps"><div class="topo-step"><b>Initial sources</b><div class="degree-row"><span>A<small>0</small></span><span>B<small>1</small></span><span>C<small>1</small></span><span>D<small>2</small></span><span>E<small>1</small></span></div><p>Only A is immediately available.</p></div><div class="topo-step"><b>Remove A</b><div class="degree-row"><span class="done">A</span><span>B<small>0</small></span><span>C<small>0</small></span><span>D<small>2</small></span><span>E<small>1</small></span></div><p>B and C can now be chosen in either order.</p></div><div class="topo-step"><b>Remove B, C</b><div class="degree-row"><span class="done">A</span><span class="done">B</span><span class="done">C</span><span>D<small>0</small></span><span>E<small>1</small></span></div><p>Once both prerequisites disappear, D becomes a source.</p></div><div class="topo-step"><b>Finish</b><div class="degree-row"><span class="done">A</span><span class="done">B</span><span class="done">C</span><span class="done">D</span><span class="done">E</span></div><p>One valid order is A, B, C, D, E.</p></div></div>
 </section>
 
@@ -74,7 +74,7 @@ def topological_sort(graph):
 <p>For an edge <span class="math">u→v</span> in a DAG, DFS cannot encounter <span class="math">v</span> as an active ancestor of <span class="math">u</span>, because that would be a back edge and would close a directed cycle. The DFS structure therefore forces <span class="math">v</span> to finish before <span class="math">u</span>, placing <span class="math">u</span> before <span class="math">v</span> after reversal.</p>
 </section>
 
-<section id="cycle-detection"><h2>Topological sort also detects cycles</h2>
+<section id="cycle-detection"><h2>Cycle Detection</h2>
 <p>Kahn's algorithm detects a cycle when fewer than <span class="math">n</span> vertices can be removed. DFS detects a cycle when it encounters a back edge to a vertex whose recursive call is still active.</p>
 <div class="compare-grid"><article class="compare-card"><span class="tag">Kahn</span><h3>No source remains</h3><p>The queue is empty but some vertices have not been processed.</p></article><article class="compare-card"><span class="tag">DFS</span><h3>A back edge appears</h3><p>An edge points from the current DFS branch to one of its active ancestors.</p></article></div>
 </section>
@@ -84,11 +84,11 @@ def topological_sort(graph):
 <p>Both methods also use <span class="math">O(n)</span> auxiliary space beyond the graph representation.</p>
 </section>
 
-<section id="uses"><h2>Why topological order is useful</h2>
+<section id="uses"><h2>Applications of Topological Ordering</h2>
 <div class="pattern-grid"><article class="pattern-card"><span class="tag">Scheduling</span><h3>Prerequisites</h3><p>Courses, jobs, and project tasks can be executed without violating dependencies.</p></article><article class="pattern-card"><span class="tag">Build systems</span><h3>Dependency order</h3><p>A dependency is processed before the object that needs it.</p></article><article class="pattern-card"><span class="tag">DAG algorithms</span><h3>Left to right</h3><p>Dynamic programs and path algorithms can process a vertex only after all relevant predecessors.</p></article><article class="pattern-card"><span class="tag">Validation</span><h3>Cycle detection</h3><p>A failed topological sort reveals inconsistent circular dependencies.</p></article></div>
 </section>
 
-<section id="not-unique"><h2>A topological order is usually not unique</h2>
+<section id="not-unique"><h2>Non-uniqueness of Topological Orders</h2>
 <p>Topological sorting respects only the comparisons encoded by directed paths and edges. If neither of two vertices must precede the other, the constraints may permit both relative orders.</p>
 <div class="warning good"><b>Do not read extra information into the output.</b> If one valid topological sort places <span class="math">u</span> before <span class="math">v</span>, that alone does not imply that the graph requires <span class="math">u</span> before <span class="math">v</span>.</div>
 </section>
