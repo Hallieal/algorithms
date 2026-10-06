@@ -660,3 +660,5 @@
   .flow-example-wrap{padding:12px 8px 10px;overflow-x:auto}
   .flow-example-wrap svg{min-width:620px}
 }
+
+.reroute-svg .used-edge{stroke:#4f8f59!important;stroke-width:5!important}
