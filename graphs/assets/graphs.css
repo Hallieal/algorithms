@@ -785,3 +785,257 @@
   stroke:#4f8f59!important;
   stroke-width:4!important;
 }
+
+
+/* v18 flow page visual polish */
+.flow-page .lecture-section{
+  padding-top:58px;
+  padding-bottom:68px;
+}
+.flow-page .lecture-section > section{
+  margin:0;
+  padding:0 0 50px;
+}
+.flow-page .lecture-section > section:last-child{
+  padding-bottom:0;
+}
+.flow-page .lecture-section > section > h2{
+  margin:0 0 18px;
+  font-size:clamp(32px,3.2vw,42px);
+  line-height:1.12;
+  letter-spacing:-.035em;
+  text-wrap:balance;
+}
+.flow-page .lecture-section > section > p{
+  max-width:760px;
+  margin:0 0 18px;
+  color:#4f5b63;
+  font-size:16px;
+  line-height:1.72;
+  text-wrap:pretty;
+}
+.flow-page .lecture-section > section > .lead{
+  max-width:780px;
+  font-size:17px;
+  line-height:1.72;
+}
+.flow-page h3,
+.flow-page .chapter-topics,
+.flow-page figcaption{
+  text-wrap:balance;
+}
+.flow-page .graph-formula{
+  display:block;
+  width:max-content;
+  min-width:min(230px,100%);
+  max-width:100%;
+  margin:23px auto 27px;
+  padding:13px 22px 14px;
+  box-sizing:border-box;
+  overflow-x:auto;
+  overflow-y:hidden;
+  border:1px solid #e2ded6;
+  border-radius:12px;
+  background:#fbfaf7;
+  box-shadow:none;
+  color:#20262d;
+  font-family:"Cambria Math","STIX Two Math","STIX Two Text","Times New Roman",serif;
+  font-size:clamp(21px,2.1vw,26px);
+  font-style:normal;
+  font-weight:500;
+  line-height:1.35;
+  letter-spacing:0;
+  text-align:center;
+  white-space:nowrap;
+  scrollbar-width:thin;
+}
+.flow-page .flow-rule .graph-formula{
+  min-width:0;
+  margin:12px auto 0;
+  padding:5px 0 0;
+  border:0;
+  background:transparent;
+  font-size:20px;
+  overflow:visible;
+}
+.flow-page .math,
+.flow-page .complexity-box{
+  white-space:nowrap;
+}
+.flow-page .flow-notation{
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:12px;
+  margin:26px 0 30px;
+}
+.flow-page .flow-notation>div{
+  min-width:0;
+  padding:16px 17px;
+}
+.flow-page .flow-notation b{
+  white-space:nowrap;
+}
+.flow-page .flow-rule-grid,
+.flow-page .flow-model-grid{
+  gap:16px;
+  margin:27px 0 30px;
+}
+.flow-page .flow-rule,
+.flow-page .flow-model-grid article,
+.flow-page .flow-checklist>div{
+  min-width:0;
+}
+.flow-page .flow-checklist{
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:12px;
+  margin:27px 0 30px;
+}
+.flow-page .flow-example-wrap{
+  margin:30px auto 34px;
+  padding:20px 20px 13px;
+  overflow:hidden;
+}
+.flow-page .flow-example-wrap svg{
+  max-width:100%;
+  margin:0 auto;
+}
+.flow-page .flow-example-wrap figcaption{
+  max-width:680px;
+  margin-top:12px;
+  line-height:1.55;
+}
+.flow-page .residual-pair,
+.flow-page .matching-columns{
+  gap:16px;
+  margin:28px 0 32px;
+}
+.flow-page .residual-card,
+.flow-page .matching-columns figure{
+  min-width:0;
+}
+.flow-page .flow-trace{
+  margin:28px 0 32px;
+}
+.flow-page .flow-trace-step{
+  grid-template-columns:58px minmax(170px,1fr) 82px minmax(180px,1.2fr);
+  gap:14px;
+  padding:15px 17px;
+}
+.flow-page .flow-trace-step .path,
+.flow-page .flow-trace-step .delta{
+  white-space:nowrap;
+}
+.flow-page .flow-proof{
+  margin:30px auto 34px;
+}
+.flow-page .model-table-wrap{
+  max-width:100%;
+  margin:27px 0 31px;
+  overflow-x:auto;
+  border-radius:12px;
+}
+.flow-page .decision-table{
+  margin:0;
+  min-width:680px;
+}
+.flow-page .code-simple{
+  max-width:100%;
+  box-sizing:border-box;
+}
+.flow-page .code-simple pre{
+  white-space:pre;
+}
+.flow-page .flow-next-chain{
+  gap:12px;
+  margin:28px 0 32px;
+}
+.flow-page .flow-next-chain .stage{
+  min-width:0;
+}
+.flow-page .graph-definition,
+.flow-page .warning,
+.flow-page .flow-mini-definition,
+.flow-page .flow-conservation-note{
+  text-wrap:pretty;
+}
+.flow-page .chapter-nav{
+  margin-top:50px;
+}
+.flow-page .flow-arrowhead{
+  pointer-events:none;
+  shape-rendering:geometricPrecision;
+}
+.flow-page svg text{
+  text-rendering:geometricPrecision;
+}
+@media(max-width:1050px) and (min-width:761px){
+  .flow-page .flow-trace-step{
+    grid-template-columns:52px minmax(0,1fr) 82px;
+  }
+  .flow-page .flow-trace-step p{
+    grid-column:2/-1;
+  }
+  .flow-page .flow-next-chain{
+    grid-template-columns:1fr;
+  }
+  .flow-page .flow-next-chain .arrow{
+    transform:rotate(90deg);
+  }
+}
+@media(max-width:760px){
+  .flow-page .lecture-section{
+    padding-top:42px;
+    padding-bottom:52px;
+  }
+  .flow-page .lecture-section > section{
+    padding-bottom:40px;
+  }
+  .flow-page .lecture-section > section > h2{
+    font-size:31px;
+  }
+  .flow-page .flow-notation,
+  .flow-page .flow-checklist,
+  .flow-page .flow-rule-grid,
+  .flow-page .flow-model-grid{
+    grid-template-columns:1fr;
+  }
+  .flow-page .graph-formula{
+    width:100%;
+    min-width:0;
+    padding:12px 14px 13px;
+    font-size:20px;
+  }
+  .flow-page .flow-rule .graph-formula{
+    width:max-content;
+    max-width:100%;
+    padding:4px 0 0;
+  }
+  .flow-page .flow-example-wrap{
+    padding:13px 10px 11px;
+    overflow-x:auto;
+  }
+  .flow-page .flow-example-wrap svg{
+    min-width:620px;
+  }
+  .flow-page .residual-pair,
+  .flow-page .matching-columns{
+    grid-template-columns:1fr;
+  }
+  .flow-page .residual-pair>.transform-arrow,
+  .flow-page .matching-columns>.transform-arrow{
+    transform:rotate(90deg);
+  }
+  .flow-page .flow-trace-step{
+    grid-template-columns:44px minmax(0,1fr);
+    gap:10px 12px;
+  }
+  .flow-page .flow-trace-step .delta{
+    grid-column:2;
+    text-align:left;
+  }
+  .flow-page .flow-trace-step p{
+    grid-column:2;
+  }
+  .flow-page .model-table-wrap{
+    overflow-x:auto;
+  }
+}
