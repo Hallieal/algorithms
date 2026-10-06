@@ -662,3 +662,109 @@
 }
 
 .reroute-svg .used-edge{stroke:#4f8f59!important;stroke-width:5!important}
+
+
+/* v16 flow foundations polish */
+.flow-reading-key{
+  width:min(100%,660px);
+  margin:18px auto 26px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:18px;
+  flex-wrap:wrap;
+  color:#687279;
+  font-size:13px;
+}
+.flow-reading-key .edge-sample{
+  display:flex;
+  align-items:center;
+  gap:9px;
+}
+.flow-reading-key .edge-line{
+  width:62px;
+  height:0;
+  border-top:3px solid #4f8f59;
+  position:relative;
+}
+.flow-reading-key .edge-line::after{
+  content:"";
+  position:absolute;
+  right:-1px;
+  top:-6px;
+  border-left:8px solid #4f8f59;
+  border-top:5px solid transparent;
+  border-bottom:5px solid transparent;
+}
+.flow-reading-key code{
+  padding:.12em .38em;
+  border:1px solid #e2ded6;
+  border-radius:6px;
+  background:#fff;
+  color:#263039;
+  font-size:12.5px;
+}
+.flow-conservation-note{
+  max-width:680px;
+  margin:18px auto 28px;
+  padding:14px 17px;
+  border-left:4px solid #79b86b;
+  border-radius:0 12px 12px 0;
+  background:#f6faf4;
+  color:#56616a;
+  line-height:1.6;
+}
+.flow-path-figure .bottleneck-edge{
+  stroke:#e66b61!important;
+  stroke-width:6!important;
+}
+.flow-path-figure .path-edge{
+  stroke:#4f8f59!important;
+  stroke-width:5!important;
+}
+.flow-path-figure .capacity-label{
+  font-size:13px;
+}
+.flow-next-chain{
+  display:grid;
+  grid-template-columns:1fr 46px 1fr 46px 1fr;
+  align-items:stretch;
+  gap:10px;
+  margin:27px 0;
+}
+.flow-next-chain .stage{
+  padding:17px;
+  border:1px solid var(--line);
+  border-radius:14px;
+  background:#fff;
+}
+.flow-next-chain .stage b{
+  display:block;
+  margin-bottom:6px;
+  color:#20262d;
+}
+.flow-next-chain .stage span{
+  color:#667078;
+  font-size:13px;
+  line-height:1.5;
+}
+.flow-next-chain .arrow{
+  display:grid;
+  place-items:center;
+  color:#8a9297;
+  font-size:24px;
+}
+.flow-mini-definition{
+  max-width:720px;
+  margin:24px auto;
+  padding:17px 19px;
+  border:1px solid #e5e1da;
+  border-radius:14px;
+  background:#fff;
+}
+.flow-mini-definition p{margin:0;line-height:1.65}
+@media(max-width:760px){
+  .flow-next-chain{grid-template-columns:1fr}
+  .flow-next-chain .arrow{transform:rotate(90deg)}
+  .flow-reading-key{justify-content:flex-start}
+}
