@@ -1039,3 +1039,40 @@
     overflow-x:auto;
   }
 }
+
+
+/* v19 final flow diagram and formula polish */
+.flow-page .formula-stack{
+  display:grid;
+  gap:5px;
+  width:fit-content;
+  min-width:min(300px,100%);
+  text-align:center;
+}
+.flow-page .formula-stack span{
+  display:block;
+  white-space:nowrap;
+}
+.flow-page .flow-hero-svg .inactive-edge{
+  stroke:#b9bec2!important;
+  stroke-width:3!important;
+}
+.flow-page .reroute-svg .flow-edge line:not(.forward):not(.reverse):not(.used-edge){
+  stroke:#b9bec2;
+}
+.flow-page .flow-reading-key{
+  margin-top:20px;
+  margin-bottom:28px;
+}
+.flow-page .residual-card svg{
+  max-height:150px;
+}
+.flow-page .matching-columns figure svg{
+  max-height:300px;
+}
+@media(max-width:760px){
+  .flow-page .formula-stack{
+    width:max-content;
+    max-width:100%;
+  }
+}
