@@ -768,3 +768,20 @@
   .flow-next-chain .arrow{transform:rotate(90deg)}
   .flow-reading-key{justify-content:flex-start}
 }
+
+
+/* v17 explicit flow arrowheads */
+.flow-arrowhead{pointer-events:none}
+.reroute-svg .forward{
+  stroke:#4f8f59!important;
+  stroke-width:5!important;
+}
+.reroute-svg .reverse{
+  stroke:#e66b61!important;
+  stroke-width:4!important;
+  stroke-dasharray:7 6;
+}
+.flow-hero-svg .forward{
+  stroke:#4f8f59!important;
+  stroke-width:4!important;
+}
