@@ -1,0 +1,58 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><title>Ford–Fulkerson and Edmonds–Karp | Allan's Handbook of Algorithms</title><link href="../assets/css/styles.css" rel="stylesheet"/><link href="assets/graphs.css" rel="stylesheet"/><link href="../assets/images/favicon-32.png" rel="icon" sizes="32x32" type="image/png"/><link href="flow-algorithms.html" hreflang="en" rel="alternate"/><link href="flow-algorithms-ru.html" hreflang="ru" rel="alternate"/></head>
+<body class="lecture-page graph-content-page"><header class="topbar"><a class="brand" href="../"><span class="brand-mark brand-mark-logo"><img alt="" class="brand-mark-image" src="../assets/images/logo.png"/></span><span class="brand-name">Allan's Handbook of Algorithms</span></a><nav class="topnav"><a href="./">Graphs overview</a><div class="language-switch"><span class="current">EN</span><span class="language-separator">·</span><a href="flow-algorithms-ru.html">RU</a></div></nav></header>
+<aside class="sidebar" aria-label="Section navigation"><div class="sidebar-title">Graphs · Flow Algorithms</div><a href="#section-1">Ford–Fulkerson</a><a href="#section-2">One augmentation</a><a href="#section-3">A full trace</a><a href="#section-4">Correct updates</a><a href="#section-5">Running time</a><a href="#section-6">Edmonds–Karp</a><a href="#section-7">Implementation</a><a href="#section-8">Dinic in context</a></aside>
+<main class="lecture"><section class="lecture-hero graph-hero"><div><div class="chapter-label">Chapter 8 · Section 10</div><h1>Ford–Fulkerson and Edmonds–Karp</h1><p class="chapter-topics">Maximum flow is built by repeatedly finding a residual path, pushing as much as its bottleneck allows, and updating both directions of every used edge.</p></div></section>
+<section class="lecture-section">
+<section><h2 id="section-1">Ford–Fulkerson</h2><p class="lead">Ford–Fulkerson is a method: while an augmenting path exists, increase the flow along it.</p><div class="algorithm-ladder"><div><span>1</span><b>Start with zero flow</b></div><div><span>2</span><b>Find an s–t path in the residual graph</b></div><div><span>3</span><b>Find the bottleneck Δ</b></div><div><span>4</span><b>Update residual capacities</b></div></div><p>The method does not prescribe how the path is chosen. DFS, BFS, or another path-search rule can be used.</p></section>
+<section><h2 id="section-2">One augmentation</h2><p>Suppose the residual capacities on <span class="math">s→a→c→t</span> are 10, 5, and 8. The bottleneck is 5, so five units are pushed along the entire path.</p><div class="graph-formula">Δ=min(10,5,8)=5</div><p>For every residual edge used forward, subtract 5 from the forward capacity and add 5 to the reverse capacity. This is what preserves the option to undo the augmentation later.</p></section>
+<section><h2 id="section-3">A full trace</h2><p>On the six-vertex example, one valid sequence of augmentations is:</p><div class="flow-trace"><div class="flow-trace-step"><div class="step-number">1</div><div class="path">s → a → c → t</div><div class="delta">Δ = 5</div><p>Total flow becomes 5.</p></div><div class="flow-trace-step"><div class="step-number">2</div><div class="path">s → b → d → t</div><div class="delta">Δ = 7</div><p>Total flow becomes 12.</p></div><div class="flow-trace-step"><div class="step-number">3</div><div class="path">s → a → b → c → t</div><div class="delta">Δ = 3</div><p>Total flow becomes 15.</p></div></div><p>No residual <span class="math">s–t</span> path remains, so the method stops.</p></section>
+<section><h2 id="section-4">The update rule</h2><p>If an augmentation of size <span class="math">Δ</span> uses residual edge <span class="math">u→v</span>, update</p><div class="graph-formula">c<sub>f</sub>(u,v) ← c<sub>f</sub>(u,v)−Δ, &nbsp;&nbsp; c<sub>f</sub>(v,u) ← c<sub>f</sub>(v,u)+Δ</div><p>The second update is essential. A maximum-flow implementation that only decreases forward capacities but never increases reverse capacities is incorrect.</p></section>
+<section><h2 id="section-5">Running time of Ford–Fulkerson</h2><p>With integer capacities, each augmentation increases the flow by at least one. If the maximum flow has value <span class="math">F</span> and each path search costs <span class="math">O(E)</span>, the standard bound is</p><div class="graph-formula">O(EF)</div><p>This is pseudo-polynomial: it depends on the numerical value of the capacities, not only on the number of vertices and edges. With irrational capacities, arbitrary path choices may even fail to terminate.</p></section>
+<section><h2 id="section-6">Edmonds–Karp</h2><p>Edmonds–Karp removes the arbitrary choice: every augmenting path is found by BFS in the residual graph. Thus the chosen path has the fewest residual edges.</p><div class="graph-formula">O(VE²)</div><p>The proof is based on residual shortest-path distances: they never decrease, and every edge can become critical only <span class="math">O(V)</span> times. This gives <span class="math">O(VE)</span> augmentations, each found in <span class="math">O(E)</span>.</p></section>
+<section><h2 id="section-7">Implementation</h2><div class="code-simple"><pre><code>from collections import deque
+
+def edmonds_karp(n, edges, s, t):
+    capacity = [[0] * n for _ in range(n)]
+    graph = [[] for _ in range(n)]
+
+    for u, v, c in edges:
+        capacity[u][v] += c
+        graph[u].append(v)
+        graph[v].append(u)
+
+    flow = 0
+
+    while True:
+        parent = [-1] * n
+        parent[s] = s
+        q = deque([s])
+
+        while q and parent[t] == -1:
+            u = q.popleft()
+            for v in graph[u]:
+                if parent[v] == -1 and capacity[u][v] > 0:
+                    parent[v] = u
+                    q.append(v)
+
+        if parent[t] == -1:
+            break
+
+        add = float("inf")
+        v = t
+        while v != s:
+            u = parent[v]
+            add = min(add, capacity[u][v])
+            v = u
+
+        v = t
+        while v != s:
+            u = parent[v]
+            capacity[u][v] -= add
+            capacity[v][u] += add
+            v = u
+
+        flow += add
+
+    return flow</code></pre></div><p>The adjacency list stores both directions because a reverse edge can become usable later. The matrix stores residual capacity, not the original capacity.</p></section>
+<section><h2 id="section-8">Dinic in context</h2><div class="model-table-wrap"><table class="decision-table"><thead><tr><th>Method</th><th>Path strategy</th><th>General bound</th><th>Main role</th></tr></thead><tbody><tr><td>Ford–Fulkerson</td><td>Any augmenting path</td><td><span class="complexity-box">O(EF)</span> for integers</td><td>Core idea</td></tr><tr><td>Edmonds–Karp</td><td>BFS path</td><td><span class="complexity-box">O(VE²)</span></td><td>Simple predictable algorithm</td></tr><tr><td>Dinic</td><td>Level graph + blocking flow</td><td><span class="complexity-box">O(V²E)</span></td><td>Common faster implementation</td></tr></tbody></table></div><p>Dinic is worth knowing as the next step, but Ford–Fulkerson and Edmonds–Karp contain the essential conceptual machinery.</p></section>
+</section><div class="chapter-nav"><a href="flows.html">← Flow Networks and Residual Graphs</a><a href="max-flow-min-cut.html">Max-Flow Min-Cut →</a></div></main><footer class="overview-footer"><div>Allan's Handbook of Algorithms</div><div>© 2026 Allan Allemand</div></footer><script src="../assets/js/language-switch.js"></script></body></html>
