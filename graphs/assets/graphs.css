@@ -1076,3 +1076,14 @@
     max-width:100%;
   }
 }
+
+
+/* v20 flow text-formula polish */
+.flow-page .formula-text{
+  font-size:clamp(18px,1.8vw,22px);
+  line-height:1.38;
+}
+.flow-page .formula-text span{
+  white-space:normal;
+  text-wrap:balance;
+}
