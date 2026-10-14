@@ -116,7 +116,7 @@
 
 .interview-sidebar > .sidebar-title {
   margin: 0 0 13px 11px;
-  color: #728176;
+  color: #63756a;
 }
 
 .task-list {
@@ -154,7 +154,7 @@
 
 .task-item .sidebar-num {
   flex: 0 0 20px;
-  color: #a2ada8;
+  color: #697b72;
   font-size: 11px;
   font-variant-numeric: tabular-nums;
   font-weight: 750;
@@ -193,7 +193,7 @@
 .sidebar-help {
   margin: 17px 11px 0;
   max-width: 210px;
-  color: #8b9594;
+  color: #62736b;
   font-size: 12px;
   line-height: 1.65;
 }
@@ -305,7 +305,7 @@
 
 .route-head p {
   margin: 0;
-  color: #77848a;
+  color: #5e7074;
   font-size: 14px;
   line-height: 1.65;
 }
@@ -365,7 +365,7 @@
   border: 1px solid #eaded8;
   border-radius: 8px;
   background: #f9efec;
-  color: #a96158;
+  color: #955449;
   font-size: 12px;
   font-variant-numeric: tabular-nums;
   letter-spacing: 0;
@@ -425,7 +425,7 @@
 
 .problem-sub {
   margin: 0 0 21px;
-  color: #87918f;
+  color: #657672;
   font-size: 12px;
   line-height: 1.65;
 }
@@ -575,7 +575,7 @@
   border: 1px solid #e9e4d8;
   border-radius: 7px;
   background: #fff;
-  color: #a97765;
+  color: #956554;
   font-size: 10px;
   font-weight: 770;
   line-height: 1;
@@ -669,7 +669,7 @@
 .chevron {
   flex: 0 0 auto;
   padding: 0 5px;
-  color: #93a59b;
+  color: #697f73;
   font-size: 19px;
   font-weight: 500;
   line-height: 1;
@@ -824,7 +824,7 @@
   margin: 40px 0 0;
   padding-top: 22px;
   border-top: 1px solid #e0e6df;
-  color: #88948d;
+  color: #64776d;
   font-size: 12px;
 }
 
