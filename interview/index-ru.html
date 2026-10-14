@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="description" content="Интерактивное занятие: 10 реальных задач с собеседований, поэтапные подсказки, доказательства и решения на Python.">
+<meta name="description" content="Практика алгоритмов: десять задач с собеседований, примеры, поэтапные подсказки, доказательства и решения на Python.">
 <title>Задачи с собеседований | Allan's Handbook of Algorithms</title>
 <link rel="icon" href="../assets/images/favicon-32.png">
 <link rel="stylesheet" href="../assets/css/styles.css">
@@ -20,31 +20,29 @@
 </header>
 <section class="interview-hero">
  <div class="hero-inner">
- <div class="eyebrow">ПРАКТИКА · ПОСЛЕДНЕЕ ЗАНЯТИЕ</div>
+ <div class="eyebrow">ПРАКТИКА ПО АЛГОРИТМАМ</div>
  <h1>Задачи с собеседований</h1>
- <p class="intro">Десять задач из опубликованных подборок. Обсуждаем идею вслух, проверяем на примерах, обосновываем корректность и только потом открываем код.</p>
- <div class="hero-stats"><span>6 задач · основной маршрут</span><span>4 задачи · запас</span><span>90 минут</span></div>
+ <p class="intro">Десять задач с собеседований по сортировкам, жадным алгоритмам, графам и динамическому программированию. Попробуйте решить задачу самостоятельно, затем откройте подсказки и полное решение.</p>
+ <div class="hero-stats"><span>10 задач</span><span>Пошаговые подсказки</span><span>Решения на Python</span></div>
  </div>
 </section>
 <div class="interview-layout">
  <aside class="interview-sidebar" aria-label="Список задач">
- <div class="sidebar-title">Маршрут занятия</div>
+ <div class="sidebar-title">Задачи</div>
  <nav id="task-list" class="task-list"></nav>
- <div class="sidebar-help">Нажми на задачу, чтобы перейти к ней. Каждая подсказка открывается отдельно.</div>
+ <div class="sidebar-help">Выберите задачу, чтобы перейти к условию. Подсказки и решения можно открывать по очереди.</div>
  </aside>
  <main id="main" class="interview-main">
-   <div class="session-toolbar">
+   <div class="practice-toolbar">
       <div class="toolbar-status">
-         <div class="small-label">ХОД ЗАНЯТИЯ</div>
-         <div class="toolbar-note" id="session-progress" aria-live="polite">0 разобрано из 10</div>
-         <div class="progress-track" id="session-meter" role="progressbar" aria-label="Разобранные задачи" aria-valuemin="0" aria-valuemax="10" aria-valuenow="0"><span class="progress-fill" id="session-progress-bar"></span></div>
+         <div class="small-label">ПРОГРЕСС</div>
+         <div class="toolbar-note" id="practice-progress" aria-live="polite">0 решено из 10</div>
+         <div class="progress-track" id="practice-meter" role="progressbar" aria-label="Разобранные задачи" aria-valuemin="0" aria-valuemax="10" aria-valuenow="0"><span class="progress-fill" id="practice-progress-bar"></span></div>
       </div>
       <div class="toolbar-actions"><button type="button" id="hide-all">Скрыть все ответы</button><button type="button" id="expand-cases">Показать примеры</button></div>
    </div>
-   <div class="route-head"><h2>Основной маршрут</h2><p>Шесть задач на 90 минут. Время указано с учётом обсуждения.</p></div>
-   <div id="core-problems" class="problem-stack"></div>
-   <div class="route-head extras-head"><h2>Запасные задачи</h2><p>Если группа идёт быстрее или хочет другую тему.</p></div>
-   <div id="extra-problems" class="problem-stack"></div>
+   <div class="route-head"><h2>Задачи</h2><p>Решайте в любом порядке. Для каждой задачи доступны вопросы, подсказки, доказательство и код на Python.</p></div>
+   <div id="problems" class="problem-stack"></div>
    <footer class="interview-footer"><a href="../">← Вернуться к главной</a><span>© 2026 Allan Allemand</span></footer>
  </main>
 </div>
