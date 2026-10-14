@@ -34,7 +34,11 @@
  </aside>
  <main id="main" class="interview-main">
    <div class="session-toolbar">
-      <div><div class="small-label">INSTRUCTOR</div><div class="toolbar-note">Answers start hidden</div></div>
+      <div class="toolbar-status">
+         <div class="small-label">SESSION PROGRESS</div>
+         <div class="toolbar-note" id="session-progress" aria-live="polite">0 of 10 completed</div>
+         <div class="progress-track" id="session-meter" role="progressbar" aria-label="Completed problems" aria-valuemin="0" aria-valuemax="10" aria-valuenow="0"><span class="progress-fill" id="session-progress-bar"></span></div>
+      </div>
       <div class="toolbar-actions"><button type="button" id="hide-all">Hide all answers</button><button type="button" id="expand-cases">Show all examples</button></div>
    </div>
    <div class="route-head"><h2>Class route</h2><p>Six problems for a 90-minute discussion, with estimated time for each.</p></div>
