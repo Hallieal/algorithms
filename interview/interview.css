@@ -68,26 +68,10 @@
 
 .intro {
   max-width: 750px;
-  margin: 0 0 22px;
+  margin: 0;
   color: #56646b;
   font-size: 16px;
   line-height: 1.7;
-}
-
-.hero-stats {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-
-.hero-stats span {
-  border: 1px solid #d9e1d6;
-  border-radius: 99px;
-  background: rgba(255,255,255,.61);
-  padding: 6px 12px;
-  color: #52645b;
-  font-size: 12px;
-  line-height: 1.45;
 }
 
 /* Page grid and navigation */
@@ -153,7 +137,11 @@
 }
 
 .task-item .sidebar-num {
+  display: grid;
+  place-items: center;
   flex: 0 0 20px;
+  width: 20px;
+  text-align: center;
   color: #697b72;
   font-size: 11px;
   font-variant-numeric: tabular-nums;
@@ -547,7 +535,7 @@
 }
 
 .discussion-prompt::before {
-  content: counter(question, decimal-leading-zero);
+  content: counter(question, decimal);
   position: absolute;
   top: 0;
   left: 0;
@@ -887,15 +875,6 @@
   .intro {
     font-size: 14px;
     line-height: 1.7;
-  }
-
-  .hero-stats {
-    gap: 6px;
-  }
-
-  .hero-stats span {
-    padding: 5px 10px;
-    font-size: 11px;
   }
 
   .interview-layout {
