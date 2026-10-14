@@ -108,7 +108,7 @@ const PROBLEMS = [{"id":"merge","no":"56","title":"Merge Intervals","topic":"Sor
     const panel = element("details", "reveal-panel");
     const summary = element("summary", "reveal-summary");
     const label = element("span", "reveal-label");
-    label.appendChild(element("span", "reveal-step", String(number).padStart(2, "0")));
+    label.appendChild(element("span", "reveal-step", String(number)));
     label.appendChild(element("span", "reveal-name", title));
     summary.appendChild(label);
     summary.appendChild(element("span", "chevron", "›"));
@@ -131,7 +131,7 @@ const PROBLEMS = [{"id":"merge","no":"56","title":"Merge Intervals","topic":"Sor
     const head = element("div", "problem-head");
     const topline = element("div", "problem-topline");
     const kicker = element("div", "problem-kicker");
-    kicker.appendChild(element("span", "problem-number", String(index + 1).padStart(2, "0")));
+    kicker.appendChild(element("span", "problem-number", String(index + 1)));
     kicker.appendChild(element("span", "problem-category", T.topics[problem.topic] || problem.topic));
     topline.appendChild(kicker);
     const chips = element("div", "chips");
@@ -232,7 +232,7 @@ const PROBLEMS = [{"id":"merge","no":"56","title":"Merge Intervals","topic":"Sor
     PROBLEMS.forEach((problem, i) => {
       const link = element("a", "task-item" + (stored[problem.id] ? " visited" : ""));
       link.href = "#" + problem.id;
-      link.appendChild(element("span", "sidebar-num", String(i + 1).padStart(2, "0")));
+      link.appendChild(element("span", "sidebar-num", String(i + 1)));
       link.appendChild(element("span", "sidebar-name", problem.title));
       link.appendChild(element("span", "sidebar-check", "✓"));
       list.appendChild(link);
