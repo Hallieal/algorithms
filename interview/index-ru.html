@@ -34,7 +34,11 @@
  </aside>
  <main id="main" class="interview-main">
    <div class="session-toolbar">
-      <div><div class="small-label">ВЕДУЩЕМУ</div><div class="toolbar-note">Ответы изначально скрыты</div></div>
+      <div class="toolbar-status">
+         <div class="small-label">ХОД ЗАНЯТИЯ</div>
+         <div class="toolbar-note" id="session-progress" aria-live="polite">0 разобрано из 10</div>
+         <div class="progress-track" id="session-meter" role="progressbar" aria-label="Разобранные задачи" aria-valuemin="0" aria-valuemax="10" aria-valuenow="0"><span class="progress-fill" id="session-progress-bar"></span></div>
+      </div>
       <div class="toolbar-actions"><button type="button" id="hide-all">Скрыть все ответы</button><button type="button" id="expand-cases">Показать примеры</button></div>
    </div>
    <div class="route-head"><h2>Основной маршрут</h2><p>Шесть задач на 90 минут. Время указано с учётом обсуждения.</p></div>
