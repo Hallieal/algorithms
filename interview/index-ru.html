@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="Интерактивное занятие: 10 реальных задач с собеседований, поэтапные подсказки, доказательства и решения на Python.">
+<title>Задачи с собеседований | Allan's Handbook of Algorithms</title>
+<link rel="icon" href="../assets/images/favicon-32.png">
+<link rel="stylesheet" href="../assets/css/styles.css">
+<link rel="stylesheet" href="interview.css">
+<link rel="alternate" hreflang="en" href="./">
+<link rel="alternate" hreflang="ru" href="index-ru.html">
+</head>
+<body class="interview-page">
+<header class="topbar">
+ <a class="brand" href="../"><span class="brand-mark brand-mark-logo"><img class="brand-mark-image" src="../assets/images/logo.png" alt=""></span><span class="brand-name">Allan's Handbook of Algorithms</span></a>
+ <nav class="topnav" aria-label="Навигация">
+ <div class="language-switch"><a href="./">EN</a><span class="language-separator">·</span><span class="current">RU</span></div>
+ </nav>
+</header>
+<section class="interview-hero">
+ <div class="hero-inner">
+ <div class="eyebrow">ПРАКТИКА · ПОСЛЕДНЕЕ ЗАНЯТИЕ</div>
+ <h1>Задачи с собеседований</h1>
+ <p class="intro">Десять задач из опубликованных подборок. Обсуждаем идею вслух, проверяем на примерах, обосновываем корректность и только потом открываем код.</p>
+ <div class="hero-stats"><span>6 задач · основной маршрут</span><span>4 задачи · запас</span><span>90 минут</span></div>
+ </div>
+</section>
+<div class="interview-layout">
+ <aside class="interview-sidebar" aria-label="Список задач">
+ <div class="sidebar-title">Маршрут занятия</div>
+ <nav id="task-list" class="task-list"></nav>
+ <div class="sidebar-help">Нажми на задачу, чтобы перейти к ней. Каждая подсказка открывается отдельно.</div>
+ </aside>
+ <main id="main" class="interview-main">
+   <div class="session-toolbar">
+      <div><div class="small-label">ВЕДУЩЕМУ</div><div class="toolbar-note">Ответы изначально скрыты</div></div>
+      <div class="toolbar-actions"><button type="button" id="hide-all">Скрыть все ответы</button><button type="button" id="expand-cases">Показать примеры</button></div>
+   </div>
+   <div class="route-head"><h2>Основной маршрут</h2><p>Шесть задач на 90 минут. Время указано с учётом обсуждения.</p></div>
+   <div id="core-problems" class="problem-stack"></div>
+   <div class="route-head extras-head"><h2>Запасные задачи</h2><p>Если группа идёт быстрее или хочет другую тему.</p></div>
+   <div id="extra-problems" class="problem-stack"></div>
+   <footer class="interview-footer"><a href="../">← Вернуться к главной</a><span>© 2026 Allan Allemand</span></footer>
+ </main>
+</div>
+<script src="interview.js"></script>
+<script src="../assets/js/language-switch.js"></script>
+</body></html>
