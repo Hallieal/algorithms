@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128" role="img" aria-label="Algorithm interview">
+<g stroke="#20262d" stroke-width="5" stroke-linejoin="round" stroke-linecap="round">
+<rect x="16" y="13" width="88" height="100" rx="12" fill="#f7cd61"/>
+<rect x="27" y="27" width="67" height="72" rx="7" fill="#fffdf5"/>
+<path d="M40 47l-9 9 9 9" fill="none" stroke="#d96564" stroke-width="6"/>
+<path d="M75 47l9 9-9 9" fill="none" stroke="#d96564" stroke-width="6"/>
+<path d="M61 43l-8 27" fill="none" stroke="#5486ba" stroke-width="6"/>
+<circle cx="92" cy="89" r="22" fill="#9fcf92"/>
+<path d="M82 89l7 7 14-17" fill="none" stroke="#20262d" stroke-width="5"/>
+</g></svg>
