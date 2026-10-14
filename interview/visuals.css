@@ -1,0 +1,161 @@
+/* Interactive algorithm diagrams — adapted to AHA's existing visual language. */
+.visual-walkthrough {
+  margin: 0 30px 26px;
+  overflow: hidden;
+  border: 1px solid #dce7e0;
+  border-radius: 15px;
+  background: #fff;
+  box-shadow: 0 3px 14px rgba(32,55,42,.03);
+}
+.visual-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 17px 21px 12px;
+  background: #f8faf7;
+  border-bottom: 1px solid #e7eee7;
+}
+.visual-kicker {
+  color: #658d76;
+  font-size: 10.5px;
+  font-weight: 770;
+  letter-spacing: .09em;
+  text-transform: uppercase;
+}
+.visual-title {
+  margin: 4px 0 0;
+  color: #31493e;
+  font-size: 17px;
+  font-weight: 745;
+  letter-spacing: -.012em;
+  line-height: 1.37;
+}
+.visual-stage {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-width: 0;
+  min-height: 0;
+  background: #fbfcfa;
+  overflow: hidden;
+}
+.visual-svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  min-width: 0;
+  max-height: 370px;
+  overflow: visible;
+}
+.visual-caption {
+  display: flex;
+  align-items: center;
+  min-height: 55px;
+  margin: 0;
+  padding: 10px 22px;
+  border-top: 1px solid #e9efe9;
+  background: #f8faf7;
+  color: #455e51;
+  font-size: 13px;
+  font-weight: 620;
+  line-height: 1.55;
+}
+.visual-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 12px 19px 15px;
+  background: #fff;
+}
+.visual-buttons {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.visual-buttons button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 37px;
+  padding: 8px 13px;
+  border: 1px solid #d5e1d8;
+  border-radius: 9px;
+  background: #fff;
+  color: #426551;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 725;
+  line-height: 1.4;
+  transition: background .13s, border-color .13s;
+}
+.visual-buttons button:hover:not(:disabled) {
+  border-color: #aacbb4;
+  background: #eef6ee;
+}
+.visual-buttons button:focus-visible {
+  outline: 3px solid #77ac8f;
+  outline-offset: 3px;
+}
+.visual-buttons .visual-next {
+  background: #426e58;
+  border-color: #426e58;
+  color: #fff;
+}
+.visual-buttons .visual-next:hover:not(:disabled) {
+  background: #31543f;
+  border-color: #31543f;
+}
+.visual-buttons button:disabled {
+  opacity: .38;
+  cursor: not-allowed;
+}
+.visual-counter {
+  min-width: 53px;
+  color: #7e8b83;
+  font-size: 12px;
+  font-weight: 720;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+@media (max-width: 640px) {
+  .visual-walkthrough {
+    margin: 0 14px 20px;
+    border-radius: 12px;
+  }
+  .visual-header {
+    padding: 14px 14px 11px;
+  }
+  .visual-title {
+    font-size: 15px;
+  }
+  .visual-svg {
+    width: 100%;
+  }
+  .visual-caption {
+    min-height: 60px;
+    padding: 12px 14px;
+    font-size: 12.5px;
+  }
+  .visual-toolbar {
+    padding: 10px 12px 13px;
+    gap: 8px;
+  }
+  .visual-buttons {
+    gap: 5px;
+  }
+  .visual-buttons button {
+    min-height: 36px;
+    padding: 7px 9px;
+    font-size: 11px;
+  }
+  .visual-counter {
+    font-size: 11px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .visual-buttons button {transition: none;}
+}
