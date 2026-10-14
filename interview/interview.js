@@ -165,6 +165,11 @@ const PROBLEMS = [{"id":"merge","no":"56","title":"Merge Intervals","topic":"Sor
     head.appendChild(example);
     article.appendChild(head);
 
+    if (window.AHAVisuals && typeof window.AHAVisuals.create === "function") {
+      const walkthrough = window.AHAVisuals.create(problem.id, isRu);
+      if (walkthrough) article.appendChild(walkthrough);
+    }
+
     const discussion = element("section", "discussion");
     discussion.appendChild(element("div", "small-label", T.talk));
     const prompts = element("ol", "prompt-list");
