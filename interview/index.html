@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="description" content="Interactive interview practice: 10 sourced problems, guided discussion, hints, proofs, and Python solutions.">
+<meta name="description" content="Algorithm interview practice: ten problems with examples, progressive hints, correctness proofs, and Python solutions.">
 <title>Interview Problems | Allan's Handbook of Algorithms</title>
 <link rel="icon" href="../assets/images/favicon-32.png">
 <link rel="stylesheet" href="../assets/css/styles.css">
@@ -20,31 +20,29 @@
 </header>
 <section class="interview-hero">
  <div class="hero-inner">
- <div class="eyebrow">PRACTICE · FINAL SESSION</div>
+ <div class="eyebrow">ALGORITHM PRACTICE</div>
  <h1>Algorithm Interview Problems</h1>
- <p class="intro">Ten published interview problems. Discuss an approach, test it on examples, justify its correctness, then open the code.</p>
- <div class="hero-stats"><span>6 problems · class route</span><span>4 problems · extras</span><span>90 minutes</span></div>
+ <p class="intro">Ten interview problems covering sorting, greedy algorithms, graphs, and dynamic programming. Try each problem, explore the hints, and check the full solution.</p>
+ <div class="hero-stats"><span>10 problems</span><span>Step-by-step hints</span><span>Python solutions</span></div>
  </div>
 </section>
 <div class="interview-layout">
  <aside class="interview-sidebar" aria-label="Problem list">
- <div class="sidebar-title">Class route</div>
+ <div class="sidebar-title">Problems</div>
  <nav id="task-list" class="task-list"></nav>
- <div class="sidebar-help">Choose a problem. Every hint and part of the solution can be revealed separately.</div>
+ <div class="sidebar-help">Choose a problem to jump to its statement. Hints and solutions stay hidden until opened.</div>
  </aside>
  <main id="main" class="interview-main">
-   <div class="session-toolbar">
+   <div class="practice-toolbar">
       <div class="toolbar-status">
-         <div class="small-label">SESSION PROGRESS</div>
-         <div class="toolbar-note" id="session-progress" aria-live="polite">0 of 10 completed</div>
-         <div class="progress-track" id="session-meter" role="progressbar" aria-label="Completed problems" aria-valuemin="0" aria-valuemax="10" aria-valuenow="0"><span class="progress-fill" id="session-progress-bar"></span></div>
+         <div class="small-label">YOUR PROGRESS</div>
+         <div class="toolbar-note" id="practice-progress" aria-live="polite">0 of 10 completed</div>
+         <div class="progress-track" id="practice-meter" role="progressbar" aria-label="Completed problems" aria-valuemin="0" aria-valuemax="10" aria-valuenow="0"><span class="progress-fill" id="practice-progress-bar"></span></div>
       </div>
       <div class="toolbar-actions"><button type="button" id="hide-all">Hide all answers</button><button type="button" id="expand-cases">Show all examples</button></div>
    </div>
-   <div class="route-head"><h2>Class route</h2><p>Six problems for a 90-minute discussion, with estimated time for each.</p></div>
-   <div id="core-problems" class="problem-stack"></div>
-   <div class="route-head extras-head"><h2>Extra problems</h2><p>For a faster group or a change of topic.</p></div>
-   <div id="extra-problems" class="problem-stack"></div>
+   <div class="route-head"><h2>Problems</h2><p>Work through the problems in any order. Each includes questions, hints, a proof, and Python code.</p></div>
+   <div id="problems" class="problem-stack"></div>
    <footer class="interview-footer"><a href="../">← Return to the handbook</a><span>© 2026 Allan Allemand</span></footer>
  </main>
 </div>
