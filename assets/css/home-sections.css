@@ -19,3 +19,9 @@
 
 #interview-practice { padding-top: 30px; }
 #interview-practice h2 { margin-bottom: 30px; }
+
+/* A full-width practice card makes the standalone section intentional. */
+#interview-practice .course-grid { grid-template-columns: minmax(0, 1fr); }
+#interview-practice .course-card { min-height: 150px; }
+#interview-practice .course-card p { max-width: 750px; }
+@media (max-width: 760px) { #interview-practice .course-card { min-height: 0; } }
