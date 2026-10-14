@@ -385,6 +385,10 @@
     name.textContent = title;
     left.append(kicker,name);
     heading.appendChild(left);
+    const swipe = document.createElement("span");
+    swipe.className = "visual-mobile-hint";
+    swipe.textContent = isRu ? "↔ Листайте схему" : "↔ Swipe diagram";
+    heading.appendChild(swipe);
     section.appendChild(heading);
 
     const stage = document.createElement("div");
